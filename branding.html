@@ -83,8 +83,8 @@ dl.meta dt{color:var(--mute)}
 dl.meta dd{margin:0;font-weight:600}
 
 .plate{display:grid;gap:clamp(1rem,2.2vw,1.75rem)}
-.plate.portrait{grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}
-.plate.wide{grid-template-columns:repeat(auto-fit,minmax(23rem,1fr))}
+.plate.portrait{grid-template-columns:repeat(auto-fit,minmax(min(15rem,100%),1fr))}
+.plate.wide{grid-template-columns:repeat(auto-fit,minmax(min(23rem,100%),1fr))}
 .plate figure{margin:0;background:var(--surface);border:1px solid rgba(0,0,0,.07);border-radius:var(--radius);overflow:hidden}
 .plate img{width:100%;height:auto}
 .plate figcaption{padding:.8rem 1rem 1rem;font-size:.9rem;color:var(--mute)}
@@ -99,7 +99,12 @@ dl.meta dd{margin:0;font-weight:600}
 .colophon{margin-top:2rem;font-size:.85rem;color:rgba(255,255,255,.5)}
 
 @media (max-width:40rem){
-  .nav a:not(.cta){padding:.5rem .55rem;font-size:.9rem}
+  .masthead{position:static}
+  .masthead .wrap{flex-wrap:wrap;row-gap:.45rem}
+  .brand{font-size:1.1rem}
+  .nav{width:100%;flex-wrap:wrap;gap:.15rem}
+  .nav a:not(.cta){padding:.4rem .45rem;font-size:.82rem}
+  .nav .cta{margin-left:.15rem;padding:.45rem .8rem;font-size:.82rem}
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
