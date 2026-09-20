@@ -27,7 +27,7 @@
   --violet:#4F46E5;
   --radius:0px;
   --gutter:clamp(1.1rem,4vw,3rem);
-  --col:min(78rem,100%);
+  --col:min(72rem,100%);
 }
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
@@ -60,13 +60,14 @@ a{color:inherit}
 .nav .cta{background:var(--ink);color:#fff;font-weight:600;padding:.6rem 1.15rem;margin-left:.35rem}
 .nav .cta:hover{background:#000}
 
-.hero{text-align:center;padding-block:clamp(3rem,8vw,6.5rem) clamp(2rem,5vw,3.5rem)}
-h1.display{font-weight:800;font-size:clamp(2.6rem,8.4vw,6.5rem);line-height:.95;letter-spacing:-.045em;margin:0 auto;max-width:15ch;text-wrap:balance}
-.hero .lede{margin:clamp(1.25rem,3vw,1.9rem) auto 0;max-width:48ch;font-size:clamp(1.0625rem,1.7vw,1.3rem);line-height:1.5;color:var(--mute)}
-.hero .note{margin:1.5rem auto 0;max-width:62ch;font-size:.975rem;color:var(--mute)}
+/* emoji sit small and aligned, never at heading weight */
+.e{font-size:.72em;margin-right:.45em;display:inline-block;vertical-align:.06em;line-height:1}
 
-.actions{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:2rem;justify-content:center}
-.section .actions{justify-content:flex-start}
+.intro{padding-block:clamp(2.25rem,6vw,3.75rem) clamp(1.25rem,3vw,2rem)}
+.eyebrow{font-size:.8rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .9rem}
+h1.lead{font-weight:700;font-size:clamp(1.4rem,2.9vw,1.95rem);line-height:1.32;letter-spacing:-.02em;margin:0;max-width:40ch}
+.intro .note{margin:1.4rem 0 0;max-width:62ch;font-size:.95rem;line-height:1.6;color:var(--mute);border-left:2px solid var(--line);padding-left:1rem}
+.actions{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.75rem}
 .btn{display:inline-flex;align-items:center;gap:.5rem;text-decoration:none;font-weight:600;font-size:1rem;padding:.85rem 1.5rem;border-radius:999px;background:var(--ink);color:#fff;border:1px solid var(--ink)}
 .btn:hover{background:#000}
 .btn.accent{background:var(--accent);border-color:var(--accent)}
@@ -74,30 +75,32 @@ h1.display{font-weight:800;font-size:clamp(2.6rem,8.4vw,6.5rem);line-height:.95;
 .btn.quiet{background:transparent;color:var(--ink);border-color:rgba(0,0,0,.25)}
 .btn.quiet:hover{background:rgba(0,0,0,.05)}
 
-.section{padding-block:clamp(2.75rem,6vw,5rem)}
-.section-head{margin-bottom:clamp(1.5rem,3.5vw,2.5rem);max-width:34ch}
-.section-head h2{font-weight:800;font-size:clamp(1.9rem,4.6vw,3.4rem);line-height:1;letter-spacing:-.04em;margin:0}
-.section-head p{margin:.85rem 0 0;color:var(--mute);max-width:46ch}
-.prose{max-width:60ch}
-.prose p{margin:0 0 1.1rem}
+.section{padding-block:clamp(1.75rem,4vw,2.75rem)}
+h2.head{font-weight:800;font-size:clamp(1.35rem,2.6vw,1.75rem);line-height:1.2;letter-spacing:-.03em;margin:0 0 1.25rem;padding-bottom:.7rem;border-bottom:1px solid var(--line)}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));gap:clamp(1rem,2vw,1.5rem)}
+.card{background:var(--surface);border:1px solid rgba(0,0,0,.07);padding:1.35rem 1.4rem 1.5rem}
+.card h3{font-weight:700;font-size:1.0625rem;letter-spacing:-.015em;line-height:1.3;margin:0 0 .55rem}
+.card p{margin:0;color:var(--mute);font-size:.95rem;line-height:1.55}
+.card ul{margin:.85rem 0 0;padding-left:1.05rem;color:var(--mute);font-size:.9rem;line-height:1.5}
+.card li{margin-bottom:.3rem}
+.card li:last-child{margin-bottom:0}
+
+.prose{max-width:62ch}
+.prose p{margin:0 0 1rem;color:var(--mute)}
 .prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ink);font-weight:600}
 
-.rows{border-top:1px solid var(--line)}
-.rowitem{display:grid;grid-template-columns:minmax(0,1fr) 3rem;align-items:start;gap:1.5rem;padding-block:clamp(1.25rem,2.6vw,1.9rem);border-bottom:1px solid var(--line)}
-.rowitem h3{font-weight:700;font-size:clamp(1.3rem,3.1vw,2.05rem);letter-spacing:-.035em;line-height:1.1;margin:0}
-.rowitem p{margin:.55rem 0 0;color:var(--mute);max-width:58ch;font-size:1rem}
-.rowitem ul{margin:.7rem 0 0;padding-left:1.1rem;color:var(--mute);font-size:.95rem}
-.rowitem li{margin-bottom:.25rem}
-.ring{width:3rem;height:3rem;border-radius:50%;border:1.5px solid var(--ink);display:grid;place-content:center;justify-self:end}
-.ring svg{width:1.1rem;height:1.1rem;display:block}
-
-.tags{list-style:none;margin:1.5rem 0 0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem;font-size:.925rem}
+.tags{list-style:none;margin:1.25rem 0 0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem;font-size:.9rem}
 .tags li{background:var(--surface);border:1px solid rgba(0,0,0,.08);border-radius:999px;padding:.35rem .85rem;color:var(--mute)}
 
-.panel{background:var(--surface);border:1px solid rgba(0,0,0,.07);border-radius:var(--radius);padding:clamp(1.5rem,3.5vw,2.5rem)}
+.creds{list-style:none;margin:0;padding:0;display:grid;gap:.5rem}
+.creds li{background:var(--surface);border:1px solid rgba(0,0,0,.07);padding:.85rem 1.1rem;display:flex;flex-wrap:wrap;gap:.25rem 1rem;align-items:baseline}
+.creds b{font-weight:600}
+.creds span{color:var(--mute);font-size:.9rem}
 
-.foot{background:var(--ink);color:#fff;border-radius:var(--radius) var(--radius) 0 0;margin-top:clamp(2rem,5vw,3.5rem);padding-block:clamp(2.75rem,6vw,4.5rem)}
-.foot h2{font-weight:800;font-size:clamp(1.9rem,5.2vw,3.6rem);line-height:1;letter-spacing:-.04em;margin:0;max-width:18ch}
+.foot{background:var(--ink);color:#fff;margin-top:clamp(2rem,5vw,3.5rem);padding-block:clamp(2.5rem,5vw,4rem)}
+.foot h2{font-weight:800;font-size:clamp(1.7rem,4.4vw,2.9rem);line-height:1.05;letter-spacing:-.04em;margin:0;max-width:18ch}
 .foot p{color:rgba(255,255,255,.72);max-width:52ch}
 .foot .btn.quiet{color:#fff;border-color:rgba(255,255,255,.35)}
 .foot .btn.quiet:hover{background:rgba(255,255,255,.12)}
@@ -107,8 +110,6 @@ h1.display{font-weight:800;font-size:clamp(2.6rem,8.4vw,6.5rem);line-height:.95;
 
 @media (max-width:40rem){
   .nav a:not(.cta){padding:.5rem .55rem;font-size:.9rem}
-  .rowitem{grid-template-columns:1fr}
-  .ring{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -126,115 +127,89 @@ h1.display{font-weight:800;font-size:clamp(2.6rem,8.4vw,6.5rem);line-height:.95;
       <a href="index.html">Design</a>
       <a href="annotation.html" aria-current="page">Data annotation</a>
       <a href="Shaun_Finch_CV_2026.pdf">CV</a>
-      <a class="cta" href="mailto:shaundavidfinch@gmail.com?subject=AI%20evaluation%20enquiry">Get in touch</a>
+      <a class="cta" href="mailto:shaundavidfinch@gmail.com?subject=Data%20annotation%20enquiry">Get in touch</a>
     </nav>
   </div>
 </header>
 
 <main id="main">
 
-  <section class="hero">
+  <section class="intro">
     <div class="wrap">
-      <h1 class="display">Judging what models make</h1>
-      <p class="lede">Data annotation and rubric-based evaluation of machine-generated language, front-end code and document design, for frontier AI labs &mdash; contracted through Mercor.io Corporation.</p>
-      <p class="note">Since May 2026 I have worked as an independent contractor through Mercor.io Corporation, providing domain expertise to frontier model training programmes. That work is confidential. What follows describes the kind of judgement I apply — no clients, projects or materials are identified.</p>
+      <p class="eyebrow">Data annotation &amp; AI evaluation</p>
+      <h1 class="lead">AI evaluation specialist with eleven years of design craft behind the judgement — scoring model-generated language, front-end code and document layout against strict rubrics, and writing the feedback used to improve them.</h1>
+      <p class="note">Independent contractor through Mercor.io Corporation since May 2026, providing domain expertise to frontier model training programmes. That work is confidential — what follows describes the kind of judgement I apply. No clients, projects or materials are identified.</p>
       <div class="actions">
-        <a class="btn accent" href="#areas">What I evaluate</a>
+        <a class="btn accent" href="mailto:shaundavidfinch@gmail.com?subject=Data%20annotation%20enquiry">Get in touch</a>
         <a class="btn quiet" href="Shaun_Finch_CV_2026.pdf">Download CV</a>
       </div>
     </div>
   </section>
 
-  <section class="section" id="areas">
+  <section class="section" id="what">
     <div class="wrap">
-      <div class="section-head">
-        <h2>🔍 What I evaluate</h2>
-        <p>Three areas, each with its own rubric and its own failure modes.</p>
-      </div>
+      <h2 class="head"><span class="e">🔍</span>What I evaluate</h2>
+      <div class="cards">
 
-      <div class="rows">
-
-        <div class="rowitem">
-          <div>
-            <h3>✍️ Written output, against strict rubrics</h3>
-            <p>Scoring model-generated prose on detailed criteria and writing the reasoning behind every score. Much of it is identifying the familiar failure modes — padding, hedging, formulaic structure, sentences that are fluent but say nothing — and specifying the revision that lifts the text to a natural, human standard.</p>
-            <ul>
-              <li>Rubric application and consistency across large batches</li>
-              <li>Tone, register and voice assessment</li>
-              <li>Written justification for every score</li>
-            </ul>
-          </div>
-          <span class="ring" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </span>
+        <div class="card">
+          <h3><span class="e">✍️</span>Written output</h3>
+          <p>Evaluating model-generated prose against strict scoring rubrics — identifying generic, padded and formulaic phrasing, and specifying the revisions that lift output to a natural, human standard.</p>
+          <ul>
+            <li>Rubric application and consistency across large batches</li>
+            <li>Tone, register and voice assessment</li>
+            <li>Written justification for every score</li>
+          </ul>
         </div>
 
-        <div class="rowitem">
-          <div>
-            <h3>💻 Front-end code, for structure and health</h3>
-            <p>Reading generated HTML and reporting what is structurally wrong with it: heading hierarchy that does not describe the document, nesting that will not survive a change, markup that is visually convincing and semantically empty.</p>
-            <ul>
-              <li>Document structure and semantic correctness</li>
-              <li>Heading hierarchy and nesting integrity</li>
-              <li>General code health of generated markup</li>
-            </ul>
-          </div>
-          <span class="ring" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </span>
+        <div class="card">
+          <h3><span class="e">💻</span>Front-end code</h3>
+          <p>Auditing AI-generated HTML for structural and semantic issues — assessing heading hierarchy, nesting and overall code health, and reporting markup that is visually convincing but semantically empty.</p>
+          <ul>
+            <li>Document structure and semantic correctness</li>
+            <li>Heading hierarchy and nesting integrity</li>
+            <li>General code health of generated markup</li>
+          </ul>
         </div>
 
-        <div class="rowitem">
-          <div>
-            <h3>📐 Documents and layout, on design principles</h3>
-            <p>Assessing web pages and PDFs that models produce, and writing the feedback used to train them on how a document should be set. This is where the design background does the work — grading typography, spacing, alignment and visual hierarchy against principles rather than taste, and explaining the fix in terms a model can learn from.</p>
-            <ul>
-              <li>Typography, spacing and grid</li>
-              <li>Visual hierarchy and reading order</li>
-              <li>Formatting and document structure</li>
-            </ul>
-          </div>
-          <span class="ring" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </span>
+        <div class="card">
+          <h3><span class="e">📐</span>Documents and layout</h3>
+          <p>Reviewing AI-produced web pages and PDF documents against established design principles — grading typography, spacing, visual hierarchy and layout, and writing the feedback used to train models on formatting and document structure.</p>
+          <ul>
+            <li>Typography, spacing and grid</li>
+            <li>Visual hierarchy and reading order</li>
+            <li>Formatting and document structure</li>
+          </ul>
         </div>
 
       </div>
     </div>
   </section>
 
-  <section class="section" id="method">
+  <section class="section" id="how">
     <div class="wrap">
-      <div class="section-head">
-        <h2>⚙️ How the work runs</h2>
+      <h2 class="head"><span class="e">⚙️</span>How the work runs</h2>
+      <div class="prose">
+        <p>Every engagement comes with its own criteria and its own turnaround. The job is to apply those criteria identically on the first item and the last, at speed, while writing feedback specific enough to be actionable. Work is quality-scored, so <strong>consistency is the whole game</strong>.</p>
+        <p>I work to detailed rubric criteria under tight turnaround times, across multiple concurrent specialist projects, and have onboarded onto new evaluation task types as they have been introduced.</p>
       </div>
-      <div class="panel">
-        <div class="prose">
-          <p>Every engagement comes with its own criteria and its own turnaround. The job is to apply those criteria identically on the first item and the last, at speed, while writing feedback specific enough to be actionable. Work is quality-scored, so consistency is the whole game.</p>
-          <p>I hold multiple concurrent specialist projects and have onboarded onto new evaluation task types as they have been introduced. I work to a ten-hour weekly minimum with capacity for considerably more.</p>
-        </div>
-        <ul class="tags">
-          <li>LLM output evaluation</li>
-          <li>RLHF</li>
-          <li>Rubric-based scoring</li>
-          <li>Data annotation</li>
-          <li>Natural-language quality review</li>
-          <li>HTML structure auditing</li>
-          <li>Document and layout evaluation</li>
-          <li>Visual and UI domain expertise</li>
-        </ul>
-      </div>
+      <ul class="tags">
+        <li>LLM output evaluation &amp; RLHF</li>
+        <li>Rubric-based scoring and annotation</li>
+        <li>Natural-language quality review</li>
+        <li>HTML structure &amp; code-health auditing</li>
+        <li>Document and web layout evaluation</li>
+        <li>High-level domain evaluation (Visual &amp; UI)</li>
+        <li>Content evaluation under strict time limits</li>
+      </ul>
     </div>
   </section>
 
   <section class="section" id="why">
     <div class="wrap">
-      <div class="section-head">
-        <h2>👁️ Why a designer</h2>
-      </div>
+      <h2 class="head"><span class="e">👁️</span>Why a designer</h2>
       <div class="prose">
         <p>Most evaluation work is bottlenecked on people who can tell the difference between output that is nearly right and output that is right. For anything visual — a page, a document, a generated layout — that difference is not something you can reason your way to from a checklist. You either recognise it or you do not.</p>
-        <p>I spent eleven years building moving image and interfaces for clients who noticed a two-pixel misalignment and a frame of bad timing: the BBC, Universal Studios, Paramount, LIV Golf. That is where the recognition comes from, and it is the thing I am actually selling here.</p>
+        <p>Eleven years building moving image and interfaces for the BBC, Universal Studios, Paramount Pictures and LIV Golf, delivering to fixed broadcast and distribution deadlines where typography, hierarchy and timing had to be right first time. That is where the recognition comes from. <strong>Strongest where evaluation needs trained visual expertise rather than a checklist.</strong></p>
       </div>
       <div class="actions">
         <a class="btn quiet" href="index.html">See the design work</a>
@@ -244,16 +219,12 @@ h1.display{font-weight:800;font-size:clamp(2.6rem,8.4vw,6.5rem);line-height:.95;
 
   <section class="section" id="credentials">
     <div class="wrap">
-      <div class="section-head">
-        <h2>🎓 Credentials</h2>
-      </div>
-      <div class="panel">
-        <div class="prose">
-          <p><strong>BA (Hons) Film and Television Studies</strong> &middot; University of Northumbria, 2012&ndash;2015. 2:1 awarded.</p>
-          <p><strong>Generative AI Leader Professional Certificate</strong> &middot; expected 2026.</p>
-          <p><strong>Google UX Design Professional Certificate</strong> &middot; expected 2026.</p>
-        </div>
-      </div>
+      <h2 class="head"><span class="e">🎓</span>Credentials</h2>
+      <ul class="creds">
+        <li><b>BA (Hons) Film and Television Studies</b> <span>University of Northumbria &middot; 2012&ndash;2015 &middot; 2:1 awarded</span></li>
+        <li><b>Generative AI Leader Professional Certificate</b> <span>Expected 2026</span></li>
+        <li><b>Google UX Design Professional Certificate</b> <span>Expected 2026</span></li>
+      </ul>
     </div>
   </section>
 
@@ -264,7 +235,7 @@ h1.display{font-weight:800;font-size:clamp(2.6rem,8.4vw,6.5rem);line-height:.95;
     <h2>Open to data annotation and AI evaluation work.</h2>
     <p>Available for expert annotation and evaluation contracts, in-house AI trainer and analyst roles, or anything where the bottleneck is visual judgement at volume.</p>
     <div class="actions">
-      <a class="btn accent" href="mailto:shaundavidfinch@gmail.com?subject=AI%20evaluation%20enquiry">Email me</a>
+      <a class="btn accent" href="mailto:shaundavidfinch@gmail.com?subject=Data%20annotation%20enquiry">Email me</a>
       <a class="btn quiet" href="Shaun_Finch_CV_2026.pdf">Download CV</a>
     </div>
     <p class="contact">
