@@ -25,7 +25,7 @@
   --accent:#F0562A;
   --accent-deep:#D4441A;
   --violet:#4F46E5;
-  --radius:16px;
+  --radius:0px;
   --gutter:clamp(1.1rem,4vw,3rem);
   --col:min(78rem,100%);
 }
@@ -82,7 +82,7 @@ h1.display{font-weight:800;font-size:clamp(2.6rem,8.4vw,6.5rem);line-height:.95;
 .prose p:last-child{margin-bottom:0}
 
 .featured{display:grid;grid-template-columns:repeat(auto-fit,minmax(24rem,1fr));gap:clamp(1.25rem,2.6vw,2rem);margin-bottom:clamp(2rem,4vw,3rem)}
-.featured .frame{aspect-ratio:21/9}
+.featured .frame{aspect-ratio:16/9}
 .featured .piece-body{padding:1.35rem 1.5rem 1.6rem}
 .featured .piece-body h3{font-size:clamp(1.35rem,2.4vw,1.75rem);letter-spacing:-.03em}
 .subhead{font-weight:700;font-size:1.15rem;letter-spacing:-.02em;margin:0 0 1.1rem;color:var(--mute)}
@@ -121,7 +121,7 @@ dl.spec dd{margin:0;font-weight:500}
 .tags{list-style:none;margin:1.5rem 0 0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem;font-size:.925rem}
 .tags li{background:var(--surface);border:1px solid rgba(0,0,0,.08);border-radius:999px;padding:.35rem .85rem;color:var(--mute)}
 .clients{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.5rem}
-.clients li{background:var(--surface);border:1px solid rgba(0,0,0,.07);border-radius:12px;padding:.85rem 1rem;font-weight:600;letter-spacing:-.015em}
+.clients li{background:var(--surface);border:1px solid rgba(0,0,0,.07);border-radius:0;padding:.85rem 1rem;font-weight:600;letter-spacing:-.015em}
 
 .foot{background:var(--ink);color:#fff;border-radius:var(--radius) var(--radius) 0 0;margin-top:clamp(2rem,5vw,3.5rem);padding-block:clamp(2.75rem,6vw,4.5rem)}
 .foot h2{font-weight:800;font-size:clamp(1.9rem,5.2vw,3.6rem);line-height:1;letter-spacing:-.04em;margin:0;max-width:18ch}
@@ -181,7 +181,7 @@ dl.spec dd{margin:0;font-weight:500}
         <figure class="piece">
           <div class="frame">
             <video controls preload="metadata" playsinline poster="work/waterloo.jpg"
-                   style="object-fit:contain;background:#111">
+                   style="background:#111">
               <source src="work/waterloo.mp4" type="video/mp4">
             </video>
           </div>
