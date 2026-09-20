@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data annotation and AI evaluation — Shaun Finch</title>
+<meta name="description" content="Data annotation and AI model evaluation: rubric-based language scoring, front-end code auditing, and design assessment of machine-generated documents and web pages. Manchester, UK.">
+<meta name="theme-color" content="#EDECE8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%2317171A'/%3E%3Cg fill='none' stroke='%23F0562A' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.4v2.4'/%3E%3Ccircle cx='12' cy='2.6' r='1'/%3E%3Crect x='3.6' y='5.8' width='16.8' height='12.6' rx='4.2'/%3E%3Cpath d='M3.6 10.8H2M20.4 10.8H22'/%3E%3Ccircle cx='9.2' cy='11.2' r='1.2'/%3E%3Ccircle cx='14.8' cy='11.2' r='1.2'/%3E%3Cpath d='M9.4 15.1h5.2'/%3E%3C/g%3E%3C/svg%3E">
+<meta property="og:title" content="Data annotation and AI evaluation — Shaun Finch">
+<meta property="og:description" content="Annotating and evaluating machine-generated language, code and layout against strict rubrics, with eleven years of visual craft behind the judgement.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap">
+
+<style>
+:root{
+  --bg:#EDECE8;
+  --surface:#FFFFFF;
+  --ink:#17171A;
+  --mute:#5C5C63;
+  --line:#CFCEC9;
+  --accent:#F0562A;
+  --accent-deep:#D4441A;
+  --violet:#4F46E5;
+  --radius:16px;
+  --gutter:clamp(1.1rem,4vw,3rem);
+  --col:min(78rem,100%);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;
+  background-color:var(--bg);
+  background-image:radial-gradient(rgba(0,0,0,.085) 1px, transparent 1px);
+  background-size:22px 22px;
+  color:var(--ink);
+  font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:1.0625rem;
+  line-height:1.6;
+  overflow-wrap:break-word;
+}
+img,video,iframe{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+.wrap{width:var(--col);margin-inline:auto;padding-inline:var(--gutter)}
+.skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:#fff;padding:.75rem 1rem;z-index:60}
+.skip:focus{left:.5rem;top:.5rem}
+
+.masthead{position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:1px solid rgba(0,0,0,.06)}
+.masthead .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:.85rem}
+.brand{display:flex;align-items:center;gap:.55rem;text-decoration:none;font-weight:800;font-size:1.25rem;letter-spacing:-.03em}
+.brand .bot{width:1.75rem;height:1.75rem;flex:none;display:block}
+.nav{display:flex;align-items:center;gap:.35rem}
+.nav a{text-decoration:none;color:var(--ink);font-weight:500;font-size:.975rem;padding:.5rem .8rem;border-radius:999px}
+.nav a:hover{background:rgba(0,0,0,.05)}
+.nav a[aria-current="page"]{color:var(--violet);font-weight:700}
+.nav .cta{background:var(--ink);color:#fff;font-weight:600;padding:.6rem 1.15rem;margin-left:.35rem}
+.nav .cta:hover{background:#000}
+
+.hero{text-align:center;padding-block:clamp(3rem,8vw,6.5rem) clamp(2rem,5vw,3.5rem)}
+h1.display{font-weight:800;font-size:clamp(2.6rem,8.4vw,6.5rem);line-height:.95;letter-spacing:-.045em;margin:0 auto;max-width:15ch;text-wrap:balance}
+.hero .lede{margin:clamp(1.25rem,3vw,1.9rem) auto 0;max-width:48ch;font-size:clamp(1.0625rem,1.7vw,1.3rem);line-height:1.5;color:var(--mute)}
+.hero .note{margin:1.5rem auto 0;max-width:62ch;font-size:.975rem;color:var(--mute)}
+
+.actions{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:2rem;justify-content:center}
+.section .actions{justify-content:flex-start}
+.btn{display:inline-flex;align-items:center;gap:.5rem;text-decoration:none;font-weight:600;font-size:1rem;padding:.85rem 1.5rem;border-radius:999px;background:var(--ink);color:#fff;border:1px solid var(--ink)}
+.btn:hover{background:#000}
+.btn.accent{background:var(--accent);border-color:var(--accent)}
+.btn.accent:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
+.btn.quiet{background:transparent;color:var(--ink);border-color:rgba(0,0,0,.25)}
+.btn.quiet:hover{background:rgba(0,0,0,.05)}
+
+.section{padding-block:clamp(2.75rem,6vw,5rem)}
+.section-head{margin-bottom:clamp(1.5rem,3.5vw,2.5rem);max-width:34ch}
+.section-head h2{font-weight:800;font-size:clamp(1.9rem,4.6vw,3.4rem);line-height:1;letter-spacing:-.04em;margin:0}
+.section-head p{margin:.85rem 0 0;color:var(--mute);max-width:46ch}
+.prose{max-width:60ch}
+.prose p{margin:0 0 1.1rem}
+.prose p:last-child{margin-bottom:0}
+
+.rows{border-top:1px solid var(--line)}
+.rowitem{display:grid;grid-template-columns:minmax(0,1fr) 3rem;align-items:start;gap:1.5rem;padding-block:clamp(1.25rem,2.6vw,1.9rem);border-bottom:1px solid var(--line)}
+.rowitem h3{font-weight:700;font-size:clamp(1.3rem,3.1vw,2.05rem);letter-spacing:-.035em;line-height:1.1;margin:0}
+.rowitem p{margin:.55rem 0 0;color:var(--mute);max-width:58ch;font-size:1rem}
+.rowitem ul{margin:.7rem 0 0;padding-left:1.1rem;color:var(--mute);font-size:.95rem}
+.rowitem li{margin-bottom:.25rem}
+.ring{width:3rem;height:3rem;border-radius:50%;border:1.5px solid var(--ink);display:grid;place-content:center;justify-self:end}
+.ring svg{width:1.1rem;height:1.1rem;display:block}
+
+.tags{list-style:none;margin:1.5rem 0 0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem;font-size:.925rem}
+.tags li{background:var(--surface);border:1px solid rgba(0,0,0,.08);border-radius:999px;padding:.35rem .85rem;color:var(--mute)}
+
+.panel{background:var(--surface);border:1px solid rgba(0,0,0,.07);border-radius:var(--radius);padding:clamp(1.5rem,3.5vw,2.5rem)}
+
+.foot{background:var(--ink);color:#fff;border-radius:var(--radius) var(--radius) 0 0;margin-top:clamp(2rem,5vw,3.5rem);padding-block:clamp(2.75rem,6vw,4.5rem)}
+.foot h2{font-weight:800;font-size:clamp(1.9rem,5.2vw,3.6rem);line-height:1;letter-spacing:-.04em;margin:0;max-width:18ch}
+.foot p{color:rgba(255,255,255,.72);max-width:52ch}
+.foot .btn.quiet{color:#fff;border-color:rgba(255,255,255,.35)}
+.foot .btn.quiet:hover{background:rgba(255,255,255,.12)}
+.contact{margin:2rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;font-size:1rem}
+.contact a{color:#fff;text-underline-offset:3px}
+.colophon{margin-top:2rem;font-size:.85rem;color:rgba(255,255,255,.5)}
+
+@media (max-width:40rem){
+  .nav a:not(.cta){padding:.5rem .55rem;font-size:.9rem}
+  .rowitem{grid-template-columns:1fr}
+  .ring{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="wrap">
+    <a class="brand" href="index.html"><svg class="bot" viewBox="0 0 24 24" fill="none" stroke="#F0562A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.4v2.4"/><circle cx="12" cy="2.6" r="1"/><rect x="3.6" y="5.8" width="16.8" height="12.6" rx="4.2"/><path d="M3.6 10.8H2M20.4 10.8H22"/><circle cx="9.2" cy="11.2" r="1.2"/><circle cx="14.8" cy="11.2" r="1.2"/><path d="M9.4 15.1h5.2"/></svg>Shaun Finch</a>
+    <nav class="nav" aria-label="Main">
+      <a href="index.html">Design</a>
+      <a href="annotation.html" aria-current="page">Data annotation</a>
+      <a href="Shaun_Finch_CV_2026.pdf">CV</a>
+      <a class="cta" href="mailto:shaundavidfinch@gmail.com?subject=AI%20evaluation%20enquiry">Get in touch</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <div class="wrap">
+      <h1 class="display">Judging what models make</h1>
+      <p class="lede">Data annotation and rubric-based evaluation of machine-generated language, front-end code and document design, for frontier AI labs &mdash; contracted through Mercor.io Corporation.</p>
+      <p class="note">Since May 2026 I have worked as an independent contractor through Mercor.io Corporation, providing domain expertise to frontier model training programmes. That work is confidential. What follows describes the kind of judgement I apply — no clients, projects or materials are identified.</p>
+      <div class="actions">
+        <a class="btn accent" href="#areas">What I evaluate</a>
+        <a class="btn quiet" href="Shaun_Finch_CV_2026.pdf">Download CV</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="areas">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>What I evaluate</h2>
+        <p>Three areas, each with its own rubric and its own failure modes.</p>
+      </div>
+
+      <div class="rows">
+
+        <div class="rowitem">
+          <div>
+            <h3>Written output, against strict rubrics</h3>
+            <p>Scoring model-generated prose on detailed criteria and writing the reasoning behind every score. Much of it is identifying the familiar failure modes — padding, hedging, formulaic structure, sentences that are fluent but say nothing — and specifying the revision that lifts the text to a natural, human standard.</p>
+            <ul>
+              <li>Rubric application and consistency across large batches</li>
+              <li>Tone, register and voice assessment</li>
+              <li>Written justification for every score</li>
+            </ul>
+          </div>
+          <span class="ring" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+
+        <div class="rowitem">
+          <div>
+            <h3>Front-end code, for structure and health</h3>
+            <p>Reading generated HTML and reporting what is structurally wrong with it: heading hierarchy that does not describe the document, nesting that will not survive a change, markup that is visually convincing and semantically empty.</p>
+            <ul>
+              <li>Document structure and semantic correctness</li>
+              <li>Heading hierarchy and nesting integrity</li>
+              <li>General code health of generated markup</li>
+            </ul>
+          </div>
+          <span class="ring" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+
+        <div class="rowitem">
+          <div>
+            <h3>Documents and layout, on design principles</h3>
+            <p>Assessing web pages and PDFs that models produce, and writing the feedback used to train them on how a document should be set. This is where the design background does the work — grading typography, spacing, alignment and visual hierarchy against principles rather than taste, and explaining the fix in terms a model can learn from.</p>
+            <ul>
+              <li>Typography, spacing and grid</li>
+              <li>Visual hierarchy and reading order</li>
+              <li>Formatting and document structure</li>
+            </ul>
+          </div>
+          <span class="ring" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="method">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>How the work runs</h2>
+      </div>
+      <div class="panel">
+        <div class="prose">
+          <p>Every engagement comes with its own criteria and its own turnaround. The job is to apply those criteria identically on the first item and the last, at speed, while writing feedback specific enough to be actionable. Work is quality-scored, so consistency is the whole game.</p>
+          <p>I hold multiple concurrent specialist projects and have onboarded onto new evaluation task types as they have been introduced. I work to a ten-hour weekly minimum with capacity for considerably more.</p>
+        </div>
+        <ul class="tags">
+          <li>LLM output evaluation</li>
+          <li>RLHF</li>
+          <li>Rubric-based scoring</li>
+          <li>Data annotation</li>
+          <li>Natural-language quality review</li>
+          <li>HTML structure auditing</li>
+          <li>Document and layout evaluation</li>
+          <li>Visual and UI domain expertise</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="why">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Why a designer</h2>
+      </div>
+      <div class="prose">
+        <p>Most evaluation work is bottlenecked on people who can tell the difference between output that is nearly right and output that is right. For anything visual — a page, a document, a generated layout — that difference is not something you can reason your way to from a checklist. You either recognise it or you do not.</p>
+        <p>I spent eleven years building moving image and interfaces for clients who noticed a two-pixel misalignment and a frame of bad timing: the BBC, Universal Studios, Paramount, LIV Golf. That is where the recognition comes from, and it is the thing I am actually selling here.</p>
+      </div>
+      <div class="actions">
+        <a class="btn quiet" href="index.html">See the design work</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="credentials">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Credentials</h2>
+      </div>
+      <div class="panel">
+        <div class="prose">
+          <p><strong>BA (Hons) Film and Television Studies</strong> &middot; University of Northumbria, 2012&ndash;2015. 2:1 awarded.</p>
+          <p><strong>Generative AI Leader Professional Certificate</strong> &middot; expected 2026.</p>
+          <p><strong>Google UX Design Professional Certificate</strong> &middot; expected 2026.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <h2>Open to data annotation and AI evaluation work.</h2>
+    <p>Available for expert annotation and evaluation contracts, in-house AI trainer and analyst roles, or anything where the bottleneck is visual judgement at volume.</p>
+    <div class="actions">
+      <a class="btn accent" href="mailto:shaundavidfinch@gmail.com?subject=AI%20evaluation%20enquiry">Email me</a>
+      <a class="btn quiet" href="Shaun_Finch_CV_2026.pdf">Download CV</a>
+    </div>
+    <p class="contact">
+      <a href="mailto:shaundavidfinch@gmail.com">shaundavidfinch@gmail.com</a>
+      <a href="https://www.linkedin.com/in/shaun-finch">linkedin.com/in/shaun-finch</a>
+      <span>Manchester, UK</span>
+    </p>
+    <p class="colophon">Set in Figtree. Static HTML, hosted on GitHub Pages.</p>
+  </div>
+</footer>
+
+</body>
+</html>

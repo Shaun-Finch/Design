@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Branding — Shaun Finch</title>
+<meta name="description" content="Brand and campaign design — tournament graphics for The International Series and LIV Golf, and the Global Money identity system.">
+<meta name="theme-color" content="#EDECE8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%2317171A'/%3E%3Cg fill='none' stroke='%23F0562A' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.4v2.4'/%3E%3Ccircle cx='12' cy='2.6' r='1'/%3E%3Crect x='3.6' y='5.8' width='16.8' height='12.6' rx='4.2'/%3E%3Cpath d='M3.6 10.8H2M20.4 10.8H22'/%3E%3Ccircle cx='9.2' cy='11.2' r='1.2'/%3E%3Ccircle cx='14.8' cy='11.2' r='1.2'/%3E%3Cpath d='M9.4 15.1h5.2'/%3E%3C/g%3E%3C/svg%3E">
+<meta property="og:title" content="Branding — Shaun Finch">
+<meta property="og:description" content="Tournament graphics for The International Series and LIV Golf, and the Global Money identity system.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap">
+
+<style>
+:root{
+  --bg:#EDECE8;
+  --surface:#FFFFFF;
+  --ink:#17171A;
+  --mute:#5C5C63;
+  --line:#CFCEC9;
+  --accent:#F0562A;
+  --accent-deep:#D4441A;
+  --violet:#4F46E5;
+  --radius:16px;
+  --gutter:clamp(1.1rem,4vw,3rem);
+  --col:min(78rem,100%);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;
+  background-color:var(--bg);
+  background-image:radial-gradient(rgba(0,0,0,.085) 1px, transparent 1px);
+  background-size:22px 22px;
+  color:var(--ink);
+  font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:1.0625rem;
+  line-height:1.6;
+  overflow-wrap:break-word;
+}
+img,video,iframe{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+.wrap{width:var(--col);margin-inline:auto;padding-inline:var(--gutter)}
+.skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:#fff;padding:.75rem 1rem;z-index:60}
+.skip:focus{left:.5rem;top:.5rem}
+
+.masthead{position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:1px solid rgba(0,0,0,.06)}
+.masthead .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:.85rem}
+.brand{display:flex;align-items:center;gap:.55rem;text-decoration:none;font-weight:800;font-size:1.25rem;letter-spacing:-.03em}
+.brand .bot{width:1.75rem;height:1.75rem;flex:none;display:block}
+.nav{display:flex;align-items:center;gap:.35rem}
+.nav a{text-decoration:none;color:var(--ink);font-weight:500;font-size:.975rem;padding:.5rem .8rem;border-radius:999px}
+.nav a:hover{background:rgba(0,0,0,.05)}
+.nav a[aria-current="page"]{color:var(--violet);font-weight:700}
+.nav .cta{background:var(--ink);color:#fff;font-weight:600;padding:.6rem 1.15rem;margin-left:.35rem}
+.nav .cta:hover{background:#000}
+
+.hero{text-align:center;padding-block:clamp(2.5rem,7vw,5rem) clamp(1.5rem,4vw,2.5rem)}
+h1.display{font-weight:800;font-size:clamp(2.6rem,8.4vw,6rem);line-height:.95;letter-spacing:-.045em;margin:0 auto;max-width:14ch;text-wrap:balance}
+.hero .lede{margin:clamp(1.25rem,3vw,1.9rem) auto 0;max-width:50ch;font-size:clamp(1.0625rem,1.7vw,1.3rem);line-height:1.5;color:var(--mute)}
+
+.actions{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:2rem;justify-content:center}
+.section .actions{justify-content:flex-start}
+.btn{display:inline-flex;align-items:center;gap:.5rem;text-decoration:none;font-weight:600;font-size:1rem;padding:.85rem 1.5rem;border-radius:999px;background:var(--ink);color:#fff;border:1px solid var(--ink)}
+.btn:hover{background:#000}
+.btn.accent{background:var(--accent);border-color:var(--accent)}
+.btn.accent:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
+.btn.quiet{background:transparent;color:var(--ink);border-color:rgba(0,0,0,.25)}
+.btn.quiet:hover{background:rgba(0,0,0,.05)}
+
+.section{padding-block:clamp(2.25rem,5vw,4rem)}
+.section-head{margin-bottom:clamp(1.5rem,3.5vw,2.5rem);max-width:42ch}
+.section-head h2{font-weight:800;font-size:clamp(1.9rem,4.6vw,3.2rem);line-height:1;letter-spacing:-.04em;margin:0}
+.section-head p{margin:.85rem 0 0;color:var(--mute);max-width:52ch}
+dl.meta{margin:1.25rem 0 0;font-size:.9rem;display:flex;flex-wrap:wrap;gap:.35rem 1.75rem}
+dl.meta div{display:flex;gap:.55rem}
+dl.meta dt{color:var(--mute)}
+dl.meta dd{margin:0;font-weight:600}
+
+.plate{display:grid;gap:clamp(1rem,2.2vw,1.75rem)}
+.plate.portrait{grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}
+.plate.wide{grid-template-columns:repeat(auto-fit,minmax(23rem,1fr))}
+.plate figure{margin:0;background:var(--surface);border:1px solid rgba(0,0,0,.07);border-radius:var(--radius);overflow:hidden}
+.plate img{width:100%;height:auto}
+.plate figcaption{padding:.8rem 1rem 1rem;font-size:.9rem;color:var(--mute)}
+
+.foot{background:var(--ink);color:#fff;border-radius:var(--radius) var(--radius) 0 0;margin-top:clamp(2rem,5vw,3.5rem);padding-block:clamp(2.75rem,6vw,4.5rem)}
+.foot h2{font-weight:800;font-size:clamp(1.9rem,5.2vw,3.6rem);line-height:1;letter-spacing:-.04em;margin:0;max-width:18ch}
+.foot p{color:rgba(255,255,255,.72);max-width:52ch}
+.foot .btn.quiet{color:#fff;border-color:rgba(255,255,255,.35)}
+.foot .btn.quiet:hover{background:rgba(255,255,255,.12)}
+.contact{margin:2rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;font-size:1rem}
+.contact a{color:#fff;text-underline-offset:3px}
+.colophon{margin-top:2rem;font-size:.85rem;color:rgba(255,255,255,.5)}
+
+@media (max-width:40rem){
+  .nav a:not(.cta){padding:.5rem .55rem;font-size:.9rem}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="wrap">
+    <a class="brand" href="index.html"><svg class="bot" viewBox="0 0 24 24" fill="none" stroke="#F0562A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.4v2.4"/><circle cx="12" cy="2.6" r="1"/><rect x="3.6" y="5.8" width="16.8" height="12.6" rx="4.2"/><path d="M3.6 10.8H2M20.4 10.8H22"/><circle cx="9.2" cy="11.2" r="1.2"/><circle cx="14.8" cy="11.2" r="1.2"/><path d="M9.4 15.1h5.2"/></svg>Shaun Finch</a>
+    <nav class="nav" aria-label="Main">
+      <a href="index.html">Design</a>
+      <a href="annotation.html">Data annotation</a>
+      <a href="Shaun_Finch_CV_2026.pdf">CV</a>
+      <a class="cta" href="mailto:shaundavidfinch@gmail.com?subject=Work%20enquiry">Get in touch</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <div class="wrap">
+      <h1 class="display">Branding</h1>
+      <p class="lede">Campaign identity for international golf, and a full brand system built from the ground up — type, colour, iconography, product and web.</p>
+    </div>
+  </section>
+
+  <section class="section" id="international-series">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>The International Series</h2>
+        <p>Tournament and campaign graphics for The International Series, the Asian Tour and LIV Golf — a template system that had to survive being filled with different players, flags, scores and sponsors every week, and still look like one tour.</p>
+        <dl class="meta">
+          <div><dt>Studio</dt><dd>P54 (Performance 54)</dd></div>
+          <div><dt>Year</dt><dd>2023&ndash;2024</dd></div>
+          <div><dt>Role</dt><dd>Digital designer</dd></div>
+        </dl>
+      </div>
+
+      <div class="plate portrait">
+        <figure><img src="branding/is-01.jpg" width="1080" height="1351" loading="lazy" decoding="async" alt="One day to go countdown graphic for International Series Singapore, featuring Nitithorn Thippong"></figure>
+        <figure><img src="branding/is-02.jpg" width="1080" height="1351" loading="lazy" decoding="async" alt="Third round leaderboard graphic for International Series Singapore, led by David Puig at twenty under"></figure>
+        <figure><img src="branding/is-03.jpg" width="1080" height="1347" loading="lazy" decoding="async" alt="BNI Indonesian Masters announcement featuring Patrick Reed, Sarit Suwannarut, Anirban Lahiri and Naraajie Ramadhanputra"></figure>
+        <figure><img src="branding/is-04.jpg" width="1080" height="1347" loading="lazy" decoding="async" alt="BNI Indonesian Masters champion graphic for Gaganjeet Bhullar"></figure>
+        <figure><img src="branding/is-05.jpg" width="1080" height="1349" loading="lazy" decoding="async" alt="International Series Macau announcement, presented by Wynn"></figure>
+        <figure><img src="branding/is-06.jpg" width="1080" height="1350" loading="lazy" decoding="async" alt="Order of Merit champion graphic for Andy Ogletree, three-time International Series champion"></figure>
+        <figure><img src="branding/is-07.jpg" width="1080" height="1350" loading="lazy" decoding="async" alt="LIV Golf Promotions projected position graphic for Gaganjeet Bhullar"></figure>
+        <figure><img src="branding/is-08.jpg" width="1080" height="1351" loading="lazy" decoding="async" alt="Congratulations graphic for Scott Vincent re-signing for Iron Heads GC"></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="global-money">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Global Money</h2>
+        <p>A complete identity for a cross-border business banking brand — mark, wordmark, colour, a Didot and IBM Plex Mono type pairing, an isometric icon language, card design, social templates, app interface and website.</p>
+        <dl class="meta">
+          <div><dt>Scope</dt><dd>Identity, product and web</dd></div>
+          <div><dt>Role</dt><dd>Brand and UI designer</dd></div>
+        </dl>
+      </div>
+
+      <div class="plate wide">
+        <figure><img src="branding/gm-01.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="The Global Money app icon, a globe and refresh mark on a white to blue gradient tile"></figure>
+        <figure><img src="branding/gm-02.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="The Global Money wordmark set in Didot above a stack of coins"></figure>
+        <figure><img src="branding/gm-03.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="Two Global Money payment cards, one brushed black and one white"></figure>
+        <figure><img src="branding/gm-04.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="Didot LP Display, the uppercase-only display typeface"></figure>
+        <figure><img src="branding/gm-05.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="IBM Plex Mono in regular, bold and italic, the supporting typeface"></figure>
+        <figure><img src="branding/gm-06.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="The core brand blue, hex 0742d9, shown as a swatch on white and on blue"></figure>
+        <figure><img src="branding/gm-07.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="Social media templates covering spend tracking, linked trading accounts and segregated business banking"></figure>
+        <figure><img src="branding/gm-08.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="The Global Money mobile app showing account balances and a transaction list"></figure>
+        <figure><img src="branding/gm-09.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="Isometric icon set covering charts, security, bullion, records, safes and calculators"></figure>
+        <figure><img src="branding/gm-10.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="The Global Money website homepage, with a market ticker, editorial headline and editors picks column"></figure>
+      </div>
+
+      <div class="actions">
+        <a class="btn quiet" href="index.html">Back to design and motion work</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <h2>Available for design and evaluation work.</h2>
+    <p>Currently contracting on frontier model evaluation, and open to further work in either field.</p>
+    <div class="actions">
+      <a class="btn accent" href="mailto:shaundavidfinch@gmail.com?subject=Work%20enquiry">Email me</a>
+      <a class="btn quiet" href="Shaun_Finch_CV_2026.pdf">Download CV</a>
+    </div>
+    <p class="contact">
+      <a href="mailto:shaundavidfinch@gmail.com">shaundavidfinch@gmail.com</a>
+      <a href="https://www.linkedin.com/in/shaun-finch">linkedin.com/in/shaun-finch</a>
+      <span>Manchester, UK</span>
+    </p>
+    <p class="colophon">Set in Figtree. Static HTML, hosted on GitHub Pages.</p>
+  </div>
+</footer>
+
+</body>
+</html>

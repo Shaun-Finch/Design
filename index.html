@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shaun Finch — Motion design and AI evaluation, Manchester</title>
+<meta name="description" content="Motion and UI design for broadcast, sport and film — BBC, Universal Studios, LIV Golf — and frontier AI model evaluation. Manchester, UK.">
+<meta name="theme-color" content="#EDECE8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%2317171A'/%3E%3Cg fill='none' stroke='%23F0562A' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.4v2.4'/%3E%3Ccircle cx='12' cy='2.6' r='1'/%3E%3Crect x='3.6' y='5.8' width='16.8' height='12.6' rx='4.2'/%3E%3Cpath d='M3.6 10.8H2M20.4 10.8H22'/%3E%3Ccircle cx='9.2' cy='11.2' r='1.2'/%3E%3Ccircle cx='14.8' cy='11.2' r='1.2'/%3E%3Cpath d='M9.4 15.1h5.2'/%3E%3C/g%3E%3C/svg%3E">
+<meta property="og:title" content="Shaun Finch — Motion design and AI evaluation">
+<meta property="og:description" content="Eleven years of visual craft for broadcast and sport, now applied to evaluating frontier AI models.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap">
+
+<style>
+:root{
+  --bg:#EDECE8;
+  --surface:#FFFFFF;
+  --ink:#17171A;
+  --mute:#5C5C63;
+  --line:#CFCEC9;
+  --accent:#F0562A;
+  --accent-deep:#D4441A;
+  --violet:#4F46E5;
+  --radius:16px;
+  --gutter:clamp(1.1rem,4vw,3rem);
+  --col:min(78rem,100%);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;
+  background-color:var(--bg);
+  background-image:radial-gradient(rgba(0,0,0,.085) 1px, transparent 1px);
+  background-size:22px 22px;
+  color:var(--ink);
+  font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:1.0625rem;
+  line-height:1.6;
+  overflow-wrap:break-word;
+}
+img,video,iframe{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+.wrap{width:var(--col);margin-inline:auto;padding-inline:var(--gutter)}
+.skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:#fff;padding:.75rem 1rem;z-index:60}
+.skip:focus{left:.5rem;top:.5rem}
+
+.masthead{position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:1px solid rgba(0,0,0,.06)}
+.masthead .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:.85rem}
+.brand{display:flex;align-items:center;gap:.55rem;text-decoration:none;font-weight:800;font-size:1.25rem;letter-spacing:-.03em}
+.brand .bot{width:1.75rem;height:1.75rem;flex:none;display:block}
+.nav{display:flex;align-items:center;gap:.35rem}
+.nav a{text-decoration:none;color:var(--ink);font-weight:500;font-size:.975rem;padding:.5rem .8rem;border-radius:999px}
+.nav a:hover{background:rgba(0,0,0,.05)}
+.nav a[aria-current="page"]{color:var(--violet);font-weight:700}
+.nav .cta{background:var(--ink);color:#fff;font-weight:600;padding:.6rem 1.15rem;margin-left:.35rem}
+.nav .cta:hover{background:#000}
+
+.hero{text-align:center;padding-block:clamp(3rem,8vw,6.5rem) clamp(2rem,5vw,3.5rem)}
+h1.display{font-weight:800;font-size:clamp(2.6rem,8.4vw,6.5rem);line-height:.95;letter-spacing:-.045em;margin:0 auto;max-width:16ch;text-wrap:balance}
+.hero .lede{margin:clamp(1.25rem,3vw,1.9rem) auto 0;max-width:46ch;font-size:clamp(1.0625rem,1.7vw,1.3rem);line-height:1.5;color:var(--mute)}
+
+.actions{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:2rem;justify-content:center}
+.section .actions{justify-content:flex-start}
+.btn{display:inline-flex;align-items:center;gap:.5rem;text-decoration:none;font-weight:600;font-size:1rem;padding:.85rem 1.5rem;border-radius:999px;background:var(--ink);color:#fff;border:1px solid var(--ink)}
+.btn:hover{background:#000}
+.btn.accent{background:var(--accent);border-color:var(--accent)}
+.btn.accent:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
+.btn.quiet{background:transparent;color:var(--ink);border-color:rgba(0,0,0,.25)}
+.btn.quiet:hover{background:rgba(0,0,0,.05)}
+
+.section{padding-block:clamp(2.75rem,6vw,5rem)}
+.section-head{margin-bottom:clamp(1.5rem,3.5vw,2.5rem);max-width:34ch}
+.section-head h2{font-weight:800;font-size:clamp(1.9rem,4.6vw,3.4rem);line-height:1;letter-spacing:-.04em;margin:0}
+.section-head p{margin:.85rem 0 0;color:var(--mute);max-width:46ch}
+.prose{max-width:60ch}
+.prose p{margin:0 0 1.1rem}
+.prose p:last-child{margin-bottom:0}
+
+.featured{display:grid;grid-template-columns:repeat(auto-fit,minmax(24rem,1fr));gap:clamp(1.25rem,2.6vw,2rem);margin-bottom:clamp(2rem,4vw,3rem)}
+.featured .frame{aspect-ratio:21/9}
+.featured .piece-body{padding:1.35rem 1.5rem 1.6rem}
+.featured .piece-body h3{font-size:clamp(1.35rem,2.4vw,1.75rem);letter-spacing:-.03em}
+.subhead{font-weight:700;font-size:1.15rem;letter-spacing:-.02em;margin:0 0 1.1rem;color:var(--mute)}
+.pieces{display:grid;grid-template-columns:repeat(auto-fit,minmax(19rem,1fr));gap:clamp(1.25rem,2.6vw,2rem)}
+figure.piece{margin:0;background:var(--surface);border-radius:var(--radius);overflow:hidden;border:1px solid rgba(0,0,0,.07);display:flex;flex-direction:column}
+.frame{aspect-ratio:16/9;position:relative;overflow:hidden;background:#111}
+.frame video,.frame iframe{width:100%;height:100%;border:0;object-fit:cover}
+.teaser{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:clamp(1rem,2.2vw,1.5rem);margin-bottom:clamp(1.5rem,3vw,2rem)}
+.teaser a{display:block;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(0,0,0,.07);background:var(--surface);line-height:0}
+.teaser a:hover{border-color:rgba(0,0,0,.22)}
+.teaser img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}
+.frame.vertical img.vbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(30px) brightness(.5);transform:scale(1.2)}
+.frame.vertical video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.framelink{position:absolute;inset:0;display:block}
+.framecta{position:absolute;left:.8rem;bottom:.8rem;background:rgba(0,0,0,.72);color:#fff;font-size:.82rem;font-weight:600;letter-spacing:-.01em;padding:.35rem .8rem;border-radius:999px}
+.framelink:hover .framecta,.framelink:focus-visible .framecta{background:var(--accent)}
+.plainlink{text-decoration:none}
+.plainlink:hover{text-decoration:underline;text-underline-offset:3px}
+.frame.awaiting{display:grid;place-content:center;gap:.35rem;text-align:center;padding:1.25rem}
+.frame.awaiting b{font-weight:700;font-size:1rem;color:#fff;letter-spacing:-.01em}
+.frame.awaiting span{font-size:.85rem;color:rgba(255,255,255,.82);max-width:24ch;margin-inline:auto}
+.t1{background:#2B3EE0}
+.t2{background:#F0562A}
+.t3{background:#12694A}
+.t4{background:#17171A}
+.t5{background:#6D28D9}
+.t6{background:#B54708}
+.piece-body{padding:1.15rem 1.25rem 1.35rem;flex:1;display:flex;flex-direction:column}
+.piece-body h3{font-weight:700;font-size:1.2rem;letter-spacing:-.025em;line-height:1.2;margin:0 0 .5rem}
+.piece-body p{margin:0 0 1rem;color:var(--mute);font-size:.975rem}
+dl.spec{margin:auto 0 0;font-size:.9rem;border-top:1px solid rgba(0,0,0,.08);padding-top:.75rem}
+dl.spec div{display:flex;gap:.75rem;padding:.2rem 0}
+dl.spec dt{color:var(--mute);flex:0 0 4.5rem}
+dl.spec dd{margin:0;font-weight:500}
+
+.tags{list-style:none;margin:1.5rem 0 0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem;font-size:.925rem}
+.tags li{background:var(--surface);border:1px solid rgba(0,0,0,.08);border-radius:999px;padding:.35rem .85rem;color:var(--mute)}
+.clients{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.5rem}
+.clients li{background:var(--surface);border:1px solid rgba(0,0,0,.07);border-radius:12px;padding:.85rem 1rem;font-weight:600;letter-spacing:-.015em}
+
+.foot{background:var(--ink);color:#fff;border-radius:var(--radius) var(--radius) 0 0;margin-top:clamp(2rem,5vw,3.5rem);padding-block:clamp(2.75rem,6vw,4.5rem)}
+.foot h2{font-weight:800;font-size:clamp(1.9rem,5.2vw,3.6rem);line-height:1;letter-spacing:-.04em;margin:0;max-width:18ch}
+.foot p{color:rgba(255,255,255,.72);max-width:52ch}
+.foot .btn.quiet{color:#fff;border-color:rgba(255,255,255,.35)}
+.foot .btn.quiet:hover{background:rgba(255,255,255,.12)}
+.contact{margin:2rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;font-size:1rem}
+.contact a{color:#fff;text-underline-offset:3px}
+.colophon{margin-top:2rem;font-size:.85rem;color:rgba(255,255,255,.5)}
+
+@media (max-width:40rem){
+  .nav a:not(.cta){padding:.5rem .55rem;font-size:.9rem}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="wrap">
+    <a class="brand" href="index.html"><svg class="bot" viewBox="0 0 24 24" fill="none" stroke="#F0562A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.4v2.4"/><circle cx="12" cy="2.6" r="1"/><rect x="3.6" y="5.8" width="16.8" height="12.6" rx="4.2"/><path d="M3.6 10.8H2M20.4 10.8H22"/><circle cx="9.2" cy="11.2" r="1.2"/><circle cx="14.8" cy="11.2" r="1.2"/><path d="M9.4 15.1h5.2"/></svg>Shaun Finch</a>
+    <nav class="nav" aria-label="Main">
+      <a href="index.html" aria-current="page">Design</a>
+      <a href="annotation.html">Data annotation</a>
+      <a href="Shaun_Finch_CV_2026.pdf">CV</a>
+      <a class="cta" href="mailto:shaundavidfinch@gmail.com?subject=Work%20enquiry">Get in touch</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <div class="wrap">
+      <h1 class="display">Eleven years of looking closely</h1>
+      <p class="lede">Motion design at the scale of a station concourse and a city boulevard — and the trained visual judgement that now goes into evaluating what AI models produce.</p>
+      <div class="actions">
+        <a class="btn accent" href="#work">See the work</a>
+        <a class="btn quiet" href="annotation.html">Data annotation</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="work">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Selected work</h2>
+        <p>Large-format and multi-screen installations first, then broadcast, film and product work.</p>
+      </div>
+
+      <div class="featured">
+
+        <figure class="piece">
+          <div class="frame">
+            <video controls preload="metadata" playsinline poster="work/waterloo.jpg"
+                   style="object-fit:contain;background:#111">
+              <source src="work/waterloo.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="piece-body">
+            <h3>London Waterloo ultra-wide</h3>
+            <p>Motion built for the ultra-wide screen above the Waterloo concourse — one continuous canvas, read in seconds by people walking past it, with no pause and nowhere to hide a weak frame.</p>
+            <dl class="spec">
+              <div><dt>Studio</dt><dd>P54 (Performance 54)</dd></div>
+              <div><dt>Format</dt><dd>Ultra-wide, single canvas</dd></div>
+              <div><dt>Role</dt><dd>Motion design, OOH</dd></div>
+            </dl>
+          </div>
+        </figure>
+
+        <figure class="piece">
+          <div class="frame">
+            <video controls preload="metadata" playsinline poster="work/riyadh-boulevard.jpg">
+              <source src="work/riyadh-boulevard.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="piece-body">
+            <h3>Riyadh Boulevard, Saudi Arabia</h3>
+            <p>Campaign work for the multi-screen billboard complex at Riyadh Boulevard. Compositions designed to hold together across separate panels and still read as one piece from across the plaza.</p>
+            <dl class="spec">
+              <div><dt>Studio</dt><dd>P54 (Performance 54)</dd></div>
+              <div><dt>Format</dt><dd>Multi-screen complex</dd></div>
+              <div><dt>Role</dt><dd>Motion design, OOH</dd></div>
+            </dl>
+          </div>
+        </figure>
+
+      </div>
+
+      <p class="subhead">Broadcast, film and product</p>
+
+      <div class="pieces">
+
+        <figure class="piece">
+          <div class="frame vertical">
+            <img class="vbg" src="work/liv-golf.jpg" alt="" aria-hidden="true">
+            <video controls preload="metadata" playsinline poster="work/liv-golf.jpg">
+              <source src="work/liv-golf.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="piece-body">
+            <h3>LIV Golf / International Series</h3>
+            <p>Tournament graphics built to go live the moment play ended — cut for social, scaled for broadcast, produced from a live media room alongside the social team.</p>
+            <dl class="spec">
+              <div><dt>Studio</dt><dd>P54 (Performance 54)</dd></div>
+              <div><dt>Year</dt><dd>2023&ndash;2024</dd></div>
+              <div><dt>Role</dt><dd>Digital designer</dd></div>
+            </dl>
+          </div>
+        </figure>
+
+        <figure class="piece">
+          <div class="frame">
+            <video controls preload="metadata" playsinline poster="work/title-localisation.jpg">
+              <source src="work/title-localisation.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="piece-body">
+            <h3>Feature title localisation</h3>
+            <p>Thirty Hollywood titles rebuilt for international markets, with 3D versions in Cinema 4D for billboards and digital displays. Twenty to fifty renders a day against distribution deadlines.</p>
+            <dl class="spec">
+              <div><dt>Clients</dt><dd>Universal, Paramount</dd></div>
+              <div><dt>Year</dt><dd>2021&ndash;2022</dd></div>
+              <div><dt>Role</dt><dd>Motion graphic designer</dd></div>
+            </dl>
+          </div>
+        </figure>
+
+        <figure class="piece">
+          <div class="frame">
+            <video controls preload="metadata" playsinline poster="work/vidsy.jpg">
+              <source src="work/vidsy.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="piece-body">
+            <h3>YouTube ads &mdash; Vidsy</h3>
+            <p>Short-form video campaigns delivered to platform specification for TikTok, NowTV, UKTV and Peacock.</p>
+            <dl class="spec">
+              <div><dt>Studio</dt><dd>Vidsy</dd></div>
+              <div><dt>Year</dt><dd>2023&ndash;2025</dd></div>
+              <div><dt>Role</dt><dd>Motion graphics designer</dd></div>
+            </dl>
+          </div>
+        </figure>
+
+        <figure class="piece">
+          <div class="frame vertical">
+            <a class="framelink" href="interface.html" aria-label="Interface and product motion — view all seven pieces">
+              <img class="vbg" src="interface/pricing-table.jpg" alt="" aria-hidden="true">
+              <video autoplay muted loop playsinline preload="none" poster="interface/pricing-table.jpg">
+                <source src="interface/pricing-table.mp4" type="video/mp4">
+              </video>
+              <span class="framecta">View all seven</span>
+            </a>
+          </div>
+          <div class="piece-body">
+            <h3><a class="plainlink" href="interface.html">Interface and product motion</a></h3>
+            <p>Interactive UI built in Framer and Claude Code, and in-app motion delivered as Lottie so it ships at interface weight rather than video weight.</p>
+            <dl class="spec">
+              <div><dt>Clients</dt><dd>Virtual Spaces, Chatloop</dd></div>
+              <div><dt>Year</dt><dd>2022&ndash;2026</dd></div>
+              <div><dt>Role</dt><dd>Motion and UI designer</dd></div>
+            </dl>
+          </div>
+        </figure>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="branding">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Branding</h2>
+        <p>Campaign identity for international golf, and a full brand system built from the ground up — type, colour, iconography, product and web.</p>
+      </div>
+      <div class="teaser">
+        <a href="branding.html" aria-label="Branding: The International Series tournament graphics"><img src="branding/thumb-1.jpg" width="640" height="800" loading="lazy" decoding="async" alt="BNI Indonesian Masters tournament announcement graphic"></a>
+        <a href="branding.html" aria-label="Branding: the Global Money identity system"><img src="branding/thumb-2.jpg" width="640" height="800" loading="lazy" decoding="async" alt="The Global Money mobile app interface"></a>
+        <a href="branding.html" aria-label="Branding: International Series campaign graphics"><img src="branding/thumb-3.jpg" width="640" height="800" loading="lazy" decoding="async" alt="One day to go countdown graphic for International Series Singapore"></a>
+      </div>
+      <div class="actions">
+        <a class="btn accent" href="branding.html">See the branding work</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="clients">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Worked with</h2>
+      </div>
+      <ul class="clients">
+        <li>BBC</li>
+        <li>Universal Studios</li>
+        <li>Paramount Pictures</li>
+        <li>LIV Golf</li>
+        <li>Aramco Team Series</li>
+        <li>England Golf</li>
+        <li>NowTV and UKTV</li>
+        <li>Peacock</li>
+        <li>TikTok</li>
+        <li>Workday</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="how">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>How I work</h2>
+      </div>
+      <div class="prose">
+        <p>Most of my career has been spent delivering to fixed go-live slots — a tournament ending, a distribution date, a marketing window that does not move. That shapes how I work more than any software does: decide quickly, build to spec, and know which compromises are safe.</p>
+        <p>The craft underneath it is judgement about type, spacing, hierarchy and timing. It is the same judgement I now apply to machine-generated work, which is the other half of this site.</p>
+      </div>
+      <ul class="tags">
+        <li>After Effects</li><li>Premiere Pro</li><li>Cinema 4D</li><li>Blender</li>
+        <li>Unreal Engine</li><li>DaVinci Resolve</li><li>Figma</li><li>Framer</li>
+        <li>Lottie</li><li>Photoshop</li><li>InDesign</li><li>Claude Code</li>
+      </ul>
+      <div class="actions">
+        <a class="btn quiet" href="annotation.html">See the data annotation work</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <h2>Available for design and evaluation work.</h2>
+    <p>Currently contracting on frontier model evaluation, and open to further work in either field.</p>
+    <div class="actions">
+      <a class="btn accent" href="mailto:shaundavidfinch@gmail.com?subject=Work%20enquiry">Email me</a>
+      <a class="btn quiet" href="Shaun_Finch_CV_2026.pdf">Download CV</a>
+    </div>
+    <p class="contact">
+      <a href="mailto:shaundavidfinch@gmail.com">shaundavidfinch@gmail.com</a>
+      <a href="https://www.linkedin.com/in/shaun-finch">linkedin.com/in/shaun-finch</a>
+      <span>Manchester, UK</span>
+    </p>
+    <p class="colophon">Set in Figtree. Static HTML, hosted on GitHub Pages.</p>
+  </div>
+</footer>
+
+</body>
+</html>
