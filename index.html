@@ -17,17 +17,18 @@
 
 <style>
 :root{
-  --bg:#EDECE8;
-  --surface:#FFFFFF;
-  --ink:#17171A;
-  --mute:#5C5C63;
-  --line:#CFCEC9;
+  --bg:#0E0E10;
+  --surface:#161618;
+  --ink:#ECECEE;
+  --mute:#A3A3AA;
+  --line:#2A2A2E;
   --accent:#F0562A;
   --accent-deep:#D4441A;
-  --violet:#4F46E5;
+  --violet:#A29DFF;
   --radius:0px;
   --gutter:clamp(1.1rem,4vw,3rem);
   --col:min(78rem,100%);
+  color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
@@ -133,6 +134,28 @@ dl.spec dd{margin:0;font-weight:500}
 .contact a{color:#fff;text-underline-offset:3px}
 .colophon{margin-top:2rem;font-size:.85rem;color:rgba(255,255,255,.5)}
 
+
+/* ---------- dark mode (design page) ---------- */
+body{background-image:radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px)}
+.masthead{border-bottom-color:rgba(255,255,255,.07);background:rgba(22,22,24,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.nav a:hover{background:rgba(255,255,255,.07)}
+.nav .cta{background:var(--ink);color:#0E0E10}
+.nav .cta:hover{background:#fff}
+.btn{background:var(--ink);color:#0E0E10;border-color:var(--ink)}
+.btn:hover{background:#fff}
+.btn.accent{color:#fff}
+.btn.accent:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
+.btn.quiet{color:var(--ink);border-color:rgba(255,255,255,.22)}
+.btn.quiet:hover{background:rgba(255,255,255,.07)}
+figure.piece{border-color:rgba(255,255,255,.07)}
+dl.spec{border-top-color:rgba(255,255,255,.09)}
+.teaser a{border-color:rgba(255,255,255,.07)}
+.teaser a:hover{border-color:rgba(255,255,255,.22)}
+.tags li{border-color:rgba(255,255,255,.09)}
+.clients li{background:#fff;border-color:transparent}
+.foot{background:#08080A;border-top:1px solid rgba(255,255,255,.07)}
+.skip{background:var(--ink);color:#0E0E10}
+
 @media (max-width:40rem){
   .masthead{position:static}
   .masthead .wrap{flex-wrap:wrap;row-gap:.45rem}
@@ -167,7 +190,7 @@ dl.spec dd{margin:0;font-weight:500}
   <section class="hero">
     <div class="wrap">
       <h1 class="display">Eleven years of looking closely</h1>
-      <p class="lede">Motion design at the scale of a station concourse and a city boulevard — and the trained visual judgement that now goes into evaluating what AI models produce.</p>
+      <p class="lede">Design evaluation for AI models, UX and interface design for SaaS products, and eleven years of motion campaigns for BBC, Universal, Paramount, LIV Golf and TikTok.</p>
       <div class="actions">
         <a class="btn accent" href="#work">See the work</a>
         <a class="btn quiet" href="annotation.html">Data annotation</a>
