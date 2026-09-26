@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dailies — upload the round-up, Dailies does the rest</title>
-<meta name="description" content="Dailies: a progress tracker for AI workflows. Teams upload the daily round-up their AI writes, and Dailies files it by team, project and deliverable, highlights blockers and pulls out key targets.">
+<title>Dailies — log in</title>
+<meta name="description" content="Log in to your Dailies workspace.">
 <meta name="theme-color" content="#050507">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23d9ff3f'/%3E%3Cstop offset='1' stop-color='%23a855f7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='7' fill='%23050507'/%3E%3Cpath d='M8 7h7.5C21 7 25 10.8 25 16s-4 9-9.5 9H8z M12 10.8v10.4h3.4c3.1 0 5.2-2.1 5.2-5.2s-2.1-5.2-5.2-5.2z' fill='url(%23g)'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -927,75 +927,14 @@ body.appmode{overflow:hidden}
 .chart{min-width:0}
 </style>
 </head>
-<body>
-
-<header class="top">
-  <div class="wrap">
-    <a class="logo" href="#top" aria-label="Dailies home">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#dcff3f"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs><path d="M6 5h9.5C22.4 5 27 9.6 27 16s-4.6 11-11.5 11H6z M11 9.8v12.4h4.3c3.9 0 6.5-2.5 6.5-6.2s-2.6-6.2-6.5-6.2z" fill="url(#lg)"/></svg>
-      dailies
-    </a>
-    <nav class="navtabs" aria-label="Sections">
-      <a href="#product">Workspace</a><a href="#workflow">How it works</a>
-    </nav>
-    <span class="sp"></span>
-    <a class="docs" href="#workflow">Guide</a>
-    <a class="docs pl" href="prompt.html" data-prompt-link target="_blank" rel="noopener">The Dailies prompt &nearr;</a>
-    <a class="btn grad" href="app.html">Open workspace <span class="arr">&rarr;</span></a>
-  </div>
-</header>
-
-<main id="top">
-  <section class="hero">
-    <div class="aurora" aria-hidden="true"><i class="a1"></i><i class="a2"></i><i class="a3"></i><i class="a4"></i></div>
-    <div class="gridlines" aria-hidden="true"></div>
-    <div class="dither" aria-hidden="true"></div>
-    <canvas id="field" aria-hidden="true"></canvas>
-    <div class="wrap hero-in">
-      <div>
-        <span class="mono">AI workflow tracking for every team</span>
-        <h1>Upload the round&#8209;up. <em>Dailies does the rest.</em></h1>
-        <p class="lede">At the end of the day, everyone runs the Dailies prompt in Claude, ChatGPT or Gemini and uploads the Word document it writes. Dailies reads it, files it under the right team and deliverable, highlights blockers and pulls out key targets, so leads can see every team’s progress on one board.</p>
-        <div class="ctas">
-          <button class="btn grad big" type="button" data-upload>Upload a round-up <span class="arr">&rarr;</span></button>
-          <a class="btn big" href="prompt.html" data-prompt-link target="_blank" rel="noopener">Get the Dailies prompt</a>
-        </div>
-      </div>
-      <div class="queue" aria-label="Review queue">
-        <div class="qh mono" id="qhead">Needs a look today</div>
-        <div id="queue"></div>
-        <div class="qsub mono">Or start from a template</div>
-        <button class="tpl" type="button" data-template>
-          <span class="ic"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#c6ff3d" stroke-width="1.4"><rect x="1.5" y="2.5" width="4" height="11"/><rect x="6.5" y="2.5" width="4" height="7"/><rect x="11.5" y="2.5" width="3" height="4"/></svg></span>
-          <span class="qt"><b style="font-weight:500;font-size:.9rem">Start a team from a starter</b><span style="font-size:.76rem;color:var(--mute)">UX/UI · Video · Social · Marketing</span></span>
-          <span class="ms">New team</span>
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <div class="flow" aria-label="How Dailies works">
-    <ol>
-      <li class="fl0"><span class="mono">How it works</span></li>
-      <li><span class="n">01</span><span><b>Run the Dailies prompt</b><small>in Claude, ChatGPT or Gemini at the end of the day</small></span></li>
-      <li><span class="n">02</span><span><b>Upload the Word doc</b><small>.docx, .txt or .md, straight from your AI</small></span></li>
-      <li><span class="n">03</span><span><b>Dailies files it</b><small>under the right team and deliverable</small></span></li>
-      <li><span class="n">04</span><span><b>Leads see it all</b><small>blockers, key targets and progress, live</small></span></li>
-    </ol>
-  </div>
-
-  <section class="sec" id="product">
-    <div class="wrap">
-      <div class="sh">
-        <div>
-          <span class="mono hint" id="modeHint"><i></i>Live demo &middot; sample data, saved in this browser</span>
-          <h2>Every deliverable, every round-up, one board.</h2>
-        </div>
-        <p>Try it here with sample teams: upload the Word doc from your AI and Dailies files it by team, project and deliverable, highlights blockers and pulls out key targets. <a class="ulink" href="app.html">Open your own workspace &rarr;</a></p>
-      </div>
-      <p class="ls-warn" id="lsWarn">This browser is blocking storage, so changes will be lost when you close the page. A normal (non-private) window keeps them.</p>
-
-      <div class="app" id="app">
+<body class="appmode">
+<main class="gate" id="gate">
+  <div class="gcard" id="gateBody"><div class="gload"><i></i><span>Loading…</span></div></div>
+  <p class="gfoot"><a href="./">&larr; Dailies home</a><span aria-hidden="true">&middot;</span><a href="prompt.html" data-prompt-link target="_blank" rel="noopener">The Dailies prompt</a></p>
+</main>
+<div class="shell" id="shell" hidden>
+  <div class="shellin" id="product">
+<div class="app" id="app">
         <div class="appload" id="appLoad" hidden><span><i></i>Connecting to your team&hellip;</span></div>
         <div class="chrome">
           <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -1046,66 +985,9 @@ body.appmode{overflow:hidden}
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section class="sec" id="workflow" style="padding-top:0">
-    <div class="wrap">
-      <div class="sh">
-        <div>
-          <span class="mono">How it works</span>
-          <h2>From AI chat to team board in three steps.</h2>
-        </div>
-        <p>Nobody fills in a status update. People keep working with their AI as normal, and Dailies turns what it writes into something leads can track.</p>
-      </div>
-      <div class="feats">
-        <article class="feat">
-          <span class="mono">01 / Run the Dailies prompt</span>
-          <div class="fi"><svg viewBox="0 0 18 18" fill="none" stroke="#c6ff3d" stroke-width="1.4"><path d="M2.5 3.5h13v8h-7l-3.5 3v-3h-2.5z"/><path d="M5.5 6.5h7M5.5 9h4.5"/></svg></div>
-          <h3>One prompt, every AI</h3>
-          <p>At the end of the day, paste the Dailies prompt into Claude, ChatGPT, Gemini or Copilot. It writes a round-up in one fixed format: team, deliverable, summary, done, in progress, blockers and key targets.</p>
-          <a class="flink" href="prompt.html" data-prompt-link target="_blank" rel="noopener">Open the Dailies prompt &nearr;</a>
-        </article>
-        <article class="feat">
-          <span class="mono">02 / Upload the Word doc</span>
-          <div class="fi"><svg viewBox="0 0 18 18" fill="none" stroke="#f3a5ff" stroke-width="1.4"><path d="M3.5 2.5h8l3 3v10h-11z"/><path d="M9 13V7.5M6.5 10 9 7.5l2.5 2.5"/></svg></div>
-          <h3>Drop it in, that’s it</h3>
-          <p>Save the reply as a Word document and upload it, or drop it anywhere on the workspace. One document can hold several round-ups if you worked on more than one thing. Text and Markdown files work too.</p>
-          <button class="flink" type="button" data-upload>Upload a round-up &rarr;</button>
-        </article>
-        <article class="feat">
-          <span class="mono">03 / Dailies does the rest</span>
-          <div class="fi"><svg viewBox="0 0 18 18" fill="none" stroke="#a855f7" stroke-width="1.4"><path d="M1.5 15.5h15"/><path d="M4 12.5v-4M9 12.5V4M14 12.5V7"/></svg></div>
-          <h3>Filed, flagged, summarised</h3>
-          <p>Dailies files each round-up under its team and deliverable, highlights blockers in red and pulls out key targets. Leads get a live board, a feed of every round-up, and Insights on how each team is moving.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="cta" id="about">
-    <div class="aurora" aria-hidden="true"><i class="a1"></i><i class="a3"></i></div>
-    <div class="dither" aria-hidden="true"></div>
-    <div class="wrap cta-in">
-      <div>
-        <span class="mono">Dailies</span>
-        <h2>Stop asking what everyone’s working on.</h2>
-      </div>
-      <div class="ctas" style="display:flex;gap:.6rem;flex-wrap:wrap">
-        <button class="btn grad big" type="button" data-upload>Upload a round-up <span class="arr">&rarr;</span></button>
-        <a class="btn big" href="prompt.html" data-prompt-link target="_blank" rel="noopener">Get the Dailies prompt</a>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <div class="wrap">
-    <p id="footNote">&copy; 2026 Dailies. Designed and built by <a href="https://shaun-finch.github.io/Design/">Shaun Finch</a>. Teams, deliverables and round-ups are stored in your browser on this device and are never sent anywhere.</p>
-    <a class="mono" href="https://shaun-finch.github.io/Design/">&larr; shaun-finch.github.io/Design</a>
   </div>
-</footer>
-
+  <div hidden><div id="qhead"></div><div id="queue"></div><p id="lsWarn"></p></div>
+</div>
 <input type="file" id="fileIn" accept=".txt,.md,.markdown,.text,.rtf,.docx,text/plain,text/markdown,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
  <input type="file" id="upFile" accept=".docx,.txt,.md,.markdown,.text,.rtf,text/plain,text/markdown,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
 <input type="file" id="importIn" accept=".json,application/json" hidden>
@@ -1182,6 +1064,7 @@ body.appmode{overflow:hidden}
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
 <script src="dailies-config.js"></script>
+<script>window.DAILIES_MODE="app"</script>
 <script>
 (function(){
 'use strict';

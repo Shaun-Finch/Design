@@ -64,7 +64,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:.6rem 1.5rem;justify-content:space-
   <section class="hero"><div class="wrap">
     <span class="mono">The Dailies prompt</span>
     <h1>One prompt. <em>Every AI, every team.</em></h1>
-    <p class="lede">Run this at the end of the day in the same chat you worked in, in Claude, ChatGPT, Gemini or Copilot. It writes a round-up in the format Dailies reads. Save it as a Word document and upload it, and Dailies files it under your team and workstream, highlights blockers and pulls out key targets.</p>
+    <p class="lede">Run this at the end of the day in the same chat you worked in, in Claude, ChatGPT, Gemini or Copilot. It writes a round-up in the format Dailies reads. Save it as a Word document and upload it, and Dailies files it under your team and deliverable, highlights blockers and pulls out key targets.</p>
     <div class="acts">
       <button class="btn w" type="button" id="copy">Copy the prompt</button>
       <a class="btn" href="dailies-prompt.docx" download>Download as Word (.docx)</a>
@@ -73,7 +73,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:.6rem 1.5rem;justify-content:space-
   </div></section>
   <section class="sec"><div class="wrap">
     <ol class="steps">
-      <li><span class="mono">01</span><b>Run the prompt</b><p>Paste it into the AI chat you worked in today. Fill in any [square brackets] it leaves for your name, team or workstream.</p></li>
+      <li><span class="mono">01</span><b>Run the prompt</b><p>Paste it into the AI chat you worked in today. Fill in any [square brackets] it leaves for your name, team or deliverable.</p></li>
       <li><span class="mono">02</span><b>Save it as a Word doc</b><p>Copy the reply into Word or Google Docs (File › Download › .docx). A .txt or .md file works too.</p></li>
       <li><span class="mono">03</span><b>Upload it to Dailies</b><p>Press Upload round-up, or drop the file onto the workspace. Check where it’s filed, then add it.</p></li>
     </ol>
@@ -94,8 +94,8 @@ RULES
 - Only include what actually happened or was decided today. Don't pad it or invent progress.
 - A blocker is anything stopping progress that needs someone else to act. Say who or what it's waiting on. If there are none, write "- None".
 - Key targets are the next concrete things I'll deliver, with a day if we agreed one.
-- If we worked on more than one workstream today, write a separate round-up for each, one after another, each starting with its own DAILIES ROUND-UP line.
-- If you don't know my name, team or workstream, leave the square brackets in so I can fill them in.
+- If we worked on more than one deliverable today, write a separate round-up for each, one after another, each starting with its own DAILIES ROUND-UP line.
+- If you don't know my name, team, project or deliverable, leave the square brackets in so I can fill them in.
 - No introduction, no sign-off, no tables, no extra headings.
 
 FORMAT
@@ -103,12 +103,13 @@ FORMAT
 DAILIES ROUND-UP
 Name: [your name]
 Team: [e.g. UX/UI, Video, Social, Marketing]
-Workstream: [the project or piece of work this covers]
+Project: [the project or campaign this is part of]
+Deliverable: [the specific piece of work this round-up covers]
 Date: [today's date as YYYY-MM-DD]
 AI tool: [e.g. Claude, ChatGPT, Gemini, Copilot]
 
 SUMMARY
-[One or two sentences on where this workstream stands at the end of today.]
+[One or two sentences on where this deliverable stands at the end of today.]
 
 DONE
 - 
@@ -130,12 +131,12 @@ NOTES
     <h2>What Dailies does with it</h2>
     <p class="sub">Each heading feeds a different part of the board.</p>
     <div class="tips">
-      <div class="tip"><b>Team and Workstream</b><p>Decide where the round-up is filed. If the team or workstream doesn’t exist yet, Dailies offers to create it.</p></div>
+      <div class="tip"><b>Team, Project and Deliverable</b><p>Decide where the round-up is filed: the team board, the project group on it, and the deliverable row. Anything new, Dailies offers to create.</p></div>
       <div class="tip"><b>Summary</b><p>Shown at the top of the round-up, on the board card and in the team feed, so leads get the headline first.</p></div>
       <div class="tip"><b>Blockers</b><p>Highlighted in red, counted on the board, and listed under Insights until a later round-up clears them.</p></div>
       <div class="tip"><b>Key targets</b><p>Pulled out on every round-up and collected in Insights, so leads can see what each team is aiming for next.</p></div>
-      <div class="tip"><b>Done and In progress</b><p>Counted for each workstream and shown in the mini bar beside its name. The first round-up moves a workstream from Planned to In progress.</p></div>
-      <div class="tip"><b>Several workstreams?</b><p>The prompt writes one round-up per workstream in the same document. Dailies splits them and files each one separately.</p></div>
+      <div class="tip"><b>Done and In progress</b><p>Counted for each deliverable and shown in the mini bar beside its name. The first round-up moves a deliverable from Planned to In progress.</p></div>
+      <div class="tip"><b>Several deliverables?</b><p>The prompt writes one round-up per deliverable in the same document. Dailies splits them and files each one separately.</p></div>
     </div>
   </div></section>
 </main>
@@ -144,7 +145,7 @@ NOTES
 <script src="dailies-config.js"></script>
 <script>
 (function(){
-  var P="Write my end-of-day round-up for Dailies, the tracker my team uses to follow AI-assisted work.\n\nLook back over everything we worked on together today in this conversation, including any drafts, files, code, designs or decisions, and summarise it in the exact format below.\n\nRULES\n- Keep the header lines and the six headings exactly as written, in capitals, in this order.\n- Under each heading, write one point per line, starting with \"- \". Keep each point under 25 words.\n- Be specific. Name the deliverable, file, tool, link, number or person involved.\n- Only include what actually happened or was decided today. Don't pad it or invent progress.\n- A blocker is anything stopping progress that needs someone else to act. Say who or what it's waiting on. If there are none, write \"- None\".\n- Key targets are the next concrete things I'll deliver, with a day if we agreed one.\n- If we worked on more than one workstream today, write a separate round-up for each, one after another, each starting with its own DAILIES ROUND-UP line.\n- If you don't know my name, team or workstream, leave the square brackets in so I can fill them in.\n- No introduction, no sign-off, no tables, no extra headings.\n\nFORMAT\n\nDAILIES ROUND-UP\nName: [your name]\nTeam: [e.g. UX/UI, Video, Social, Marketing]\nWorkstream: [the project or piece of work this covers]\nDate: [today's date as YYYY-MM-DD]\nAI tool: [e.g. Claude, ChatGPT, Gemini, Copilot]\n\nSUMMARY\n[One or two sentences on where this workstream stands at the end of today.]\n\nDONE\n- \n\nIN PROGRESS\n- \n\nBLOCKERS\n- \n\nKEY TARGETS\n- \n\nNOTES\n- [Decisions, links or anything a lead should know. Write \"- None\" if there's nothing.]",t=document.getElementById('toast'),tm=0;
+  var P="Write my end-of-day round-up for Dailies, the tracker my team uses to follow AI-assisted work.\n\nLook back over everything we worked on together today in this conversation, including any drafts, files, code, designs or decisions, and summarise it in the exact format below.\n\nRULES\n- Keep the header lines and the six headings exactly as written, in capitals, in this order.\n- Under each heading, write one point per line, starting with \"- \". Keep each point under 25 words.\n- Be specific. Name the deliverable, file, tool, link, number or person involved.\n- Only include what actually happened or was decided today. Don't pad it or invent progress.\n- A blocker is anything stopping progress that needs someone else to act. Say who or what it's waiting on. If there are none, write \"- None\".\n- Key targets are the next concrete things I'll deliver, with a day if we agreed one.\n- If we worked on more than one deliverable today, write a separate round-up for each, one after another, each starting with its own DAILIES ROUND-UP line.\n- If you don't know my name, team, project or deliverable, leave the square brackets in so I can fill them in.\n- No introduction, no sign-off, no tables, no extra headings.\n\nFORMAT\n\nDAILIES ROUND-UP\nName: [your name]\nTeam: [e.g. UX/UI, Video, Social, Marketing]\nProject: [the project or campaign this is part of]\nDeliverable: [the specific piece of work this round-up covers]\nDate: [today's date as YYYY-MM-DD]\nAI tool: [e.g. Claude, ChatGPT, Gemini, Copilot]\n\nSUMMARY\n[One or two sentences on where this deliverable stands at the end of today.]\n\nDONE\n- \n\nIN PROGRESS\n- \n\nBLOCKERS\n- \n\nKEY TARGETS\n- \n\nNOTES\n- [Decisions, links or anything a lead should know. Write \"- None\" if there's nothing.]",t=document.getElementById('toast'),tm=0;
   function say(m){t.textContent=m;t.hidden=false;clearTimeout(tm);tm=setTimeout(function(){t.hidden=true},2600)}
   function copy(){
     function fallback(){var ta=document.createElement('textarea');ta.value=P;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');say('Prompt copied. Paste it into your AI.')}catch(e){say('Select the prompt text and copy it.')}ta.remove()}
