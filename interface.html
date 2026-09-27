@@ -115,8 +115,8 @@ dl.meta dd{margin:0;font-weight:600}
 .hb-head .hb-t{display:inline-flex;align-items:center;gap:.5rem;font-weight:800;font-size:1.05rem;letter-spacing:-.01em}
 .hb-head .hb-t svg{width:2.4rem;height:1.2rem;display:block}
 .hb-head .hb-n{display:block;margin-top:.3rem;font-size:.78rem;font-weight:600;opacity:.7;letter-spacing:.02em}
-.hb-scene{position:relative;height:calc(var(--ph,360px) + 4.5rem);perspective:calc(var(--pw,260px) * 6.5);perspective-origin:50% 30%;touch-action:pan-y;cursor:ew-resize}
-.hb-book{position:absolute;left:50%;top:2.2rem;width:0;height:var(--ph,360px);transform-style:preserve-3d}
+.hb-scene{position:relative;height:calc(var(--ph,360px) + 4.5rem);touch-action:pan-y;cursor:ew-resize;isolation:isolate}
+.hb-book{position:absolute;left:50%;top:2.2rem;width:0;height:var(--ph,360px)}
 .hb-leaf{position:absolute;left:0;top:0;width:var(--pw,260px);height:var(--ph,360px);transform-origin:0 50%;transform-style:preserve-3d;will-change:transform}
 .hb-face{position:absolute;inset:0;overflow:hidden;background:#fff;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:3px calc(var(--pw,260px)*.045) calc(var(--pw,260px)*.045) 3px;box-shadow:0 0 calc(var(--pw,260px)*.06) rgba(8,10,30,.28)}
 .hb-face.bk{transform:rotateY(180deg);border-radius:calc(var(--pw,260px)*.045) 3px 3px calc(var(--pw,260px)*.045)}
@@ -131,12 +131,11 @@ dl.meta dd{margin:0;font-weight:600}
 .hb-ui button svg{width:1rem;height:1rem}
 .hb-cap{min-width:11rem;text-align:center;font-weight:700;font-size:.95rem}
 .hb-cap small{display:block;font-weight:600;font-size:.72rem;opacity:.65;letter-spacing:.06em;text-transform:uppercase}
-.hb-about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:.5rem 2.5rem;align-items:start;margin-top:clamp(1rem,2.5vw,1.5rem)}
+.hb-about{margin-top:clamp(1rem,2.5vw,1.5rem)}
 .hb-about .hb-h{margin:0;color:var(--ink);font-weight:800;font-size:clamp(1.35rem,2.6vw,1.8rem);line-height:1.1;letter-spacing:-.03em}
 .hb-about p{margin:0;color:var(--mute)}
 .hb-about p.hb-h{color:var(--ink)}
 .hb-about p + p{margin-top:.6rem}
-@media (max-width:48rem){.hb-about{grid-template-columns:minmax(0,1fr)}}
 </style>
 </head>
 <body>
@@ -171,10 +170,6 @@ dl.meta dd{margin:0;font-weight:600}
       </div>
       <div class="hb-about">
         <p class="hb-h" id="hb-title">Hibana &mdash; an interactive book</p>
-        <div>
-          <p>Hover across the book to flick through it, or click, drag, swipe or use the arrow keys. It opens on load and turns in real 3D, built in code rather than video.</p>
-          <p>The story is a fictional ramen brand growing from a six-seat stall to a 120-cover dining room. Each spread pairs the moment with the product it needed: a menu, order-ahead, loyalty, a design system, booking and a live kitchen dashboard.</p>
-        </div>
       </div>
     </div>
   </section>
@@ -258,7 +253,7 @@ dl.meta dd{margin:0;font-weight:600}
   var NAMES=["The cover", "The stall", "The queue", "The regulars", "The brand", "The dining room", "Back of house", "Opening night", "The back cover"];
   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var LILAC=[110,107,136], NAVY=[53,57,86];
-  var W=260, p=0, tgt=0, F=0, spin=0, bg=0, introDone=false, started=false, touched=false, visible=true, raf=0, last=0, t0=0, shown=-1;
+  var vel=0, W=260, p=0, tgt=0, F=0, spin=0, bg=0, introDone=false, started=false, touched=false, visible=true, raf=0, last=0, t0=0, shown=-1;
 
   function clamp(v,a,b){return v<a?a:v>b?b:v}
   function lerp(a,b,t){return a+(b-a)*t}
@@ -270,8 +265,7 @@ dl.meta dd{margin:0;font-weight:600}
     W=Math.round(sw<600?sw*.4:Math.min(sw*.3,280));
     stage.style.setProperty('--pw',W+'px');
     stage.style.setProperty('--ph',Math.round(W*500/360)+'px');
-    P=W*6.5;scene.style.perspective=P+'px';
-    scene.style.perspectiveOrigin='50% '+(book.offsetTop+Math.round(W*500/360)/2)+'px';
+    P=W*6.5;
     render();
   }
 
@@ -289,7 +283,7 @@ dl.meta dd{margin:0;font-weight:600}
     if(r>=0){fan=side(r);cl=[0,-th*r,0]}
     else if(r<=-1){var e=-1-r, q=side(e);fan=[-q[0],q[1],-180-q[2]];cl=[0,-th*e,-180]}
     else{
-      var tt=ease(-r), lift=Math.sin(Math.PI*-r);
+      var tt=lerp(-r,sm(-r),.6), lift=Math.sin(Math.PI*-r);
       fan=[0, 2+lift*W*.04, lerp(-9,-171,tt)];
       cl=[0, 2, -180*tt];
     }
@@ -298,10 +292,12 @@ dl.meta dd{margin:0;font-weight:600}
 
   function render(){
     var shift=-W/2*clamp(1-p,0,1)+W/2*clamp(p-(N-1),0,1), c=-shift;
-    book.style.transform='translateX('+(shift+c).toFixed(2)+'px) rotateX('+(5*(1-F)).toFixed(2)+'deg) rotateY('+spin.toFixed(2)+'deg) translateX('+(-c).toFixed(2)+'px)';
+    var bt='perspective('+P.toFixed(0)+'px) translateX('+(shift+c).toFixed(2)+'px) rotateX('+(5*(1-F)).toFixed(2)+'deg) rotateY('+spin.toFixed(2)+'deg) translateX('+(-c).toFixed(2)+'px) ';
     for(var i=0;i<N;i++){
       var q=pose(i), a=q[2], dep=Math.min(Math.abs(i-p+.5)-.5,4), sh=(1-Math.abs(Math.cos(a*Math.PI/180)))*.5+Math.max(dep,0)*.035*F;
-      leaves[i].style.transform='translate3d('+q[0].toFixed(2)+'px,0,'+q[1].toFixed(2)+'px) rotateY('+a.toFixed(2)+'deg)';
+      var r=i-p, z=r>=0?100-Math.round(r*10):r<=-1?100-Math.round((-1-r)*10):200;
+      leaves[i].style.transform=bt+'translate3d('+q[0].toFixed(2)+'px,0,'+q[1].toFixed(2)+'px) rotateY('+a.toFixed(2)+'deg)';
+      leaves[i].style.zIndex=z;
       leaves[i].style.setProperty('--sh',sh.toFixed(3));
     }
     var col=LILAC.map(function(v,k){return Math.round(lerp(v,NAVY[k],bg))});
@@ -328,7 +324,11 @@ dl.meta dd{margin:0;font-weight:600}
     if(!introDone){intro(now)}
     else{
       if(reduce)p=tgt;
-      else{p+=(tgt-p)*(1-Math.exp(-dt/105)); if(Math.abs(tgt-p)<.0015)p=tgt;}
+      else{
+        var h=dt/1000, K=26, C=2*Math.sqrt(K);
+        vel+=(K*(tgt-p)-C*vel)*h; vel=clamp(vel,-2.2,2.2); p+=vel*h;
+        if(Math.abs(tgt-p)<.0008&&Math.abs(vel)<.02){p=tgt;vel=0}
+      }
     }
     render();
     if(visible&&(!introDone||p!==tgt))raf=requestAnimationFrame(frame);
