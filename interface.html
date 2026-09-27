@@ -118,8 +118,8 @@ dl.meta dd{margin:0;font-weight:600}
 .hb-scene{position:relative;height:calc(var(--ph,360px) + 4.5rem);perspective:calc(var(--pw,260px) * 6.5);perspective-origin:50% 30%;touch-action:pan-y;cursor:ew-resize}
 .hb-book{position:absolute;left:50%;top:2.2rem;width:0;height:var(--ph,360px);transform-style:preserve-3d}
 .hb-leaf{position:absolute;left:0;top:0;width:var(--pw,260px);height:var(--ph,360px);transform-origin:0 50%;transform-style:preserve-3d;will-change:transform}
-.hb-face{position:absolute;inset:0;overflow:hidden;background:#fff;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:0 5px 5px 0}
-.hb-face.bk{transform:rotateY(180deg);border-radius:5px 0 0 5px}
+.hb-face{position:absolute;inset:0;overflow:hidden;background:#fff;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:3px calc(var(--pw,260px)*.045) calc(var(--pw,260px)*.045) 3px;box-shadow:0 0 calc(var(--pw,260px)*.06) rgba(8,10,30,.28)}
+.hb-face.bk{transform:rotateY(180deg);border-radius:calc(var(--pw,260px)*.045) 3px 3px calc(var(--pw,260px)*.045)}
 .hb-face svg{display:block;width:100%;height:100%}
 .hb-face::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.2),rgba(0,0,0,0) 10%),linear-gradient(rgba(10,10,20,var(--sh,0)),rgba(10,10,20,var(--sh,0)))}
 .hb-face.bk::after{background:linear-gradient(270deg,rgba(0,0,0,.2),rgba(0,0,0,0) 10%),linear-gradient(rgba(10,10,20,var(--sh,0)),rgba(10,10,20,var(--sh,0)))}
@@ -270,22 +270,27 @@ dl.meta dd{margin:0;font-weight:600}
     W=Math.round(sw<600?sw*.4:Math.min(sw*.3,280));
     stage.style.setProperty('--pw',W+'px');
     stage.style.setProperty('--ph',Math.round(W*500/360)+'px');
+    P=W*6.5;scene.style.perspective=P+'px';
+    scene.style.perspectiveOrigin='50% '+(book.offsetTop+Math.round(W*500/360)/2)+'px';
     render();
   }
 
+  var P=1700, S1=.25, S2=.12, A=12;
+  function side(d){
+    // right-hand stack pose for depth d>=0 (d=0 is the open right page): pages face forward,
+    // each a step further back, pushed out so a strip of its outer edge shows
+    var V=9, k=Math.min(d,1), Z=W*.3*d, sc=P/(P+Z), a=lerp(-V,A,k), rad=Math.PI/180;
+    var edge=W*(1+(d<=1?S1*d:S1+S2*(d-1)));
+    var tx=edge/sc-W*Math.cos(a*rad)-W*(1-Math.cos(V*rad))*(1-k);
+    return [tx,-Z,a];
+  }
   function pose(i){
-    var r=i-p, V=7*F, gap=W*.068, zg=W*.06, th=2.2, fan, cl;
-    if(r>=0){
-      var u=sm(Math.min(r,1)), far=Math.max(r-1,0);
-      fan=[W*.93*u+gap*far, -zg*r, lerp(-V,68,u)+2.5*far];
-      cl=[0,-th*r,0];
-    }else if(r<=-1){
-      var e=-1-r, v=sm(Math.min(e,1)), farL=Math.max(e-1,0);
-      fan=[-(W*.93*v+gap*farL), -zg*e, lerp(-180+V,-248,v)-2.5*farL];
-      cl=[0,-th*e,-180];
-    }else{
+    var r=i-p, th=2.2, fan, cl;
+    if(r>=0){fan=side(r);cl=[0,-th*r,0]}
+    else if(r<=-1){var e=-1-r, q=side(e);fan=[-q[0],q[1],-180-q[2]];cl=[0,-th*e,-180]}
+    else{
       var tt=ease(-r), lift=Math.sin(Math.PI*-r);
-      fan=[0, 2+lift*W*.03, lerp(-V,-180+V,tt)];
+      fan=[0, 2+lift*W*.04, lerp(-9,-171,tt)];
       cl=[0, 2, -180*tt];
     }
     return [lerp(cl[0],fan[0],F), lerp(cl[1],fan[1],F), lerp(cl[2],fan[2],F)];
@@ -293,9 +298,9 @@ dl.meta dd{margin:0;font-weight:600}
 
   function render(){
     var shift=-W/2*clamp(1-p,0,1)+W/2*clamp(p-(N-1),0,1), c=-shift;
-    book.style.transform='translateX('+(shift+c).toFixed(2)+'px) rotateX('+(6*F+4).toFixed(2)+'deg) rotateY('+spin.toFixed(2)+'deg) translateX('+(-c).toFixed(2)+'px)';
+    book.style.transform='translateX('+(shift+c).toFixed(2)+'px) rotateX('+(5*(1-F)).toFixed(2)+'deg) rotateY('+spin.toFixed(2)+'deg) translateX('+(-c).toFixed(2)+'px)';
     for(var i=0;i<N;i++){
-      var q=pose(i), a=q[2], sh=(1-Math.abs(Math.cos(a*Math.PI/180)))*.5;
+      var q=pose(i), a=q[2], dep=Math.min(Math.abs(i-p+.5)-.5,4), sh=(1-Math.abs(Math.cos(a*Math.PI/180)))*.5+Math.max(dep,0)*.035*F;
       leaves[i].style.transform='translate3d('+q[0].toFixed(2)+'px,0,'+q[1].toFixed(2)+'px) rotateY('+a.toFixed(2)+'deg)';
       leaves[i].style.setProperty('--sh',sh.toFixed(3));
     }
