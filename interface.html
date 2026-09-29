@@ -136,6 +136,241 @@ dl.meta dd{margin:0;font-weight:600}
 .hb-about p{margin:0;color:var(--mute)}
 .hb-about p.hb-h{color:var(--ink)}
 .hb-about p + p{margin-top:.6rem}
+
+
+
+/* dash:start */
+.dx-sec{padding-top:clamp(1.5rem,3.5vw,2.5rem)}
+.dx-head{text-align:center;margin-bottom:clamp(1rem,2.4vw,1.6rem)}
+.dx-k{display:block;font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;font-size:.66rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.dx-t{margin:.35rem 0 0;font-weight:800;font-size:clamp(1.5rem,3vw,2.2rem);letter-spacing:-.035em;line-height:1}
+.dx-hint{display:inline-flex;align-items:center;gap:.45rem;margin-top:.5rem;font-size:.8rem;color:var(--mute)}
+.dx-hint i{width:.55rem;height:.55rem;border-radius:50%;background:#F0562A;display:block;box-shadow:0 0 0 3px rgba(240,86,42,.2)}
+.dx-note{margin:.9rem 0 0;text-align:center;font-size:.72rem;color:var(--mute)}
+.dx-dev{--acc:#F0562A;--acc2:rgba(240,86,42,.16);max-width:1060px;margin:0 auto;container-type:inline-size;container-name:dxdev}
+.dx-dev[data-mode="eco"]{--acc:#6FD3A0;--acc2:rgba(111,211,160,.16)}
+.dx-dev[data-mode="comfort"]{--acc:#8FB0FF;--acc2:rgba(143,176,255,.16)}
+.dx-dev[data-mode="track"]{--acc:#FF3B3B;--acc2:rgba(255,59,59,.18)}
+.dx-bezel{position:relative;padding:14px;border-radius:30px;background:linear-gradient(180deg,#2a2b2f,#141417);box-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 30px 60px -20px rgba(0,0,0,.45),0 10px 20px -10px rgba(0,0,0,.35)}
+.dx-knob{position:absolute;right:-26px;top:50%;width:52px;height:52px;margin-top:-26px;border-radius:50%;background:conic-gradient(from 0deg,#e7e7ea,#9b9ca3,#f3f3f5,#8d8e95,#e7e7ea);box-shadow:0 6px 14px rgba(0,0,0,.35),inset 0 0 0 3px rgba(0,0,0,.15);cursor:grab;touch-action:none;transform:rotate(var(--kr,0deg))}
+.dx-knob i{position:absolute;left:50%;top:6px;width:3px;height:10px;margin-left:-1.5px;border-radius:2px;background:var(--acc)}
+.dx-knob:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+.dx-mount{width:38%;height:12px;margin:0 auto;border-radius:0 0 14px 14px;background:linear-gradient(180deg,#c9cacf,#8e8f95)}
+.dx-screen{position:relative;overflow:hidden;border-radius:18px;background:radial-gradient(120% 90% at 50% 0%,#15161a 0%,#0a0a0c 70%);color:#EDEDF0;aspect-ratio:16/10;display:grid;grid-template-columns:clamp(62px,8.5cqw,92px) 1fr;grid-template-rows:auto 1fr auto;font-family:"Figtree",system-ui,sans-serif;font-size:clamp(10px,1.3cqw,14px);-webkit-user-select:none;user-select:none}
+.dx-screen button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+.dx-screen button:focus-visible,.dx-door:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.dx-screen svg{display:block}
+.dx-mut{color:#8B8C94}.dx-sm{font-size:.82em}
+.dx-status{grid-column:1/3;display:flex;align-items:center;gap:1.1em;padding:.7em 1.3em .5em;font-size:.86em;font-variant-numeric:tabular-nums}
+.dx-status>span:first-child{font-weight:600}
+.dx-sp{flex:1}
+.dx-modetag{color:var(--acc);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.85em}
+.dx-si{width:1.2em;height:1.2em;color:#8B8C94}
+.dx-vol{display:inline-flex;align-items:center;gap:.3em}.dx-vol svg{width:1.2em;height:1.2em;color:#8B8C94}
+.dx-rail{grid-row:2/4;display:flex;flex-direction:column;gap:.35em;padding:.4em .55em 1em .8em}
+.dx-rl{display:flex;flex-direction:column;align-items:center;gap:.3em;padding:.65em .2em;border-radius:12px;color:#8B8C94;transition:background .2s,color .2s}
+.dx-rl svg{width:1.7em;height:1.7em}
+.dx-rl span{font-size:.72em;letter-spacing:.02em}
+.dx-rl:hover{color:#EDEDF0}
+.dx-rl.on{background:rgba(255,255,255,.07);color:#fff}
+.dx-rl.on svg{color:var(--acc)}
+.dx-views{position:relative;min-height:0;padding:.3em 1.3em .6em .4em}
+.dx-v{position:absolute;inset:.3em 1.3em .6em .4em;opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity .35s,transform .35s,visibility 0s .35s}
+.dx-v.is-on{opacity:1;visibility:visible;transform:none;transition:opacity .35s,transform .35s}
+.dx-card{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:.8em .95em}
+.dx-lbl{font-size:.74em;letter-spacing:.1em;text-transform:uppercase;color:#8B8C94;font-weight:600}
+.dx-row{display:flex;align-items:center;justify-content:space-between;gap:.8em}
+.dx-col{display:flex;flex-direction:column;gap:.65em;min-height:0}
+.dx-seg{display:flex;gap:.25em;margin-top:.6em;padding:.25em;border-radius:11px;background:rgba(0,0,0,.35)}
+.dx-seg button{flex:1;padding:.55em .3em;border-radius:8px;color:#9d9ea6;font-weight:600;font-size:.92em;transition:background .2s,color .2s}
+.dx-seg button.on{background:var(--acc);color:#0b0b0d}
+.dx-sw{position:relative;width:2.9em;height:1.6em;border-radius:1em;background:rgba(255,255,255,.22);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);flex:none;transition:background .2s}
+.dx-sw i{position:absolute;left:.2em;top:.2em;width:1.2em;height:1.2em;border-radius:50%;background:#cfd0d6;transition:transform .2s}
+.dx-sw.on{background:var(--acc);box-shadow:none}.dx-sw.on i{transform:translateX(1.3em);background:#fff}
+.dx-bar{height:.4em;border-radius:1em;background:rgba(255,255,255,.1);margin-top:.55em;overflow:hidden}
+.dx-bar i{display:block;height:100%;border-radius:1em;background:var(--acc);transition:width .4s}
+.dx-range{-webkit-appearance:none;appearance:none;width:100%;height:1.6em;margin:.5em 0 .1em;background:transparent;cursor:pointer}
+.dx-range::-webkit-slider-runnable-track{height:.35em;border-radius:1em;background:linear-gradient(90deg,var(--acc) var(--p,50%),rgba(255,255,255,.12) var(--p,50%))}
+.dx-range::-moz-range-track{height:.35em;border-radius:1em;background:linear-gradient(90deg,var(--acc) var(--p,50%),rgba(255,255,255,.12) var(--p,50%))}
+.dx-range::-webkit-slider-thumb{-webkit-appearance:none;width:1.25em;height:1.25em;border-radius:50%;background:#fff;margin-top:-.45em;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.dx-range::-moz-range-thumb{width:1.25em;height:1.25em;border:0;border-radius:50%;background:#fff}
+.dx-range:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:4px}
+/* drive */
+.dx-drive{display:grid;grid-template-columns:1.05fr 1fr;gap:1.2em;height:100%;align-items:stretch}
+.dx-drive .dx-col,[data-v="dyn"] .dx-col{justify-content:space-between}
+.dx-drive .dx-col>.dx-card,[data-v="dyn"] .dx-col>.dx-card{flex:1;display:flex;flex-direction:column;justify-content:center}
+[data-v="vehicle"] .dx-dyn{align-items:center}
+.dx-drive .dx-gauge{align-self:center}
+.dx-gauge{position:relative;aspect-ratio:1;max-height:100%;justify-self:center;width:min(100%,24em)}
+.dx-gauge svg{width:100%;height:100%;transform:rotate(135deg)}
+.dx-arc-bg,.dx-arc,.dx-arc2-bg,.dx-arc2{fill:none;stroke-linecap:round}
+.dx-arc-bg{stroke:rgba(255,255,255,.08);stroke-width:7;stroke-dasharray:75 100}
+.dx-arc{stroke:var(--acc);stroke-width:7;stroke-dasharray:0 100;transition:stroke-dasharray .25s linear,stroke .3s;filter:drop-shadow(0 0 6px var(--acc))}
+.dx-arc2-bg{stroke:rgba(255,255,255,.05);stroke-width:3;stroke-dasharray:75 100}
+.dx-arc2{stroke:#EDEDF0;stroke-width:3;stroke-dasharray:0 100;opacity:.55;transition:stroke-dasharray .25s linear}
+.dx-speed{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dx-speed b{font-size:5.4em;font-weight:300;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}
+.dx-speed span{color:#8B8C94;font-size:.95em;margin-top:.1em}
+.dx-gear{position:absolute;left:0;right:0;bottom:16%;display:flex;justify-content:center;gap:.9em;font-weight:700;color:#55565d;font-size:.95em}
+.dx-gear .on{color:var(--acc)}
+.dx-pw{position:absolute;left:0;right:0;top:20%;display:flex;justify-content:center;gap:.35em;align-items:baseline;color:#8B8C94;font-size:.82em}
+.dx-pw b{color:#EDEDF0;font-variant-numeric:tabular-nums}
+.dx-modefacts{display:grid;grid-template-columns:repeat(3,1fr);gap:.5em;margin-top:.75em}
+.dx-modefacts div{display:flex;flex-direction:column;gap:.1em}.dx-modefacts span{color:#8B8C94;font-size:.8em}.dx-modefacts b{font-weight:600}
+.dx-cc{display:flex;align-items:center;gap:.8em;margin-top:.6em}
+.dx-rb{width:2.3em;height:2.3em;border-radius:50%!important;background:rgba(255,255,255,.08)!important;font-size:1.2em!important;line-height:1}
+.dx-set{display:flex;flex-direction:column;align-items:center;min-width:3.6em}
+.dx-set b{font-size:1.9em;font-weight:500;line-height:1;font-variant-numeric:tabular-nums}.dx-set span{font-size:.72em;color:#8B8C94}
+.dx-cc.off .dx-set b{color:#6a6b72}
+.dx-gap{margin-left:auto;display:flex;align-items:flex-end;gap:.25em;color:#8B8C94;font-size:.78em}
+.dx-gap span{margin-right:.3em}
+.dx-gap button{width:.45em;border-radius:2px;background:rgba(255,255,255,.18)!important}
+.dx-gap button:nth-of-type(1){height:.6em}.dx-gap button:nth-of-type(2){height:.95em}.dx-gap button:nth-of-type(3){height:1.3em}.dx-gap button:nth-of-type(4){height:1.65em}
+.dx-gap button.lit{background:var(--acc)!important}
+/* dynamics / vehicle */
+.dx-dyn{display:grid;grid-template-columns:.8fr 1.2fr;gap:1.2em;height:100%;align-items:stretch}
+.dx-carwrap{display:flex;flex-direction:column;align-items:center;height:100%;justify-content:center;min-height:0}
+.dx-carsvg{height:min(88%,22em);width:auto;max-width:100%;overflow:visible}
+.dx-body{fill:#1d1e22;stroke:#55565e;stroke-width:1.2}
+.dx-glass{fill:#2c2e35;stroke:none}
+.dx-line{stroke:#3a3b42;stroke-width:1;fill:none}
+.dx-lamp{stroke:#f4f4f6;stroke-width:2.2;stroke-linecap:round}
+.dx-tail{stroke:#ff3b3b;stroke-width:2.2;stroke-linecap:round}
+.dx-wheel{fill:#0b0b0d;stroke:#5c5d64;stroke-width:1}
+.dx-tq{fill:var(--acc);transition:height .35s,y .35s}
+.dx-springs path{fill:none;stroke:var(--acc);stroke-width:1.4;opacity:.8;transition:transform .35s}
+.dx-dev[data-susp="Soft"] .dx-springs path{transform:scaleY(1.12);transform-box:fill-box;transform-origin:center}
+.dx-dev[data-susp="Firm"] .dx-springs path{transform:scaleY(.8);transform-box:fill-box;transform-origin:center}
+.dx-cartop{transition:transform .5s cubic-bezier(.3,.7,.2,1)}
+.dx-dev[data-lift="1"] .dx-dyn .dx-cartop{transform:translateY(-6px)}
+.dx-carcap{display:flex;flex-direction:column;align-items:center;gap:.15em;margin-top:.6em;font-size:.85em}
+.dx-carcap span:last-child{color:#8B8C94;font-size:.9em}
+.dx-hyd{margin-top:.7em;padding-top:.7em;border-top:1px solid rgba(255,255,255,.06)}
+.dx-hyd div{display:flex;flex-direction:column;gap:.1em}
+.dx-door{cursor:pointer}
+.dx-door rect:first-child{fill:rgba(255,255,255,.05);stroke:#55565e;stroke-width:1;transition:fill .2s,stroke .2s}
+.dx-door g{fill:none;stroke:#8B8C94;stroke-width:2.2}
+.dx-door.on rect:first-child{fill:var(--acc2);stroke:var(--acc)}
+.dx-door.on g{stroke:var(--acc)}
+.dx-door .shk{transition:transform .25s}
+.dx-door:not(.on) .shk{transform:translate(4px,-3px) rotate(18deg);transform-box:fill-box;transform-origin:right bottom}
+.dx-big{display:flex;align-items:center;justify-content:center;gap:.6em;padding:1em;border-radius:14px;background:var(--acc)!important;color:#0b0b0d!important;font-weight:700!important;font-size:1.05em!important}
+.dx-big svg{width:1.4em;height:1.4em}
+.dx-grid2{display:grid;grid-template-columns:1fr 1fr;gap:.55em}
+.dx-grid2 .dx-card{padding:.65em .8em}
+.dx-grid2 .dx-card>div{display:flex;align-items:center;gap:.5em;min-width:0}
+.dx-grid2 .dx-card>div svg{width:1.3em;height:1.3em;color:#8B8C94;flex:none}
+.dx-grid2 b{font-weight:600;font-size:.92em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dx-pill{padding:.4em .9em!important;border-radius:1em!important;background:rgba(255,255,255,.1)!important;font-weight:600!important;font-size:.85em!important;flex:none}
+.dx-pill.busy{background:var(--acc2)!important;color:var(--acc)!important}
+/* energy */
+.dx-energy{display:grid;grid-template-columns:1.1fr 1fr;gap:.8em;height:100%}
+.dx-chart{display:flex;flex-direction:column}
+.dx-chartbox{position:relative;flex:1;min-height:0;margin-top:.6em}
+.dx-chartbox svg{width:100%;height:100%}
+.dx-axis{stroke:rgba(255,255,255,.14)}
+.dx-bar-r{fill:var(--acc);opacity:.85;transition:opacity .15s,fill .3s}
+.dx-bhit{fill:transparent;cursor:pointer}
+.dx-b:hover .dx-bar-r,.dx-b.hl .dx-bar-r{opacity:1}
+.dx-bt{fill:#8B8C94;font-size:10px;text-anchor:middle;font-family:"Figtree",system-ui,sans-serif}
+.dx-tip{position:absolute;transform:translate(-50%,-110%);background:#EDEDF0;color:#0b0b0d;border-radius:7px;padding:.3em .55em;font-size:.82em;font-weight:600;white-space:nowrap;pointer-events:none}
+.dx-tiles{display:grid;grid-template-columns:1fr 1fr;gap:.55em;align-content:start}
+.dx-tile{display:flex;flex-direction:column;gap:.1em;padding:.65em .8em}
+.dx-tile b{font-size:1.45em;font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.dx-tile .dx-bar{margin-top:.35em}.dx-tile .dx-range{margin:.2em 0 0}
+.dx-link{color:var(--acc)!important;text-decoration:underline!important;text-underline-offset:2px}
+/* map */
+.dx-map{position:relative;height:100%;border-radius:14px;overflow:hidden;background:#101114}
+.dx-mapsvg{position:absolute;inset:0;width:100%;height:100%}
+#dxMapG{transition:transform .5s cubic-bezier(.3,.7,.2,1);transform-origin:300px 160px}
+.dx-st{stroke:#23252b;stroke-width:9;fill:none;stroke-linecap:round}
+.dx-major{stroke:#2e3038;stroke-width:14}
+.dx-river{stroke:#16263a;stroke-width:22;fill:none}
+.dx-park{fill:#15241c}
+.dx-route{fill:none;stroke:var(--acc);stroke-width:6;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px var(--acc));stroke-dasharray:1000;stroke-dashoffset:0;transition:stroke .3s}
+.dx-route.draw{animation:dxRoute 1.1s ease forwards}
+@keyframes dxRoute{from{stroke-dashoffset:1000}to{stroke-dashoffset:0}}
+.dx-dest{fill:#fff;stroke:var(--acc);stroke-width:3}
+.dx-mehalo{fill:var(--acc);opacity:.18}.dx-me{fill:#fff}
+.dx-turn{position:absolute;left:.8em;top:.8em;display:flex;align-items:center;gap:.7em;background:rgba(10,10,12,.85);backdrop-filter:blur(8px);border-radius:12px;padding:.65em .9em}
+.dx-turn svg{width:2em;height:2em;color:var(--acc)}
+.dx-turn div{display:flex;flex-direction:column}.dx-turn b{font-size:1.05em}.dx-turn span{color:#8B8C94;font-size:.85em}
+.dx-search{position:absolute;right:.8em;top:.8em;display:flex;align-items:center;gap:.5em;background:rgba(10,10,12,.85);border-radius:12px;padding:.65em .9em;color:#8B8C94;font-size:.9em;min-width:13em}
+.dx-search svg{width:1.2em;height:1.2em}
+.dx-favs{position:absolute;right:.8em;top:3.9em;display:flex;gap:.35em}
+.dx-favs button{padding:.4em .8em;border-radius:1em;background:rgba(10,10,12,.85)!important;font-size:.82em;font-weight:600}
+.dx-favs button.on{background:var(--acc)!important;color:#0b0b0d}
+.dx-eta{position:absolute;left:.8em;bottom:.8em;display:flex;gap:1.3em;background:rgba(10,10,12,.85);border-radius:12px;padding:.6em 1em}
+.dx-eta div{display:flex;flex-direction:column}.dx-eta b{font-size:1.2em;font-variant-numeric:tabular-nums}.dx-eta span{color:#8B8C94;font-size:.78em}
+.dx-zoom{position:absolute;right:.8em;bottom:.8em;display:flex;flex-direction:column;gap:.3em}
+.dx-zoom button{width:2.2em;height:2.2em;border-radius:10px;background:rgba(10,10,12,.85)!important;font-size:1.1em}
+/* media */
+.dx-media{display:flex;flex-direction:column;gap:.7em;height:100%}
+.dx-tabs{display:flex;gap:.4em}
+.dx-tabs button{padding:.45em 1em;border-radius:1em;color:#8B8C94;font-weight:600}
+.dx-tabs button.on{background:rgba(255,255,255,.09);color:#fff}
+.dx-pane{display:none;flex:1;min-height:0;flex-direction:column;gap:.7em}
+.dx-pane.is-on{display:flex}
+.dx-now{display:grid;grid-template-columns:auto 1fr auto;gap:1em;align-items:center}
+.dx-art{width:6.4em;height:6.4em;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--acc),#222 80%);font-size:1.2em;font-weight:700;color:#0b0b0d}
+.dx-nowt{display:flex;flex-direction:column;gap:.15em;min-width:0}
+.dx-nowt b{font-size:1.3em}
+.dx-prog{height:.3em;border-radius:1em;background:rgba(255,255,255,.1);margin:.5em 0 .3em;overflow:hidden}
+.dx-prog i{display:block;height:100%;width:30%;background:#EDEDF0;border-radius:1em}
+.dx-ctl{display:flex;gap:1em;align-items:center}
+.dx-ctl button{width:1.9em;height:1.9em;display:grid;place-items:center;color:#cfd0d6}
+.dx-ctl svg{width:1.3em;height:1.3em}
+.dx-playb{width:2.6em!important;height:2.6em!important;border-radius:50%;background:#EDEDF0!important;color:#0b0b0d!important}
+.dx-eq{display:flex;gap:.2em;align-items:flex-end;height:2.4em}
+.dx-eq i{width:.35em;background:var(--acc);border-radius:2px;height:30%;animation:dxEq 1s ease-in-out infinite}
+.dx-eq i:nth-child(2){animation-delay:.2s}.dx-eq i:nth-child(3){animation-delay:.4s}.dx-eq i:nth-child(4){animation-delay:.1s}.dx-eq i:nth-child(5){animation-delay:.3s}
+.dx-dev.paused .dx-eq i{animation-play-state:paused}
+@keyframes dxEq{0%,100%{height:25%}50%{height:100%}}
+.dx-stns{display:grid;grid-template-columns:repeat(4,1fr);gap:.5em}
+.dx-queue{flex:1;min-height:0;display:flex;flex-direction:column;gap:.35em}
+.dx-queue div{display:flex;justify-content:space-between;padding:.5em .2em;border-bottom:1px solid rgba(255,255,255,.06);font-size:.92em}
+.dx-queue div span:last-child{color:#8B8C94}
+.dx-stn{display:flex;flex-direction:column;align-items:flex-start;gap:.15em;padding:.7em .8em!important;border-radius:12px!important;background:rgba(255,255,255,.045)!important;border:1px solid rgba(255,255,255,.06)!important;text-align:left}
+.dx-stn b{font-size:1.3em;font-weight:500}.dx-stn span{font-weight:600;font-size:.9em}.dx-stn em{font-style:normal;color:#8B8C94;font-size:.8em}
+.dx-stn.on{border-color:var(--acc)!important;background:var(--acc2)!important}
+.dx-park-note{font-size:.82em;color:#8B8C94}
+.dx-vids{display:grid;grid-template-columns:repeat(4,1fr);gap:.6em;align-content:start}
+.dx-vid{display:flex;flex-direction:column;align-items:flex-start;gap:.3em;text-align:left}
+.dx-vplay{width:100%;aspect-ratio:16/10;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,hsl(var(--h) 45% 32%),hsl(calc(var(--h) + 40) 35% 14%))}
+.dx-vplay svg{width:2em;height:2em;padding:.5em;border-radius:50%;background:rgba(0,0,0,.45);box-sizing:content-box;color:#fff}
+.dx-vid b{font-size:.92em;font-weight:600}
+/* dock */
+.dx-dock{grid-column:2;display:flex;align-items:center;justify-content:space-between;gap:.6em;padding:.55em 1.3em .8em .4em;border-top:1px solid rgba(255,255,255,.06)}
+.dx-temp{display:flex;align-items:center;gap:.5em}
+.dx-temp b{font-size:1.2em;font-weight:500;min-width:3em;text-align:center;font-variant-numeric:tabular-nums}
+.dx-temp button{width:1.8em;height:1.8em;border-radius:50%;background:rgba(255,255,255,.07)!important;font-size:1.2em}
+.dx-dk{display:flex;align-items:center;gap:.3em;padding:.45em .8em!important;border-radius:1em!important;color:#8B8C94!important;font-weight:700;font-size:.9em}
+.dx-dk svg{width:1.3em;height:1.3em}
+.dx-dk.on{color:var(--acc)!important;background:var(--acc2)!important}
+.dx-toast{position:absolute;left:50%;top:14%;transform:translate(-50%,-6px);background:rgba(20,20,24,.92);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:.55em 1em;font-weight:600;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap}
+.dx-toast.on{opacity:1;transform:translate(-50%,0)}
+/* narrow screens: let the tablet grow taller, rail along the bottom */
+@container dxdev (max-width:640px){
+  .dx-screen{aspect-ratio:auto;grid-template-columns:1fr;grid-template-rows:auto auto auto auto;font-size:12px}
+  .dx-status{grid-column:1}
+  .dx-status .dx-mut:nth-child(2),.dx-si{display:none}
+  .dx-rail{grid-row:3;flex-direction:row;overflow-x:auto;padding:.3em .6em;gap:.2em}
+  .dx-rl{flex:1;min-width:4.4em}
+  .dx-views{grid-row:2;height:30em;padding:.3em .8em .6em}
+  .dx-v{inset:.3em .8em .6em}
+  .dx-dock{grid-column:1;grid-row:4;flex-wrap:wrap;justify-content:center;padding:.6em}
+  .dx-drive,.dx-dyn,.dx-energy{grid-template-columns:1fr;align-content:start;overflow-y:auto;height:100%}
+  .dx-gauge{width:14em}
+  .dx-speed b{font-size:4.2em}.dx-pw{top:14%}.dx-gear{bottom:12%}
+  .dx-dk:not(.dx-ac):not([aria-label="Fan"]){display:none}
+  .dx-carsvg{height:10em}
+  .dx-stns,.dx-vids{grid-template-columns:1fr 1fr}
+  .dx-search{display:none}.dx-favs{top:auto;bottom:4.2em;right:.8em}
+  .dx-knob{display:none}
+  .dx-bezel{padding:9px;border-radius:22px}
+}
+@media (prefers-reduced-motion:reduce){.dx-eq i,.dx-route.draw{animation:none}.dx-v{transition:none}}
+/* dash:end */
 </style>
 </head>
 <body>
@@ -173,6 +408,174 @@ dl.meta dd{margin:0;font-weight:600}
       </div>
     </div>
   </section>
+<!-- dash:start -->
+  <section class="section dx-sec" aria-labelledby="dx-title">
+    <div class="wrap">
+      <div class="dx-head"><span class="dx-k">Concept &middot; In-car interface</span><h2 class="dx-t" id="dx-title">Cockpit</h2><span class="dx-hint"><i></i>Tap around the screen, or turn the dial</span></div>
+      <div class="dx-dev" data-mode="sport">
+        <div class="dx-bezel">
+          <div class="dx-screen" id="dx">
+            <header class="dx-status"><span id="dxClock">21:17</span><span class="dx-mut">14&deg;C Manchester</span><span class="dx-sp"></span><span class="dx-mut dx-modetag" id="dxModeTag">Sport</span><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="dx-si"><path d="M4 18h1M9 18v-4M14 18v-8M19 18V6"/></svg><span class="dx-vol"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h3l5 4V6L7 10z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg><b id="dxVol">12</b></span><span class="dx-mut">312 mi</span></header>
+            <nav class="dx-rail" aria-label="Cockpit sections"><button class="dx-rl on" data-go="drive" aria-label="Drive" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 12l4.5-4.5"/><path d="M5.5 15.5h13"/></svg><span>Drive</span></button><button class="dx-rl" data-go="dyn" aria-label="Dynamics"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Dynamics</span></button><button class="dx-rl" data-go="energy" aria-label="Energy"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 10v4"/><path d="M11 9l-2 3h4l-2 3"/></svg><span>Energy</span></button><button class="dx-rl" data-go="vehicle" aria-label="Vehicle"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16V11l2-4h10l2 4v5"/><path d="M3 16h18v2H3z"/><circle cx="7.5" cy="13" r="1"/><circle cx="16.5" cy="13" r="1"/></svg><span>Vehicle</span></button><button class="dx-rl" data-go="map" aria-label="Map"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg><span>Map</span></button><button class="dx-rl" data-go="media" aria-label="Media"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg><span>Media</span></button></nav>
+            <main class="dx-views">
+<section class="dx-v is-on" data-v="drive" aria-label="Drive">
+  <div class="dx-drive">
+    <div class="dx-gauge">
+      <svg viewBox="0 0 200 200" aria-hidden="true">
+        <circle cx="100" cy="100" r="84" class="dx-arc-bg" pathLength="100"/>
+        <circle cx="100" cy="100" r="84" class="dx-arc" pathLength="100" id="dxArc"/>
+        <circle cx="100" cy="100" r="70" class="dx-arc2-bg" pathLength="100"/>
+        <circle cx="100" cy="100" r="70" class="dx-arc2" pathLength="100" id="dxPow"/>
+      </svg>
+      <div class="dx-speed"><b id="dxSpd">0</b><span>mph</span></div>
+      <div class="dx-gear"><span>P</span><span>R</span><span>N</span><span class="on">D</span></div>
+      <div class="dx-pw"><span>Power</span><b id="dxPwv">0</b><span>kW</span></div>
+    </div>
+    <div class="dx-col">
+      <div class="dx-card">
+        <div class="dx-lbl">Drive mode</div>
+        <div class="dx-seg dx-modes" role="radiogroup" aria-label="Drive mode">
+          <button role="radio" data-mode="eco">Eco</button><button role="radio" data-mode="comfort">Comfort</button><button role="radio" data-mode="sport" class="on" aria-checked="true">Sport</button><button role="radio" data-mode="track">Track</button>
+        </div>
+        <div class="dx-modefacts"><div><span>Throttle</span><b id="dxThr">Sharp</b></div><div><span>Output</span><b id="dxOut">480 kW</b></div><div><span>Chassis</span><b id="dxCh">Firm</b></div></div>
+      </div>
+      <div class="dx-card">
+        <div class="dx-row"><div class="dx-lbl">Cruise control</div><button class="dx-sw" id="dxCruise" role="switch" aria-checked="false" aria-label="Cruise control"><i></i></button></div>
+        <div class="dx-cc">
+          <button class="dx-rb" data-cc="-5" aria-label="Lower set speed">&minus;</button>
+          <div class="dx-set"><b id="dxSet">70</b><span>mph set</span></div>
+          <button class="dx-rb" data-cc="5" aria-label="Raise set speed">+</button>
+          <div class="dx-gap" role="group" aria-label="Following distance"><span>Gap</span><button data-gap="1"></button><button data-gap="2"></button><button data-gap="3" class="on"></button><button data-gap="4"></button></div>
+        </div>
+      </div>
+      <div class="dx-card dx-split">
+        <div class="dx-row"><div class="dx-lbl">Torque split</div><span class="dx-mut" id="dxTs">35 / 65</span></div>
+        <div class="dx-bar"><i id="dxTsBar" style="width:35%"></i></div>
+        <div class="dx-row dx-mut dx-sm"><span>Front</span><span>Rear</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="dx-v" data-v="dyn" aria-label="Dynamics">
+  <div class="dx-dyn">
+    <div class="dx-carwrap"><svg viewBox="-10 0 140 234" class="dx-carsvg" aria-hidden="true"><g class="dx-cartop">
+  <path d="M60 20 C84 20 96 30 98 58 L100 176 C100 204 88 214 60 214 C32 214 20 204 20 176 L22 58 C24 30 36 20 60 20 Z" class="dx-body"/>
+  <path d="M36 70 C44 62 76 62 84 70 L82 96 C72 92 48 92 38 96 Z" class="dx-glass"/>
+  <path d="M38 150 C48 154 72 154 82 150 L84 172 C74 178 46 178 36 172 Z" class="dx-glass"/>
+  <path d="M38 100 L36 146 M82 100 L84 146" class="dx-line"/>
+  <path d="M28 40 L42 34 M92 40 L78 34" class="dx-lamp"/>
+  <path d="M30 206 L50 210 M90 206 L70 210" class="dx-tail"/>
+</g><rect x="14" y="44" width="14" height="34" rx="4" class="dx-wheel"/><rect x="33" y="78" width="4" height="0" rx="2" class="dx-tq" data-w="fl"/><rect x="92" y="44" width="14" height="34" rx="4" class="dx-wheel"/><rect x="83" y="78" width="4" height="0" rx="2" class="dx-tq" data-w="fr"/><rect x="14" y="158" width="14" height="34" rx="4" class="dx-wheel"/><rect x="33" y="192" width="4" height="0" rx="2" class="dx-tq" data-w="rl"/><rect x="92" y="158" width="14" height="34" rx="4" class="dx-wheel"/><rect x="83" y="192" width="4" height="0" rx="2" class="dx-tq" data-w="rr"/>
+      <g class="dx-springs"><path d="M8 52 l-6 4 6 4 -6 4 6 4 -6 4" /><path d="M112 52 l6 4 -6 4 6 4 -6 4 6 4"/><path d="M8 166 l-6 4 6 4 -6 4 6 4 -6 4"/><path d="M112 166 l6 4 -6 4 6 4 -6 4 6 4"/></g></svg>
+      <div class="dx-carcap"><span id="dxRh">Ride height 132 mm</span><span id="dxSusp">Adaptive · Auto</span></div>
+    </div>
+    <div class="dx-col">
+      <div class="dx-card"><div class="dx-lbl">Suspension</div>
+        <div class="dx-seg" data-group="susp"><button data-val="Soft">Soft</button><button data-val="Auto" class="on">Auto</button><button data-val="Firm">Firm</button></div></div>
+      <div class="dx-card"><div class="dx-row"><div class="dx-lbl">Ride height</div><span class="dx-mut" id="dxRhv">Normal</span></div>
+        <input type="range" min="0" max="2" step="1" value="1" class="dx-range" id="dxRide" aria-label="Ride height">
+        <div class="dx-row dx-mut dx-sm"><span>Low</span><span>Normal</span><span>High</span></div>
+        <div class="dx-row dx-hyd"><div><b>Hydraulic front lift</b><span class="dx-mut dx-sm">Raises the nose 40 mm for ramps</span></div><button class="dx-sw" id="dxLift" role="switch" aria-checked="false" aria-label="Hydraulic front lift"><i></i></button></div></div>
+      <div class="dx-card"><div class="dx-row"><div class="dx-lbl">Torque vectoring</div><span class="dx-mut" id="dxTv">Rear bias 65%</span></div>
+        <input type="range" min="20" max="90" step="5" value="65" class="dx-range" id="dxTorque" aria-label="Rear torque bias"></div>
+      <div class="dx-card"><div class="dx-lbl">Traction control</div>
+        <div class="dx-seg" data-group="tc"><button class="on">On</button><button>Sport</button><button>Off</button></div></div>
+    </div>
+  </div>
+</section>
+<section class="dx-v" data-v="energy" aria-label="Energy and trip">
+  <div class="dx-energy">
+    <div class="dx-card dx-chart"><div class="dx-row"><div class="dx-lbl">Fuel consumption</div><span class="dx-mut dx-sm">Last 7 days &middot; avg 41.3 mpg</span></div>
+      <div class="dx-chartbox"><svg viewBox="0 0 290 164" aria-label="Fuel consumption by day, 36.9 to 46.3 mpg"><line x1="0" y1="130" x2="290" y2="130" class="dx-axis"/><g class="dx-b" data-v="38.2 mpg" data-d="Wed"><rect x="8" y="0" width="34" height="140" class="dx-bhit"/><rect x="14" y="84.9" width="22" height="45.1" rx="4" class="dx-bar-r"/><text x="25" y="156" class="dx-bt">Wed</text></g><g class="dx-b" data-v="41.6 mpg" data-d="Thu"><rect x="48" y="0" width="34" height="140" class="dx-bhit"/><rect x="54" y="66.2" width="22" height="63.8" rx="4" class="dx-bar-r"/><text x="65" y="156" class="dx-bt">Thu</text></g><g class="dx-b" data-v="36.9 mpg" data-d="Fri"><rect x="88" y="0" width="34" height="140" class="dx-bhit"/><rect x="94" y="92.1" width="22" height="37.9" rx="4" class="dx-bar-r"/><text x="105" y="156" class="dx-bt">Fri</text></g><g class="dx-b" data-v="44.1 mpg" data-d="Sat"><rect x="128" y="0" width="34" height="140" class="dx-bhit"/><rect x="134" y="52.4" width="22" height="77.6" rx="4" class="dx-bar-r"/><text x="145" y="156" class="dx-bt">Sat</text></g><g class="dx-b" data-v="42.8 mpg" data-d="Sun"><rect x="168" y="0" width="34" height="140" class="dx-bhit"/><rect x="174" y="59.6" width="22" height="70.4" rx="4" class="dx-bar-r"/><text x="185" y="156" class="dx-bt">Sun</text></g><g class="dx-b" data-v="39.5 mpg" data-d="Mon"><rect x="208" y="0" width="34" height="140" class="dx-bhit"/><rect x="214" y="77.8" width="22" height="52.2" rx="4" class="dx-bar-r"/><text x="225" y="156" class="dx-bt">Mon</text></g><g class="dx-b" data-v="46.3 mpg" data-d="Tue"><rect x="248" y="0" width="34" height="140" class="dx-bhit"/><rect x="254" y="40.4" width="22" height="89.6" rx="4" class="dx-bar-r"/><text x="265" y="156" class="dx-bt">Tue</text></g></svg><div class="dx-tip" id="dxTip" hidden></div></div></div>
+    <div class="dx-tiles">
+      <div class="dx-card dx-tile"><span class="dx-lbl">Fuel</span><b>64%</b><span class="dx-mut dx-sm">312 mi range</span><div class="dx-bar"><i style="width:64%"></i></div></div>
+      <div class="dx-card dx-tile"><span class="dx-lbl">Battery</span><b>78%</b><span class="dx-mut dx-sm">38 mi electric</span><div class="dx-bar"><i style="width:78%"></i></div></div>
+      <div class="dx-card dx-tile"><span class="dx-lbl">Odometer</span><b>12,486</b><span class="dx-mut dx-sm">miles</span></div>
+      <div class="dx-card dx-tile"><span class="dx-lbl">Trip A</span><b id="dxTrip">142.3</b><span class="dx-mut dx-sm">mi &middot; <button class="dx-link" id="dxTripReset">Reset</button></span></div>
+      <div class="dx-card dx-tile"><span class="dx-lbl">12 V system</span><b>12.6 V</b><span class="dx-mut dx-sm">Healthy</span></div>
+      <div class="dx-card dx-tile"><span class="dx-lbl">Charge limit</span><b id="dxLim">80%</b><input type="range" min="50" max="100" step="5" value="80" class="dx-range" id="dxLimR" aria-label="Charge limit"></div>
+    </div>
+  </div>
+</section>
+<section class="dx-v" data-v="vehicle" aria-label="Vehicle">
+  <div class="dx-dyn">
+    <div class="dx-carwrap"><svg viewBox="-10 0 140 234" class="dx-carsvg" aria-hidden="false"><g class="dx-cartop">
+  <path d="M60 20 C84 20 96 30 98 58 L100 176 C100 204 88 214 60 214 C32 214 20 204 20 176 L22 58 C24 30 36 20 60 20 Z" class="dx-body"/>
+  <path d="M36 70 C44 62 76 62 84 70 L82 96 C72 92 48 92 38 96 Z" class="dx-glass"/>
+  <path d="M38 150 C48 154 72 154 82 150 L84 172 C74 178 46 178 36 172 Z" class="dx-glass"/>
+  <path d="M38 100 L36 146 M82 100 L84 146" class="dx-line"/>
+  <path d="M28 40 L42 34 M92 40 L78 34" class="dx-lamp"/>
+  <path d="M30 206 L50 210 M90 206 L70 210" class="dx-tail"/>
+</g><g class="dx-door on" data-door="fl" role="button" tabindex="0" aria-label="Front left door, locked"><rect x="4" y="98" width="20" height="40" rx="5"/><g transform="translate(8 112) scale(.5)"><rect x="5" y="11" width="14" height="9" rx="2"/><path class="shk" d="M8 11V8a4 4 0 0 1 8 0v3"/></g></g><g class="dx-door on" data-door="fr" role="button" tabindex="0" aria-label="Front right door, locked"><rect x="96" y="98" width="20" height="40" rx="5"/><g transform="translate(100 112) scale(.5)"><rect x="5" y="11" width="14" height="9" rx="2"/><path class="shk" d="M8 11V8a4 4 0 0 1 8 0v3"/></g></g><g class="dx-door on" data-door="rl" role="button" tabindex="0" aria-label="Rear left door, locked"><rect x="4" y="150" width="20" height="40" rx="5"/><g transform="translate(8 164) scale(.5)"><rect x="5" y="11" width="14" height="9" rx="2"/><path class="shk" d="M8 11V8a4 4 0 0 1 8 0v3"/></g></g><g class="dx-door on" data-door="rr" role="button" tabindex="0" aria-label="Rear right door, locked"><rect x="96" y="150" width="20" height="40" rx="5"/><g transform="translate(100 164) scale(.5)"><rect x="5" y="11" width="14" height="9" rx="2"/><path class="shk" d="M8 11V8a4 4 0 0 1 8 0v3"/></g></g></svg>
+      <div class="dx-carcap"><span id="dxLockSt">All doors locked</span><span>Tap a door to toggle</span></div></div>
+    <div class="dx-col">
+      <div class="dx-card"><div class="dx-row"><div class="dx-lbl">Locks</div><span class="dx-mut dx-sm">Auto-lock at 5 mph</span></div><button class="dx-big" id="dxLockAll" aria-pressed="true" style="margin-top:.6em;width:100%"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/></svg><span>Unlock all</span></button></div>
+      <div class="dx-grid2">
+        <div class="dx-card dx-row"><div><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 11h16"/><path d="M12 14v3M10.5 15.5 12 17l1.5-1.5"/></svg><b>Child window lock</b></div><button class="dx-sw on" role="switch" aria-checked="true" aria-label="Child window lock"><i></i></button></div>
+        <div class="dx-card dx-row"><div><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 11h16"/><path d="M12 14v3M10.5 15.5 12 17l1.5-1.5"/></svg><b>Close all windows</b></div><button class="dx-pill" id="dxWin">Close</button></div>
+        <div class="dx-card dx-row"><div><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h10a3 3 0 0 1 0 6H5z"/><path d="M5 8v6M19 11h2"/></svg><b>Fold mirrors</b></div><button class="dx-sw" role="switch" aria-checked="false" aria-label="Fold mirrors"><i></i></button></div>
+        <div class="dx-card dx-row"><div><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15l3-7h10l3 7"/><path d="M3 15h18v4H3z"/><path d="M7 8l-2-3"/></svg><b>Boot</b></div><button class="dx-pill" id="dxBoot">Open</button></div>
+      </div>
+      <div class="dx-card"><div class="dx-lbl">Headlights</div><div class="dx-seg" data-group="lights"><button>Off</button><button class="on">Auto</button><button>On</button></div></div>
+    </div>
+  </div>
+</section>
+<section class="dx-v" data-v="map" aria-label="Map and navigation">
+  <div class="dx-map">
+    <svg viewBox="0 0 600 320" preserveAspectRatio="xMidYMid slice" class="dx-mapsvg" aria-hidden="true">
+      <g id="dxMapG"><path d="M-20 40 L620 58" class="dx-st"/><path d="M-20 95 L620 113" class="dx-st"/><path d="M-20 150 L620 168" class="dx-st"/><path d="M-20 205 L620 223" class="dx-st"/><path d="M-20 260 L620 278" class="dx-st"/><path d="M70 -20 L40 340" class="dx-st"/><path d="M170 -20 L140 340" class="dx-st"/><path d="M280 -20 L250 340" class="dx-st"/><path d="M390 -20 L360 340" class="dx-st"/><path d="M500 -20 L470 340" class="dx-st"/><path d="M-20 300 C120 250 180 120 330 110 S520 30 640 60" class="dx-st dx-major"/><path d="M-20 180 C80 200 150 280 260 300 S460 250 640 290" class="dx-river"/><rect x="400" y="170" width="80" height="60" rx="8" class="dx-park"/><rect x="100" y="50" width="50" height="35" rx="6" class="dx-park"/>
+      <path id="dxRoute" class="dx-route" d="M120 262 L150 212 L262 196 L312 112 L470 90"/>
+      <circle id="dxDest" cx="470" cy="90" r="7" class="dx-dest"/>
+      <g id="dxMe" transform="translate(120 262)"><circle r="13" class="dx-mehalo"/><path d="M0 -8 L6 7 L0 3 L-6 7 Z" class="dx-me"/></g></g>
+    </svg>
+    <div class="dx-turn"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20V10a3 3 0 0 1 3-3h8"/><path d="M15 3l4 4-4 4"/></svg><div><b id="dxTurn">In 400 m, turn right</b><span id="dxRoad">onto Deansgate</span></div></div>
+    <div class="dx-search"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg><span>Search destination</span></div>
+    <div class="dx-favs" role="group" aria-label="Favourites"><button class="on" data-fav="0">Home</button><button data-fav="1">Work</button><button data-fav="2">Charger</button></div>
+    <div class="dx-eta"><div><b id="dxEta">21:34</b><span>arrival</span></div><div><b id="dxMi">6.2</b><span>mi</span></div><div><b id="dxMin">17</b><span>min</span></div></div>
+    <div class="dx-zoom"><button data-z="1" aria-label="Zoom in">+</button><button data-z="-1" aria-label="Zoom out">&minus;</button></div>
+  </div>
+</section>
+<section class="dx-v" data-v="media" aria-label="Media">
+  <div class="dx-media">
+    <div class="dx-tabs" role="tablist"><button role="tab" class="on" data-tab="radio">Radio</button><button role="tab" data-tab="video">Video</button></div>
+    <div class="dx-pane is-on" data-pane="radio">
+      <div class="dx-now dx-card">
+        <div class="dx-art"><span id="dxFreq">97.4</span></div>
+        <div class="dx-nowt"><span class="dx-lbl">Now playing</span><b id="dxStn">Northern FM</b><span class="dx-mut" id="dxGen">Indie and alternative</span>
+          <div class="dx-prog"><i id="dxProg"></i></div>
+          <div class="dx-ctl"><button data-m="prev" aria-label="Previous station"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6l-8 6 8 6zM7 6v12"/></svg></button><button data-m="play" class="dx-playb" aria-label="Pause"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5h3v14H8zM13 5h3v14h-3z" fill="currentColor" stroke="none"/></svg></button><button data-m="next" aria-label="Next station"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l8 6-8 6zM17 6v12"/></svg></button></div></div>
+        <div class="dx-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="dx-stns"><button class="dx-stn on" data-f="97.4" data-n="Northern FM" data-g="Indie and alternative"><b>97.4</b><span>Northern FM</span><em>Indie and alternative</em></button><button class="dx-stn" data-f="101.9" data-n="Classic 101" data-g="Orchestral"><b>101.9</b><span>Classic 101</span><em>Orchestral</em></button><button class="dx-stn" data-f="102.2" data-n="Late Jazz" data-g="Jazz and soul"><b>102.2</b><span>Late Jazz</span><em>Jazz and soul</em></button><button class="dx-stn" data-f="105.4" data-n="City Talk" data-g="News and talk"><b>105.4</b><span>City Talk</span><em>News and talk</em></button></div>
+      <div class="dx-queue"><span class="dx-lbl">Coming up</span><div><span>Late-night drive mix</span><span>22:00</span></div><div><span>New releases hour</span><span>23:00</span></div><div><span>Overnight sessions</span><span>00:00</span></div></div>
+    </div>
+    <div class="dx-pane" data-pane="video">
+      <div class="dx-park-note">Video plays when the car is parked</div>
+      <div class="dx-vids"><button class="dx-vid" style="--h:18"><span class="dx-vplay"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5l11 7-11 7z" fill="currentColor" stroke="none"/></svg></span><b>Coastal road, dawn run</b><span class="dx-mut dx-sm">12:40</span></button><button class="dx-vid" style="--h:210"><span class="dx-vplay"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5l11 7-11 7z" fill="currentColor" stroke="none"/></svg></span><b>Track day onboard</b><span class="dx-mut dx-sm">8:05</span></button><button class="dx-vid" style="--h:140"><span class="dx-vplay"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5l11 7-11 7z" fill="currentColor" stroke="none"/></svg></span><b>Design talk: light</b><span class="dx-mut dx-sm">21:18</span></button><button class="dx-vid" style="--h:320"><span class="dx-vplay"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5l11 7-11 7z" fill="currentColor" stroke="none"/></svg></span><b>Alpine passes</b><span class="dx-mut dx-sm">15:52</span></button></div>
+    </div>
+  </div>
+</section></main>
+            <footer class="dx-dock">
+              <div class="dx-temp"><button data-t="L-" aria-label="Driver cooler">&lsaquo;</button><b id="dxTL">21.0&deg;</b><button data-t="L+" aria-label="Driver warmer">&rsaquo;</button></div>
+              <button class="dx-dk" data-toggle aria-pressed="false" aria-label="Seat heating"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4c-1 0-1.6.8-1.4 1.8L8 13h7"/><path d="M8 13l-1 6h9l1-3"/><path d="M15 13l2-5"/></svg></button>
+              <button class="dx-dk on" data-toggle aria-pressed="true" aria-label="Fan"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1.5"/><path d="M12 10.5C12 6 14 4 16 5s1 5-2.6 6.2M13.5 12.5c4 1.5 5.5 4 4 5.5s-4.5-.5-5-4.3M10.6 12.8c-3 3-5.8 3.2-6.6 1.3s2.4-3.8 5.9-2.9"/></svg><span id="dxFan">3</span></button>
+              <button class="dx-dk" data-toggle aria-pressed="false" aria-label="Front defrost"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17c4-8 12-8 16 0"/><path d="M8 11l-1-3M12 9V6M16 11l1-3"/></svg></button>
+              <button class="dx-dk dx-ac on" data-toggle aria-pressed="true">A/C</button>
+              <div class="dx-temp"><button data-t="R-" aria-label="Passenger cooler">&lsaquo;</button><b id="dxTR">20.5&deg;</b><button data-t="R+" aria-label="Passenger warmer">&rsaquo;</button></div>
+            </footer>
+            <div class="dx-toast" id="dxToast" role="status" aria-live="polite"></div>
+          </div>
+          <div class="dx-knob" id="dxKnob" role="slider" tabindex="0" aria-label="Volume" aria-valuemin="0" aria-valuemax="30" aria-valuenow="12"><i></i></div>
+        </div>
+        <div class="dx-mount" aria-hidden="true"></div>
+      </div>
+      <p class="dx-note">Concept interface. Not affiliated with any car manufacturer.</p>
+    </div>
+  </section>
+<!-- dash:end -->
+
+
+
 
   <section class="hero">
     <div class="wrap">
@@ -382,6 +785,117 @@ dl.meta dd{margin:0;font-weight:600}
     new IntersectionObserver(function(en){en.forEach(function(x){visible=x.isIntersecting;if(visible&&x.intersectionRatio>=.35)start();if(visible)kick()})},{threshold:[0,.35]}).observe(stage);
   }else start();
 })();
+</script>
+<script>
+/* dash:start */
+(function(){
+  var dev=document.querySelector('.dx-dev'); if(!dev)return;
+  var $=function(s,r){return (r||dev).querySelector(s)}, $$=function(s,r){return [].slice.call((r||dev).querySelectorAll(s))};
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var toastT=0;
+  function toast(m){var t=$('#dxToast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on')},1500)}
+  function seg(btns,cb){btns.forEach(function(b){b.addEventListener('click',function(){btns.forEach(function(x){x.classList.toggle('on',x===b);if(x.hasAttribute('role'))x.setAttribute('aria-checked',x===b)});cb&&cb(b)})})}
+  function sw(b,cb){b.addEventListener('click',function(){var on=!b.classList.contains('on');b.classList.toggle('on',on);b.setAttribute('aria-checked',on);cb&&cb(on)})}
+  function rangeFill(r){var p=(r.value-r.min)/(r.max-r.min)*100;r.style.setProperty('--p',p+'%')}
+  $$('.dx-range').forEach(function(r){rangeFill(r);r.addEventListener('input',function(){rangeFill(r)})});
+  // clock
+  function clock(){var d=new Date();$('#dxClock').textContent=('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
+  clock();setInterval(clock,20000);
+  // navigation
+  var rail=$$('.dx-rl');
+  rail.forEach(function(b){b.addEventListener('click',function(){var v=b.getAttribute('data-go');
+    rail.forEach(function(x){x.classList.toggle('on',x===b);if(x===b)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});
+    $$('.dx-v').forEach(function(s){s.classList.toggle('is-on',s.getAttribute('data-v')===v)});
+    if(v==='map'){var r=$('#dxRoute');r.classList.remove('draw');void r.getBBox();r.classList.add('draw')}
+  })});
+  // drive modes
+  var MODES={eco:['Soft','260 kW','Comfort','Eco'],comfort:['Smooth','400 kW','Adaptive','Comfort'],sport:['Sharp','480 kW','Firm','Sport'],track:['Instant','560 kW','Track','Track']};
+  seg($$('.dx-modes button'),function(b){var m=b.getAttribute('data-mode'),f=MODES[m];dev.setAttribute('data-mode',m);
+    $('#dxThr').textContent=f[0];$('#dxOut').textContent=f[1];$('#dxCh').textContent=f[2];$('#dxModeTag').textContent=f[3];toast(f[3]+' mode')});
+  // cruise
+  var cruise=false,setSpd=70,gap=3;
+  var cc=$('.dx-cc');cc.classList.add('off');
+  sw($('#dxCruise'),function(on){cruise=on;cc.classList.toggle('off',!on);toast(on?'Cruise control on · '+setSpd+' mph':'Cruise control off')});
+  $$('[data-cc]').forEach(function(b){b.addEventListener('click',function(){setSpd=Math.max(20,Math.min(130,setSpd+ +b.getAttribute('data-cc')));$('#dxSet').textContent=setSpd})});
+  function paintGap(){$$('[data-gap]').forEach(function(b){b.classList.toggle('lit',+b.getAttribute('data-gap')<=gap)})}
+  $$('[data-gap]').forEach(function(b){b.addEventListener('click',function(){gap=+b.getAttribute('data-gap');paintGap();toast('Following gap '+gap)})});paintGap();
+  // dynamics
+  var rear=65;
+  function torque(){$('#dxTs').textContent=(100-rear)+' / '+rear;$('#dxTsBar').style.width=(100-rear)+'%';$('#dxTv').textContent='Rear bias '+rear+'%';
+    var f=(100-rear)/100,r=rear/100;$$('.dx-tq').forEach(function(t){var k=t.getAttribute('data-w'),v=(k[0]==='f'?f:r)*34;t.setAttribute('height',v.toFixed(1));t.setAttribute('y',(+t.getAttribute('data-y0')+34-v).toFixed(1))})}
+  $$('.dx-tq').forEach(function(t){t.setAttribute('data-y0',+t.getAttribute('y')-34)});
+  $('#dxTorque').addEventListener('input',function(e){rear=+e.target.value;torque()});torque();
+  seg($$('[data-group="susp"] button'),function(b){var v=b.getAttribute('data-val');dev.setAttribute('data-susp',v);$('#dxSusp').textContent='Adaptive · '+v});
+  var RH=['Low','Normal','High'],RHmm=[118,132,150],lift=0;
+  function ride(){var i=+$('#dxRide').value;$('#dxRhv').textContent=RH[i];$('#dxRh').textContent='Ride height '+(RHmm[i]+(lift?40:0))+' mm'}
+  $('#dxRide').addEventListener('input',ride);
+  sw($('#dxLift'),function(on){lift=on?1:0;dev.setAttribute('data-lift',lift);ride();toast(on?'Front lift raised':'Front lift lowered')});
+  seg($$('[data-group="tc"] button'));seg($$('[data-group="lights"] button'),function(b){toast('Headlights '+b.textContent.toLowerCase())});
+  // energy chart
+  var tip=$('#dxTip'),box=$('.dx-chartbox');
+  $$('.dx-b').forEach(function(g){function show(){var r=g.querySelector('.dx-bar-r').getBoundingClientRect(),bb=box.getBoundingClientRect();tip.textContent=g.getAttribute('data-d')+' · '+g.getAttribute('data-v');tip.style.left=(r.left+r.width/2-bb.left)+'px';tip.style.top=(r.top-bb.top)+'px';tip.hidden=false}
+    g.addEventListener('mouseenter',show);g.addEventListener('click',show);g.addEventListener('mouseleave',function(){tip.hidden=true})});
+  $('#dxTripReset').addEventListener('click',function(){$('#dxTrip').textContent='0.0';toast('Trip A reset')});
+  $('#dxLimR').addEventListener('input',function(e){$('#dxLim').textContent=e.target.value+'%'});
+  // vehicle
+  var doors=$$('.dx-door');
+  function lockState(){var n=doors.filter(function(d){return d.classList.contains('on')}).length,all=n===doors.length;
+    $('#dxLockSt').textContent=all?'All doors locked':n===0?'All doors unlocked':n+' of 4 doors locked';
+    var b=$('#dxLockAll');b.setAttribute('aria-pressed',all);b.querySelector('span').textContent=all?'Unlock all':'Lock all'}
+  doors.forEach(function(d){function t(){d.classList.toggle('on');var on=d.classList.contains('on');d.setAttribute('aria-label',d.getAttribute('aria-label').replace(/locked|unlocked/,on?'locked':'unlocked'));lockState()}
+    d.addEventListener('click',t);d.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();t()}})});
+  $('#dxLockAll').addEventListener('click',function(){var all=doors.every(function(d){return d.classList.contains('on')});doors.forEach(function(d){d.classList.toggle('on',!all)});lockState();toast(all?'Unlocked':'Locked')});
+  $$('.dx-grid2 .dx-sw').forEach(function(b){sw(b)});
+  function busy(b,txt,done){b.classList.add('busy');b.textContent=txt;setTimeout(function(){b.classList.remove('busy');done()},1400)}
+  $('#dxWin').addEventListener('click',function(){var b=this;busy(b,'Closing',function(){b.textContent='Closed';toast('All windows closed')})});
+  var bootOpen=false;$('#dxBoot').addEventListener('click',function(){var b=this;busy(b,bootOpen?'Closing':'Opening',function(){bootOpen=!bootOpen;b.textContent=bootOpen?'Close':'Open';toast(bootOpen?'Boot open':'Boot closed')})});
+  // map
+  var ROUTES=[['M120 262 L150 212 L262 196 L312 112 L470 90',470,90,'21:34','6.2','17','In 400 m, turn right','onto Deansgate'],
+              ['M120 262 L200 230 L330 244 L420 230 L520 250',520,250,'21:29','3.8','12','In 250 m, keep left','towards Salford Quays'],
+              ['M120 262 L92 190 L150 130 L240 118 L262 60',262,60,'21:24','2.1','7','In 150 m, turn left','charger on the right, 350 kW']];
+  seg($$('[data-fav]'),function(b){var r=ROUTES[+b.getAttribute('data-fav')],p=$('#dxRoute');p.setAttribute('d',r[0]);var d=$('#dxDest');d.setAttribute('cx',r[1]);d.setAttribute('cy',r[2]);
+    $('#dxEta').textContent=r[3];$('#dxMi').textContent=r[4];$('#dxMin').textContent=r[5];$('#dxTurn').textContent=r[6];$('#dxRoad').textContent=r[7];p.classList.remove('draw');void p.getBBox();p.classList.add('draw')});
+  var zoom=1;$$('[data-z]').forEach(function(b){b.addEventListener('click',function(){zoom=Math.max(.8,Math.min(1.8,zoom+ +b.getAttribute('data-z')*.2));$('#dxMapG').style.transform='scale('+zoom+')'})});
+  // media
+  seg($$('.dx-tabs button'),function(b){var t=b.getAttribute('data-tab');$$('.dx-pane').forEach(function(p){p.classList.toggle('is-on',p.getAttribute('data-pane')===t)})});
+  var stns=$$('.dx-stn'),si=0,playing=true,prog=30;
+  function tune(i){si=(i+stns.length)%stns.length;var s=stns[si];stns.forEach(function(x){x.classList.toggle('on',x===s)});$('#dxFreq').textContent=s.getAttribute('data-f');$('#dxStn').textContent=s.getAttribute('data-n');$('#dxGen').textContent=s.getAttribute('data-g');prog=0}
+  stns.forEach(function(s,i){s.addEventListener('click',function(){tune(i)})});
+  $('[data-m="prev"]').addEventListener('click',function(){tune(si-1)});$('[data-m="next"]').addEventListener('click',function(){tune(si+1)});
+  var PLAY=$('[data-m="play"]'),IP='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>',IPA='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8zM13 5h3v14h-3z" fill="currentColor"/></svg>';
+  PLAY.addEventListener('click',function(){playing=!playing;dev.classList.toggle('paused',!playing);PLAY.innerHTML=playing?IPA:IP;PLAY.setAttribute('aria-label',playing?'Pause':'Play')});
+  $$('.dx-vid').forEach(function(v){v.addEventListener('click',function(){toast('Available when parked')})});
+  // climate dock
+  var T={L:21,R:20.5};$$('[data-t]').forEach(function(b){b.addEventListener('click',function(){var k=b.getAttribute('data-t'),s=k[0];T[s]=Math.max(16,Math.min(28,T[s]+(k[1]==='+'?.5:-.5)));$('#dxT'+s).textContent=T[s].toFixed(1)+'°'})});
+  $$('.dx-dock [data-toggle]').forEach(function(b){b.addEventListener('click',function(){var on=!b.classList.contains('on');b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)})});
+  var fan=3;$('.dx-dock [aria-label="Fan"]').addEventListener('click',function(){fan=fan%5+1;$('#dxFan').textContent=fan;this.classList.add('on')});
+  // rotary knob: volume
+  var knob=$('#dxKnob'),vol=12,drag=null;
+  function setVol(v){vol=Math.max(0,Math.min(30,v));$('#dxVol').textContent=vol;knob.setAttribute('aria-valuenow',vol);knob.style.setProperty('--kr',(vol*9-135)+'deg');toast('Volume '+vol)}
+  knob.style.setProperty('--kr',(vol*9-135)+'deg');
+  knob.addEventListener('wheel',function(e){e.preventDefault();setVol(vol+(e.deltaY<0?1:-1))},{passive:false});
+  knob.addEventListener('pointerdown',function(e){drag={y:e.clientY,v:vol};knob.setPointerCapture(e.pointerId)});
+  knob.addEventListener('pointermove',function(e){if(drag)setVol(drag.v+Math.round((drag.y-e.clientY)/8))});
+  knob.addEventListener('pointerup',function(){drag=null});
+  knob.addEventListener('keydown',function(e){if(e.key==='ArrowUp'||e.key==='ArrowRight'){e.preventDefault();setVol(vol+1)}else if(e.key==='ArrowDown'||e.key==='ArrowLeft'){e.preventDefault();setVol(vol-1)}});
+  // live drive simulation
+  var spd=0,visible=false,last=0,t0=performance.now(),pwr=0;
+  function tick(now){
+    if(visible){var dt=Math.min(.1,(now-last)/1000||0);last=now;
+      var target=cruise?setSpd:52+14*Math.sin((now-t0)/2600)+6*Math.sin((now-t0)/900);
+      var prev=spd;spd+=(target-spd)*Math.min(1,dt*1.6);
+      pwr=Math.max(-40,Math.min(560,(spd-prev)/Math.max(dt,.001)*55+spd*1.1));
+      if(reduce){spd=cruise?setSpd:56}
+      $('#dxSpd').textContent=Math.round(spd);$('#dxPwv').textContent=Math.round(Math.max(0,pwr));
+      $('#dxArc').style.strokeDasharray=(Math.min(spd,160)/160*75).toFixed(2)+' 100';
+      $('#dxPow').style.strokeDasharray=(Math.max(0,pwr)/560*75).toFixed(2)+' 100';
+      if(playing){prog=(prog+dt*1.2)%100;$('#dxProg').style.width=prog+'%'}
+    }
+    requestAnimationFrame(tick)}
+  if('IntersectionObserver' in window)new IntersectionObserver(function(en){en.forEach(function(x){visible=x.isIntersecting;last=performance.now()})}).observe(dev);else visible=true;
+  requestAnimationFrame(tick);
+})();
+/* dash:end */
 </script>
 </body>
 </html>
