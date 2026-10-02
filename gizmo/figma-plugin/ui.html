@@ -1,0 +1,17 @@
+<style>
+  body{font:13px/1.45 Inter,system-ui,sans-serif;margin:0;padding:16px;color:#16161a}
+  h1{font-size:15px;margin:0 0 4px} p{margin:0 0 12px;color:#6b6b74}
+  textarea{width:100%;box-sizing:border-box;height:250px;border:1px solid #e2e2e5;border-radius:8px;padding:10px;font:12px ui-monospace,monospace;resize:none}
+  button{margin-top:10px;width:100%;border:0;border-radius:8px;padding:11px;background:#1a66e8;color:#fff;font-weight:600;font-size:13px;cursor:pointer}
+  #st{margin-top:10px;min-height:18px}
+</style>
+<h1>Gizmo Deck Builder</h1>
+<p>In Gizmo, open a deck and press <b>Copy for Figma</b>. Paste it here and press Build.</p>
+<textarea id="j" placeholder='{"gizmoDeck":1,"title":"…","slides":[…]}'></textarea>
+<button id="b">Build slides</button>
+<div id="st"></div>
+<script>
+  const st = document.getElementById('st');
+  document.getElementById('b').onclick = () => { st.textContent = 'Building…'; parent.postMessage({ pluginMessage: { type: 'build', json: document.getElementById('j').value } }, '*'); };
+  onmessage = (e) => { const m = e.data.pluginMessage; if (!m) return; st.textContent = m.type === 'done' ? 'Done: ' + m.count + ' slides added to this page.' : m.text; st.style.color = m.type === 'done' ? '#1f8a52' : '#c23b22'; };
+</script>
