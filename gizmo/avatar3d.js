@@ -51,8 +51,10 @@ export function createAvatar(el, opts = {}) {
   S.environmentIntensity = 0.85;
 
   const cam = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
-  cam.position.set(0, 3.1, 13.6);
-  cam.lookAt(0, 2.95, 0);
+  const CAM = opts.framing === 'close' ? { y: 2.05, d: 9.3, look: 1.95 } : { y: 2.4, d: 10.6, look: 2.25 };
+  cam.position.set(0, CAM.y, CAM.d);
+  cam.lookAt(0, CAM.look, 0);
+  let camFollow = 0;
 
   // lights
   const key = new THREE.DirectionalLight(0xffffff, 2.0);
@@ -81,14 +83,14 @@ export function createAvatar(el, opts = {}) {
   const M = {
     white: new THREE.MeshPhysicalMaterial({ color: 0xf1f3f6, roughness: .26, metalness: 0, clearcoat: 1, clearcoatRoughness: .12 }),
     grey: new THREE.MeshPhysicalMaterial({ color: 0xd5dbe1, roughness: .32, clearcoat: .8, clearcoatRoughness: .2 }),
-    blue: new THREE.MeshPhysicalMaterial({ color: 0x97c4e8, roughness: .34, clearcoat: .7, clearcoatRoughness: .2 }),
-    face: new THREE.MeshPhysicalMaterial({ color: 0xb4d3ec, roughness: .42, clearcoat: .5, clearcoatRoughness: .3 }),
+    blue: new THREE.MeshPhysicalMaterial({ color: 0x8dbbe4, roughness: .34, clearcoat: .7, clearcoatRoughness: .2 }),
+    face: new THREE.MeshPhysicalMaterial({ color: 0xa3c9e8, roughness: .42, clearcoat: .5, clearcoatRoughness: .3 }),
     silver: new THREE.MeshStandardMaterial({ color: 0xc8cdd3, roughness: .22, metalness: 1 }),
     dark: new THREE.MeshPhysicalMaterial({ color: 0x0f1218, roughness: .12, clearcoat: 1, clearcoatRoughness: .05 }),
     panel: new THREE.MeshPhysicalMaterial({ color: 0x3a4049, roughness: .35, clearcoat: .6 }),
     sclera: new THREE.MeshPhysicalMaterial({ color: 0xfbfdff, roughness: .2, clearcoat: 1 }),
     led: new THREE.MeshStandardMaterial({ color: 0x8fd0ff, emissive: 0x2f8cff, emissiveIntensity: .0, roughness: .3 }),
-    glow: new THREE.MeshStandardMaterial({ color: 0x97c4e8, emissive: 0x2f8cff, emissiveIntensity: 0, roughness: .3 }),
+    glow: new THREE.MeshStandardMaterial({ color: 0x8dbbe4, emissive: 0x2f8cff, emissiveIntensity: 0, roughness: .3 }),
     mouth: new THREE.MeshStandardMaterial({ color: 0x1b2433, roughness: .5 }),
   };
   const mesh = (g, m, p = [0, 0, 0], s) => {
@@ -100,52 +102,54 @@ export function createAvatar(el, opts = {}) {
   };
 
   // ---------- rig ----------
+  // Proportions follow Shaun's reference robot: short and stocky, a big blocky rounded-box head,
+  // a large sky-blue face panel, metal headphones with bolts, spring neck, arms and legs, chunky shoes.
   const root = new THREE.Group(); S.add(root);           // travel (x/z) + jump (y)
-  const pivot = new THREE.Group(); pivot.position.y = 2.1; root.add(pivot); // spins / flips around body centre
-  const bodyG = new THREE.Group(); bodyG.position.y = -2.1; pivot.add(bodyG); // squash from feet
-  const hips = new THREE.Group(); hips.position.y = 1.0; bodyG.add(hips);
+  const pivot = new THREE.Group(); pivot.position.y = 1.75; root.add(pivot); // spins / flips around body centre
+  const bodyG = new THREE.Group(); bodyG.position.y = -1.75; pivot.add(bodyG); // squash from feet
+  const hips = new THREE.Group(); hips.position.y = .78; bodyG.add(hips);
 
-  // legs (springs + shoes)
+  // legs (short springs + chunky shoes)
   const legs = [];
   for (const sx of [-1, 1]) {
     const leg = new THREE.Group(); leg.position.set(sx * .3, 0, 0); hips.add(leg);
-    leg.add(mesh(new THREE.CylinderGeometry(.2, .2, .16, 32), M.grey, [0, -.02, 0]));
-    const sp = helix(.13, .62, 6, .032, M.silver); sp.position.y = -.08; leg.add(sp);
-    const foot = new THREE.Group(); foot.position.y = -.78; leg.add(foot);
-    foot.add(mesh(new RoundedBoxGeometry(.5, .26, .66, 5, .12), M.white, [0, .02, .08]));
-    foot.add(mesh(new RoundedBoxGeometry(.54, .1, .72, 4, .05), M.blue, [0, -.12, .09]));
-    leg.userData.foot = foot;
+    leg.add(mesh(new THREE.CylinderGeometry(.2, .2, .14, 32), M.grey, [0, -.02, 0]));
+    const sp = helix(.13, .42, 4.5, .034, M.silver); sp.position.y = -.08; leg.add(sp);
+    const foot = new THREE.Group(); foot.position.y = -.6; leg.add(foot);
+    foot.add(mesh(new RoundedBoxGeometry(.54, .3, .72, 5, .14), M.white, [0, .03, .09]));
+    foot.add(mesh(new RoundedBoxGeometry(.58, .1, .78, 4, .05), M.blue, [0, -.12, .1]));
+    leg.userData.foot = foot; leg.userData.footY = -.6;
     legs.push(leg);
   }
 
-  // torso
+  // torso: white upper body, sky-blue overalls with a bib, chest panel with two lights
   const torso = new THREE.Group(); hips.add(torso);
-  torso.add(mesh(new RoundedBoxGeometry(1.2, .72, .9, 6, .3), M.blue, [0, .33, 0]));            // overalls
-  torso.add(mesh(new RoundedBoxGeometry(1.12, .62, .84, 6, .26), M.white, [0, .88, 0]));       // upper body
-  torso.add(mesh(new RoundedBoxGeometry(.78, .5, .1, 4, .05), M.blue, [0, .78, .41]));         // bib
-  const chest = new THREE.Group(); chest.position.set(0, .8, .47); torso.add(chest);
-  chest.add(mesh(new RoundedBoxGeometry(.5, .17, .05, 3, .025), M.panel));
+  torso.add(mesh(new RoundedBoxGeometry(1.26, .66, .94, 6, .3), M.blue, [0, .3, 0]));            // overalls
+  torso.add(mesh(new RoundedBoxGeometry(1.16, .52, .88, 6, .22), M.white, [0, .78, 0]));         // upper body
+  torso.add(mesh(new RoundedBoxGeometry(.82, .46, .1, 4, .05), M.blue, [0, .68, .44]));          // bib
+  const chest = new THREE.Group(); chest.position.set(0, .74, .5); torso.add(chest);
+  chest.add(mesh(new RoundedBoxGeometry(.52, .18, .05, 3, .025), M.panel));
   const leds = [];
   for (const x of [-.13, .13]) {
-    const l = mesh(new THREE.CylinderGeometry(.045, .045, .04, 24), M.led, [x, 0, .03]);
+    const l = mesh(new THREE.CylinderGeometry(.048, .048, .04, 24), M.led, [x, 0, .03]);
     l.rotation.x = PI / 2; chest.add(l); leds.push(l);
   }
-  chest.add(mesh(new RoundedBoxGeometry(.07, .1, .04, 2, .015), M.grey, [0, 0, .03]));
-  for (const x of [-.3, .3]) torso.add(mesh(new THREE.SphereGeometry(.035, 16, 12), M.silver, [x, .55, .46]));
+  chest.add(mesh(new RoundedBoxGeometry(.07, .11, .04, 2, .015), M.grey, [0, 0, .03]));
+  for (const x of [-.31, .31]) torso.add(mesh(new THREE.CylinderGeometry(.04, .04, .03, 16), M.silver, [x, .5, .5]).rotateX(PI / 2));
 
   // neck spring
-  const neck = helix(.14, .46, 4, .035, M.silver); neck.position.y = 1.66; torso.add(neck);
+  const neck = helix(.15, .2, 2.5, .038, M.silver); neck.position.y = 1.2; torso.add(neck);
 
-  // arms
+  // arms (blue shoulder caps, springs, white cuffs, blue mitts)
   const arms = [];
   for (const sx of [-1, 1]) {
-    const arm = new THREE.Group(); arm.position.set(sx * .62, 1.0, 0); torso.add(arm);
+    const arm = new THREE.Group(); arm.position.set(sx * .64, .86, 0); torso.add(arm);
     arm.add(mesh(new THREE.SphereGeometry(.2, 32, 24), M.blue, [sx * .05, 0, 0]));
-    const sp = helix(.1, .42, 5, .028, M.silver); sp.position.set(sx * .1, -.1, 0); arm.add(sp);
-    const fore = new THREE.Group(); fore.position.set(sx * .1, -.6, 0); arm.add(fore);
-    fore.add(mesh(new THREE.CylinderGeometry(.15, .13, .26, 32), M.white, [0, 0, 0]));
-    fore.add(mesh(new THREE.CylinderGeometry(.155, .155, .06, 32), M.blue, [0, -.12, 0]));
-    const hand = new THREE.Group(); hand.position.y = -.3; fore.add(hand);
+    const sp = helix(.1, .34, 4, .03, M.silver); sp.position.set(sx * .1, -.1, 0); arm.add(sp);
+    const fore = new THREE.Group(); fore.position.set(sx * .1, -.52, 0); arm.add(fore);
+    fore.add(mesh(new THREE.CylinderGeometry(.15, .13, .24, 32), M.white, [0, 0, 0]));
+    fore.add(mesh(new THREE.CylinderGeometry(.155, .155, .06, 32), M.blue, [0, -.11, 0]));
+    const hand = new THREE.Group(); hand.position.y = -.28; fore.add(hand);
     hand.add(mesh(new THREE.SphereGeometry(.15, 28, 20), M.blue, [0, 0, 0], [1, 1.12, .82]));
     const thumb = mesh(new THREE.CapsuleGeometry(.05, .1, 6, 12), M.blue, [sx * -.1, .06, .07]);
     thumb.rotation.z = sx * .5; hand.add(thumb);
@@ -153,45 +157,54 @@ export function createAvatar(el, opts = {}) {
     arms.push(arm);
   }
 
-  // head
-  const head = new THREE.Group(); head.position.y = 1.72; head.scale.setScalar(.93); torso.add(head);
+  // head: squashed, blocky rounded box
+  const head = new THREE.Group(); head.position.y = 1.12; torso.add(head);
   const skull = new THREE.Group(); skull.position.y = .82; head.add(skull);
-  skull.add(mesh(new THREE.SphereGeometry(1.0, 64, 48), M.white, [0, 0, 0], [1.14, .94, 1.0]));
-  skull.add(mesh(new THREE.SphereGeometry(1.0, 64, 48), M.face, [0, -.05, .1], [.93, .7, .98]));
-  const stripe = mesh(new THREE.CapsuleGeometry(.22, .95, 8, 24), M.blue, [0, .84, .02], [1.6, .6, 1]);
-  stripe.rotation.x = PI / 2 - .25; skull.add(stripe);
+  const HW = 2.25, HH = 1.6, HD = 1.85;
+  skull.add(mesh(new RoundedBoxGeometry(HW, HH, HD, 8, .56), M.white));
+  // large sky-blue face panel, set into the white shell
+  skull.add(mesh(new RoundedBoxGeometry(1.88, 1.2, .5, 8, .3), M.face, [0, -.05, HD / 2 - .2]));
+  // sky-blue cap on the top front of the head
+  skull.add(mesh(new RoundedBoxGeometry(1.42, .18, .86, 6, .09), M.blue, [0, HH / 2 - .03, .26]));
   // eyebrows
   for (const sx of [-1, 1]) {
-    const b = mesh(new THREE.CapsuleGeometry(.065, .28, 6, 16), M.blue, [sx * .37, .37, 1.0]);
-    b.rotation.z = PI / 2 + sx * .1; skull.add(b);
+    const b = mesh(new THREE.CapsuleGeometry(.075, .32, 6, 16), M.blue, [sx * .43, .4, HD / 2 + .1]);
+    b.rotation.z = PI / 2 - sx * .08; skull.add(b);
   }
   // eyes
   const eyes = [];
   for (const sx of [-1, 1]) {
-    const eye = new THREE.Group(); eye.position.set(sx * .36, .05, 1.0); skull.add(eye);
-    const ring = mesh(new THREE.TorusGeometry(.2, .05, 20, 48), M.blue); ring.position.z = .02; eye.add(ring);
-    eye.add(mesh(new THREE.SphereGeometry(.19, 40, 28), M.sclera, [0, 0, 0], [1, 1, .45]));
-    const pupil = mesh(new THREE.SphereGeometry(.115, 32, 24), M.dark, [0, 0, .05], [1, 1, .55]); eye.add(pupil);
-    const happy = mesh(new THREE.TorusGeometry(.09, .028, 12, 32, PI), M.dark, [0, -.03, .1]); happy.visible = false; eye.add(happy);
-    const lid = new THREE.Group(); lid.position.y = .2; eye.add(lid);
-    const lidM = mesh(new THREE.SphereGeometry(.21, 32, 20), M.face, [0, -.2, .02], [1, 1, .7]); lid.add(lidM);
+    const eye = new THREE.Group(); eye.position.set(sx * .42, .06, HD / 2 + .08); skull.add(eye);
+    const ring = mesh(new THREE.TorusGeometry(.235, .055, 20, 48), M.blue); ring.position.z = .02; eye.add(ring);
+    eye.add(mesh(new THREE.SphereGeometry(.225, 40, 28), M.sclera, [0, 0, 0], [1, 1, .42]));
+    const pupil = mesh(new THREE.SphereGeometry(.135, 32, 24), M.dark, [0, 0, .05], [1, 1, .55]); eye.add(pupil);
+    const happy = mesh(new THREE.TorusGeometry(.1, .03, 12, 32, PI), M.dark, [0, -.03, .1]); happy.visible = false; eye.add(happy);
+    const lid = new THREE.Group(); lid.position.y = .235; eye.add(lid);
+    const lidM = mesh(new THREE.SphereGeometry(.245, 32, 20), M.face, [0, -.235, .02], [1, 1, .7]); lid.add(lidM);
     lid.scale.y = .001; lid.visible = false;
     eyes.push({ eye, pupil, happy, lid });
   }
   // mouth
-  const smile = mesh(new THREE.TorusGeometry(.17, .03, 12, 40, PI * .7), M.mouth, [0, -.24, 1.0]);
+  const smile = mesh(new THREE.TorusGeometry(.17, .032, 12, 40, PI * .7), M.mouth, [0, -.3, HD / 2 + .08]);
   smile.rotation.z = PI + PI * .15; skull.add(smile);
-  const talk = mesh(new THREE.SphereGeometry(.1, 24, 16), M.mouth, [0, -.3, .99], [1.1, .7, .3]); talk.visible = false; skull.add(talk);
-  // headphones
+  const talk = mesh(new THREE.SphereGeometry(.1, 24, 16), M.mouth, [0, -.36, HD / 2 + .07], [1.1, .7, .3]); talk.visible = false; skull.add(talk);
+  // headphones: metal housing with four bolts and a sky-blue cap. Both sides are built the same way and
+  // pointed outwards (local -Y faces away from the head on each side).
   const phones = [];
   for (const sx of [-1, 1]) {
-    const p = new THREE.Group(); p.position.set(sx * 1.13, -.02, 0); p.rotation.z = sx * PI / 2; skull.add(p);
-    p.add(mesh(new THREE.CylinderGeometry(.34, .34, .26, 40), M.grey, [0, -sx * .04, 0]));
-    p.add(mesh(new THREE.CylinderGeometry(.28, .28, .12, 40), M.glow, [0, -sx * .2, 0]));
+    const p = new THREE.Group(); p.position.set(sx * (HW / 2 - .02), -.04, 0); p.rotation.z = sx * PI / 2; skull.add(p);
+    p.add(mesh(new THREE.CylinderGeometry(.4, .42, .16, 48), M.silver, [0, -.06, 0]));          // metal housing
+    p.add(mesh(new THREE.TorusGeometry(.4, .035, 12, 48), M.silver, [0, -.15, 0]).rotateX(PI / 2)); // metal rim
+    p.add(mesh(new THREE.CylinderGeometry(.33, .33, .14, 48), M.glow, [0, -.2, 0]));             // blue cap
+    p.add(mesh(new THREE.CylinderGeometry(.2, .2, .04, 32), M.silver, [0, -.28, 0]));             // centre plate
+    for (let k = 0; k < 4; k++) {                                                                  // bolts
+      const a = PI / 4 + k * PI / 2;
+      p.add(mesh(new THREE.CylinderGeometry(.06, .06, .07, 6), M.silver, [Math.cos(a) * .365, -.17, Math.sin(a) * .365]));
+    }
     phones.push(p);
   }
   // thought bubbles
-  const think = new THREE.Group(); think.position.set(1.15, 1.25, .3); head.add(think);
+  const think = new THREE.Group(); think.position.set(1.3, 1.75, .3); head.add(think);
   [[0, 0, .09], [.28, .32, .14], [.62, .7, .21]].forEach(([x, y, r]) => think.add(mesh(new THREE.SphereGeometry(r, 24, 16), M.white, [x, y, 0])));
   think.visible = false;
 
@@ -275,6 +288,7 @@ export function createAvatar(el, opts = {}) {
 
     // apply
     root.position.set(P.x, P.y, 0);
+    if (opts.framing === 'close') { camFollow = lerp(camFollow, P.y * .65, .15); cam.position.y = CAM.y + camFollow; cam.lookAt(0, CAM.look + camFollow, 0); }
     pivot.rotation.set(P.rx, P.ry + lookS.x * .22, P.rz);
     bodyG.scale.set(P.sx, P.sy, P.sx);
     head.rotation.set(P.head.x - lookS.y * .18, P.head.y + lookS.x * .32, P.head.z);
@@ -282,7 +296,7 @@ export function createAvatar(el, opts = {}) {
     arms[1].rotation.set(P.armR.x, 0, .18 - P.armR.z);
     arms[1].children[2].rotation.z = P.foreR;
     legs[0].rotation.x = P.legL.x; legs[1].rotation.x = P.legR.x;
-    legs[0].userData.foot.position.y = -.78 + P.footL; legs[1].userData.foot.position.y = -.78 + P.footR;
+    legs[0].userData.foot.position.y = legs[0].userData.footY + P.footL; legs[1].userData.foot.position.y = legs[1].userData.footY + P.footR;
     ground.material.opacity = .16 * clamp(1 - P.y / 2.6, .25, 1);
     blob.material.opacity = .12 * clamp(1 - P.y / 2.6, .25, 1); blob.position.x = P.x;
 
