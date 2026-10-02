@@ -15,6 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Martian+Mono:wght@500;700&display=swap">
 
+<script>if(/[?&]embed\b/.test(location.search))document.documentElement.classList.add('embed')</script>
 <style>
 :root{
   --bg:#EDECE8;
@@ -137,6 +138,13 @@ dl.meta dd{margin:0;font-weight:600}
 .hb-about p.hb-h{color:var(--ink)}
 .hb-about p + p{margin-top:.6rem}
 .hb-lede{margin:.5rem 0 0;color:var(--mute);max-width:60ch}
+
+/* ---- embed mode: just the book, for the homepage and branding page ---- */
+html.embed body{background:#D9D0C2;background-image:none}
+html.embed .masthead,html.embed .foot,html.embed .skip,html.embed .hb-about{display:none}
+html.embed .hb-sec{padding:0}
+html.embed .wrap{width:100%;padding-inline:0}
+html.embed .hb{border-radius:0}
 </style>
 </head>
 <body>
@@ -325,6 +333,11 @@ dl.meta dd{margin:0;font-weight:600}
     new IntersectionObserver(function(en){en.forEach(function(x){visible=x.isIntersecting;if(visible&&x.intersectionRatio>=.35)start();if(visible)kick()})},{threshold:[0,.35]}).observe(stage);
   }else start();
 })();
+</script>
+<script>
+(function(){if(!document.documentElement.classList.contains('embed')||window.parent===window)return;
+var hb=document.getElementById('hb'),last=0;function send(){var h=Math.ceil(hb.getBoundingClientRect().height);if(h&&h!==last){last=h;window.parent.postMessage({hibanaHeight:h},'*')}}
+if('ResizeObserver' in window)new ResizeObserver(send).observe(hb);window.addEventListener('load',send);setTimeout(send,300);})();
 </script>
 </body>
 </html>
