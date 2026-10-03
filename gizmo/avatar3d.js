@@ -45,6 +45,15 @@ function superBlob(a, bt, bb, c, n, ws, hs) {
   return g;
 }
 
+// Rounded cylinder (lathe profile with bevelled top and bottom edges), standing on the Y axis.
+function roundCyl(r, h, b, seg = 48) {
+  const pts = [new THREE.Vector2(0, -h / 2)];
+  for (let i = 0; i <= 8; i++) { const a = -PI / 2 + i / 8 * PI / 2; pts.push(new THREE.Vector2(r - b + Math.cos(a) * b, -h / 2 + b + Math.sin(a) * b)); }
+  for (let i = 0; i <= 8; i++) { const a = i / 8 * PI / 2; pts.push(new THREE.Vector2(r - b + Math.cos(a) * b, h / 2 - b + Math.sin(a) * b)); }
+  pts.push(new THREE.Vector2(0, h / 2));
+  return new THREE.LatheGeometry(pts, seg);
+}
+
 export function createAvatar(el, opts = {}) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let R;
@@ -104,7 +113,6 @@ export function createAvatar(el, opts = {}) {
     pants: new THREE.MeshPhysicalMaterial({ color: 0x3f78c4, roughness: .4, clearcoat: .6, clearcoatRoughness: .25 }), // dungarees
     brow: new THREE.MeshPhysicalMaterial({ color: 0x2a62b4, roughness: .32, clearcoat: .8, clearcoatRoughness: .2 }),
     face: new THREE.MeshPhysicalMaterial({ color: 0x8dbbe6, roughness: .45, clearcoat: .35, clearcoatRoughness: .25 }),
-    faceIn: new THREE.MeshPhysicalMaterial({ color: 0x8dbbe6, roughness: .45, clearcoat: .35, clearcoatRoughness: .25, vertexColors: true }),
     silver: new THREE.MeshStandardMaterial({ color: 0x8a929b, roughness: .28, metalness: 1 }),   // darker metal
     dark: new THREE.MeshPhysicalMaterial({ color: 0x0f1218, roughness: .12, clearcoat: 1, clearcoatRoughness: .05 }),
     panel: new THREE.MeshPhysicalMaterial({ color: 0x3a4049, roughness: .35, clearcoat: .6 }),
@@ -136,8 +144,10 @@ export function createAvatar(el, opts = {}) {
     leg.add(mesh(new THREE.CylinderGeometry(.2, .2, .14, 32), M.grey, [0, -.02, 0]));
     const sp = helix(.13, .42, 4.5, .034, M.silver); sp.position.y = -.08; leg.add(sp);
     const foot = new THREE.Group(); foot.position.y = -.6; leg.add(foot);
-    foot.add(mesh(new RoundedBoxGeometry(.54, .3, .72, 5, .14), M.white, [0, .03, .09]));
-    foot.add(mesh(new RoundedBoxGeometry(.58, .1, .78, 4, .05), M.blue, [0, -.12, .1]));
+    // rounded shoe: grey ankle, white dome, wider light-blue sole with a soft rim
+    foot.add(mesh(new THREE.CylinderGeometry(.12, .13, .16, 32), M.grey, [0, .12, 0]));
+    foot.add(mesh(new THREE.SphereGeometry(1, 48, 24, 0, PI * 2, 0, PI / 2), M.white, [0, -.08, .07], [.27, .25, .37]));
+    foot.add(mesh(roundCyl(.3, .1, .045), M.blue, [0, -.12, .08], [1, 1, 1.32]));
     leg.userData.foot = foot; leg.userData.footY = -.6;
     legs.push(leg);
   }
@@ -169,97 +179,141 @@ export function createAvatar(el, opts = {}) {
   // neck spring
   const neck = helix(.15, .2, 2.5, .038, M.silver); neck.position.y = 1.2; torso.add(neck);
 
-  // arms (light-blue shoulder caps, metal springs, white cuffs, light-blue mitts)
+  // arms: grey joint into the body, light-blue sleeve, metal spring, white forearm with a light-blue cuff, small hands
   const arms = [];
   for (const sx of [-1, 1]) {
     const arm = new THREE.Group(); arm.position.set(sx * .64, .86, 0); torso.add(arm);
-    arm.add(mesh(new THREE.SphereGeometry(.2, 32, 24), M.blue, [sx * .05, 0, 0]));
-    const sp = helix(.1, .34, 4, .03, M.silver); sp.position.set(sx * .1, -.1, 0); arm.add(sp);
-    const fore = new THREE.Group(); fore.position.set(sx * .1, -.52, 0); arm.add(fore);
-    fore.add(mesh(new THREE.CylinderGeometry(.15, .13, .24, 32), M.white, [0, 0, 0]));
-    fore.add(mesh(new THREE.CylinderGeometry(.155, .155, .06, 32), M.blue, [0, -.11, 0]));
-    const hand = new THREE.Group(); hand.position.y = -.28; fore.add(hand);
-    hand.add(mesh(new THREE.SphereGeometry(.15, 28, 20), M.blue, [0, 0, 0], [1, 1.12, .82]));
-    const thumb = mesh(new THREE.CapsuleGeometry(.05, .1, 6, 12), M.blue, [sx * -.1, .06, .07]);
-    thumb.rotation.z = sx * .5; hand.add(thumb);
+    const shoulder = new THREE.Group(); arm.add(shoulder);
+    const joint = mesh(roundCyl(.1, .18, .03), M.grey, [sx * -.05, .02, 0]); joint.rotation.z = PI / 2; shoulder.add(joint);
+    shoulder.add(mesh(roundCyl(.165, .27, .075), M.blue, [sx * .07, -.03, 0]));
+    const sp = helix(.1, .3, 3.5, .03, M.silver); sp.position.set(sx * .07, -.15, 0); arm.add(sp);
+    const fore = new THREE.Group(); fore.position.set(sx * .07, -.52, 0); arm.add(fore);
+    fore.add(mesh(roundCyl(.15, .26, .05), M.white, [0, .01, 0]));
+    fore.add(mesh(roundCyl(.158, .09, .03), M.blue, [0, -.12, 0]));
+    // hand: palm, three fingers and a thumb (palm faces the body)
+    const hand = new THREE.Group(); hand.position.y = -.21; hand.rotation.y = sx * -.75; hand.scale.setScalar(1.1); fore.add(hand);
+    hand.add(mesh(new RoundedBoxGeometry(.14, .17, .25, 4, .062), M.blue, [0, -.03, 0]));
+    [-.076, 0, .076].forEach((z, k) => {
+      const f = mesh(new THREE.CapsuleGeometry(.042, .085 - Math.abs(k - 1) * .015, 6, 12), M.blue, [sx * -.014, -.16 + Math.abs(k - 1) * .01, z]);
+      f.rotation.z = sx * .22; hand.add(f);
+    });
+    const thumb = mesh(new THREE.CapsuleGeometry(.046, .08, 6, 12), M.blue, [sx * -.035, -.02, .14]);
+    thumb.rotation.x = .75; thumb.rotation.z = sx * .15; hand.add(thumb);
     arm.rotation.z = sx * .18;
     arms.push(arm);
   }
 
-  // head: a rounded square (superellipsoid), slightly domed on top
+  // head: one smooth rounded-square shell (superellipsoid, slightly domed). The inset face and the raised
+  // top panel are sculpted into the same mesh and coloured in the shader, so there are no seams or outlines.
   const head = new THREE.Group(); head.position.y = 1.12; torso.add(head);
   const skull = new THREE.Group(); skull.position.y = .86; head.add(skull);
   const HA = 1.17, HBT = 1.0, HBB = .78, HC = .94, HN = 2.45; // half width, half height top/bottom, half depth, squareness
   const HW = HA * 2, HD = HC * 2;
-  skull.add(mesh(superBlob(HA, HBT, HBB, HC, HN, 96, 64), M.white));
   const headZ = (x, y) => HC * Math.pow(Math.max(0, 1 - Math.pow(Math.abs(x / HA), HN) - Math.pow(Math.abs(y / (y > 0 ? HBT : HBB)), HN)), 1 / HN);
-  // light-blue panel along the top of the head
-  const cap = mesh(superBlob(.66, HBT + .014, .3, .86, 4, 64, 40), M.blue, [0, 0, .05]); skull.add(cap);
-  // inset face: a pale-blue panel following the head's curve, sunk inside a raised white bezel
-  const FX = .88, FY = .6, FCY = -.06, FN = 3.0;
-  const facePt = (u, th) => {
-    const c = Math.cos(th), s = Math.sin(th);
-    const x = FX * u * Math.sign(c) * Math.pow(Math.abs(c), 2 / FN), y = FCY + FY * u * Math.sign(s) * Math.pow(Math.abs(s), 2 / FN);
-    return [x, y];
+  const FX = .9, FY = .62, FCY = -.06, FN = 3.0, FW = .1, FDEP = .045;      // face panel
+  const CX = .7, CZ = .72, CZ0 = .08, CN = 4, CW = .12, CUP = .03;          // top panel
+  const sstep = (a, b, v) => { v = Math.min(1, Math.max(0, (v - a) / (b - a))); return v * v * (3 - 2 * v); };
+  const faceU = (x, y) => Math.pow(Math.pow(Math.abs(x / FX), FN) + Math.pow(Math.abs((y - FCY) / FY), FN), 1 / FN);
+  const capU = (x, z) => Math.pow(Math.pow(Math.abs(x / CX), CN) + Math.pow(Math.abs((z - CZ0) / CZ), CN), 1 / CN);
+  const disp = (x, y, z) => {
+    let d = 0;
+    const fw = sstep(.3 * HC, .55 * HC, z);
+    if (fw > 0) d -= fw * FDEP * (1 - sstep(1 - FW, 1, faceU(x, y)));
+    const tw = sstep(.45 * HBT, .7 * HBT, y);
+    if (tw > 0) d += tw * CUP * (1 - sstep(1 - CW, 1, capU(x, z)));
+    return d;
   };
   {
-    const RINGS = 24, SEG = 120, pos = [0, FCY, headZ(0, FCY) + .012], idx = [], col = [1, 1, 1];
-    for (let r = 1; r <= RINGS; r++) for (let k = 0; k < SEG; k++) {
-      const [x, y] = facePt(r / RINGS, k / SEG * PI * 2);
-      pos.push(x, y, headZ(x, y) + .012 - .025 * Math.pow(r / RINGS, 6)); // dips slightly at the edge so the bezel overhangs it
-      // soft shading inside the bezel (stronger under the top edge) so the face reads as sunk in
-      const u = r / RINGS, e = Math.max(0, (u - .72) / .28), top = y > FCY ? 1 : .55, v = 1 - .4 * e * e * top;
-      col.push(v, v, Math.min(1, v + .04));
+    const src = superBlob(HA, HBT, HBB, HC, HN, 384, 256);
+    const P = src.attributes.position, N = src.attributes.normal, I = src.index.array;
+    // weld the sphere's seam so the normals are smooth all the way round
+    const map = new Map(), remap = new Uint32Array(P.count), pos = [], base = [];
+    for (let i = 0; i < P.count; i++) {
+      const x = P.getX(i), y = P.getY(i), z = P.getZ(i), key = x.toFixed(5) + ',' + y.toFixed(5) + ',' + z.toFixed(5);
+      let j = map.get(key);
+      if (j === undefined) {
+        j = pos.length / 3; map.set(key, j);
+        const d = disp(x, y, z);
+        pos.push(x + N.getX(i) * d, y + N.getY(i) * d, z + N.getZ(i) * d); base.push(x, y, z);
+      }
+      remap[i] = j;
     }
-    for (let k = 0; k < SEG; k++) idx.push(0, 1 + k, 1 + (k + 1) % SEG);
-    for (let r = 1; r < RINGS; r++) for (let k = 0; k < SEG; k++) {
-      const a = 1 + (r - 1) * SEG + k, b = 1 + (r - 1) * SEG + (k + 1) % SEG, c = a + SEG, d = b + SEG;
-      idx.push(a, c, b, b, c, d);
+    const idx = [];
+    for (let k = 0; k < I.length; k += 3) {
+      const a = remap[I[k]], b = remap[I[k + 1]], c = remap[I[k + 2]];
+      if (a !== b && b !== c && a !== c) idx.push(a, b, c);
     }
-    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.setIndex(idx); g.computeVertexNormals();
-    skull.add(mesh(g, M.faceIn));
-    const rim = [];
-    for (let k = 0; k < 160; k++) { const [x, y] = facePt(1.0, k / 160 * PI * 2); rim.push(new THREE.Vector3(x, y, headZ(x, y) + .015)); }
-    skull.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(rim, true), 240, .09, 14, true), M.white));
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute('basePos', new THREE.Float32BufferAttribute(base, 3));
+    g.setIndex(idx); g.computeVertexNormals(); src.dispose();
+    const f = v => v.toFixed(5);
+    const hm = M.white.clone();
+    hm.onBeforeCompile = sh => {
+      sh.uniforms.uFace = { value: M.face.color };
+      sh.uniforms.uCap = { value: new THREE.Color(0x5f9ade) };
+      sh.vertexShader = 'attribute vec3 basePos;\nvarying vec3 vBase;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n  vBase = basePos;');
+      sh.fragmentShader = 'uniform vec3 uFace;\nuniform vec3 uCap;\nvarying vec3 vBase;\n' + sh.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>
+  {
+    vec3 b = vBase;
+    float fw = smoothstep(${f(.3 * HC)}, ${f(.55 * HC)}, b.z);
+    float u = pow(pow(abs(b.x / ${f(FX)}), ${f(FN)}) + pow(abs((b.y - (${f(FCY)})) / ${f(FY)}), ${f(FN)}), ${f(1 / FN)});
+    float aa = fwidth(u) * .8 + 1e-4;
+    float fm = fw * (1.0 - smoothstep(${f(1 - FW * .45)} - aa, ${f(1 - FW * .45)} + aa, u));
+    float tw = smoothstep(${f(.45 * HBT)}, ${f(.7 * HBT)}, b.y);
+    float c = pow(pow(abs(b.x / ${f(CX)}), ${f(CN)}) + pow(abs((b.z - (${f(CZ0)})) / ${f(CZ)}), ${f(CN)}), ${f(1 / CN)});
+    float ca = fwidth(c) * .8 + 1e-4;
+    float cm = step(.5, tw) * (1.0 - smoothstep(${f(1 - CW * .45)} - ca, ${f(1 - CW * .45)} + ca, c));
+    diffuseColor.rgb = mix(diffuseColor.rgb, uFace, fm);
+    diffuseColor.rgb = mix(diffuseColor.rgb, uCap, cm);
+  }`);
+    };
+    skull.add(mesh(g, hm));
   }
-  const fz = (x, y) => headZ(x, y) + .012;
-  // eyebrows: chunky arched brows in a deeper blue
+  const fz = (x, y) => headZ(x, y) - FDEP; // the sunken face surface
+  // eyebrows: chunky arched brows in a deeper blue, sitting clear of the eyes
   for (const sx of [-1, 1]) {
-    const bx = sx * .42, by = .39, R = .3, ARC = 1.7, tube = .1;
-    const g = new THREE.Group(); g.position.set(bx, by - R, fz(bx, by) + .07); g.rotation.z = -sx * .1; skull.add(g);
+    const bx = sx * .42, by = .42, R = .3, ARC = 1.6, tube = .095;
+    const g = new THREE.Group(); g.position.set(bx, by - R, fz(bx, by) + .06); g.rotation.z = -sx * .1; skull.add(g);
     const arc = mesh(new THREE.TorusGeometry(R, tube, 16, 48, ARC), M.brow); arc.rotation.z = PI / 2 - ARC / 2; g.add(arc);
     for (const e of [-1, 1]) { const a = PI / 2 + e * ARC / 2; g.add(mesh(new THREE.SphereGeometry(tube, 20, 14), M.brow, [Math.cos(a) * R, Math.sin(a) * R, 0])); }
     g.scale.set(1, 1, .7);
   }
-  // eyes
+  // eyes (a touch smaller, so there is a clear gap below the brows)
   const eyes = [];
   for (const sx of [-1, 1]) {
-    const eye = new THREE.Group(); eye.position.set(sx * .42, .04, fz(sx * .42, .04) + .07); skull.add(eye);
+    const eye = new THREE.Group(); eye.position.set(sx * .42, -.02, fz(sx * .42, -.02) + .06); eye.scale.setScalar(.82); skull.add(eye);
     const ring = mesh(new THREE.TorusGeometry(.235, .055, 20, 48), M.blue); ring.position.z = .02; eye.add(ring);
     eye.add(mesh(new THREE.SphereGeometry(.225, 40, 28), M.sclera, [0, 0, 0], [1, 1, .42]));
     const pupil = mesh(new THREE.SphereGeometry(.135, 32, 24), M.dark, [0, 0, .05], [1, 1, .55]); eye.add(pupil);
     const happy = mesh(new THREE.TorusGeometry(.1, .03, 12, 32, PI), M.dark, [0, -.03, .1]); happy.visible = false; eye.add(happy);
+    // wink: a little chevron, like the reference
+    const wink = new THREE.Group(); wink.position.z = .09; wink.visible = false; eye.add(wink);
+    for (const e of [-1, 1]) {
+      const s = mesh(new THREE.CapsuleGeometry(.036, .13, 6, 12), M.dark, [sx * -.03, e * .05, 0]);
+      s.rotation.z = sx * e * -1.0; wink.add(s);
+    }
     const lid = new THREE.Group(); lid.position.y = .235; eye.add(lid);
     const lidM = mesh(new THREE.SphereGeometry(.245, 32, 20), M.face, [0, -.235, .02], [1, 1, .7]); lid.add(lidM);
     lid.scale.y = .001; lid.visible = false;
-    eyes.push({ eye, pupil, happy, lid });
+    eyes.push({ eye, pupil, happy, lid, wink });
   }
   // mouth
-  const smile = mesh(new THREE.TorusGeometry(.15, .028, 12, 40, PI * .7), M.mouth, [0, -.33, fz(0, -.33) + .02]);
-  smile.rotation.z = PI + PI * .15; skull.add(smile);
-  const talk = mesh(new THREE.SphereGeometry(.1, 24, 16), M.mouth, [0, -.37, fz(0, -.37) + .01], [1.1, .7, .3]); talk.visible = false; skull.add(talk);
-  // headphones: metal housing with four bolts and a light-blue cap. Both sides are built the same way and
-  // pointed outwards (local -Y faces away from the head on each side).
+  const smile = mesh(new THREE.TorusGeometry(.14, .026, 12, 40, PI * .62), M.mouth, [0, -.36, fz(0, -.36) + .015]);
+  smile.rotation.z = PI + PI * .19; skull.add(smile);
+  const talk = mesh(new THREE.SphereGeometry(.1, 24, 16), M.mouth, [0, -.39, fz(0, -.39) + .005], [1.1, .7, .3]); talk.visible = false; skull.add(talk);
+  // headphones (a little smaller): metal housing with four bolts and a light-blue cap. Both sides are built the
+  // same way and pointed outwards (local -Y faces away from the head on each side).
   const phones = [];
   for (const sx of [-1, 1]) {
-    const p = new THREE.Group(); p.position.set(sx * (HA - .03), -.04, 0); p.rotation.z = sx * PI / 2; skull.add(p);
-    p.add(mesh(new THREE.CylinderGeometry(.36, .38, .2, 48), M.silver, [0, .04, 0]));            // socket into the head
+    const p = new THREE.Group(); p.position.set(sx * (HA - .04), -.04, 0); p.rotation.z = sx * PI / 2; p.scale.setScalar(.84); skull.add(p);
+    p.add(mesh(new THREE.CylinderGeometry(.36, .38, .24, 48), M.silver, [0, .06, 0]));            // socket into the head
     p.add(mesh(new THREE.CylinderGeometry(.42, .44, .16, 48), M.silver, [0, -.08, 0]));          // metal housing
     p.add(mesh(new THREE.TorusGeometry(.42, .035, 12, 48), M.silver, [0, -.17, 0]).rotateX(PI / 2)); // metal rim
     p.add(mesh(new THREE.CylinderGeometry(.35, .35, .14, 48), M.glow, [0, -.22, 0]));             // blue cap
     for (let k = 0; k < 4; k++) {                                                                  // bolts
       const a = PI / 4 + k * PI / 2;
-      p.add(mesh(new THREE.CylinderGeometry(.06, .06, .07, 6), M.silver, [Math.cos(a) * .385, -.19, Math.sin(a) * .385]));
+      p.add(mesh(new THREE.CylinderGeometry(.05, .05, .06, 6), M.silver, [Math.cos(a) * .385, -.19, Math.sin(a) * .385]));
     }
     phones.push(p);
   }
@@ -366,8 +420,9 @@ export function createAvatar(el, opts = {}) {
     const blink = blinkT < .14 ? Math.sin(blinkT / .14 * PI) : 0;
     eyes.forEach((e, i) => {
       e.pupil.position.x = lookS.x * .06; e.pupil.position.y = lookS.y * .05;
-      const shut = (P.wink === i) ? 1 : blink;
-      e.pupil.visible = !P.joy && shut < .85; e.happy.visible = P.joy && P.wink !== i;
+      const winking = P.wink === i, shut = winking ? 0 : blink;
+      e.pupil.visible = !P.joy && !winking && shut < .85; e.happy.visible = P.joy && !winking;
+      e.wink.visible = winking;
       e.lid.visible = shut > .02; e.lid.scale.y = Math.max(.001, shut);
       e.pupil.scale.set(state === 'listening' ? 1.12 : 1, state === 'listening' ? 1.12 : 1, .55);
     });
