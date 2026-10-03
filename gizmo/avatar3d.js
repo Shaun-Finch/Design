@@ -28,6 +28,23 @@ function helix(radius, height, turns, tube, mat) {
   return m;
 }
 
+// Rounded-square solid: |x/a|^n + |y/b|^n + |z/c|^n = 1, with separate top/bottom half-heights
+// (the top a touch taller so the head reads as slightly domed). Normals come from the exact gradient.
+function superBlob(a, bt, bb, c, n, ws, hs) {
+  const g = new THREE.SphereGeometry(1, ws, hs), P = g.attributes.position, N = g.attributes.normal;
+  for (let i = 0; i < P.count; i++) {
+    const dx = P.getX(i), dy = P.getY(i), dz = P.getZ(i), b = dy > 0 ? bt : bb;
+    const f = Math.pow(Math.abs(dx / a), n) + Math.pow(Math.abs(dy / b), n) + Math.pow(Math.abs(dz / c), n);
+    const t = Math.pow(f, -1 / n), x = dx * t, y = dy * t, z = dz * t;
+    P.setXYZ(i, x, y, z);
+    const gr = new THREE.Vector3(Math.sign(x) * Math.pow(Math.abs(x / a), n - 1) / a, Math.sign(y) * Math.pow(Math.abs(y / b), n - 1) / b, Math.sign(z) * Math.pow(Math.abs(z / c), n - 1) / c);
+    if (gr.lengthSq() < 1e-12) gr.set(dx, dy, dz);
+    gr.normalize(); N.setXYZ(i, gr.x, gr.y, gr.z);
+  }
+  P.needsUpdate = true; N.needsUpdate = true;
+  return g;
+}
+
 export function createAvatar(el, opts = {}) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let R;
@@ -81,16 +98,19 @@ export function createAvatar(el, opts = {}) {
 
   // materials (palette from Shaun's reference robot: white shell, sky-blue panels, silver springs)
   const M = {
-    white: new THREE.MeshPhysicalMaterial({ color: 0xf1f3f6, roughness: .26, metalness: 0, clearcoat: 1, clearcoatRoughness: .12 }),
-    grey: new THREE.MeshPhysicalMaterial({ color: 0xd5dbe1, roughness: .32, clearcoat: .8, clearcoatRoughness: .2 }),
-    blue: new THREE.MeshPhysicalMaterial({ color: 0x8dbbe4, roughness: .34, clearcoat: .7, clearcoatRoughness: .2 }),
-    face: new THREE.MeshPhysicalMaterial({ color: 0xa3c9e8, roughness: .42, clearcoat: .5, clearcoatRoughness: .3 }),
-    silver: new THREE.MeshStandardMaterial({ color: 0xc8cdd3, roughness: .22, metalness: 1 }),
+    white: new THREE.MeshPhysicalMaterial({ color: 0xf0f2f5, roughness: .26, metalness: 0, clearcoat: 1, clearcoatRoughness: .12 }),
+    grey: new THREE.MeshPhysicalMaterial({ color: 0xc9cfd6, roughness: .32, clearcoat: .8, clearcoatRoughness: .2 }),
+    blue: new THREE.MeshPhysicalMaterial({ color: 0x74abe4, roughness: .34, clearcoat: .7, clearcoatRoughness: .2 }),   // lighter details
+    pants: new THREE.MeshPhysicalMaterial({ color: 0x3f78c4, roughness: .4, clearcoat: .6, clearcoatRoughness: .25 }), // dungarees
+    brow: new THREE.MeshPhysicalMaterial({ color: 0x2a62b4, roughness: .32, clearcoat: .8, clearcoatRoughness: .2 }),
+    face: new THREE.MeshPhysicalMaterial({ color: 0x8dbbe6, roughness: .45, clearcoat: .35, clearcoatRoughness: .25 }),
+    faceIn: new THREE.MeshPhysicalMaterial({ color: 0x8dbbe6, roughness: .45, clearcoat: .35, clearcoatRoughness: .25, vertexColors: true }),
+    silver: new THREE.MeshStandardMaterial({ color: 0x8a929b, roughness: .28, metalness: 1 }),   // darker metal
     dark: new THREE.MeshPhysicalMaterial({ color: 0x0f1218, roughness: .12, clearcoat: 1, clearcoatRoughness: .05 }),
     panel: new THREE.MeshPhysicalMaterial({ color: 0x3a4049, roughness: .35, clearcoat: .6 }),
     sclera: new THREE.MeshPhysicalMaterial({ color: 0xfbfdff, roughness: .2, clearcoat: 1 }),
     led: new THREE.MeshStandardMaterial({ color: 0x8fd0ff, emissive: 0x2f8cff, emissiveIntensity: .0, roughness: .3 }),
-    glow: new THREE.MeshStandardMaterial({ color: 0x8dbbe4, emissive: 0x2f8cff, emissiveIntensity: 0, roughness: .3 }),
+    glow: new THREE.MeshStandardMaterial({ color: 0x74abe4, emissive: 0x2f8cff, emissiveIntensity: 0, roughness: .3 }),
     mouth: new THREE.MeshStandardMaterial({ color: 0x1b2433, roughness: .5 }),
   };
   const mesh = (g, m, p = [0, 0, 0], s) => {
@@ -102,8 +122,8 @@ export function createAvatar(el, opts = {}) {
   };
 
   // ---------- rig ----------
-  // Proportions follow Shaun's reference robot: short and stocky, a big blocky rounded-box head,
-  // a large sky-blue face panel, metal headphones with bolts, spring neck, arms and legs, chunky shoes.
+  // Proportions follow Shaun's reference robot: short and stocky, a big rounded-square head with an
+  // inset pale-blue face, metal headphones with bolts, spring neck, arms and legs, dungarees, chunky shoes.
   const root = new THREE.Group(); S.add(root);           // travel (x/z) + jump (y)
   const pivot = new THREE.Group(); pivot.position.y = 1.75; root.add(pivot); // spins / flips around body centre
   const bodyG = new THREE.Group(); bodyG.position.y = -1.75; pivot.add(bodyG); // squash from feet
@@ -122,12 +142,22 @@ export function createAvatar(el, opts = {}) {
     legs.push(leg);
   }
 
-  // torso: white upper body, sky-blue overalls with a bib, chest panel with two lights
+  // torso: white upper body wearing blue dungarees (trousers, bib, shoulder straps, buttons)
   const torso = new THREE.Group(); hips.add(torso);
-  torso.add(mesh(new RoundedBoxGeometry(1.26, .66, .94, 6, .3), M.blue, [0, .3, 0]));            // overalls
-  torso.add(mesh(new RoundedBoxGeometry(1.16, .52, .88, 6, .22), M.white, [0, .78, 0]));         // upper body
-  torso.add(mesh(new RoundedBoxGeometry(.82, .46, .1, 4, .05), M.blue, [0, .68, .44]));          // bib
-  const chest = new THREE.Group(); chest.position.set(0, .74, .5); torso.add(chest);
+  torso.add(mesh(new RoundedBoxGeometry(1.16, .56, .88, 6, .22), M.white, [0, .8, 0]));          // upper body
+  torso.add(mesh(new RoundedBoxGeometry(1.28, .68, .96, 6, .3), M.pants, [0, .3, 0]));           // trousers
+  torso.add(mesh(new RoundedBoxGeometry(.86, .5, .12, 4, .05), M.pants, [0, .73, .43]));         // bib
+  torso.add(mesh(new RoundedBoxGeometry(.24, .2, .06, 3, .03), M.pants, [.0, .25, .49]));         // front pocket
+  for (const sx of [-1, 1]) {
+    // strap: from the top corner of the bib, over the shoulder, down the back
+    const pts = [[.33, .93, .47], [.35, 1.04, .34], [.36, 1.09, 0], [.35, 1.03, -.34], [.33, .86, -.46], [.31, .62, -.48]]
+      .map(([x, y, z]) => new THREE.Vector3(sx * x, y, z));
+    const strap = mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, .055, 10, false), M.pants);
+    strap.scale.x = 1.5; strap.position.x = -sx * .17; // flatten into a band
+    torso.add(strap);
+    const btn = mesh(new THREE.CylinderGeometry(.055, .055, .04, 20), M.blue, [sx * .31, .9, .5]); btn.rotation.x = PI / 2; torso.add(btn);
+  }
+  const chest = new THREE.Group(); chest.position.set(0, .7, .5); torso.add(chest);
   chest.add(mesh(new RoundedBoxGeometry(.52, .18, .05, 3, .025), M.panel));
   const leds = [];
   for (const x of [-.13, .13]) {
@@ -135,12 +165,11 @@ export function createAvatar(el, opts = {}) {
     l.rotation.x = PI / 2; chest.add(l); leds.push(l);
   }
   chest.add(mesh(new RoundedBoxGeometry(.07, .11, .04, 2, .015), M.grey, [0, 0, .03]));
-  for (const x of [-.31, .31]) torso.add(mesh(new THREE.CylinderGeometry(.04, .04, .03, 16), M.silver, [x, .5, .5]).rotateX(PI / 2));
 
   // neck spring
   const neck = helix(.15, .2, 2.5, .038, M.silver); neck.position.y = 1.2; torso.add(neck);
 
-  // arms (blue shoulder caps, springs, white cuffs, blue mitts)
+  // arms (light-blue shoulder caps, metal springs, white cuffs, light-blue mitts)
   const arms = [];
   for (const sx of [-1, 1]) {
     const arm = new THREE.Group(); arm.position.set(sx * .64, .86, 0); torso.add(arm);
@@ -157,24 +186,55 @@ export function createAvatar(el, opts = {}) {
     arms.push(arm);
   }
 
-  // head: squashed, blocky rounded box
+  // head: a rounded square (superellipsoid), slightly domed on top
   const head = new THREE.Group(); head.position.y = 1.12; torso.add(head);
-  const skull = new THREE.Group(); skull.position.y = .82; head.add(skull);
-  const HW = 2.25, HH = 1.6, HD = 1.85;
-  skull.add(mesh(new RoundedBoxGeometry(HW, HH, HD, 8, .56), M.white));
-  // large sky-blue face panel, set into the white shell
-  skull.add(mesh(new RoundedBoxGeometry(1.88, 1.2, .5, 8, .3), M.face, [0, -.05, HD / 2 - .2]));
-  // sky-blue cap on the top front of the head
-  skull.add(mesh(new RoundedBoxGeometry(1.42, .18, .86, 6, .09), M.blue, [0, HH / 2 - .03, .26]));
-  // eyebrows
+  const skull = new THREE.Group(); skull.position.y = .86; head.add(skull);
+  const HA = 1.17, HBT = 1.0, HBB = .78, HC = .94, HN = 2.45; // half width, half height top/bottom, half depth, squareness
+  const HW = HA * 2, HD = HC * 2;
+  skull.add(mesh(superBlob(HA, HBT, HBB, HC, HN, 96, 64), M.white));
+  const headZ = (x, y) => HC * Math.pow(Math.max(0, 1 - Math.pow(Math.abs(x / HA), HN) - Math.pow(Math.abs(y / (y > 0 ? HBT : HBB)), HN)), 1 / HN);
+  // light-blue panel along the top of the head
+  const cap = mesh(superBlob(.66, HBT + .014, .3, .86, 4, 64, 40), M.blue, [0, 0, .05]); skull.add(cap);
+  // inset face: a pale-blue panel following the head's curve, sunk inside a raised white bezel
+  const FX = .88, FY = .6, FCY = -.06, FN = 3.0;
+  const facePt = (u, th) => {
+    const c = Math.cos(th), s = Math.sin(th);
+    const x = FX * u * Math.sign(c) * Math.pow(Math.abs(c), 2 / FN), y = FCY + FY * u * Math.sign(s) * Math.pow(Math.abs(s), 2 / FN);
+    return [x, y];
+  };
+  {
+    const RINGS = 24, SEG = 120, pos = [0, FCY, headZ(0, FCY) + .012], idx = [], col = [1, 1, 1];
+    for (let r = 1; r <= RINGS; r++) for (let k = 0; k < SEG; k++) {
+      const [x, y] = facePt(r / RINGS, k / SEG * PI * 2);
+      pos.push(x, y, headZ(x, y) + .012 - .025 * Math.pow(r / RINGS, 6)); // dips slightly at the edge so the bezel overhangs it
+      // soft shading inside the bezel (stronger under the top edge) so the face reads as sunk in
+      const u = r / RINGS, e = Math.max(0, (u - .72) / .28), top = y > FCY ? 1 : .55, v = 1 - .4 * e * e * top;
+      col.push(v, v, Math.min(1, v + .04));
+    }
+    for (let k = 0; k < SEG; k++) idx.push(0, 1 + k, 1 + (k + 1) % SEG);
+    for (let r = 1; r < RINGS; r++) for (let k = 0; k < SEG; k++) {
+      const a = 1 + (r - 1) * SEG + k, b = 1 + (r - 1) * SEG + (k + 1) % SEG, c = a + SEG, d = b + SEG;
+      idx.push(a, c, b, b, c, d);
+    }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.setIndex(idx); g.computeVertexNormals();
+    skull.add(mesh(g, M.faceIn));
+    const rim = [];
+    for (let k = 0; k < 160; k++) { const [x, y] = facePt(1.0, k / 160 * PI * 2); rim.push(new THREE.Vector3(x, y, headZ(x, y) + .015)); }
+    skull.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(rim, true), 240, .09, 14, true), M.white));
+  }
+  const fz = (x, y) => headZ(x, y) + .012;
+  // eyebrows: chunky arched brows in a deeper blue
   for (const sx of [-1, 1]) {
-    const b = mesh(new THREE.CapsuleGeometry(.075, .32, 6, 16), M.blue, [sx * .43, .4, HD / 2 + .1]);
-    b.rotation.z = PI / 2 - sx * .08; skull.add(b);
+    const bx = sx * .42, by = .39, R = .3, ARC = 1.7, tube = .1;
+    const g = new THREE.Group(); g.position.set(bx, by - R, fz(bx, by) + .07); g.rotation.z = -sx * .1; skull.add(g);
+    const arc = mesh(new THREE.TorusGeometry(R, tube, 16, 48, ARC), M.brow); arc.rotation.z = PI / 2 - ARC / 2; g.add(arc);
+    for (const e of [-1, 1]) { const a = PI / 2 + e * ARC / 2; g.add(mesh(new THREE.SphereGeometry(tube, 20, 14), M.brow, [Math.cos(a) * R, Math.sin(a) * R, 0])); }
+    g.scale.set(1, 1, .7);
   }
   // eyes
   const eyes = [];
   for (const sx of [-1, 1]) {
-    const eye = new THREE.Group(); eye.position.set(sx * .42, .06, HD / 2 + .08); skull.add(eye);
+    const eye = new THREE.Group(); eye.position.set(sx * .42, .04, fz(sx * .42, .04) + .07); skull.add(eye);
     const ring = mesh(new THREE.TorusGeometry(.235, .055, 20, 48), M.blue); ring.position.z = .02; eye.add(ring);
     eye.add(mesh(new THREE.SphereGeometry(.225, 40, 28), M.sclera, [0, 0, 0], [1, 1, .42]));
     const pupil = mesh(new THREE.SphereGeometry(.135, 32, 24), M.dark, [0, 0, .05], [1, 1, .55]); eye.add(pupil);
@@ -185,21 +245,21 @@ export function createAvatar(el, opts = {}) {
     eyes.push({ eye, pupil, happy, lid });
   }
   // mouth
-  const smile = mesh(new THREE.TorusGeometry(.17, .032, 12, 40, PI * .7), M.mouth, [0, -.3, HD / 2 + .08]);
+  const smile = mesh(new THREE.TorusGeometry(.15, .028, 12, 40, PI * .7), M.mouth, [0, -.33, fz(0, -.33) + .02]);
   smile.rotation.z = PI + PI * .15; skull.add(smile);
-  const talk = mesh(new THREE.SphereGeometry(.1, 24, 16), M.mouth, [0, -.36, HD / 2 + .07], [1.1, .7, .3]); talk.visible = false; skull.add(talk);
-  // headphones: metal housing with four bolts and a sky-blue cap. Both sides are built the same way and
+  const talk = mesh(new THREE.SphereGeometry(.1, 24, 16), M.mouth, [0, -.37, fz(0, -.37) + .01], [1.1, .7, .3]); talk.visible = false; skull.add(talk);
+  // headphones: metal housing with four bolts and a light-blue cap. Both sides are built the same way and
   // pointed outwards (local -Y faces away from the head on each side).
   const phones = [];
   for (const sx of [-1, 1]) {
-    const p = new THREE.Group(); p.position.set(sx * (HW / 2 - .02), -.04, 0); p.rotation.z = sx * PI / 2; skull.add(p);
-    p.add(mesh(new THREE.CylinderGeometry(.4, .42, .16, 48), M.silver, [0, -.06, 0]));          // metal housing
-    p.add(mesh(new THREE.TorusGeometry(.4, .035, 12, 48), M.silver, [0, -.15, 0]).rotateX(PI / 2)); // metal rim
-    p.add(mesh(new THREE.CylinderGeometry(.33, .33, .14, 48), M.glow, [0, -.2, 0]));             // blue cap
-    p.add(mesh(new THREE.CylinderGeometry(.2, .2, .04, 32), M.silver, [0, -.28, 0]));             // centre plate
+    const p = new THREE.Group(); p.position.set(sx * (HA - .03), -.04, 0); p.rotation.z = sx * PI / 2; skull.add(p);
+    p.add(mesh(new THREE.CylinderGeometry(.36, .38, .2, 48), M.silver, [0, .04, 0]));            // socket into the head
+    p.add(mesh(new THREE.CylinderGeometry(.42, .44, .16, 48), M.silver, [0, -.08, 0]));          // metal housing
+    p.add(mesh(new THREE.TorusGeometry(.42, .035, 12, 48), M.silver, [0, -.17, 0]).rotateX(PI / 2)); // metal rim
+    p.add(mesh(new THREE.CylinderGeometry(.35, .35, .14, 48), M.glow, [0, -.22, 0]));             // blue cap
     for (let k = 0; k < 4; k++) {                                                                  // bolts
       const a = PI / 4 + k * PI / 2;
-      p.add(mesh(new THREE.CylinderGeometry(.06, .06, .07, 6), M.silver, [Math.cos(a) * .365, -.17, Math.sin(a) * .365]));
+      p.add(mesh(new THREE.CylinderGeometry(.06, .06, .07, 6), M.silver, [Math.cos(a) * .385, -.19, Math.sin(a) * .385]));
     }
     phones.push(p);
   }
