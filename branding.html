@@ -247,6 +247,6 @@ dl.meta dd{margin:0;font-weight:600}
   </div>
 </footer>
 
-<script>(function(){var f=document.getElementById("hibanaBook");if(!f)return;window.addEventListener("message",function(e){if(e.source===f.contentWindow&&e.data&&e.data.hibanaHeight){f.style.height=e.data.hibanaHeight+"px"}})})();</script>
+<script>(function(){var f=document.getElementById("hibanaBook");if(!f)return;var st={on:false,play:false};function send(){try{f.contentWindow.postMessage({hibanaView:st},"*")}catch(e){}}window.addEventListener("message",function(e){if(e.source!==f.contentWindow||!e.data)return;if(e.data.hibanaHeight){f.style.height=e.data.hibanaHeight+"px"}if(e.data.hibanaReady)send()});f.addEventListener("load",send);if("IntersectionObserver" in window){new IntersectionObserver(function(en){en.forEach(function(x){var r=x.intersectionRect.height,vh=window.innerHeight||1;st={on:x.isIntersecting,play:st.play||(x.isIntersecting&&(x.intersectionRatio>=.45||r>=vh*.45))};send()})},{threshold:[0,.15,.3,.45,.6,.8,1]}).observe(f)}else{st={on:true,play:true};send()}})();</script>
 </body>
 </html>

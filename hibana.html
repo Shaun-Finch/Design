@@ -329,7 +329,17 @@ html.embed .hb{border-radius:0}
 
   if('ResizeObserver' in window)new ResizeObserver(size).observe(stage); else window.addEventListener('resize',size);
   size();
-  if('IntersectionObserver' in window){
+  var embedded=document.documentElement.classList.contains('embed')&&window.parent!==window;
+  if(embedded){
+    // Inside the homepage/branding iframe the book cannot see the page scroll, so the parent
+    // page tells it when it is on screen. It stays closed until then.
+    visible=false;
+    window.addEventListener('message',function(e){
+      var v=e.data&&e.data.hibanaView; if(!v)return;
+      visible=!!v.on; if(v.play)start(); if(visible)kick();
+    });
+    window.parent.postMessage({hibanaReady:true},'*');
+  }else if('IntersectionObserver' in window){
     new IntersectionObserver(function(en){en.forEach(function(x){visible=x.isIntersecting;if(visible&&x.intersectionRatio>=.35)start();if(visible)kick()})},{threshold:[0,.35]}).observe(stage);
   }else start();
 })();
