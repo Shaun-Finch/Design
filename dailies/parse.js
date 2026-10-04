@@ -110,7 +110,9 @@
     else if (sec['in progress'] && sec['in progress'].length) status = 'In progress';
     else status = normStatus('', all);
     var priority = normPriority(f.priority, all);
-    var sector = normSector(f.sector || f.team || f.department || f.area, all, ctx.sectors);
+    // an explicit Sector line wins; otherwise use the person's own sector, and only guess from the text if they have none
+    var said = clean(f.sector || f.team || f.department || f.area);
+    var sector = said ? normSector(said, all, ctx.sectors) : ctx.sector ? normSector(ctx.sector, '', ctx.sectors) : normSector('', all, ctx.sectors);
     if (sector && !structured) task = task.replace(new RegExp('\\s+for (the )?' + sector.replace('/', '\\/') + '( team)?$', 'i'), '');
     var round = parseInt(f.round || f['update number'] || ((all.match(/\bround\s*(\d+)\b/i) || [])[1]) || '', 10);
     var date = /^\d{4}-\d{2}-\d{2}$/.test(f.date || '') ? f.date : ctx.today;

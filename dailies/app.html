@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Dailies — dashboard</title>
-<meta name="description" content="Your Dailies dashboard: paste the round-up and every task is sorted by status, sector, round, priority and next step.">
+<title>Dailies — your team board</title>
+<meta name="description" content="Your Dailies team board: everyone pastes their round-up and every task is sorted by status, sector, round, priority and next step.">
 <meta name="theme-color" content="#050507">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23d9ff3f'/%3E%3Cstop offset='1' stop-color='%23a855f7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='7' fill='%23050507'/%3E%3Cpath d='M8 7h7.5C21 7 25 10.8 25 16s-4 9-9.5 9H8z M12 10.8v10.4h3.4c3.1 0 5.2-2.1 5.2-5.2s-2.1-5.2-5.2-5.2z' fill='url(%23g)'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,38 +15,81 @@
 <body>
 <header class="hd"><div class="wrap">
   <a class="logo" href="./"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#dcff3f"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs><path d="M6 5h9.5C22.4 5 27 9.6 27 16s-4.6 11-11.5 11H6z M11 9.8v12.4h4.3c3.9 0 6.5-2.5 6.5-6.2s-2.6-6.2-6.5-6.2z" fill="url(#lg)"/></svg>dailies</a><span class="sp"></span>
+  <button class="btn invite" id="inviteBtn" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M19 8v6M22 11h-6"/></svg><span class="l">Invite</span></button>
   <a class="btn doc" href="dailies-prompt.docx" download="Dailies-prompt.docx" title="Download the Dailies prompt as a Word document"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span class="l">Prompt</span><span class="x">.docx</span></a>
-  <div class="menu" id="userMenu" hidden><button class="av" id="avatar" aria-label="Account menu"></button>
-    <div class="pop" id="menuPop" hidden><button type="button" id="copyPrompt">Copy the prompt text</button><button type="button" id="clearSample">Clear sample data</button><button type="button" id="signOut">Sign out</button></div></div>
+  <div class="menu" id="userMenu" hidden><button class="av" id="avatar" type="button" aria-label="Account menu" aria-haspopup="true"></button>
+    <div class="pop" id="menuPop" hidden></div></div>
 </div></header>
 
-<main class="gate" id="gate" hidden>
-  <form class="card" id="gateForm">
-    <span class="mono">Sign in</span>
-    <h1>Open your dashboard</h1>
-    <p>Paste your end-of-day round-up and Dailies sorts it for you.</p>
-    <label class="field"><span>Name</span><input type="text" id="gName" autocomplete="name" required maxlength="60"></label>
-    <label class="field"><span>Work email</span><input type="email" id="gEmail" autocomplete="email" maxlength="120"></label>
-    <label class="field"><span>Your sector</span><input type="text" id="gSector" list="sectorList" placeholder="e.g. UX/UI, Video, Marketing" maxlength="30"><datalist id="sectorList"></datalist></label>
-    <label class="check"><input type="checkbox" id="gSample" checked> Start with a sample team board</label>
-    <button class="btn primary" style="width:100%;height:44px" type="submit">Open dashboard</button>
-    <p class="small" style="margin:14px 0 0">Your board is saved in this browser.</p>
+<main class="gate" id="loading"><p class="small">Loading…</p></main>
+
+<!-- team mode: sign in / create account -->
+<main class="gate" id="auth" hidden>
+  <form class="card" id="authForm" novalidate>
+    <div class="tabs" role="tablist"><button type="button" role="tab" data-mode="in" aria-selected="true">Sign in</button><button type="button" role="tab" data-mode="up" aria-selected="false">Create account</button></div>
+    <h1 id="authTitle">Welcome back</h1>
+    <p id="authLede">Sign in to see your team’s board.</p>
+    <label class="field" id="aNameF" hidden><span>Your name</span><input type="text" id="aName" autocomplete="name" maxlength="60"></label>
+    <label class="field"><span>Email</span><input type="email" id="aEmail" autocomplete="email" maxlength="120" required></label>
+    <label class="field"><span>Password</span><input type="password" id="aPass" autocomplete="current-password" minlength="8" maxlength="72" required></label>
+    <p class="err" id="authErr" role="alert" hidden></p>
+    <button class="btn primary wide" type="submit" id="authBtn">Sign in</button>
+    <p class="small" style="margin:12px 0 0"><button type="button" class="link" id="forgot" hidden>Forgot your password?</button></p>
   </form>
 </main>
 
+<!-- team mode: create or join a team -->
+<main class="gate" id="teams" hidden>
+  <form class="card" id="teamForm" novalidate>
+    <span class="mono" id="tKick">Your team</span>
+    <h1 id="tTitle">Create or join a team</h1>
+    <p id="tLede">Everyone in a team sees one shared board.</p>
+    <label class="field"><span>Your name</span><input type="text" id="tName" autocomplete="name" maxlength="60" required></label>
+    <label class="field"><span>Your sector <em class="opt">optional</em></span><input type="text" id="tSector" list="sectorList" placeholder="e.g. UX/UI, Video, Marketing" maxlength="30"></label>
+    <div class="choice" id="tJoinBox">
+      <label class="field"><span>Invite link or code</span><input type="text" id="tCode" placeholder="Paste the link a teammate sent you" maxlength="300"></label>
+      <button class="btn primary wide" type="button" id="joinBtn">Join team</button>
+    </div>
+    <div class="or" id="tOr"><span>or</span></div>
+    <div class="choice" id="tMakeBox">
+      <label class="field"><span>New team name</span><input type="text" id="tTeam" placeholder="e.g. Studio, Growth team" maxlength="60"></label>
+      <button class="btn wide" type="button" id="makeBtn">Create a new team</button>
+    </div>
+    <p class="err" id="teamErr" role="alert" hidden></p>
+    <p class="small" style="margin:14px 0 0"><button type="button" class="link" id="tBack" hidden>Back to my board</button><button type="button" class="link" id="tOut">Sign out</button></p>
+  </form>
+</main>
+
+<!-- single-device mode (used only when team sync isn't configured) -->
+<main class="gate" id="gate" hidden>
+  <form class="card" id="gateForm">
+    <span class="mono">Get started</span>
+    <h1 id="gateTitle">Set up your board</h1>
+    <p>Paste your end-of-day round-up and Dailies sorts it for you.</p>
+    <label class="field"><span>Your name</span><input type="text" id="gName" autocomplete="name" required maxlength="60"></label>
+    <label class="field"><span>Your sector <em class="opt">optional</em></span><input type="text" id="gSector" list="sectorList" placeholder="e.g. UX/UI, Video, Marketing" maxlength="30"></label>
+    <button class="btn primary wide" type="submit" id="gateBtn">Open my board</button>
+    <p class="small" style="margin:14px 0 0">This board is saved in this browser on this device.</p>
+  </form>
+</main>
+<datalist id="sectorList"></datalist>
+
 <main class="dash wrap" id="dash" hidden>
-  <div class="hello"><div><span class="mono" id="dateL"></span><h1 id="hi">Hi</h1></div></div>
+  <div class="hello"><div><span class="mono" id="dateL"></span><h1 id="hi">Hi</h1><p class="teamline" id="teamLine" hidden></p></div></div>
+  <div class="banner card" id="importBar" hidden></div>
   <form class="card composer" id="composer">
     <label for="rt" class="mono" style="display:block;margin-bottom:8px">Today’s round-up</label>
     <textarea id="rt" placeholder="Paste the reply from the Dailies prompt, or just type: “Finished the checkout payment step and sent it for review. Next: apply the notes on Monday. High priority.”"></textarea>
     <div class="foot2"><div class="preview" id="preview" aria-live="polite"></div><button class="btn primary" id="addBtn" type="submit" disabled>Add to board</button></div>
   </form>
   <div class="stats" id="stats"></div>
-  <div class="tools"><input type="search" id="q" placeholder="Search tasks" aria-label="Search tasks"><select id="fSector" aria-label="Sector"></select>
+  <div class="tools"><input type="search" id="q" placeholder="Search tasks" aria-label="Search tasks"><select id="fPerson" aria-label="Person" hidden></select><select id="fSector" aria-label="Sector"></select>
     <div class="seg" role="group" aria-label="View"><button type="button" data-view="table">Table</button><button type="button" data-view="board">Board</button></div></div>
   <div id="board"></div>
 </main>
 <div class="toast" id="toast" role="status"></div>
+<script src="config.js"></script>
+<script src="lib/supabase.js"></script>
 <script src="parse.js"></script>
 <script src="app.js"></script>
 </body>

@@ -109,16 +109,16 @@ export function createAvatar(el, opts = {}) {
   const M = {
     white: new THREE.MeshPhysicalMaterial({ color: 0xf0f2f5, roughness: .26, metalness: 0, clearcoat: 1, clearcoatRoughness: .12 }),
     grey: new THREE.MeshPhysicalMaterial({ color: 0xc9cfd6, roughness: .32, clearcoat: .8, clearcoatRoughness: .2 }),
-    blue: new THREE.MeshPhysicalMaterial({ color: 0x74abe4, roughness: .34, clearcoat: .7, clearcoatRoughness: .2 }),   // lighter details
-    pants: new THREE.MeshPhysicalMaterial({ color: 0x3f78c4, roughness: .4, clearcoat: .6, clearcoatRoughness: .25 }), // dungarees
-    brow: new THREE.MeshPhysicalMaterial({ color: 0x2a62b4, roughness: .32, clearcoat: .8, clearcoatRoughness: .2 }),
-    face: new THREE.MeshPhysicalMaterial({ color: 0x8dbbe6, roughness: .45, clearcoat: .35, clearcoatRoughness: .25 }),
+    blue: new THREE.MeshPhysicalMaterial({ color: 0x70b0d6, roughness: .34, clearcoat: .7, clearcoatRoughness: .2 }),   // lighter details
+    pants: new THREE.MeshPhysicalMaterial({ color: 0x3c83b0, roughness: .4, clearcoat: .6, clearcoatRoughness: .25 }), // dungarees
+    brow: new THREE.MeshPhysicalMaterial({ color: 0x48a8c2, roughness: .32, clearcoat: .8, clearcoatRoughness: .2 }),
+    face: new THREE.MeshPhysicalMaterial({ color: 0x8cc0da, roughness: .45, clearcoat: .35, clearcoatRoughness: .25 }),
     silver: new THREE.MeshStandardMaterial({ color: 0x8a929b, roughness: .28, metalness: 1 }),   // darker metal
     dark: new THREE.MeshPhysicalMaterial({ color: 0x0f1218, roughness: .12, clearcoat: 1, clearcoatRoughness: .05 }),
     panel: new THREE.MeshPhysicalMaterial({ color: 0x3a4049, roughness: .35, clearcoat: .6 }),
     sclera: new THREE.MeshPhysicalMaterial({ color: 0xfbfdff, roughness: .2, clearcoat: 1 }),
     led: new THREE.MeshStandardMaterial({ color: 0x8fd0ff, emissive: 0x2f8cff, emissiveIntensity: .0, roughness: .3 }),
-    glow: new THREE.MeshStandardMaterial({ color: 0x74abe4, emissive: 0x2f8cff, emissiveIntensity: 0, roughness: .3 }),
+    glow: new THREE.MeshStandardMaterial({ color: 0x70b0d6, emissive: 0x2f8cff, emissiveIntensity: 0, roughness: .3 }),
     mouth: new THREE.MeshStandardMaterial({ color: 0x1b2433, roughness: .5 }),
   };
   const mesh = (g, m, p = [0, 0, 0], s) => {
@@ -210,7 +210,7 @@ export function createAvatar(el, opts = {}) {
   const HA = 1.17, HBT = 1.0, HBB = .78, HC = .94, HN = 2.45; // half width, half height top/bottom, half depth, squareness
   const HW = HA * 2, HD = HC * 2;
   const headZ = (x, y) => HC * Math.pow(Math.max(0, 1 - Math.pow(Math.abs(x / HA), HN) - Math.pow(Math.abs(y / (y > 0 ? HBT : HBB)), HN)), 1 / HN);
-  const FX = .9, FY = .62, FCY = -.06, FN = 3.0, FW = .1, FDEP = .045;      // face panel
+  const FX = .85, FY = .585, FCY = -.07, FN = 3.0, FW = .1, FDEP = .045;      // face panel
   const CX = .7, CZ = .72, CZ0 = .08, CN = 4, CW = .12, CUP = .03;          // top panel
   const sstep = (a, b, v) => { v = Math.min(1, Math.max(0, (v - a) / (b - a))); return v * v * (3 - 2 * v); };
   const faceU = (x, y) => Math.pow(Math.pow(Math.abs(x / FX), FN) + Math.pow(Math.abs((y - FCY) / FY), FN), 1 / FN);
@@ -251,7 +251,7 @@ export function createAvatar(el, opts = {}) {
     const hm = M.white.clone();
     hm.onBeforeCompile = sh => {
       sh.uniforms.uFace = { value: M.face.color };
-      sh.uniforms.uCap = { value: new THREE.Color(0x5f9ade) };
+      sh.uniforms.uCap = { value: new THREE.Color(0x5ca6cc) };
       sh.vertexShader = 'attribute vec3 basePos;\nvarying vec3 vBase;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n  vBase = basePos;');
       sh.fragmentShader = 'uniform vec3 uFace;\nuniform vec3 uCap;\nvarying vec3 vBase;\n' + sh.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>
   {
@@ -271,13 +271,19 @@ export function createAvatar(el, opts = {}) {
     skull.add(mesh(g, hm));
   }
   const fz = (x, y) => headZ(x, y) - FDEP; // the sunken face surface
-  // eyebrows: chunky arched brows in a deeper blue, sitting clear of the eyes
+  // eyebrows: soft, flattened brows with a natural arch (thicker at the inner end, tapering outwards)
   for (const sx of [-1, 1]) {
-    const bx = sx * .42, by = .42, R = .3, ARC = 1.6, tube = .095;
-    const g = new THREE.Group(); g.position.set(bx, by - R, fz(bx, by) + .06); g.rotation.z = -sx * .1; skull.add(g);
-    const arc = mesh(new THREE.TorusGeometry(R, tube, 16, 48, ARC), M.brow); arc.rotation.z = PI / 2 - ARC / 2; g.add(arc);
-    for (const e of [-1, 1]) { const a = PI / 2 + e * ARC / 2; g.add(mesh(new THREE.SphereGeometry(tube, 20, 14), M.brow, [Math.cos(a) * R, Math.sin(a) * R, 0])); }
-    g.scale.set(1, 1, .7);
+    const X = x => x * sx, sh = new THREE.Shape();
+    sh.moveTo(X(-.22), -.035);
+    sh.bezierCurveTo(X(-.1), -.005, X(.1), -.005, X(.23), -.085);              // underside: soft arch, outer end drops
+    sh.quadraticCurveTo(X(.285), -.1, X(.275), -.05);                           // rounded outer tip
+    sh.bezierCurveTo(X(.21), .075, X(.0), .12, X(-.17), .11);                  // top: natural arch, fullest at the inner end
+    sh.quadraticCurveTo(X(-.28), .1, X(-.22), -.035);                           // rounded inner end
+    const geo = new THREE.ExtrudeGeometry(sh, { depth: .02, bevelEnabled: true, bevelThickness: .045, bevelSize: .04, bevelSegments: 8, curveSegments: 32 });
+    const bx = sx * .42, by = .39;
+    const brow = mesh(geo, M.brow, [bx, by, fz(bx, by) + .035]);
+    brow.rotation.y = sx * .18; brow.scale.z = .8;
+    skull.add(brow);
   }
   // eyes (a touch smaller, so there is a clear gap below the brows)
   const eyes = [];
@@ -298,9 +304,18 @@ export function createAvatar(el, opts = {}) {
     lid.scale.y = .001; lid.visible = false;
     eyes.push({ eye, pupil, happy, lid, wink });
   }
-  // mouth
-  const smile = mesh(new THREE.TorusGeometry(.14, .026, 12, 40, PI * .62), M.mouth, [0, -.36, fz(0, -.36) + .015]);
-  smile.rotation.z = PI + PI * .19; skull.add(smile);
+  // mouth: a small, cheeky smile (flatter, one corner lifted)
+  const smile = new THREE.Group(); smile.position.set(.01, -.36, fz(0, -.36) + .016); skull.add(smile);
+  {
+    const z0 = fz(0, -.36), pts = [];
+    for (let i = 0; i <= 24; i++) {
+      const t = i / 24, x = -.13 + .27 * t;
+      const y = -.03 * Math.sin(Math.PI * Math.pow(t, .85)) + .02 * Math.pow(t, 2.2); // gentle dip, right corner turns up
+      pts.push(new THREE.Vector3(x, y, fz(x, -.36 + y) - z0));
+    }
+    smile.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 48, .021, 12, false), M.mouth));
+    for (const q of [pts[0], pts[pts.length - 1]]) smile.add(mesh(new THREE.SphereGeometry(.021, 16, 12), M.mouth, [q.x, q.y, q.z]));
+  }
   const talk = mesh(new THREE.SphereGeometry(.1, 24, 16), M.mouth, [0, -.39, fz(0, -.39) + .005], [1.1, .7, .3]); talk.visible = false; skull.add(talk);
   // headphones (a little smaller): metal housing with four bolts and a light-blue cap. Both sides are built the
   // same way and pointed outwards (local -Y faces away from the head on each side).
