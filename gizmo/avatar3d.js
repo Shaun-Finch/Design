@@ -107,19 +107,15 @@ export function createAvatar(el, opts = {}) {
 
   // materials (palette from Shaun's reference robot: white shell, sky-blue panels, silver springs)
   const M = {
-    white: new THREE.MeshPhysicalMaterial({ color: 0xf0f2f5, roughness: .26, metalness: 0, clearcoat: 1, clearcoatRoughness: .12 }),
-    grey: new THREE.MeshPhysicalMaterial({ color: 0xc9cfd6, roughness: .32, clearcoat: .8, clearcoatRoughness: .2 }),
-    blue: new THREE.MeshPhysicalMaterial({ color: 0x70b0d6, roughness: .34, clearcoat: .7, clearcoatRoughness: .2 }),   // lighter details
-    pants: new THREE.MeshPhysicalMaterial({ color: 0x3c83b0, roughness: .4, clearcoat: .6, clearcoatRoughness: .25 }), // dungarees
-    brow: new THREE.MeshPhysicalMaterial({ color: 0x48a8c2, roughness: .32, clearcoat: .8, clearcoatRoughness: .2 }),
-    face: new THREE.MeshPhysicalMaterial({ color: 0x8cc0da, roughness: .45, clearcoat: .35, clearcoatRoughness: .25 }),
-    silver: new THREE.MeshStandardMaterial({ color: 0x8a929b, roughness: .28, metalness: 1 }),   // darker metal
-    dark: new THREE.MeshPhysicalMaterial({ color: 0x0f1218, roughness: .12, clearcoat: 1, clearcoatRoughness: .05 }),
-    panel: new THREE.MeshPhysicalMaterial({ color: 0x3a4049, roughness: .35, clearcoat: .6 }),
-    sclera: new THREE.MeshPhysicalMaterial({ color: 0xfbfdff, roughness: .2, clearcoat: 1 }),
-    led: new THREE.MeshStandardMaterial({ color: 0x8fd0ff, emissive: 0x2f8cff, emissiveIntensity: .0, roughness: .3 }),
-    glow: new THREE.MeshStandardMaterial({ color: 0x70b0d6, emissive: 0x2f8cff, emissiveIntensity: 0, roughness: .3 }),
-    mouth: new THREE.MeshStandardMaterial({ color: 0x1b2433, roughness: .5 }),
+    white: new THREE.MeshPhysicalMaterial({ color: 0xf2f4f7, roughness: .2, metalness: 0, clearcoat: 1, clearcoatRoughness: .07 }),
+    dark: new THREE.MeshPhysicalMaterial({ color: 0x15181d, roughness: .32, metalness: .3, clearcoat: .8, clearcoatRoughness: .14 }),
+    gun: new THREE.MeshStandardMaterial({ color: 0x3b434d, roughness: .3, metalness: .85 }),
+    metal: new THREE.MeshStandardMaterial({ color: 0x8d96a1, roughness: .24, metalness: 1 }),
+    lens: new THREE.MeshPhysicalMaterial({ color: 0xbfcad4, roughness: .12, metalness: .1, clearcoat: 1, clearcoatRoughness: .05 }),
+    glow: new THREE.MeshStandardMaterial({ color: 0x7ff2ff, emissive: 0x18d2ff, emissiveIntensity: 1.3, roughness: .3 }),   // ear rings, joints (pulse when listening)
+    led: new THREE.MeshStandardMaterial({ color: 0x8ff5ff, emissive: 0x18d2ff, emissiveIntensity: 1.1, roughness: .3 }),    // chest lights (flicker when speaking)
+    arc: new THREE.MeshBasicMaterial({ color: 0x74f4ff, toneMapped: false }),
+    thinkW: new THREE.MeshPhysicalMaterial({ color: 0xf2f4f7, roughness: .2, clearcoat: 1 }),
   };
   const mesh = (g, m, p = [0, 0, 0], s) => {
     const o = new THREE.Mesh(g, m);
@@ -128,105 +124,12 @@ export function createAvatar(el, opts = {}) {
     o.castShadow = true; o.receiveShadow = true;
     return o;
   };
-
-  // ---------- rig ----------
-  // Proportions follow Shaun's reference robot: short and stocky, a big rounded-square head with an
-  // inset pale-blue face, metal headphones with bolts, spring neck, arms and legs, dungarees, chunky shoes.
-  const root = new THREE.Group(); S.add(root);           // travel (x/z) + jump (y)
-  const pivot = new THREE.Group(); pivot.position.y = 1.75; root.add(pivot); // spins / flips around body centre
-  const bodyG = new THREE.Group(); bodyG.position.y = -1.75; pivot.add(bodyG); // squash from feet
-  const hips = new THREE.Group(); hips.position.y = .78; bodyG.add(hips);
-
-  // legs (short springs + chunky shoes)
-  const legs = [];
-  for (const sx of [-1, 1]) {
-    const leg = new THREE.Group(); leg.position.set(sx * .3, 0, 0); hips.add(leg);
-    leg.add(mesh(new THREE.CylinderGeometry(.2, .2, .14, 32), M.grey, [0, -.02, 0]));
-    const sp = helix(.13, .42, 4.5, .034, M.silver); sp.position.y = -.08; leg.add(sp);
-    const foot = new THREE.Group(); foot.position.y = -.6; leg.add(foot);
-    // rounded shoe: grey ankle, white dome, wider light-blue sole with a soft rim
-    foot.add(mesh(new THREE.CylinderGeometry(.12, .13, .16, 32), M.grey, [0, .12, 0]));
-    foot.add(mesh(new THREE.SphereGeometry(1, 48, 24, 0, PI * 2, 0, PI / 2), M.white, [0, -.08, .07], [.27, .25, .37]));
-    foot.add(mesh(roundCyl(.3, .1, .045), M.blue, [0, -.12, .08], [1, 1, 1.32]));
-    leg.userData.foot = foot; leg.userData.footY = -.6;
-    legs.push(leg);
-  }
-
-  // torso: white upper body wearing blue dungarees (trousers, bib, shoulder straps, buttons)
-  const torso = new THREE.Group(); hips.add(torso);
-  torso.add(mesh(new RoundedBoxGeometry(1.16, .56, .88, 6, .22), M.white, [0, .8, 0]));          // upper body
-  torso.add(mesh(new RoundedBoxGeometry(1.28, .68, .96, 6, .3), M.pants, [0, .3, 0]));           // trousers
-  torso.add(mesh(new RoundedBoxGeometry(.86, .5, .12, 4, .05), M.pants, [0, .73, .43]));         // bib
-  torso.add(mesh(new RoundedBoxGeometry(.24, .2, .06, 3, .03), M.pants, [.0, .25, .49]));         // front pocket
-  for (const sx of [-1, 1]) {
-    // strap: from the top corner of the bib, over the shoulder, down the back
-    const pts = [[.33, .93, .47], [.35, 1.04, .34], [.36, 1.09, 0], [.35, 1.03, -.34], [.33, .86, -.46], [.31, .62, -.48]]
-      .map(([x, y, z]) => new THREE.Vector3(sx * x, y, z));
-    const strap = mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, .055, 10, false), M.pants);
-    strap.scale.x = 1.5; strap.position.x = -sx * .17; // flatten into a band
-    torso.add(strap);
-    const btn = mesh(new THREE.CylinderGeometry(.055, .055, .04, 20), M.blue, [sx * .31, .9, .5]); btn.rotation.x = PI / 2; torso.add(btn);
-  }
-  const chest = new THREE.Group(); chest.position.set(0, .7, .5); torso.add(chest);
-  chest.add(mesh(new RoundedBoxGeometry(.52, .18, .05, 3, .025), M.panel));
-  const leds = [];
-  for (const x of [-.13, .13]) {
-    const l = mesh(new THREE.CylinderGeometry(.048, .048, .04, 24), M.led, [x, 0, .03]);
-    l.rotation.x = PI / 2; chest.add(l); leds.push(l);
-  }
-  chest.add(mesh(new RoundedBoxGeometry(.07, .11, .04, 2, .015), M.grey, [0, 0, .03]));
-
-  // neck spring
-  const neck = helix(.15, .2, 2.5, .038, M.silver); neck.position.y = 1.2; torso.add(neck);
-
-  // arms: grey joint into the body, light-blue sleeve, metal spring, white forearm with a light-blue cuff, small hands
-  const arms = [];
-  for (const sx of [-1, 1]) {
-    const arm = new THREE.Group(); arm.position.set(sx * .64, .86, 0); torso.add(arm);
-    const shoulder = new THREE.Group(); arm.add(shoulder);
-    const joint = mesh(roundCyl(.1, .18, .03), M.grey, [sx * -.05, .02, 0]); joint.rotation.z = PI / 2; shoulder.add(joint);
-    shoulder.add(mesh(roundCyl(.165, .27, .075), M.blue, [sx * .07, -.03, 0]));
-    const sp = helix(.1, .3, 3.5, .03, M.silver); sp.position.set(sx * .07, -.15, 0); arm.add(sp);
-    const fore = new THREE.Group(); fore.position.set(sx * .07, -.52, 0); arm.add(fore);
-    fore.add(mesh(roundCyl(.15, .26, .05), M.white, [0, .01, 0]));
-    fore.add(mesh(roundCyl(.158, .09, .03), M.blue, [0, -.12, 0]));
-    // hand: palm, three fingers and a thumb (palm faces the body)
-    const hand = new THREE.Group(); hand.position.y = -.21; hand.rotation.y = sx * -.75; hand.scale.setScalar(1.1); fore.add(hand);
-    hand.add(mesh(new RoundedBoxGeometry(.14, .17, .25, 4, .062), M.blue, [0, -.03, 0]));
-    [-.076, 0, .076].forEach((z, k) => {
-      const f = mesh(new THREE.CapsuleGeometry(.042, .085 - Math.abs(k - 1) * .015, 6, 12), M.blue, [sx * -.014, -.16 + Math.abs(k - 1) * .01, z]);
-      f.rotation.z = sx * .22; hand.add(f);
-    });
-    const thumb = mesh(new THREE.CapsuleGeometry(.046, .08, 6, 12), M.blue, [sx * -.035, -.02, .14]);
-    thumb.rotation.x = .75; thumb.rotation.z = sx * .15; hand.add(thumb);
-    arm.rotation.z = sx * .18;
-    arms.push(arm);
-  }
-
-  // head: one smooth rounded-square shell (superellipsoid, slightly domed). The inset face and the raised
-  // top panel are sculpted into the same mesh and coloured in the shader, so there are no seams or outlines.
-  const head = new THREE.Group(); head.position.y = 1.12; torso.add(head);
-  const skull = new THREE.Group(); skull.position.y = .86; head.add(skull);
-  const HA = 1.17, HBT = 1.0, HBB = .78, HC = .94, HN = 2.45; // half width, half height top/bottom, half depth, squareness
-  const HW = HA * 2, HD = HC * 2;
-  const headZ = (x, y) => HC * Math.pow(Math.max(0, 1 - Math.pow(Math.abs(x / HA), HN) - Math.pow(Math.abs(y / (y > 0 ? HBT : HBB)), HN)), 1 / HN);
-  const FX = .85, FY = .585, FCY = -.07, FN = 3.0, FW = .1, FDEP = .045;      // face panel
-  const CX = .7, CZ = .72, CZ0 = .08, CN = 4, CW = .12, CUP = .03;          // top panel
-  const sstep = (a, b, v) => { v = Math.min(1, Math.max(0, (v - a) / (b - a))); return v * v * (3 - 2 * v); };
-  const faceU = (x, y) => Math.pow(Math.pow(Math.abs(x / FX), FN) + Math.pow(Math.abs((y - FCY) / FY), FN), 1 / FN);
-  const capU = (x, z) => Math.pow(Math.pow(Math.abs(x / CX), CN) + Math.pow(Math.abs((z - CZ0) / CZ), CN), 1 / CN);
-  const disp = (x, y, z) => {
-    let d = 0;
-    const fw = sstep(.3 * HC, .55 * HC, z);
-    if (fw > 0) d -= fw * FDEP * (1 - sstep(1 - FW, 1, faceU(x, y)));
-    const tw = sstep(.45 * HBT, .7 * HBT, y);
-    if (tw > 0) d += tw * CUP * (1 - sstep(1 - CW, 1, capU(x, z)));
-    return d;
-  };
-  {
-    const src = superBlob(HA, HBT, HBB, HC, HN, 384, 256);
+  const f5 = v => v.toFixed(5);
+  // A smooth body shell (superellipsoid) with details sculpted into the one mesh and coloured in the shader,
+  // so recesses, seams and panels have no separate parts or outlines.
+  function sculpt(a, bt, bb, c, n, ws, hs, disp, glslColor, glslEmit) {
+    const src = superBlob(a, bt, bb, c, n, ws, hs);
     const P = src.attributes.position, N = src.attributes.normal, I = src.index.array;
-    // weld the sphere's seam so the normals are smooth all the way round
     const map = new Map(), remap = new Uint32Array(P.count), pos = [], base = [];
     for (let i = 0; i < P.count; i++) {
       const x = P.getX(i), y = P.getY(i), z = P.getZ(i), key = x.toFixed(5) + ',' + y.toFixed(5) + ',' + z.toFixed(5);
@@ -239,97 +142,205 @@ export function createAvatar(el, opts = {}) {
       remap[i] = j;
     }
     const idx = [];
-    for (let k = 0; k < I.length; k += 3) {
-      const a = remap[I[k]], b = remap[I[k + 1]], c = remap[I[k + 2]];
-      if (a !== b && b !== c && a !== c) idx.push(a, b, c);
-    }
+    for (let k = 0; k < I.length; k += 3) { const p = remap[I[k]], q = remap[I[k + 1]], r = remap[I[k + 2]]; if (p !== q && q !== r && p !== r) idx.push(p, q, r); }
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
     g.setAttribute('basePos', new THREE.Float32BufferAttribute(base, 3));
     g.setIndex(idx); g.computeVertexNormals(); src.dispose();
-    const f = v => v.toFixed(5);
-    const hm = M.white.clone();
-    hm.onBeforeCompile = sh => {
-      sh.uniforms.uFace = { value: M.face.color };
-      sh.uniforms.uCap = { value: new THREE.Color(0x5ca6cc) };
+    const m = M.white.clone(), key = 'sculpt:' + glslColor + '|' + (glslEmit || '');
+    m.customProgramCacheKey = () => key;
+    m.onBeforeCompile = sh => {
+      sh.uniforms.uDark = { value: new THREE.Color(0x07090c) };
+      sh.uniforms.uCyan = { value: new THREE.Color(0x29dcff) };
       sh.vertexShader = 'attribute vec3 basePos;\nvarying vec3 vBase;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n  vBase = basePos;');
-      sh.fragmentShader = 'uniform vec3 uFace;\nuniform vec3 uCap;\nvarying vec3 vBase;\n' + sh.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>
-  {
-    vec3 b = vBase;
-    float fw = smoothstep(${f(.3 * HC)}, ${f(.55 * HC)}, b.z);
-    float u = pow(pow(abs(b.x / ${f(FX)}), ${f(FN)}) + pow(abs((b.y - (${f(FCY)})) / ${f(FY)}), ${f(FN)}), ${f(1 / FN)});
-    float aa = fwidth(u) * .8 + 1e-4;
-    float fm = fw * (1.0 - smoothstep(${f(1 - FW * .45)} - aa, ${f(1 - FW * .45)} + aa, u));
-    float tw = smoothstep(${f(.45 * HBT)}, ${f(.7 * HBT)}, b.y);
-    float c = pow(pow(abs(b.x / ${f(CX)}), ${f(CN)}) + pow(abs((b.z - (${f(CZ0)})) / ${f(CZ)}), ${f(CN)}), ${f(1 / CN)});
-    float ca = fwidth(c) * .8 + 1e-4;
-    float cm = step(.5, tw) * (1.0 - smoothstep(${f(1 - CW * .45)} - ca, ${f(1 - CW * .45)} + ca, c));
-    diffuseColor.rgb = mix(diffuseColor.rgb, uFace, fm);
-    diffuseColor.rgb = mix(diffuseColor.rgb, uCap, cm);
-  }`);
+      sh.fragmentShader = 'uniform vec3 uDark;\nuniform vec3 uCyan;\nvarying vec3 vBase;\nfloat se(float x, float y, float n) { return pow(pow(abs(x), n) + pow(abs(y), n), 1.0 / n); }\n' +
+        sh.fragmentShader
+          .replace('#include <color_fragment>', '#include <color_fragment>\n  { vec3 b = vBase; ' + glslColor + ' }')
+          .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n  { vec3 b = vBase; ' + (glslEmit || '') + ' }');
     };
-    skull.add(mesh(g, hm));
+    return mesh(g, m);
   }
-  const fz = (x, y) => headZ(x, y) - FDEP; // the sunken face surface
-  // eyebrows: soft, flattened brows with a natural arch (thicker at the inner end, tapering outwards)
+  const sstep = (a, b, v) => { v = Math.min(1, Math.max(0, (v - a) / (b - a))); return v * v * (3 - 2 * v); };
+  const se = (x, y, n) => Math.pow(Math.pow(Math.abs(x), n) + Math.pow(Math.abs(y), n), 1 / n);
+
+  // ---------- rig ----------
+  // Built from Shaun's reference: a big round white head with a black visor and two glowing cyan eyes,
+  // black ear discs with cyan rings, an egg-shaped white body with a chest panel and a dark pelvis light,
+  // mechanical shoulder sockets and hands, ribbed hip joints, and tall white boots on cyan-lit soles.
+  const root = new THREE.Group(); S.add(root);           // travel (x/z) + jump (y)
+  const pivot = new THREE.Group(); pivot.position.y = 1.75; root.add(pivot); // spins / flips around body centre
+  const bodyG = new THREE.Group(); bodyG.position.y = -1.75; pivot.add(bodyG); // squash from feet
+  const hips = new THREE.Group(); hips.position.y = .78; bodyG.add(hips);
+
+  // ----- legs: ribbed hip wheel, knee, tall boot, rounded shoe on a dark sole with a cyan strip -----
+  const legs = [];
   for (const sx of [-1, 1]) {
-    const X = x => x * sx, sh = new THREE.Shape();
-    sh.moveTo(X(-.22), -.035);
-    sh.bezierCurveTo(X(-.1), -.005, X(.1), -.005, X(.23), -.085);              // underside: soft arch, outer end drops
-    sh.quadraticCurveTo(X(.285), -.1, X(.275), -.05);                           // rounded outer tip
-    sh.bezierCurveTo(X(.21), .075, X(.0), .12, X(-.17), .11);                  // top: natural arch, fullest at the inner end
-    sh.quadraticCurveTo(X(-.28), .1, X(-.22), -.035);                           // rounded inner end
-    const geo = new THREE.ExtrudeGeometry(sh, { depth: .02, bevelEnabled: true, bevelThickness: .045, bevelSize: .04, bevelSegments: 8, curveSegments: 32 });
-    const bx = sx * .42, by = .39;
-    const brow = mesh(geo, M.brow, [bx, by, fz(bx, by) + .035]);
-    brow.rotation.y = sx * .18; brow.scale.z = .8;
-    skull.add(brow);
+    const leg = new THREE.Group(); leg.position.set(sx * .37, .17, 0); hips.add(leg);
+    const wheel = mesh(new THREE.CylinderGeometry(.19, .19, .3, 40), M.dark); wheel.rotation.z = PI / 2; leg.add(wheel);
+    for (const ox of [-.1, -.035, .035, .1]) { const r = mesh(new THREE.TorusGeometry(.19, .022, 10, 40), M.gun, [ox, 0, 0]); r.rotation.y = PI / 2; leg.add(r); }
+    const cap = mesh(new THREE.CylinderGeometry(.14, .14, .02, 32), M.gun, [sx * .152, 0, 0]); cap.rotation.z = PI / 2; leg.add(cap);
+    const ring = mesh(new THREE.TorusGeometry(.12, .014, 8, 40), M.glow, [sx * .163, 0, 0]); ring.rotation.y = PI / 2; leg.add(ring);
+    const knee = new THREE.Group(); knee.position.y = -.12; leg.add(knee);
+    knee.add(mesh(new THREE.CylinderGeometry(.13, .15, .14, 32), M.dark, [0, -.04, 0]));                 // knee joint, tucked inside the boot top
+    const boot = mesh(new THREE.LatheGeometry([[0, -.52], [.19, -.52], [.212, -.42], [.216, -.28], [.21, -.14], [.2, -.08], [.19, -.06], [.165, -.05], [.15, -.06]].map(([r, y]) => new THREE.Vector2(r, y)), 48), M.white);
+    knee.add(boot);
+    knee.add(mesh(new THREE.TorusGeometry(.178, .022, 10, 40), M.dark, [0, -.06, 0]).rotateX(PI / 2));  // dark collar at the top of the boot
+    knee.add(mesh(new THREE.TorusGeometry(.217, .005, 6, 48), M.dark, [0, -.3, 0]).rotateX(PI / 2));    // seam line
+    knee.add(mesh(superBlob(.235, .18, .17, .34, 2.6, 48, 32), M.white, [0, -.6, .09]));                // shoe
+    knee.add(mesh(roundCyl(.245, .075, .03), M.dark, [0, -.79, .09], [1, 1, 1.42]));                     // sole
+    const strip = mesh(new THREE.TorusGeometry(.248, .011, 8, 40, PI * .62).rotateZ(-PI / 2 - PI * .31), M.glow, [0, -.775, .09], [1, 1.42, 1]);
+    strip.rotation.x = -PI / 2; knee.add(strip);                    // cyan strip round the toe
+    const foot = new THREE.Group(); leg.add(foot);                                                        // kept for older moves (heel lift drives the knee now)
+    leg.userData = { foot, footY: 0, knee };
+    legs.push(leg);
   }
-  // eyes (a touch smaller, so there is a clear gap below the brows)
+  // pelvis block between the hip wheels
+  hips.add(mesh(superBlob(.36, .17, .17, .3, 3, 48, 32), M.dark, [0, .3, 0]));
+
+  // ----- body: egg-shaped shell with a chest panel, four cyan lights and a dark pelvis plate with a cyan ring -----
+  const torso = new THREE.Group(); hips.add(torso);
+  const TA = .57, TBT = .5, TBB = .53, TC = .47, TN = 2.4, TY = .84;
+  const torsoZ = (x, y) => TC * Math.pow(Math.max(0, 1 - Math.pow(Math.abs(x / TA), TN) - Math.pow(Math.abs(y / (y > 0 ? TBT : TBB)), TN)), 1 / TN);
+  const body = sculpt(TA, TBT, TBB, TC, TN, 160, 112,
+    (x, y, z) => { if (z < 0) return 0; const u = se(x / .3, (y - .19) / .155, 6); return -.007 * (1 - sstep(.96, 1.0, u)) - .006 * Math.exp(-Math.pow((u - 1) / .012, 2)); },
+    `float fw = smoothstep(.0, .15, b.z);
+     float u = se(b.x / .3, (b.y - .19) / .155, 6.0), ua = fwidth(u) + 1e-4;
+     float line = fw * (1.0 - smoothstep(.006, .006 + ua * 1.5, abs(u - 1.0)));
+     diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * .55, line);
+     float p = se(b.x / .34, (b.y + .41) / .25, 4.0), pa = fwidth(p) + 1e-4;
+     float dark = smoothstep(-.12, .06, b.z) * (1.0 - smoothstep(1.0 - pa, 1.0 + pa, p));
+     diffuseColor.rgb = mix(diffuseColor.rgb, uDark * 1.6, dark);`);
+  body.position.y = TY; torso.add(body);
+  for (const [x, y] of [[-.265, .31], [.265, .31], [-.265, .07], [.265, .07]]) torso.add(mesh(new THREE.SphereGeometry(.017, 12, 10), M.led, [x, TY + y, torsoZ(x, y) - .002]));
+  const leds = [];
+  {
+    // sits flush on the curved pelvis plate: oriented to the surface normal
+    const y = -.36, z = torsoZ(0, y), nrm = new THREE.Vector3(0, -Math.pow(Math.abs(y / TBB), TN - 1) / TBB, Math.pow(z / TC, TN - 1) / TC).normalize();
+    const plate = new THREE.Group(); plate.position.set(0, TY + y, z); plate.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), nrm); torso.add(plate);
+    const r = mesh(new THREE.TorusGeometry(.07, .016, 10, 40), M.led, [0, 0, .012]); plate.add(r); leds.push(r);
+    plate.add(mesh(new THREE.CylinderGeometry(.06, .06, .02, 32), M.gun, [0, 0, .004]).rotateX(PI / 2));
+    plate.add(mesh(new THREE.CylinderGeometry(.032, .032, .02, 24), M.lens, [0, 0, .012]).rotateX(PI / 2));
+  }
+  // neck collar
+  torso.add(mesh(new THREE.CylinderGeometry(.17, .2, .2, 40), M.dark, [0, TY + TBT + .02, 0]));
+  torso.add(mesh(new THREE.TorusGeometry(.19, .022, 10, 40), M.metal, [0, TY + TBT + .07, 0]).rotateX(PI / 2));
+  // shoulder sockets
+  for (const sx of [-1, 1]) {
+    const sock = mesh(new THREE.CylinderGeometry(.25, .25, .16, 40), M.dark, [sx * .49, TY + .08, 0]); sock.rotation.z = PI / 2; torso.add(sock);
+    const lip = mesh(new THREE.TorusGeometry(.25, .045, 12, 40), M.dark, [sx * .555, TY + .08, 0]); lip.rotation.y = PI / 2; torso.add(lip);
+  }
+
+  // ----- arms: ball joint, white upper arm with a dark cuff, elbow, white bracer, mechanical hand -----
+  const arms = [];
+  for (const sx of [-1, 1]) {
+    const arm = new THREE.Group(); arm.position.set(sx * .62, TY + .08, 0); torso.add(arm);
+    const shoulder = new THREE.Group(); arm.add(shoulder);
+    shoulder.add(mesh(new THREE.SphereGeometry(.16, 32, 24), M.gun));
+    const upper = new THREE.Group(); arm.add(upper);
+    upper.add(mesh(roundCyl(.125, .32, .06), M.white, [0, -.2, 0]));
+    upper.add(mesh(roundCyl(.13, .06, .02), M.dark, [0, -.35, 0]));
+    const fore = new THREE.Group(); fore.position.y = -.43; arm.add(fore);
+    fore.add(mesh(new THREE.SphereGeometry(.11, 28, 20), M.gun));
+    fore.add(mesh(new THREE.LatheGeometry([[0, -.4], [.13, -.4], [.158, -.37], [.168, -.28], [.165, -.14], [.15, -.07], [.115, -.05], [0, -.05]].map(([r, y]) => new THREE.Vector2(r, y)), 40), M.white));
+    fore.add(mesh(roundCyl(.169, .05, .02), M.dark, [0, -.11, 0]));
+    fore.add(mesh(new THREE.TorusGeometry(.132, .009, 8, 36), M.glow, [0, -.395, 0]).rotateX(PI / 2));
+    // hand: palm faces the body; four two-part fingers and a thumb
+    const hand = new THREE.Group(); hand.position.y = -.42; hand.scale.setScalar(1.3); fore.add(hand);
+    hand.add(mesh(new THREE.CylinderGeometry(.06, .07, .06, 20), M.dark, [0, .01, 0]));
+    hand.add(mesh(new RoundedBoxGeometry(.09, .15, .17, 4, .035), M.gun, [0, -.08, 0]));
+    hand.add(mesh(new RoundedBoxGeometry(.03, .09, .11, 2, .012), M.dark, [-sx * .046, -.08, 0]));       // palm pad
+    const fingers = [];
+    [-.06, -.02, .02, .06].forEach((z, k) => {
+      const len = k === 0 ? .85 : k === 3 ? .9 : 1;
+      const f = new THREE.Group(); f.position.set(0, -.155, z); hand.add(f);
+      f.add(mesh(new THREE.SphereGeometry(.022, 12, 10), M.dark));
+      f.add(mesh(new THREE.CapsuleGeometry(.019, .045 * len, 4, 10), M.gun, [0, -.04 * len, 0]));
+      const tip = new THREE.Group(); tip.position.y = -.08 * len; f.add(tip);
+      tip.add(mesh(new THREE.SphereGeometry(.018, 10, 8), M.glow));                                       // cyan knuckle
+      tip.add(mesh(new THREE.CapsuleGeometry(.017, .035 * len, 4, 10), M.gun, [0, -.035 * len, 0]));
+      f.userData.tip = tip; fingers.push(f);
+    });
+    const thumb = new THREE.Group(); thumb.position.set(-sx * .03, -.05, .1); thumb.rotation.x = .9; hand.add(thumb);
+    thumb.add(mesh(new THREE.SphereGeometry(.024, 12, 10), M.dark));
+    thumb.add(mesh(new THREE.CapsuleGeometry(.021, .06, 4, 10), M.gun, [0, -.045, 0]));
+    arm.userData = { fore, hand, fingers, thumb, sx };
+    arms.push(arm);
+  }
+
+  // ----- head: big round white shell, black glass visor with a cyan rim light, seam over the top -----
+  const head = new THREE.Group(); head.position.y = TY + TBT + .05; torso.add(head);
+  const skull = new THREE.Group(); skull.position.y = .8; head.add(skull);
+  const HA = .91, HBT = .8, HBB = .74, HC = .86, HN = 2.15;
+  const HW = HA * 2, HD = HC * 2;
+  const headZ = (x, y) => HC * Math.pow(Math.max(0, 1 - Math.pow(Math.abs(x / HA), HN) - Math.pow(Math.abs(y / (y > 0 ? HBT : HBB)), HN)), 1 / HN);
+  const VX = .64, VH = .4, VY = -.07, VN = 3.0, VW = .1, VDEP = .06;
+  const seamY = z => .56 - .12 * z / HC;
+  skull.add(sculpt(HA, HBT, HBB, HC, HN, 384, 256,
+    (x, y, z) => {
+      let d = 0;
+      const fw = sstep(.3 * HC, .55 * HC, z);
+      if (fw > 0) d -= fw * VDEP * (1 - sstep(1 - VW, 1, se(x / VX, (y - VY) / VH, VN)));
+      d -= .012 * Math.exp(-Math.pow((y - seamY(z)) / .012, 2));
+      return d;
+    },
+    `float fw = smoothstep(${f5(.3 * HC)}, ${f5(.55 * HC)}, b.z);
+     float u = se(b.x / ${f5(VX)}, (b.y - (${f5(VY)})) / ${f5(VH)}, ${f5(VN)}), ua = fwidth(u) + 1e-4;
+     float vis = fw * (1.0 - smoothstep(${f5(1 - VW * .55)} - ua, ${f5(1 - VW * .55)} + ua, u));
+     diffuseColor.rgb = mix(diffuseColor.rgb, uDark, vis);
+     float s = b.y - (${f5(.56)} - ${f5(.12 / HC)} * b.z), sa = fwidth(s) + 1e-4;
+     diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * .42, 1.0 - smoothstep(.0035, .0035 + sa * 1.5, abs(s)));`,
+    `float fw = smoothstep(${f5(.3 * HC)}, ${f5(.55 * HC)}, b.z);
+     float u = se(b.x / ${f5(VX)}, (b.y - (${f5(VY)})) / ${f5(VH)}, ${f5(VN)}), ua = fwidth(u) + 1e-4;
+     float e = ${f5(1 - VW * .55)};
+     float band = smoothstep(e - .05 - ua, e - .03, u) * (1.0 - smoothstep(e - ua, e + ua, u));
+     float topw = .3 + .7 * smoothstep(-.3, .7, (b.y - (${f5(VY)})) / ${f5(VH)});
+     totalEmissiveRadiance += uCyan * band * topw * fw * 1.6;`));
+  const vz = (x, y) => headZ(x, y) - VDEP; // the sunken visor surface
+  const vNormal = (x, y) => { const z = headZ(x, y); return new THREE.Vector3(Math.sign(x) * Math.pow(Math.abs(x / HA), HN - 1) / HA, Math.sign(y) * Math.pow(Math.abs(y / (y > 0 ? HBT : HBB)), HN - 1) / (y > 0 ? HBT : HBB), Math.pow(z / HC, HN - 1) / HC).normalize(); };
+
+  // eyes: a soft scan-lined halo, a bright cyan core that follows the look direction, and a glow
+  function eyeTexture(core) {
+    const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
+    const r = g.createRadialGradient(128, 128, 0, 128, 128, 128);
+    if (core) { r.addColorStop(0, 'rgba(225,255,255,1)'); r.addColorStop(.4, 'rgba(110,248,255,1)'); r.addColorStop(.8, 'rgba(45,220,255,1)'); r.addColorStop(.9, 'rgba(35,200,255,.5)'); r.addColorStop(1, 'rgba(30,190,255,0)'); }
+    else { r.addColorStop(0, 'rgba(120,190,215,.95)'); r.addColorStop(.55, 'rgba(96,150,178,.9)'); r.addColorStop(.9, 'rgba(78,128,160,.88)'); r.addColorStop(.96, 'rgba(110,200,235,.9)'); r.addColorStop(1, 'rgba(90,170,210,0)'); }
+    g.fillStyle = r; g.fillRect(0, 0, 256, 256);
+    if (!core) { g.globalCompositeOperation = 'destination-out'; g.fillStyle = 'rgba(0,0,0,.22)'; for (let y = 0; y < 256; y += 7) g.fillRect(0, y, 256, 2.5); }
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+  }
+  const haloTex = eyeTexture(false), coreTex = eyeTexture(true);
+  const eyeMat = new THREE.MeshBasicMaterial({ map: haloTex, transparent: true, depthWrite: false, toneMapped: false });
+  const coreMat = new THREE.MeshBasicMaterial({ map: coreTex, transparent: true, depthWrite: false, toneMapped: false, blending: THREE.AdditiveBlending });
+  const glowMat = new THREE.MeshBasicMaterial({ map: coreTex, transparent: true, depthWrite: false, toneMapped: false, blending: THREE.AdditiveBlending, opacity: .1 });
+  const disc = new THREE.CircleGeometry(1, 64);
   const eyes = [];
   for (const sx of [-1, 1]) {
-    const eye = new THREE.Group(); eye.position.set(sx * .42, -.02, fz(sx * .42, -.02) + .06); eye.scale.setScalar(.82); skull.add(eye);
-    const ring = mesh(new THREE.TorusGeometry(.235, .055, 20, 48), M.blue); ring.position.z = .02; eye.add(ring);
-    eye.add(mesh(new THREE.SphereGeometry(.225, 40, 28), M.sclera, [0, 0, 0], [1, 1, .42]));
-    const pupil = mesh(new THREE.SphereGeometry(.135, 32, 24), M.dark, [0, 0, .05], [1, 1, .55]); eye.add(pupil);
-    const happy = mesh(new THREE.TorusGeometry(.1, .03, 12, 32, PI), M.dark, [0, -.03, .1]); happy.visible = false; eye.add(happy);
-    // wink: a little chevron, like the reference
-    const wink = new THREE.Group(); wink.position.z = .09; wink.visible = false; eye.add(wink);
-    for (const e of [-1, 1]) {
-      const s = mesh(new THREE.CapsuleGeometry(.036, .13, 6, 12), M.dark, [sx * -.03, e * .05, 0]);
-      s.rotation.z = sx * e * -1.0; wink.add(s);
-    }
-    const lid = new THREE.Group(); lid.position.y = .235; eye.add(lid);
-    const lidM = mesh(new THREE.SphereGeometry(.245, 32, 20), M.face, [0, -.235, .02], [1, 1, .7]); lid.add(lidM);
-    lid.scale.y = .001; lid.visible = false;
-    eyes.push({ eye, pupil, happy, lid, wink });
+    const ex = sx * .33, ey = -.05;
+    const eye = new THREE.Group(); eye.position.set(ex, ey, vz(ex, ey) + .012);
+    eye.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), vNormal(ex, ey)); skull.add(eye);
+    const lid = new THREE.Group(); eye.add(lid);                                       // blink squashes this group
+    const halo = new THREE.Mesh(disc, eyeMat); halo.scale.set(.21, .26, 1); halo.renderOrder = 1; lid.add(halo);
+    const pupil = new THREE.Group(); pupil.position.z = .004; lid.add(pupil);
+    const core = new THREE.Mesh(disc, coreMat); core.scale.setScalar(.105); core.renderOrder = 2; pupil.add(core);
+    const glow = new THREE.Mesh(disc, glowMat); glow.scale.setScalar(.2); glow.position.z = .002; glow.renderOrder = 3; pupil.add(glow);
+    const happy = mesh(new THREE.TorusGeometry(.12, .026, 10, 36, PI), M.arc, [0, -.05, .01]); happy.castShadow = false; happy.visible = false; eye.add(happy);
+    const wink = mesh(new THREE.TorusGeometry(.12, .026, 10, 36, PI), M.arc, [0, -.05, .01]); wink.castShadow = false; wink.visible = false; eye.add(wink);
+    eyes.push({ eye, lid, pupil, core, happy, wink, halo });
   }
-  // mouth: a small, cheeky smile (flatter, one corner lifted)
-  const smile = new THREE.Group(); smile.position.set(.01, -.36, fz(0, -.36) + .016); skull.add(smile);
-  {
-    const z0 = fz(0, -.36), pts = [];
-    for (let i = 0; i <= 24; i++) {
-      const t = i / 24, x = -.13 + .27 * t;
-      const y = -.03 * Math.sin(Math.PI * Math.pow(t, .85)) + .02 * Math.pow(t, 2.2); // gentle dip, right corner turns up
-      pts.push(new THREE.Vector3(x, y, fz(x, -.36 + y) - z0));
-    }
-    smile.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 48, .021, 12, false), M.mouth));
-    for (const q of [pts[0], pts[pts.length - 1]]) smile.add(mesh(new THREE.SphereGeometry(.021, 16, 12), M.mouth, [q.x, q.y, q.z]));
-  }
-  const talk = mesh(new THREE.SphereGeometry(.1, 24, 16), M.mouth, [0, -.39, fz(0, -.39) + .005], [1.1, .7, .3]); talk.visible = false; skull.add(talk);
-  // headphones (a little smaller): metal housing with four bolts and a light-blue cap. Both sides are built the
-  // same way and pointed outwards (local -Y faces away from the head on each side).
+  // no mouth (like the reference); when Gizmo talks, a small cyan level meter lights up in the visor
+  const smile = new THREE.Group(); skull.add(smile);
+  const talk = new THREE.Group(); talk.position.set(0, -.31, vz(0, -.31) + .012); talk.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), vNormal(0.001, -.31)); skull.add(talk);
+  const bars = [];
+  for (let i = 0; i < 5; i++) { const b = new THREE.Mesh(new THREE.PlaneGeometry(.036, .1), M.arc); b.position.x = (i - 2) * .058; talk.add(b); bars.push(b); }
+  talk.visible = false;
+  // ears: black housing with a bevelled rim, grey lens and a cyan ring. Local -Y points away from the head.
   const phones = [];
   for (const sx of [-1, 1]) {
-    const p = new THREE.Group(); p.position.set(sx * (HA - .04), -.04, 0); p.rotation.z = sx * PI / 2; p.scale.setScalar(.84); skull.add(p);
-    p.add(mesh(new THREE.CylinderGeometry(.36, .38, .24, 48), M.silver, [0, .06, 0]));            // socket into the head
-    p.add(mesh(new THREE.CylinderGeometry(.42, .44, .16, 48), M.silver, [0, -.08, 0]));          // metal housing
-    p.add(mesh(new THREE.TorusGeometry(.42, .035, 12, 48), M.silver, [0, -.17, 0]).rotateX(PI / 2)); // metal rim
-    p.add(mesh(new THREE.CylinderGeometry(.35, .35, .14, 48), M.glow, [0, -.22, 0]));             // blue cap
-    for (let k = 0; k < 4; k++) {                                                                  // bolts
-      const a = PI / 4 + k * PI / 2;
-      p.add(mesh(new THREE.CylinderGeometry(.05, .05, .06, 6), M.silver, [Math.cos(a) * .385, -.19, Math.sin(a) * .385]));
-    }
+    const p = new THREE.Group(); p.position.set(sx * (HA - .05), -.07, .03); p.rotation.z = sx * PI / 2; skull.add(p);
+    p.add(mesh(new THREE.CylinderGeometry(.3, .31, .2, 48), M.dark, [0, -.02, 0]));
+    p.add(mesh(new THREE.TorusGeometry(.29, .045, 14, 48), M.dark, [0, -.12, 0]).rotateX(PI / 2));
+    p.add(mesh(new THREE.CylinderGeometry(.22, .22, .03, 48), M.lens, [0, -.13, 0]));
+    p.add(mesh(new THREE.TorusGeometry(.228, .012, 8, 48), M.glow, [0, -.143, 0]).rotateX(PI / 2));
     phones.push(p);
   }
   // thought bubbles
@@ -344,7 +355,7 @@ export function createAvatar(el, opts = {}) {
   // ---------- state ----------
   let state = 'idle', talkLevel = 0, talkTarget = 0;
   let look = { x: 0, y: 0 }, lookS = { x: 0, y: 0 };
-  let blinkT = 0, nextBlink = 2 + Math.random() * 3, wink = -1;
+  let blinkT = 0, nextBlink = 2 + Math.random() * 3, wink = -1, dbl = false;
   let current = null; // {name, t0, dur, fn, resolve}
   const clock = new THREE.Clock();
   let T = 0; // animation time: advances at most 50ms per frame, so moves always play in full
@@ -423,34 +434,58 @@ export function createAvatar(el, opts = {}) {
     head.rotation.set(P.head.x - lookS.y * .18, P.head.y + lookS.x * .32, P.head.z);
     arms[0].rotation.set(P.armL.x, 0, -.18 - P.armL.z);
     arms[1].rotation.set(P.armR.x, 0, .18 - P.armR.z);
-    arms[1].children[2].rotation.z = P.foreR;
+    arms[1].children[2].rotation.z = .12 + P.foreR;
     legs[0].rotation.x = P.legL.x; legs[1].rotation.x = P.legR.x;
-    legs[0].userData.foot.position.y = legs[0].userData.footY + P.footL; legs[1].userData.foot.position.y = legs[1].userData.footY + P.footR;
+    // knees: bend when a leg swings forward, when Gizmo crouches or lands, and to lift the heel
+    const crouch = Math.max(0, 1 - P.sy) * 4;
+    [[legs[0], P.legL.x, P.footL], [legs[1], P.legR.x, P.footR]].forEach(([lg, lx, lift]) => {
+      const k = .04 + Math.max(0, -lx) * 1.1 + crouch + lift * 3.2;
+      lg.userData.knee.rotation.x = lerp(lg.userData.knee.rotation.x, Math.min(k, 1.9), 1 - Math.pow(.0005, dt));
+    });
+    // elbows, wrists and fingers: arms bend more as they rise, hands open when happy, fingers flex gently at rest
+    arms.forEach((a, i) => {
+      const u = a.userData, raise = Math.abs(i ? P.armR.z : P.armL.z), swing = i ? P.armR.x : P.armL.x;
+      const bend = .22 + Math.min(1.4, raise) * .32 + Math.max(0, -swing) * .3 + (reduce ? 0 : Math.sin(t * 1.7 + i) * .03);
+      u.fore.rotation.x = lerp(u.fore.rotation.x, -bend, 1 - Math.pow(.002, dt));
+      if (i === 0) u.fore.rotation.z = lerp(u.fore.rotation.z, u.sx * .12, .2);
+      const open = P.joy || (i === 1 && P.foreR !== 0);
+      const curl = open ? .12 : .5 + (reduce ? 0 : Math.sin(t * 1.3 + i * 2) * .1);
+      u.fingers.forEach((f, k) => {
+        const c = lerp(f.rotation.z / -u.sx || 0, curl * (1 + k * .06), 1 - Math.pow(.003, dt));
+        f.rotation.z = -u.sx * c; f.userData.tip.rotation.z = -u.sx * c * 1.1;
+      });
+      u.thumb.rotation.z = lerp(u.thumb.rotation.z, -u.sx * (open ? .1 : .35), .15);
+      u.hand.rotation.y = lerp(u.hand.rotation.y, (open ? -u.sx * .5 : 0), .12);
+    });
     ground.material.opacity = .16 * clamp(1 - P.y / 2.6, .25, 1);
     blob.material.opacity = .12 * clamp(1 - P.y / 2.6, .25, 1); blob.position.x = P.x;
 
-    // eyes
+    // eyes: a quick squash blink (sometimes a double blink) with a bright flash as they reopen
     blinkT += dt;
-    if (blinkT > nextBlink) { blinkT = 0; nextBlink = 2.2 + Math.random() * 3.4; }
-    const blink = blinkT < .14 ? Math.sin(blinkT / .14 * PI) : 0;
+    if (blinkT > nextBlink) { blinkT = 0; dbl = Math.random() < .25; nextBlink = 2.4 + Math.random() * 3.2; }
+    const bl = x => x < .12 ? Math.sin(x / .12 * PI) : 0;
+    const shut = reduce ? 0 : Math.max(bl(blinkT), dbl ? bl(blinkT - .2) : 0);
+    const flash = reduce ? 0 : Math.max(0, 1 - Math.abs(blinkT - .16 - (dbl ? .2 : 0)) / .14);
     eyes.forEach((e, i) => {
-      e.pupil.position.x = lookS.x * .06; e.pupil.position.y = lookS.y * .05;
-      const winking = P.wink === i, shut = winking ? 0 : blink;
-      e.pupil.visible = !P.joy && !winking && shut < .85; e.happy.visible = P.joy && !winking;
-      e.wink.visible = winking;
-      e.lid.visible = shut > .02; e.lid.scale.y = Math.max(.001, shut);
-      e.pupil.scale.set(state === 'listening' ? 1.12 : 1, state === 'listening' ? 1.12 : 1, .55);
+      const winking = P.wink === i, joy = P.joy && !winking;
+      e.pupil.position.x = lerp(e.pupil.position.x, lookS.x * .055, .25); e.pupil.position.y = lerp(e.pupil.position.y, lookS.y * .05, .25);
+      e.lid.visible = !winking && !joy;
+      e.lid.scale.y = Math.max(.06, 1 - shut * .94);
+      e.lid.scale.x = 1 + shut * .08;
+      const big = state === 'listening' ? 1.15 + Math.sin(t * 7) * .05 : state === 'thinking' ? .9 : 1;
+      e.pupil.scale.setScalar(lerp(e.pupil.scale.x, big * (1 + flash * .15), .25));
+      e.core.material.opacity = 1;
+      e.happy.visible = joy; e.wink.visible = winking;
     });
-    // mouth
+    // talking: the cyan level meter in the visor
     talkLevel = lerp(talkLevel, talkTarget, .35);
     const speaking = state === 'speaking';
-    talk.visible = speaking; smile.visible = !speaking;
-    if (speaking) { talk.scale.set(.9 + talkLevel * .4, .35 + talkLevel * 1.0, .3); }
-    smile.scale.setScalar(P.joy ? 1.25 : 1);
+    talk.visible = speaking;
+    if (speaking) bars.forEach((b, i) => { b.scale.y = .25 + talkLevel * (.55 + .45 * Math.abs(Math.sin(t * 14 + i * 1.7))) * (1 - Math.abs(i - 2) * .18); });
     // glows
-    const lg = state === 'listening' ? .9 + Math.sin(t * 7) * .5 : 0;
+    const lg = state === 'listening' ? 2.2 + Math.sin(t * 7) * .9 : 1.3;
     M.glow.emissiveIntensity = lerp(M.glow.emissiveIntensity, lg, .2);
-    M.led.emissiveIntensity = speaking ? (Math.sin(t * 16) > 0 ? 2.2 : .6) : lerp(M.led.emissiveIntensity, .15, .1);
+    M.led.emissiveIntensity = speaking ? (Math.sin(t * 16) > 0 ? 2.6 : .7) : lerp(M.led.emissiveIntensity, 1.1, .1);
     think.visible = state === 'thinking';
     if (think.visible) think.children.forEach((c, i) => c.scale.setScalar(.8 + .25 * Math.max(0, Math.sin(t * 5 - i * .8))));
 
