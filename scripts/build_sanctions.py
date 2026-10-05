@@ -105,6 +105,7 @@ def parse_ofac(sdn_text, alt_text):
         if len(r) < 4 or not r[0].strip().isdigit():
             continue
         ent, name, typ, prog = r[0].strip(), clean(r[1]), clean(r[2]), clean(r[3])
+        prog = " · ".join(x.strip(" []") for x in prog.split("] [") if x.strip(" []"))
         if not name:
             continue
         recs[ent] = ["ofac", ent, (typ or "entity").capitalize(), prog, [name]]

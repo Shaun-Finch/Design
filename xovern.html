@@ -5,264 +5,247 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Xovern — AI security layer (WIP)</title>
 <meta name="description" content="Xovern, a work-in-progress security platform for companies building with AI: sanctions screening against the official UK and US lists, a prompt-injection firewall, commit-signature and leaked-secret checks, breached-password checks, passkey sign-up and payment fraud scoring.">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#151414">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 :root{
-  --bg:#000;
-  --panel:#0A0A0F;
-  --panel2:#101018;
-  --line:#1D1D29;
-  --ink:#E7E7EF;
-  --mute:#8C8C9C;
-  --dim:#5A5A6A;
-  --violet:#5B3DF5;
-  --violet-ink:#C9C2FF;
-  --indigo:#5D5BFF;
-  --link:#8F8CFF;
-  --pink:#FF2EA6;
-  --peach:#FFD2B8;
-  --amber:#FFB238;
-  --green:#2FD06B;
-  --accent:#F0562A;
-  --accent-deep:#D4441A;
+  --bg:#151414;
+  --panel:#1b1a1a;
+  --panel2:#201f1f;
+  --line:#2b2929;
+  --ink:#ECE8E1;
+  --mute:#9a948e;
+  --dim:#615c58;
+  --violet:#B9B1E6;
+  --violet-ink:#B9B1E6;
+  --indigo:#B9B1E6;
+  --link:#C4BCEB;
+  --pink:#D4848A;
+  --peach:#E9C3B4;
+  --amber:#D6A76A;
+  --green:#7FB89A;
+  --accent:#D4848A;
+  --accent-deep:#C46F76;
   --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
-  --courier:"Courier New",Courier,ui-monospace,monospace;
-  --serif:"Times New Roman",Times,Georgia,serif;
   --gutter:clamp(1rem,3.4vw,2.25rem);
+  --r:8px;
   color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
-  margin:0;background-color:var(--bg);
-  background-image:radial-gradient(rgba(255,255,255,.055) 1px,transparent 1px);background-size:22px 22px;
-  color:var(--ink);font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1rem;line-height:1.55;overflow-x:hidden;
+  margin:0;background:var(--bg);
+  background-image:radial-gradient(60rem 30rem at 70% -5%,rgba(212,132,138,.07),transparent 70%);
+  background-repeat:no-repeat;
+  color:var(--ink);font-family:var(--mono);font-size:.94rem;line-height:1.65;overflow-x:hidden;
 }
-a{color:var(--link)}
+a{color:var(--link);text-underline-offset:3px;text-decoration-thickness:1px}
+a:hover{color:var(--ink)}
 button,input,select,textarea{font:inherit;color:inherit}
-:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
 .mono{font-family:var(--mono)}
-.wrap{width:min(84rem,100%);margin-inline:auto;padding-inline:var(--gutter)}
+.wrap{width:min(78rem,100%);margin-inline:auto;padding-inline:var(--gutter)}
 .skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:#000;padding:.7rem 1rem;z-index:60}
 .skip:focus{left:.5rem;top:.5rem}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pc{display:block;color:var(--ink)}
 
 /* ---------- top bar ---------- */
-.bar{position:sticky;top:0;z-index:40;background:rgba(0,0,0,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.bar .wrap{display:flex;align-items:center;gap:1rem;padding-block:.7rem;flex-wrap:wrap}
-@media (max-width:40rem){.bar{position:static}}
-.back{color:var(--mute);text-decoration:none;font-weight:600;font-size:.9rem}
+.bar{position:sticky;top:0;z-index:40;background:rgba(21,20,20,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;gap:1.1rem;padding-block:.85rem;flex-wrap:wrap}
+.mark{display:flex;align-items:center;gap:.6rem;font-weight:500;font-size:1.05rem;color:var(--violet);letter-spacing:.02em;text-decoration:none}
+.mark .chev{color:var(--pink)}
+.mark svg{width:1.15rem;height:1.45rem}
+.ver{color:var(--dim);font-size:.75rem}
+.barright{margin-left:auto;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.back{color:var(--mute);text-decoration:none;font-size:.82rem}
 .back:hover{color:var(--ink)}
-.mark{display:flex;align-items:center;gap:.55rem;font-family:var(--mono);font-weight:700;letter-spacing:.14em;font-size:.98rem}
-.mark svg{width:1.6rem;height:1.6rem}
-.mark .ver{font-weight:400;letter-spacing:0;color:var(--dim);font-size:.75rem}
-.barright{margin-left:auto;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
-.org{font-family:var(--mono);font-size:.78rem;color:var(--mute);display:flex;align-items:center;gap:.45rem}
-.dot{width:.5rem;height:.5rem;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(47,208,107,.6);animation:ping 2s infinite;flex:none}
-.dot.off{background:var(--dim);animation:none}
-@keyframes ping{70%{box-shadow:0 0 0 7px rgba(47,208,107,0)}100%{box-shadow:0 0 0 0 rgba(47,208,107,0)}}
-.btn{display:inline-flex;align-items:center;gap:.45rem;border-radius:999px;border:1px solid var(--line);background:var(--panel2);padding:.45rem .95rem;font-weight:600;font-size:.88rem;cursor:pointer;text-decoration:none;color:var(--ink)}
-.btn:hover{border-color:#3a3a4c}
-.btn.accent{background:var(--accent);border-color:var(--accent);color:#fff}
+.wip{font-size:.7rem;letter-spacing:.18em;color:var(--green)}
+.dot{width:.42rem;height:.42rem;border-radius:50%;background:var(--green);flex:none;display:inline-block}
+.dot.off{background:var(--dim)}
+@media (max-width:40rem){.bar{position:static}.back{display:none}}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:.45rem;border-radius:6px;border:1px solid var(--line);background:transparent;padding:.55rem 1rem;font-weight:500;font-size:.82rem;letter-spacing:.04em;cursor:pointer;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:#433f3f;background:rgba(255,255,255,.03)}
+.btn.accent{background:var(--accent);border-color:var(--accent);color:#1d1415}
 .btn.accent:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
-.btn.ghost{background:transparent}
-.btn.sm{padding:.28rem .7rem;font-size:.8rem}
-.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn.ghost{border-color:transparent;color:var(--mute)}
+.btn.ghost:hover{color:var(--ink);background:transparent}
+.btn.sm{padding:.4rem .8rem;font-size:.76rem}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
 
 /* ---------- hero ---------- */
-.hero{position:relative;border-bottom:1px solid var(--line);overflow:hidden}
-.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:2rem;align-items:center;padding-block:clamp(2rem,5vw,3.5rem)}
-.kicker{font-family:var(--mono);font-size:.8rem;color:var(--link);margin:0 0 .8rem}
-.hero h1{font-weight:800;font-size:clamp(2.6rem,7vw,5.2rem);line-height:.92;letter-spacing:-.05em;margin:0}
-.hero h1 .x{color:var(--pink)}
-.lede{color:var(--mute);font-size:clamp(1rem,1.5vw,1.15rem);max-width:48ch;margin:1rem 0 0}
-.lede b{color:var(--ink);font-weight:600}
-.herograph{position:relative;aspect-ratio:16/9;border:1px solid var(--line);background:#000}
-.herograph svg{position:absolute;inset:0;width:100%;height:100%}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem;margin-top:1.6rem}
-.stat{border:1px solid var(--line);background:var(--panel);padding:.7rem .8rem}
-.stat b{display:block;font-family:var(--mono);font-size:clamp(1.15rem,2.2vw,1.55rem);font-weight:700;letter-spacing:-.02em}
-.stat span{display:block;font-size:.74rem;color:var(--mute);line-height:1.3;margin-top:.15rem}
-.stat b span{display:inline;font-size:inherit;color:inherit;margin:0;line-height:inherit}
-.stat.g b{color:var(--green)}
-.stat.a b{font-size:clamp(1rem,1.7vw,1.2rem);padding-top:.2rem} .stat.p b{color:var(--pink)} .stat.v b{color:var(--link)} .stat.a b{color:var(--amber)}
-@media (max-width:62rem){.hero .wrap{grid-template-columns:minmax(0,1fr)}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-
-/* svg graph pieces (shared with the home-page thumbnail) */
-.xg .edge{stroke-dasharray:5 5;animation:flow 2.8s linear infinite}
-@keyframes flow{to{stroke-dashoffset:-20}}
-.xg .node{animation:pulse 2.6s ease-in-out infinite}
-.xg .node:nth-child(3n){animation-delay:.8s}.xg .node:nth-child(3n+1){animation-delay:1.6s}
-@keyframes pulse{50%{opacity:.35}}
-.xg .caret{animation:blink 1.1s steps(1) infinite}
-@keyframes blink{50%{opacity:0}}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:2rem;align-items:center;padding-block:clamp(2.75rem,7vw,5.5rem) clamp(2rem,4vw,3rem)}
+.label{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin:0 0 1.1rem}
+.label.r{color:var(--pink)}
+.hero h1{font-weight:500;font-size:clamp(2.3rem,6.2vw,4.4rem);line-height:1.08;letter-spacing:-.03em;margin:0;max-width:14ch}
+.lede{color:var(--mute);font-size:clamp(.95rem,1.4vw,1.08rem);max-width:52ch;margin:1.4rem 0 0;line-height:1.75}
+.lede b{color:var(--ink);font-weight:500}
+.meta{margin:1.6rem 0 0;font-size:.78rem;color:var(--dim);display:flex;flex-wrap:wrap;gap:.3rem .7rem}
+.meta b{color:var(--mute);font-weight:400}
+.meta .sep{color:#3d3939}
+.heroicon{display:grid;place-items:center}
+.heroicon svg{width:min(19rem,70vw);height:auto}
+.heroicon .ring{animation:ring 3.2s ease-in-out infinite}
+@keyframes ring{50%{stroke-opacity:.45}}
+@media (max-width:52rem){.hero .wrap{grid-template-columns:1fr}.heroicon{display:none}}
 
 /* ---------- console ---------- */
+.console{display:grid;grid-template-columns:15rem minmax(0,1fr);gap:2rem;padding-block:clamp(1.5rem,3vw,2.5rem);border-top:1px solid var(--line)}
 .console > div{min-width:0}
-.console{display:grid;grid-template-columns:16.5rem minmax(0,1fr);gap:1.25rem;padding-block:clamp(1.5rem,3vw,2.25rem)}
-.railhead{font-family:var(--mono);font-size:.72rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin:0 0 .6rem}
-.rail{display:flex;flex-direction:column;gap:.4rem}
-.tab{all:unset;box-sizing:border-box;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:.65rem;padding:.7rem .75rem;border:1px solid var(--line);background:var(--panel);cursor:pointer;min-width:0}
-.tab:hover{border-color:#34344a}
-.tab:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
-.tab[aria-selected="true"]{border-color:var(--violet);background:#0F0B26;box-shadow:inset 3px 0 0 var(--violet)}
-.tab .ic{width:1.9rem;height:1.9rem;display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:.72rem}
-.tab .nm{font-weight:700;font-size:.93rem;line-height:1.15;min-width:0}
-.tab .nm small{display:block;font-weight:400;color:var(--mute);font-size:.74rem;margin-top:.12rem}
-.tab .ct{font-family:var(--mono);font-size:.7rem;color:var(--green)}
-.ic.c1{background:var(--violet);color:var(--violet-ink)}
-.ic.c2{border:1.5px solid var(--pink);color:var(--pink)}
-.ic.c3{border:1.5px solid var(--amber);color:var(--amber)}
-.ic.c4{background:var(--pink);color:var(--peach)}
-.ic.c5{border:1.5px solid var(--link);color:var(--link)}
-.ic.c6{border:1.5px solid var(--green);color:var(--green)}
-.more{border:1px dashed #2c2c3c;padding:.75rem;font-size:.8rem;color:var(--mute);margin-top:.4rem}
-.more b{display:block;font-family:var(--mono);font-size:.72rem;color:var(--link);font-weight:500;margin-bottom:.3rem}
+.railhead{font-size:.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:.2em;margin:0 0 .9rem}
+.rail{display:flex;flex-direction:column;gap:.15rem}
+.tab{all:unset;box-sizing:border-box;display:grid;grid-template-columns:1.6rem 1fr auto;align-items:baseline;gap:.5rem;padding:.6rem .7rem;border-radius:6px;cursor:pointer;min-width:0;color:var(--mute)}
+.tab:hover{background:rgba(255,255,255,.03);color:var(--ink)}
+.tab:focus-visible{outline:2px solid var(--pink);outline-offset:1px}
+.tab[aria-selected="true"]{background:var(--panel);color:var(--ink);box-shadow:inset 2px 0 0 var(--pink)}
+.tab .ic{font-size:.7rem;color:var(--dim)}
+.tab[aria-selected="true"] .ic{color:var(--pink)}
+.tab .nm{font-size:.86rem;line-height:1.3;min-width:0}
+.tab .nm small{display:block;color:var(--dim);font-size:.72rem;margin-top:.1rem}
+.more{padding:.9rem .7rem 0;font-size:.74rem;color:var(--dim);line-height:1.6;margin-top:1rem;border-top:1px solid var(--line)}
+.more b{display:block;color:var(--mute);font-weight:400;letter-spacing:.2em;text-transform:uppercase;font-size:.66rem;margin-bottom:.4rem}
 @media (max-width:60rem){
-  .console{grid-template-columns:minmax(0,1fr)}
+  .console{grid-template-columns:minmax(0,1fr);gap:1.2rem}
   .rail{flex-direction:row;overflow-x:auto;padding-bottom:.4rem;scrollbar-width:thin}
-  .tab{flex:0 0 13.5rem}
+  .tab{flex:0 0 12.5rem}
   .more{display:none}
 }
 
 .panel{min-width:0}
 .panel[hidden]{display:none}
-.phead{border:1px solid var(--line);background:var(--panel);padding:1.1rem 1.2rem;margin-bottom:1rem;display:flex;flex-wrap:wrap;gap:.6rem 1.5rem;align-items:flex-start;justify-content:space-between}
-.phead .uri{font-family:var(--mono);font-size:.75rem;color:var(--link);margin:0 0 .25rem}
-.phead h2{margin:0;font-size:clamp(1.4rem,2.6vw,1.9rem);letter-spacing:-.035em;line-height:1.1}
-.phead p{margin:.45rem 0 0;color:var(--mute);max-width:62ch;font-size:.95rem}
-.basis{font-family:var(--mono);font-size:.72rem;color:var(--green);border:1px solid rgba(47,208,107,.35);padding:.35rem .55rem;max-width:21rem;line-height:1.45}
-.basis b{display:block;color:var(--ink);font-weight:500;text-transform:uppercase;letter-spacing:.06em;font-size:.66rem;margin-bottom:.15rem}
+.phead{padding:.2rem 0 1.4rem;margin-bottom:1.2rem;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem 2rem;align-items:start}
+.phead .uri{font-size:.72rem;color:var(--dim);margin:0 0 .5rem}
+.phead h2{margin:0;font-weight:500;font-size:clamp(1.4rem,2.6vw,1.9rem);letter-spacing:-.02em;line-height:1.15}
+.phead p{margin:.6rem 0 0;color:var(--mute);max-width:62ch;font-size:.86rem;line-height:1.75}
+.basis{font-size:.72rem;color:var(--mute);border-left:1px solid var(--line);padding:.1rem 0 .1rem 1rem;max-width:17rem;line-height:1.6}
+.basis b{display:block;color:var(--green);font-weight:400;text-transform:uppercase;letter-spacing:.2em;font-size:.64rem;margin-bottom:.35rem}
+@media (max-width:52rem){.phead{grid-template-columns:1fr}.basis{max-width:none}}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(21rem,100%),1fr));gap:1rem}
-.card{border:1px solid var(--line);background:var(--panel);padding:1rem 1.1rem;min-width:0}
+.card{border:1px solid var(--line);background:var(--panel);border-radius:var(--r);padding:1.15rem 1.2rem;min-width:0}
 .card.span{grid-column:1/-1}
-.card h3{font-family:var(--mono);font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;margin:0 0 .8rem;color:var(--mute);font-weight:500;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
-.card h3::before{content:"";width:.55rem;height:.55rem;background:var(--violet);flex:none}
-.card h3.p::before{background:var(--pink)} .card h3.a::before{background:var(--amber)} .card h3.g::before{background:var(--green)}
-.card h3 .r{margin-left:auto;text-transform:none;letter-spacing:0;color:var(--dim)}
-.note{font-size:.82rem;color:var(--mute);margin:.7rem 0 0}
-.note code,.card code{font-family:var(--mono);font-size:.8em;color:var(--link)}
+.card h3{font-size:.68rem;text-transform:uppercase;letter-spacing:.2em;margin:0 0 .95rem;color:var(--green);font-weight:400;display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+.card h3.p{color:var(--pink)} .card h3.a{color:var(--amber)} .card h3.g{color:var(--green)}
+.card h3 .r{margin-left:auto;text-transform:none;letter-spacing:0;color:var(--dim);font-size:.72rem}
+.note{font-size:.76rem;color:var(--dim);margin:.8rem 0 0;line-height:1.65}
+.note code,.card code{font-size:.9em;color:var(--link)}
 
-textarea,input[type="text"],select{background:#050508;border:1px solid var(--line);color:var(--ink);padding:.6rem .7rem;width:100%;border-radius:0}
-textarea{font-family:var(--mono);font-size:.8rem;line-height:1.55;resize:vertical;min-height:9.5rem}
-textarea:focus,input:focus,select:focus{outline:none;border-color:var(--violet)}
-.row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:.6rem}
-.row input[type="text"]{flex:1 1 12rem;width:auto}
-label.chk{display:flex;gap:.55rem;align-items:flex-start;font-size:.86rem;color:var(--mute);cursor:pointer}
-label.chk input{margin-top:.25rem;accent-color:var(--violet)}
+textarea,input[type="text"],input[type="password"],select{background:var(--bg);border:1px solid var(--line);border-radius:6px;color:var(--ink);padding:.6rem .75rem;width:100%;font-size:.84rem}
+textarea{line-height:1.6;resize:vertical;min-height:9.5rem;font-size:.78rem}
+textarea:focus,input:focus,select:focus{outline:none;border-color:#5a5252}
+::placeholder{color:var(--dim)}
+.row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:.7rem}
+.row input[type="text"],.row input[type="password"]{flex:1 1 12rem;width:auto}
+label.chk{display:flex;gap:.6rem;align-items:flex-start;font-size:.78rem;color:var(--mute);cursor:pointer;line-height:1.6}
+label.chk input{margin-top:.3rem;accent-color:var(--pink)}
 
-/* chips: the citation-label look */
-.chip{display:inline-block;font-family:var(--mono);font-size:.7rem;line-height:1.35;padding:.08rem .38rem;white-space:nowrap}
-.chip.v{background:var(--violet);color:var(--violet-ink)}
-.chip.p{border:1.5px solid var(--pink);color:var(--pink)}
-.chip.pf{background:var(--pink);color:var(--peach)}
-.chip.a{border:1.5px solid var(--amber);color:var(--amber)}
-.chip.g{border:1.5px solid var(--green);color:var(--green)}
-.chip.b{border:1.5px solid var(--link);color:var(--link)}
-.chip.m{border:1px solid var(--line);color:var(--mute)}
+/* chips: quiet outlined labels */
+.chip{display:inline-block;font-size:.66rem;line-height:1.4;padding:.05rem .4rem;white-space:nowrap;border-radius:4px;border:1px solid currentColor;letter-spacing:.04em}
+.chip.v,.chip.b{color:var(--violet)}
+.chip.p,.chip.pf{color:var(--pink)}
+.chip.a{color:var(--amber)}
+.chip.g{color:var(--green)}
+.chip.m{color:var(--dim)}
+
+/* status labels */
+.st{display:inline-flex;align-items:center;gap:.35rem;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;vertical-align:middle;font-weight:400}
+.st::before{content:"";width:.38rem;height:.38rem;border-radius:50%;background:currentColor}
+.st.s-live{color:var(--green)}
+.st.s-part{color:var(--amber)}
+.st.s-prev{color:var(--dim)}
+.card h3 .st{letter-spacing:.18em}
+.legend{font-size:.7rem;color:var(--dim);display:flex;align-items:center;gap:.8rem}
+@media (max-width:48rem){.legend{display:none}}
 
 /* lists and tables */
-.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.5rem}
-.req{border:1px solid var(--line);background:var(--panel2);padding:.7rem .8rem;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.4rem .8rem;align-items:center}
-.req .who{font-family:var(--mono);font-size:.75rem;color:var(--link)}
-.req .what{font-size:.9rem}
-.req .what b{font-family:var(--mono);font-weight:500;color:var(--amber);font-size:.85rem}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.6rem}
+.req{border:1px solid var(--line);background:var(--panel2);border-radius:6px;padding:.7rem .85rem;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.35rem .8rem;align-items:center}
+.req .who{font-size:.7rem;color:var(--dim)}
+.req .what{font-size:.82rem}
+.req .what b{font-weight:500;color:var(--amber)}
 .req .acts{display:flex;gap:.35rem;grid-row:1/3;grid-column:2}
-.req.done{opacity:.55}
-.req .res{grid-column:1/-1;font-family:var(--mono);font-size:.72rem}
+.req.done{opacity:.5}
+.req .res{grid-column:1/-1;font-size:.7rem}
 @media (max-width:30rem){.req{grid-template-columns:1fr}.req .acts{grid-row:auto;grid-column:1}}
-.tbl{width:100%;border-collapse:collapse;font-size:.84rem}
-.tbl th{text-align:left;font-family:var(--mono);font-size:.68rem;font-weight:500;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;padding:.35rem .5rem;border-bottom:1px solid var(--line)}
-.tbl td{padding:.45rem .5rem;border-bottom:1px solid #141420;vertical-align:middle}
-.tbl td.mono{font-size:.78rem}
-.tbl select{padding:.25rem .4rem;font-size:.8rem;width:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:.78rem}
+.tbl th{text-align:left;font-size:.64rem;font-weight:400;color:var(--dim);text-transform:uppercase;letter-spacing:.16em;padding:.4rem .5rem;border-bottom:1px solid var(--line)}
+.tbl td{padding:.5rem .5rem;border-bottom:1px solid #242222;vertical-align:middle}
+.tbl td.mono{font-size:.76rem}
+.tbl select{padding:.25rem .4rem;font-size:.74rem;width:auto}
 .scroll{overflow-x:auto}
-.risk{display:flex;align-items:center;gap:.45rem;font-family:var(--mono);font-size:.75rem;min-width:6.5rem}
-.risk i{display:block;height:.38rem;flex:1;background:#1a1a26;position:relative}
+.risk{display:flex;align-items:center;gap:.5rem;font-size:.72rem;min-width:6.5rem;color:var(--mute)}
+.risk i{display:block;height:3px;flex:1;background:#2b2929;position:relative;border-radius:2px;overflow:hidden}
 .risk i::after{content:"";position:absolute;inset:0;width:var(--w);background:var(--c)}
-.newrow{animation:flash 1.2s ease-out}
-@keyframes flash{from{background:rgba(91,61,245,.28)}to{background:transparent}}
+.newrow{animation:flash 1.4s ease-out}
+@keyframes flash{from{background:rgba(212,132,138,.08)}to{background:transparent}}
 
 /* verdict */
-.verdict{margin-top:.8rem;border:1px solid var(--line);padding:.75rem .85rem;display:none}
+.verdict{margin-top:.9rem;border-top:1px solid var(--line);padding-top:.8rem;display:none}
 .verdict.on{display:block}
-.verdict .big{font-family:var(--mono);font-weight:700;font-size:1.05rem;display:flex;gap:.7rem;align-items:center;flex-wrap:wrap}
-.verdict ul{margin:.55rem 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.35rem;font-size:.82rem}
-.verdict li{display:flex;gap:.5rem;align-items:baseline;flex-wrap:wrap}
-.verdict li q{font-family:var(--mono);font-size:.74rem;color:var(--mute);quotes:none;overflow-wrap:anywhere}
+.verdict .big{font-weight:500;font-size:.9rem;letter-spacing:.1em;display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}
+.verdict ul{margin:.6rem 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.4rem;font-size:.76rem;color:var(--mute)}
+.verdict li{display:flex;gap:.55rem;align-items:baseline;flex-wrap:wrap}
+.verdict li q{font-size:.72rem;color:var(--dim);quotes:none;overflow-wrap:anywhere}
 .ok{color:var(--green)} .warn{color:var(--amber)} .bad{color:var(--pink)}
 
 /* ledger */
-.ledger{font-family:var(--mono);font-size:.72rem;display:flex;flex-direction:column;gap:.3rem;max-height:15.5rem;overflow:auto}
-.ledger div{display:grid;grid-template-columns:2.2rem minmax(0,1fr) auto;gap:.5rem;padding:.3rem .4rem;border-left:2px solid var(--violet);background:#07070c}
-.ledger div.broken{border-left-color:var(--pink);background:#1a0614}
+.ledger{font-size:.7rem;display:flex;flex-direction:column;gap:.25rem;max-height:15.5rem;overflow:auto}
+.ledger div{display:grid;grid-template-columns:2.2rem minmax(0,1fr) auto;gap:.5rem;padding:.3rem .5rem;border-left:1px solid var(--line)}
+.ledger div.broken{border-left-color:var(--pink);background:rgba(212,132,138,.06)}
 .ledger .h{color:var(--amber)} .ledger .t{color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* verified human */
-.steps{list-style:none;margin:0 0 .9rem;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.35rem;counter-reset:s}
-.steps li{font-family:var(--mono);font-size:.68rem;color:var(--dim);border-top:3px solid #1d1d29;padding-top:.35rem;counter-increment:s}
+.steps{list-style:none;margin:0 0 1rem;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.4rem;counter-reset:s}
+.steps li{font-size:.66rem;color:var(--dim);border-top:2px solid var(--line);padding-top:.4rem;counter-increment:s}
 .steps li::before{content:"0" counter(s) " "}
 .steps li.on{color:var(--amber);border-top-color:var(--amber)}
 .steps li.done{color:var(--green);border-top-color:var(--green)}
-.live{position:relative;aspect-ratio:4/3;background:#04040a;border:1px solid var(--line);max-width:26rem}
+.steps li.fail{color:var(--pink);border-top-color:var(--pink)}
+.live{position:relative;aspect-ratio:4/3;background:var(--bg);border:1px solid var(--line);border-radius:6px;max-width:26rem;overflow:hidden}
 .live canvas{position:absolute;inset:0;width:100%;height:100%}
-.live .cap{position:absolute;left:.6rem;top:.6rem;font-family:var(--mono);font-size:.7rem;color:var(--amber)}
-.live .cap2{position:absolute;right:.6rem;bottom:.6rem;font-family:var(--mono);font-size:.7rem;color:var(--mute)}
-pre.code{margin:0;font-family:var(--mono);font-size:.75rem;line-height:1.6;background:#050508;border:1px solid var(--line);padding:.8rem .9rem;overflow:auto;color:#cfcfe0}
-pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color:var(--dim)} pre.code .f{color:var(--link)} pre.code .n{color:var(--green)}
+.live .cap{position:absolute;left:.7rem;top:.6rem;font-size:.68rem;color:var(--amber)}
+.live .cap2{position:absolute;right:.7rem;bottom:.6rem;font-size:.66rem;color:var(--dim)}
+pre.code{margin:0;font-size:.74rem;line-height:1.7;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:.85rem 1rem;overflow:auto;color:#cfc9c2}
+pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color:var(--dim)} pre.code .f{color:var(--violet)} pre.code .n{color:var(--green)}
 
 /* commits */
-.commit{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:.2rem .6rem;padding:.55rem .6rem;border:1px solid var(--line);background:var(--panel2);align-items:center}
-.commit .sha{font-family:var(--mono);font-size:.78rem;color:var(--amber)}
-.commit .msg{font-size:.86rem;min-width:0}
-.commit .meta{grid-column:1/-1;font-family:var(--mono);font-size:.7rem;color:var(--mute)}
-.commit.flag{border-color:rgba(255,46,166,.55)}
-.commit.good{border-color:rgba(47,208,107,.45)}
-.commit.reverted{opacity:.4;text-decoration:line-through}
-.plan{list-style:none;margin:.6rem 0 0;padding:0;font-family:var(--mono);font-size:.76rem;display:flex;flex-direction:column;gap:.3rem}
-.plan li{color:var(--dim)}
-.plan li.on{color:var(--amber)} .plan li.done{color:var(--green)}
-.plan li::before{content:"[ ] "} .plan li.on::before{content:"[~] "} .plan li.done::before{content:"[x] "}
+.commit{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:.2rem .7rem;padding:.6rem .7rem;border:1px solid var(--line);border-radius:6px;background:var(--panel2);align-items:center}
+.commit .sha{font-size:.76rem;color:var(--amber)}
+.commit .msg{font-size:.8rem;min-width:0}
+.commit .meta{grid-column:1/-1;font-size:.68rem;color:var(--dim);margin:0;display:block}
+.commit.flag{border-color:rgba(212,132,138,.45)}
+.commit.good{border-color:rgba(127,184,154,.45)}
 
 /* stream */
-.streamsec{padding-bottom:clamp(1.5rem,3vw,2.25rem)}
-.term{border:1px solid var(--line);background:#030305}
-.termhead{display:flex;align-items:center;gap:.6rem;padding:.55rem .8rem;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:.74rem;color:var(--mute);flex-wrap:wrap}
+.streamsec{padding-block:clamp(1rem,2vw,1.5rem) clamp(2rem,4vw,3rem)}
+.term{border:1px solid var(--line);border-radius:var(--r);background:#121111;overflow:hidden}
+.termhead{display:flex;align-items:center;gap:.6rem;padding:.6rem .9rem;border-bottom:1px solid var(--line);font-size:.72rem;color:var(--dim);flex-wrap:wrap}
 .termhead .btn{margin-left:auto}
-#stream{list-style:none;margin:0;padding:.5rem .8rem;height:14rem;overflow:auto;font-family:var(--mono);font-size:.74rem;display:flex;flex-direction:column;gap:.15rem}
-.ev{display:grid;grid-template-columns:4.6rem 3.4rem 7.6rem minmax(0,1fr);gap:.6rem}
-.ev .t{color:var(--dim)} .ev .pl{color:var(--link)} .ev .m{color:#c5c5d4}
-.ev.info .lv{color:var(--mute)} .ev.ok .lv{color:var(--green)} .ev.warn .lv{color:var(--amber)} .ev.crit .lv{color:var(--pink)}
-@media (max-width:40rem){.ev{grid-template-columns:4.2rem minmax(0,1fr)}.ev .lv{display:none}.ev .pl{display:none}}
+#stream{list-style:none;margin:0;padding:.6rem .9rem;height:13rem;overflow:auto;font-size:.72rem;display:flex;flex-direction:column;gap:.2rem}
+.ev{display:grid;grid-template-columns:4.6rem 3.2rem 7.6rem minmax(0,1fr);gap:.6rem}
+.ev .t{color:var(--dim)} .ev .pl{color:var(--violet)} .ev .m{color:#bdb7b0}
+.ev.info .lv{color:var(--dim)} .ev.ok .lv{color:var(--green)} .ev.warn .lv{color:var(--amber)} .ev.crit .lv{color:var(--pink)}
+@media (max-width:40rem){.ev{grid-template-columns:4.2rem minmax(0,1fr)}.ev .lv,.ev .pl{display:none}}
 
 /* guardrails */
-.guard{padding-block:clamp(1.5rem,4vw,3rem);border-top:1px solid var(--line)}
-.guard h2{font-size:clamp(1.6rem,3.6vw,2.4rem);letter-spacing:-.04em;margin:0 0 .4rem;line-height:1.05}
-.guard > .wrap > p{color:var(--mute);margin:0 0 1.4rem;max-width:62ch}
-.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16rem,100%),1fr));gap:.8rem}
-.rule{border:1px solid var(--line);background:var(--panel);padding:.95rem 1rem}
-.rule b{display:block;font-size:1rem;margin:.45rem 0 .3rem;letter-spacing:-.01em}
-.rule p{margin:0;font-size:.86rem;color:var(--mute)}
-.rule small{display:block;font-family:var(--mono);font-size:.68rem;color:var(--dim);margin-top:.55rem}
-.foot{border-top:1px solid var(--line);padding-block:1.4rem;font-size:.82rem;color:var(--dim)}
-.foot .wrap{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;justify-content:space-between}
+.guard{padding-block:clamp(2.5rem,5vw,4rem);border-top:1px solid var(--line)}
+.guard h2{font-weight:500;font-size:clamp(1.5rem,3.2vw,2.2rem);letter-spacing:-.02em;margin:0 0 .6rem;line-height:1.15}
+.guard > .wrap > p{color:var(--mute);margin:0 0 2rem;max-width:62ch;font-size:.88rem}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(15rem,100%),1fr));gap:1.5rem 2rem}
+.rule{border-top:1px solid var(--line);padding-top:1rem}
+.rule .n{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--pink)}
+.rule b{display:block;font-size:.92rem;font-weight:500;margin:.5rem 0 .4rem}
+.rule p{margin:0;font-size:.78rem;color:var(--mute);line-height:1.7}
+.rule small{display:block;font-size:.66rem;color:var(--dim);margin-top:.6rem}
+.foot{border-top:1px solid var(--line);padding-block:1.5rem;font-size:.72rem;color:var(--dim)}
+.foot .wrap{display:flex;flex-direction:column;gap:.4rem}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
-/* ---------- status labels ---------- */
-.wip{font-family:var(--mono);font-size:.74rem;font-weight:700;background:var(--accent);color:#fff;padding:.2rem .6rem;border-radius:999px;letter-spacing:.05em}
-.legend{font-family:var(--mono);font-size:.7rem;color:var(--mute);display:flex;align-items:center;gap:.35rem;flex-wrap:wrap}
-.st{display:inline-block;font-family:var(--mono);font-size:.62rem;font-weight:700;letter-spacing:.06em;padding:.05rem .35rem;line-height:1.45;text-transform:uppercase;vertical-align:middle;white-space:nowrap}
-.st.s-live{background:var(--green);color:#03140a}
-.st.s-part{border:1.5px solid var(--amber);color:var(--amber)}
-.st.s-prev{border:1px solid #3a3a4c;color:var(--mute)}
-.card h3 .st{margin-left:.15rem}
-.steps li.fail{color:var(--pink);border-top-color:var(--pink)}
-@media (max-width:40rem){.legend{display:none}}
 </style>
 </head>
 <body>
@@ -270,15 +253,12 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
 
 <header class="bar">
   <div class="wrap">
-    <a class="back" href="index.html">&larr; Shaun Finch portfolio</a>
-    <div class="mark" aria-label="Xovern">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 5 27 27" stroke="#5B3DF5" stroke-width="5"/><path d="M27 5 5 27" stroke="#FF2EA6" stroke-width="5"/><circle cx="16" cy="16" r="3.4" fill="#FFB238"/></svg>
-      XOVERN<span class="ver">v0.1</span>
-    </div>
+    <a class="mark" href="#main" aria-label="Xovern home"><svg class="pc" viewBox="0 0 16 20" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M2 0h1v.78h-1zM3 0h1v.78h-1zM4 0h1v.78h-1zM5 0h1v.78h-1zM6 0h1v.78h-1zM7 0h1v.78h-1zM8 0h1v.78h-1zM9 0h1v.78h-1zM10 0h1v.78h-1zM11 0h1v.78h-1zM12 0h1v.78h-1zM13 0h1v.78h-1zM1 1h1v.78h-1zM14 1h1v.78h-1zM1 2h1v.78h-1zM3 2h1v.78h-1zM4 2h1v.78h-1zM5 2h1v.78h-1zM6 2h1v.78h-1zM7 2h1v.78h-1zM8 2h1v.78h-1zM9 2h1v.78h-1zM10 2h1v.78h-1zM11 2h1v.78h-1zM12 2h1v.78h-1zM14 2h1v.78h-1zM1 3h1v.78h-1zM3 3h1v.78h-1zM12 3h1v.78h-1zM14 3h1v.78h-1zM1 4h1v.78h-1zM3 4h1v.78h-1zM12 4h1v.78h-1zM14 4h1v.78h-1zM1 5h1v.78h-1zM3 5h1v.78h-1zM12 5h1v.78h-1zM14 5h1v.78h-1zM1 6h1v.78h-1zM3 6h1v.78h-1zM12 6h1v.78h-1zM14 6h1v.78h-1zM1 7h1v.78h-1zM3 7h1v.78h-1zM12 7h1v.78h-1zM14 7h1v.78h-1zM1 8h1v.78h-1zM3 8h1v.78h-1zM12 8h1v.78h-1zM14 8h1v.78h-1zM1 9h1v.78h-1zM3 9h1v.78h-1zM12 9h1v.78h-1zM14 9h1v.78h-1zM1 10h1v.78h-1zM3 10h1v.78h-1zM4 10h1v.78h-1zM5 10h1v.78h-1zM6 10h1v.78h-1zM7 10h1v.78h-1zM8 10h1v.78h-1zM9 10h1v.78h-1zM10 10h1v.78h-1zM11 10h1v.78h-1zM12 10h1v.78h-1zM14 10h1v.78h-1zM1 11h1v.78h-1zM14 11h1v.78h-1zM1 12h1v.78h-1zM9 12h1v.78h-1zM10 12h1v.78h-1zM11 12h1v.78h-1zM12 12h1v.78h-1zM14 12h1v.78h-1zM1 13h1v.78h-1zM14 13h1v.78h-1zM2 14h1v.78h-1zM3 14h1v.78h-1zM4 14h1v.78h-1zM5 14h1v.78h-1zM6 14h1v.78h-1zM7 14h1v.78h-1zM8 14h1v.78h-1zM9 14h1v.78h-1zM10 14h1v.78h-1zM11 14h1v.78h-1zM12 14h1v.78h-1zM13 14h1v.78h-1zM3 15h1v.78h-1zM4 15h1v.78h-1zM5 15h1v.78h-1zM6 15h1v.78h-1zM7 15h1v.78h-1zM8 15h1v.78h-1zM9 15h1v.78h-1zM10 15h1v.78h-1zM11 15h1v.78h-1zM12 15h1v.78h-1zM0 17h1v.78h-1zM1 17h1v.78h-1zM2 17h1v.78h-1zM3 17h1v.78h-1zM4 17h1v.78h-1zM5 17h1v.78h-1zM6 17h1v.78h-1zM7 17h1v.78h-1zM8 17h1v.78h-1zM9 17h1v.78h-1zM10 17h1v.78h-1zM11 17h1v.78h-1zM12 17h1v.78h-1zM13 17h1v.78h-1zM14 17h1v.78h-1zM15 17h1v.78h-1zM0 18h1v.78h-1zM2 18h1v.78h-1zM4 18h1v.78h-1zM6 18h1v.78h-1zM8 18h1v.78h-1zM10 18h1v.78h-1zM12 18h1v.78h-1zM14 18h1v.78h-1zM0 19h1v.78h-1zM1 19h1v.78h-1zM2 19h1v.78h-1zM3 19h1v.78h-1zM4 19h1v.78h-1zM5 19h1v.78h-1zM6 19h1v.78h-1zM7 19h1v.78h-1zM8 19h1v.78h-1zM9 19h1v.78h-1zM10 19h1v.78h-1zM11 19h1v.78h-1zM12 19h1v.78h-1zM13 19h1v.78h-1zM14 19h1v.78h-1zM15 19h1v.78h-1z"/><path fill="#7FB89A" d="M5 4h1v.78h-1zM10 4h1v.78h-1zM5 5h1v.78h-1zM10 5h1v.78h-1z"/><path fill="#D4848A" d="M5 7h1v.78h-1zM10 7h1v.78h-1zM6 8h1v.78h-1zM7 8h1v.78h-1zM8 8h1v.78h-1zM9 8h1v.78h-1z"/></svg><span><span class="chev">&#10095;</span> xovern</span><span class="ver">v0.1</span></a>
     <div class="barright">
+      <span class="legend"><span class="st s-live">live</span><span class="st s-prev">preview</span></span>
       <span class="wip">WIP</span>
-      <span class="legend"><span class="st s-live">LIVE</span> real data &middot; <span class="st s-prev">PREVIEW</span> demo while it&rsquo;s built</span>
-      <button class="btn sm" id="pauseBtn" type="button" aria-pressed="false">Pause demo feeds</button>
+      <button class="btn sm" id="pauseBtn" type="button" aria-pressed="false">pause demo feeds</button>
+      <a class="back" href="index.html">&larr; portfolio</a>
     </div>
   </div>
 </header>
@@ -288,66 +268,13 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
 <section class="hero">
   <div class="wrap">
     <div>
-      <p class="kicker">// the supervisory layer for AI &middot; plug-in security tools &middot; work in progress</p>
-      <h1><span class="x">X</span>overn</h1>
-      <p class="lede">AI can now act on its own: move money, send email, ship code. Xovern sits between that power and the real world. <b>Verify who is at the keyboard, supervise what agents do, screen who you deal with, recover compromised code and stop payment fraud</b>, with a person signing off anything risky.</p>
-      <div class="stats">
-        <div class="stat g"><b data-stat="checks">0</b><span>Checks run on this page</span></div>
-        <div class="stat p"><b data-stat="caught">0</b><span>Problems caught</span></div>
-        <div class="stat v"><b data-stat="records">&hellip;</b><span>Sanctions records loaded</span></div>
-        <div class="stat a"><b data-stat="updated">&hellip;</b><span>Lists last updated</span></div>
-      </div>
+      <p class="label">security for ai &middot; work in progress</p>
+      <h1>Guardrails for AI that acts.</h1>
+      <p class="lede">AI can now move money, send email and ship code on its own. Xovern sits between that power and the real world: <b>verify who is at the keyboard, supervise what agents do, screen who you deal with, recover tampered code and stop payment fraud</b>, with a person signing off anything risky.</p>
+      <div class="row" style="margin-top:2rem"><button class="btn accent" type="button" id="heroGo">screen a name</button><a class="btn ghost" href="#guardrails">how it stays legal &rarr;</a></div>
+      <p class="meta"><span><b data-stat="checks">0</b> checks run</span><span class="sep">&middot;</span><span><b data-stat="caught">0</b> caught</span><span class="sep">&middot;</span><span><b data-stat="records">&hellip;</b> sanctions records</span><span class="sep">&middot;</span><span>synced <b data-stat="updated">&hellip;</b></span></p>
     </div>
-    <div class="herograph" aria-hidden="true">
-      <svg class="xg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-        <rect width="800" height="450" fill="#000"/>
-        <g font-family="Figtree,Arial,sans-serif" font-size="13" fill="#A9A9B6">
-          <text x="30" y="40">101. ^ Regulation (EU) 2024/1689 (AI Act), Art. 14 <tspan fill="#8F8CFF">"Human oversight"</tspan>. <tspan font-style="italic">OJ L</tspan>, 12 July 2024.</text>
-          <text x="30" y="192">102. ^ OWASP (2025). <tspan fill="#8F8CFF">"Top 10 for LLM Applications"</tspan>. LLM01: Prompt Injection.</text>
-          <text x="30" y="220">103. ^ NIST (2023). <tspan font-style="italic">AI 100-1</tspan>. <tspan fill="#8F8CFF">"AI Risk Management Framework 1.0"</tspan>.</text>
-          <text x="30" y="248">104. ^ W3C (2021). <tspan fill="#8F8CFF">"Web Authentication: Level 2"</tspan>. W3C Recommendation.</text>
-          <text x="30" y="276">105. ^ Money Laundering Regulations 2017. <tspan font-style="italic">SI 2017/692</tspan>.</text>
-          <text x="30" y="340">106. ^ PSR (2024). <tspan fill="#8F8CFF">"APP scams reimbursement requirement"</tspan>. In force 7 October 2024.</text>
-          <text x="30" y="368">107. ^ FCDO. <tspan fill="#8F8CFF">"The UK Sanctions List"</tspan>. Sole UK source from 28 January 2026.</text>
-          <text x="30" y="396">108. ^ Computer Misuse Act 1990, c. 18. <tspan fill="#8F8CFF">legislation.gov.uk</tspan>.</text>
-          <text x="30" y="424">109. ^ UK GDPR Art. 9. Special category data: <tspan fill="#8F8CFF">biometric data</tspan>.</text>
-        </g>
-        <text x="28" y="132" font-family="'Courier New',Courier,monospace" font-size="54" font-weight="700" fill="#6F6BFF">XOVERN://<tspan class="caret" fill="#FF2EA6">_</tspan></text>
-        <g fill="none" stroke="#2FD06B" stroke-width="3.5"><path d="M380 108v-9a8 8 0 0 1 15.5-2.5"/><rect x="374" y="108" width="26" height="22" rx="3"/></g><circle cx="387" cy="119" r="3" fill="#2FD06B"/>
-        <rect x="548" y="84" width="230" height="54" fill="#FF2EA6"/>
-        <text x="560" y="123" font-family="'Courier New',Courier,monospace" font-size="33" fill="#FFD2B8">0xA71E3C2</text>
-        <g stroke="#7C78FF" stroke-width="2.4" fill="none"><path d="M747 96h12v12"/><path d="M759 96l-11 11"/></g>
-        <g stroke="#4D4BEA" stroke-width="2.2" fill="none">
-          <path class="edge" d="M448 236 380 182"/><path class="edge" d="M448 236 420 156"/><path class="edge" d="M448 236 512 168"/>
-          <path class="edge" d="M448 236 612 206"/><path class="edge" d="M448 236 594 292"/><path class="edge" d="M448 236 522 322"/>
-          <path class="edge" d="M448 236 438 334"/><path class="edge" d="M448 236 394 300"/><path class="edge" d="M448 236 350 252"/>
-          <path d="M512 168 566 146"/><path d="M380 182 302 212"/><path d="M594 292 650 318"/><path d="M522 322 520 360"/><path d="M394 300 360 330"/>
-        </g>
-        <path d="M452 240 398 392" stroke="#FFB238" stroke-width="2.2"/>
-        <g fill="#5D5BFF">
-          <circle class="node" cx="380" cy="182" r="4.5"/><circle class="node" cx="420" cy="156" r="4.5"/><circle class="node" cx="512" cy="168" r="4.5"/>
-          <circle class="node" cx="566" cy="146" r="4.5"/><circle class="node" cx="612" cy="206" r="4.5"/><circle class="node" cx="594" cy="292" r="4.5"/>
-          <circle class="node" cx="650" cy="318" r="4.5"/><circle class="node" cx="522" cy="322" r="4.5"/><circle class="node" cx="520" cy="360" r="4.5"/>
-          <circle class="node" cx="438" cy="334" r="4.5"/><circle class="node" cx="394" cy="300" r="4.5"/><circle class="node" cx="360" cy="330" r="4.5"/>
-          <circle class="node" cx="350" cy="252" r="4.5"/><circle class="node" cx="302" cy="212" r="4.5"/>
-        </g>
-        <rect x="248" y="262" width="186" height="50" fill="#6A4DFF"/>
-        <text x="260" y="300" font-family="'Times New Roman',Times,serif" font-size="38" fill="#2A1A9E">Passkey</text>
-        <rect x="530" y="230" width="166" height="26" fill="none" stroke="#FFB238" stroke-width="2"/>
-        <text x="538" y="248" font-family="'Courier New',Courier,monospace" font-size="15" fill="#FFB238">sha256:9f3c&#8230;a71e</text>
-        <g transform="rotate(14 520 300)">
-          <rect x="424" y="282" width="236" height="30" fill="#000" fill-opacity=".55" stroke="#FF2EA6" stroke-width="2"/>
-          <text x="434" y="303" font-family="'Times New Roman',Times,serif" font-size="17" fill="#FF2EA6">"prompt.injection &#8212; blocked"</text>
-        </g>
-        <g transform="rotate(-42 600 176)"><rect x="572" y="164" width="62" height="22" fill="#FF2EA6"/><text x="580" y="181" font-family="'Courier New',Courier,monospace" font-size="16" font-weight="700" fill="#2A1A9E">AML</text></g>
-        <rect x="30" y="292" width="196" height="26" fill="none" stroke="#7C78FF" stroke-width="2"/>
-        <text x="38" y="310" font-family="'Courier New',Courier,monospace" font-size="15" fill="#8F8CFF">HUMAN-IN-LOOP &#10003;</text>
-        <rect x="350" y="380" width="118" height="24" fill="#000" stroke="#FFB238" stroke-width="2"/>
-        <text x="358" y="397" font-family="'Courier New',Courier,monospace" font-size="14" fill="#FFB238">OWASP LLM01</text>
-        <g transform="rotate(-24 448 236)"><rect x="440" y="214" width="16" height="40" fill="#000" stroke="#FF2EA6" stroke-width="2"/></g>
-        <circle cx="448" cy="236" r="5.5" fill="#FFB238"/>
-      </svg>
-    </div>
+    <div class="heroicon" aria-hidden="true"><svg viewBox="0 0 200 200" shape-rendering="geometricPrecision"><g fill="none" stroke="#D4848A"><circle cx="100" cy="100" r="97" stroke-opacity=".07"/><circle cx="100" cy="100" r="77" stroke-opacity=".14"/><circle class="ring" cx="100" cy="100" r="57" stroke-width="1"/></g><g transform="translate(71.2 64) scale(3.6)" color="#ECE8E1" shape-rendering="crispEdges"><path fill="currentColor" d="M2 0h1v.78h-1zM3 0h1v.78h-1zM4 0h1v.78h-1zM5 0h1v.78h-1zM6 0h1v.78h-1zM7 0h1v.78h-1zM8 0h1v.78h-1zM9 0h1v.78h-1zM10 0h1v.78h-1zM11 0h1v.78h-1zM12 0h1v.78h-1zM13 0h1v.78h-1zM1 1h1v.78h-1zM14 1h1v.78h-1zM1 2h1v.78h-1zM3 2h1v.78h-1zM4 2h1v.78h-1zM5 2h1v.78h-1zM6 2h1v.78h-1zM7 2h1v.78h-1zM8 2h1v.78h-1zM9 2h1v.78h-1zM10 2h1v.78h-1zM11 2h1v.78h-1zM12 2h1v.78h-1zM14 2h1v.78h-1zM1 3h1v.78h-1zM3 3h1v.78h-1zM12 3h1v.78h-1zM14 3h1v.78h-1zM1 4h1v.78h-1zM3 4h1v.78h-1zM12 4h1v.78h-1zM14 4h1v.78h-1zM1 5h1v.78h-1zM3 5h1v.78h-1zM12 5h1v.78h-1zM14 5h1v.78h-1zM1 6h1v.78h-1zM3 6h1v.78h-1zM12 6h1v.78h-1zM14 6h1v.78h-1zM1 7h1v.78h-1zM3 7h1v.78h-1zM12 7h1v.78h-1zM14 7h1v.78h-1zM1 8h1v.78h-1zM3 8h1v.78h-1zM12 8h1v.78h-1zM14 8h1v.78h-1zM1 9h1v.78h-1zM3 9h1v.78h-1zM12 9h1v.78h-1zM14 9h1v.78h-1zM1 10h1v.78h-1zM3 10h1v.78h-1zM4 10h1v.78h-1zM5 10h1v.78h-1zM6 10h1v.78h-1zM7 10h1v.78h-1zM8 10h1v.78h-1zM9 10h1v.78h-1zM10 10h1v.78h-1zM11 10h1v.78h-1zM12 10h1v.78h-1zM14 10h1v.78h-1zM1 11h1v.78h-1zM14 11h1v.78h-1zM1 12h1v.78h-1zM9 12h1v.78h-1zM10 12h1v.78h-1zM11 12h1v.78h-1zM12 12h1v.78h-1zM14 12h1v.78h-1zM1 13h1v.78h-1zM14 13h1v.78h-1zM2 14h1v.78h-1zM3 14h1v.78h-1zM4 14h1v.78h-1zM5 14h1v.78h-1zM6 14h1v.78h-1zM7 14h1v.78h-1zM8 14h1v.78h-1zM9 14h1v.78h-1zM10 14h1v.78h-1zM11 14h1v.78h-1zM12 14h1v.78h-1zM13 14h1v.78h-1zM3 15h1v.78h-1zM4 15h1v.78h-1zM5 15h1v.78h-1zM6 15h1v.78h-1zM7 15h1v.78h-1zM8 15h1v.78h-1zM9 15h1v.78h-1zM10 15h1v.78h-1zM11 15h1v.78h-1zM12 15h1v.78h-1zM0 17h1v.78h-1zM1 17h1v.78h-1zM2 17h1v.78h-1zM3 17h1v.78h-1zM4 17h1v.78h-1zM5 17h1v.78h-1zM6 17h1v.78h-1zM7 17h1v.78h-1zM8 17h1v.78h-1zM9 17h1v.78h-1zM10 17h1v.78h-1zM11 17h1v.78h-1zM12 17h1v.78h-1zM13 17h1v.78h-1zM14 17h1v.78h-1zM15 17h1v.78h-1zM0 18h1v.78h-1zM2 18h1v.78h-1zM4 18h1v.78h-1zM6 18h1v.78h-1zM8 18h1v.78h-1zM10 18h1v.78h-1zM12 18h1v.78h-1zM14 18h1v.78h-1zM0 19h1v.78h-1zM1 19h1v.78h-1zM2 19h1v.78h-1zM3 19h1v.78h-1zM4 19h1v.78h-1zM5 19h1v.78h-1zM6 19h1v.78h-1zM7 19h1v.78h-1zM8 19h1v.78h-1zM9 19h1v.78h-1zM10 19h1v.78h-1zM11 19h1v.78h-1zM12 19h1v.78h-1zM13 19h1v.78h-1zM14 19h1v.78h-1zM15 19h1v.78h-1z"/><path fill="#7FB89A" d="M5 4h1v.78h-1zM10 4h1v.78h-1zM5 5h1v.78h-1zM10 5h1v.78h-1z"/><path fill="#D4848A" d="M5 7h1v.78h-1zM10 7h1v.78h-1zM6 8h1v.78h-1zM7 8h1v.78h-1zM8 8h1v.78h-1zM9 8h1v.78h-1z"/></g></svg></div>
   </div>
 </section>
 
@@ -355,12 +282,12 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
   <div>
     <p class="railhead">Plug-ins &middot; 6</p>
     <div class="rail" role="tablist" aria-label="Plug-ins" aria-orientation="vertical">
-      <button class="tab" role="tab" id="t-screening" aria-controls="screening" aria-selected="true"><span class="ic c3">SC</span><span class="nm">Screening<small>UK &amp; US sanctions lists</small></span><span class="st s-live">LIVE</span></button>
-      <button class="tab" role="tab" id="t-agent-guard" aria-controls="agent-guard" aria-selected="false" tabindex="-1"><span class="ic c1">AG</span><span class="nm">Agent Guard<small>Supervise AI agents</small></span><span class="st s-part">PART</span></button>
-      <button class="tab" role="tab" id="t-code-recovery" aria-controls="code-recovery" aria-selected="false" tabindex="-1"><span class="ic c4">CR</span><span class="nm">Code Recovery<small>Signed commits &amp; leaked secrets</small></span><span class="st s-live">LIVE</span></button>
-      <button class="tab" role="tab" id="t-breach-watch" aria-controls="breach-watch" aria-selected="false" tabindex="-1"><span class="ic c6">BW</span><span class="nm">Breach Watch<small>Breached passwords &amp; domains</small></span><span class="st s-live">LIVE</span></button>
-      <button class="tab" role="tab" id="t-verified-human" aria-controls="verified-human" aria-selected="false" tabindex="-1"><span class="ic c2">VH</span><span class="nm">Verified Human<small>Passkey + liveness sign-up</small></span><span class="st s-part">PART</span></button>
-      <button class="tab" role="tab" id="t-fraud-shield" aria-controls="fraud-shield" aria-selected="false" tabindex="-1"><span class="ic c5">FS</span><span class="nm">Fraud Shield<small>Payments &amp; account takeover</small></span><span class="st s-part">PART</span></button>
+      <button class="tab" role="tab" id="t-screening" aria-controls="screening" aria-selected="true"><span class="ic">01</span><span class="nm">Screening<small>UK &amp; US sanctions lists</small></span><span class="st s-live">live</span></button>
+      <button class="tab" role="tab" id="t-agent-guard" aria-controls="agent-guard" aria-selected="false" tabindex="-1"><span class="ic">02</span><span class="nm">Agent Guard<small>Supervise AI agents</small></span><span class="st s-part">part</span></button>
+      <button class="tab" role="tab" id="t-code-recovery" aria-controls="code-recovery" aria-selected="false" tabindex="-1"><span class="ic">03</span><span class="nm">Code Recovery<small>Signed commits &amp; leaked secrets</small></span><span class="st s-live">live</span></button>
+      <button class="tab" role="tab" id="t-breach-watch" aria-controls="breach-watch" aria-selected="false" tabindex="-1"><span class="ic">04</span><span class="nm">Breach Watch<small>Breached passwords &amp; domains</small></span><span class="st s-live">live</span></button>
+      <button class="tab" role="tab" id="t-verified-human" aria-controls="verified-human" aria-selected="false" tabindex="-1"><span class="ic">05</span><span class="nm">Verified Human<small>Passkey + liveness sign-up</small></span><span class="st s-part">part</span></button>
+      <button class="tab" role="tab" id="t-fraud-shield" aria-controls="fraud-shield" aria-selected="false" tabindex="-1"><span class="ic">06</span><span class="nm">Fraud Shield<small>Payments &amp; account takeover</small></span><span class="st s-part">part</span></button>
     </div>
     <div class="more"><b>// roadmap</b>Agent Guard SDK &middot; on-device liveness &middot; bank connectors for Confirmation of Payee &middot; company-wide breach alerts &middot; deepfake call check. Every plug-in uses the same manifest, so new tools slot in without touching the core.</div>
   </div>
@@ -370,7 +297,7 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
     <section class="panel" id="screening" role="tabpanel" aria-labelledby="t-screening">
       <div class="phead">
         <div>
-          <p class="uri">plugin://screening &middot; v0.1.0 &middot; <span class="st s-live">LIVE</span></p>
+          <p class="uri">plugin://screening &middot; v0.1.0 &middot; <span class="st s-live">live</span></p>
           <h2>Screening</h2>
           <p>Check a customer, supplier or company against the official UK and US sanctions lists before they get access to your product or your money. The lists sync from the government sources every day, and the search runs in your browser, so the names you check never leave it.</p>
         </div>
@@ -410,7 +337,7 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
     <section class="panel" id="agent-guard" role="tabpanel" aria-labelledby="t-agent-guard" hidden>
       <div class="phead">
         <div>
-          <p class="uri">plugin://agent-guard &middot; v0.1.0 &middot; <span class="st s-part">PARTLY LIVE</span></p>
+          <p class="uri">plugin://agent-guard &middot; v0.1.0 &middot; <span class="st s-part">partly live</span></p>
           <h2>Agent Guard</h2>
           <p>Sits between your AI agents and the tools they can call. Every action is checked against policy. Anything that moves money, messages people outside the company or touches production waits for a person to approve it, and every decision is written to a tamper-evident ledger.</p>
         </div>
@@ -418,7 +345,7 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
       </div>
       <div class="pgrid">
         <div class="card">
-          <h3 class="p">Prompt-injection firewall <span class="st s-live">LIVE</span></h3>
+          <h3 class="p">Prompt-injection firewall <span class="st s-live">live</span></h3>
           <label class="sr" for="piText">Text going into an AI agent</label>
           <textarea id="piText" spellcheck="false"></textarea>
           <div class="row"><button class="btn accent sm" id="piScan" type="button">Scan input</button><button class="btn ghost sm" id="piClean" type="button">Try a clean one</button></div>
@@ -426,18 +353,18 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
           <p class="note">Paste anything an agent will read (an email, a web page, a document) and scan it before the model sees it. Rule-based, so it catches known patterns, not every attack. Runs in your browser.</p>
         </div>
         <div class="card">
-          <h3 class="g">Audit ledger &middot; sha-256 chain <span class="st s-live">LIVE</span><span class="r" id="chainState"></span></h3>
+          <h3 class="g">Audit ledger &middot; sha-256 chain <span class="st s-live">live</span><span class="r" id="chainState"></span></h3>
           <div class="ledger" id="ledger"></div>
           <div class="row"><button class="btn sm" id="verifyChain" type="button">Verify chain</button><button class="btn ghost sm" id="tamper" type="button">Tamper with an entry</button></div>
           <p class="note">Every check you run on this page is recorded here. Each entry carries the SHA-256 hash of the one before it, so editing history breaks the chain and shows exactly where.</p>
         </div>
         <div class="card">
-          <h3 class="a">Waiting for a human <span class="st s-prev">PREVIEW</span><span class="r" id="reqCount"></span></h3>
+          <h3 class="a">Waiting for a human <span class="st s-prev">preview</span><span class="r" id="reqCount"></span></h3>
           <ul class="list" id="reqs"></ul>
           <p class="note">Demo agents. The SDK that connects your own agents is in development.</p>
         </div>
         <div class="card">
-          <h3>Action policy <span class="st s-prev">PREVIEW</span></h3>
+          <h3>Action policy <span class="st s-prev">preview</span></h3>
           <div class="scroll"><table class="tbl" id="policy"><thead><tr><th>Agent action</th><th>Risk</th><th>Rule</th></tr></thead><tbody></tbody></table></div>
         </div>
       </div>
@@ -447,7 +374,7 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
     <section class="panel" id="code-recovery" role="tabpanel" aria-labelledby="t-code-recovery" hidden>
       <div class="phead">
         <div>
-          <p class="uri">plugin://code-recovery &middot; v0.1.0 &middot; <span class="st s-live">LIVE</span></p>
+          <p class="uri">plugin://code-recovery &middot; v0.1.0 &middot; <span class="st s-live">live</span></p>
           <h2>Code Recovery</h2>
           <p>Find out whether a repository has been tampered with. Xovern reads the recent history from GitHub, checks which commits carry a verified signature, scans each change for leaked keys and edits to build pipelines, and gives you the exact steps to roll back to the last commit you can trust.</p>
         </div>
@@ -481,7 +408,7 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
     <section class="panel" id="breach-watch" role="tabpanel" aria-labelledby="t-breach-watch" hidden>
       <div class="phead">
         <div>
-          <p class="uri">plugin://breach-watch &middot; v0.1.0 &middot; <span class="st s-live">LIVE</span></p>
+          <p class="uri">plugin://breach-watch &middot; v0.1.0 &middot; <span class="st s-live">live</span></p>
           <h2>Breach Watch</h2>
           <p>Stops staff and customers using passwords that have already leaked, keeps an eye on new public breaches, and lets a company prove it owns its email domain before company-wide monitoring is switched on.</p>
         </div>
@@ -489,19 +416,19 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
       </div>
       <div class="pgrid">
         <div class="card">
-          <h3 class="p">Has this password leaked? <span class="st s-live">LIVE</span></h3>
+          <h3 class="p">Has this password leaked? <span class="st s-live">live</span></h3>
           <label class="sr" for="pwIn">Password to check</label>
           <div class="row" style="margin-top:0"><input type="password" id="pwIn" placeholder="Type a password" autocomplete="off" style="flex:1 1 12rem;background:#050508;border:1px solid var(--line);color:var(--ink);padding:.6rem .7rem"><button class="btn accent sm" id="pwGo" type="button">Check</button></div>
           <div id="pwOut" aria-live="polite" style="margin-top:.7rem"></div>
           <p class="note">Your browser hashes the password (SHA-1) and sends only the first 5 characters of the hash to <a href="https://haveibeenpwned.com/Passwords" rel="noopener">Pwned Passwords</a>. The match is made here, so neither the password nor its full hash is sent.</p>
         </div>
         <div class="card">
-          <h3 class="a">Latest public breaches <span class="st s-live">LIVE</span></h3>
+          <h3 class="a">Latest public breaches <span class="st s-live">live</span></h3>
           <div id="brList"><p class="note" style="margin:0">Loading from Have I Been Pwned&hellip;</p></div>
           <p class="note">Breach data from <a href="https://haveibeenpwned.com" rel="noopener">Have I Been Pwned</a>, licensed under CC BY 4.0.</p>
         </div>
         <div class="card">
-          <h3 class="g">Prove you own a domain <span class="st s-live">LIVE</span></h3>
+          <h3 class="g">Prove you own a domain <span class="st s-live">live</span></h3>
           <div class="row" style="margin-top:0">
             <label class="sr" for="bwDomain">Domain</label>
             <input type="text" id="bwDomain" placeholder="yourcompany.co.uk" autocomplete="off">
@@ -511,7 +438,7 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
           <p class="note">"Check DNS" does a real lookup through Google Public DNS. Add the record to a domain you own and it will verify.</p>
         </div>
         <div class="card">
-          <h3>Company-wide alerts <span class="st s-prev">PREVIEW</span></h3>
+          <h3>Company-wide alerts <span class="st s-prev">preview</span></h3>
           <div class="scroll"><table class="tbl"><thead><tr><th>Domain</th><th>Status</th><th>Monitoring</th></tr></thead><tbody id="domains"><tr><td colspan="3" class="note">No verified domains yet.</td></tr></tbody></table></div>
           <p class="note">Next: once a domain is verified, alert when any staff address appears in a new breach and require a passkey reset. Needs a back end and an HIBP domain subscription.</p>
         </div>
@@ -522,7 +449,7 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
     <section class="panel" id="verified-human" role="tabpanel" aria-labelledby="t-verified-human" hidden>
       <div class="phead">
         <div>
-          <p class="uri">plugin://verified-human &middot; v0.1.0 &middot; <span class="st s-part">PARTLY LIVE</span></p>
+          <p class="uri">plugin://verified-human &middot; v0.1.0 &middot; <span class="st s-part">partly live</span></p>
           <h2>Verified Human</h2>
           <p>A sign-up plug-in that proves a real person is creating the account before they get access to your AI tools. Passkeys replace passwords, and a liveness check will stop bots and replayed video. The face check is designed to run on the person's own device, so only a yes or no comes back and no face image or template is stored.</p>
         </div>
@@ -539,8 +466,8 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
         <div class="card">
           <h3>Result</h3>
           <pre class="code" id="vhResult"><span class="c">// run the flow to see the response</span></pre>
-          <p class="note"><span class="st s-live">LIVE</span> The passkey step is a real WebAuthn prompt from your device. <span class="st s-prev">PREVIEW</span> The liveness step is an animation until the on-device model is built.</p>
-          <h3 style="margin-top:1rem">Planned SDK <span class="st s-prev">IN DEVELOPMENT</span></h3>
+          <p class="note"><span class="st s-live">live</span> The passkey step is a real WebAuthn prompt from your device. <span class="st s-prev">preview</span> The liveness step is an animation until the on-device model is built.</p>
+          <h3 style="margin-top:1rem">Planned SDK <span class="st s-prev">in development</span></h3>
 <pre class="code"><span class="f">Xovern</span>.verify({
   consent: <span class="n">true</span>,
   level: <span class="s">"passkey+liveness"</span>,
@@ -554,7 +481,7 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
     <section class="panel" id="fraud-shield" role="tabpanel" aria-labelledby="t-fraud-shield" hidden>
       <div class="phead">
         <div>
-          <p class="uri">plugin://fraud-shield &middot; v0.1.0 &middot; <span class="st s-part">PARTLY LIVE</span></p>
+          <p class="uri">plugin://fraud-shield &middot; v0.1.0 &middot; <span class="st s-part">partly live</span></p>
           <h2>Fraud Shield</h2>
           <p>Checks payee details before money moves and scores each payment for the signs of authorised push payment (APP) scams and account takeover: a new payee, a new device, a remote-access app running, a name that fails Confirmation of Payee. Risky payments get a passkey step-up or are held for a call.</p>
         </div>
@@ -562,7 +489,7 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
       </div>
       <div class="pgrid">
         <div class="card">
-          <h3 class="g">Payee IBAN check <span class="st s-live">LIVE</span></h3>
+          <h3 class="g">Payee IBAN check <span class="st s-live">live</span></h3>
           <div class="row" style="margin-top:0">
             <label class="sr" for="ibanIn">IBAN</label>
             <input type="text" id="ibanIn" placeholder="GB82 WEST 1234 5698 7654 32" autocomplete="off" spellcheck="false">
@@ -578,7 +505,7 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
           <label class="chk" style="margin-top:.6rem" for="fsStrict"><input type="checkbox" id="fsStrict"> Strict mode: hold anything over &pound;5,000 to a new payee</label>
         </div>
         <div class="card span">
-          <h3>Payment scoring <span class="st s-prev">PREVIEW</span><span class="r" id="fsSummary"></span></h3>
+          <h3>Payment scoring <span class="st s-prev">preview</span><span class="r" id="fsSummary"></span></h3>
           <div class="scroll"><table class="tbl" id="tx"><thead><tr><th>Time</th><th>Account</th><th>Payee</th><th>Amount</th><th>Signals</th><th>Risk</th><th>Action</th></tr></thead><tbody></tbody></table></div>
           <p class="note">Synthetic payments generated in your browser to show the scoring. Real payments arrive once a bank connects.</p>
         </div>
@@ -594,17 +521,17 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
   </div>
 </section>
 
-<section class="guard">
+<section class="guard" id="guardrails">
   <div class="wrap">
-    <p class="kicker">// guardrails</p>
+    <p class="label r">guardrails</p>
     <h2>Defensive by design</h2>
     <p>Security tools can be turned on the people they are meant to protect. These rules are part of the product, and every plug-in has to declare how it meets them before it can be installed.</p>
     <div class="rules">
-      <div class="rule"><span class="chip v">01 &middot; OWNED ONLY</span><b>Your systems, nobody else's</b><p>Changes, recovery and monitoring run only on repositories and domains you prove you control. No probing third parties.</p><small>Computer Misuse Act 1990 &middot; US CFAA, 18 U.S.C. &sect; 1030</small></div>
-      <div class="rule"><span class="chip pf">02 &middot; CONSENT FIRST</span><b>Biometrics stay on the device</b><p>Liveness runs on the person's own phone or laptop after explicit consent. Xovern stores a passkey public key, never a face.</p><small>UK GDPR Art. 9 &middot; Illinois BIPA (740 ILCS 14) &middot; EU AI Act Annex III</small></div>
-      <div class="rule"><span class="chip a">03 &middot; NO COVERT CHECKS</span><b>Screening, not surveillance</b><p>Official sanctions lists only. Deeper checks go through accredited providers with the person's written consent.</p><small>MLR 2017 &middot; DBS &middot; FCRA</small></div>
-      <div class="rule"><span class="chip b">04 &middot; HUMAN SIGN-OFF</span><b>People approve the risky actions</b><p>Agents can propose moving money, emailing customers or deploying, but a named person approves it with a passkey.</p><small>EU AI Act Art. 14 &middot; UK GDPR Arts. 22A&ndash;22D</small></div>
-      <div class="rule"><span class="chip g">05 &middot; TAMPER-EVIDENT</span><b>Everything is on the record</b><p>Every decision, human or machine, is hash-chained, so anyone auditing can see if history was changed.</p><small>ISO/IEC 27001:2022 A.8.15 Logging</small></div>
+      <div class="rule"><span class="n">01 &middot; owned only</span><b>Your systems, nobody else's</b><p>Changes, recovery and monitoring run only on repositories and domains you prove you control. No probing third parties.</p><small>Computer Misuse Act 1990 &middot; US CFAA, 18 U.S.C. &sect; 1030</small></div>
+      <div class="rule"><span class="n">02 &middot; consent first</span><b>Biometrics stay on the device</b><p>Liveness runs on the person's own phone or laptop after explicit consent. Xovern stores a passkey public key, never a face.</p><small>UK GDPR Art. 9 &middot; Illinois BIPA (740 ILCS 14) &middot; EU AI Act Annex III</small></div>
+      <div class="rule"><span class="n">03 &middot; no covert checks</span><b>Screening, not surveillance</b><p>Official sanctions lists only. Deeper checks go through accredited providers with the person's written consent.</p><small>MLR 2017 &middot; DBS &middot; FCRA</small></div>
+      <div class="rule"><span class="n">04 &middot; human sign-off</span><b>People approve the risky actions</b><p>Agents can propose moving money, emailing customers or deploying, but a named person approves it with a passkey.</p><small>EU AI Act Art. 14 &middot; UK GDPR Arts. 22A&ndash;22D</small></div>
+      <div class="rule"><span class="n">05 &middot; tamper-evident</span><b>Everything is on the record</b><p>Every decision, human or machine, is hash-chained, so anyone auditing can see if history was changed.</p><small>ISO/IEC 27001:2022 A.8.15 Logging</small></div>
     </div>
     <div class="pgrid" style="margin-top:1.2rem">
       <div class="card">
@@ -792,7 +719,7 @@ function screen(){
     sc.names.forEach(function(x){
       if(Math.abs(x.a.length-q.length)>Math.max(q.length,x.a.length)*0.6&&qt.length>1)return;
       var s=scoreName(q,qs,qt,x);
-      if(s>=0.88&&(!best[x.r]||s>best[x.r].s))best[x.r]={s:s,hit:x.n};
+      if(s>=0.9&&(!best[x.r]||s>best[x.r].s))best[x.r]={s:s,hit:x.n};
     });
     var res=Object.keys(best).map(function(r){return {rec:sc.doc.records[r],s:best[r].s,hit:best[r].hit}}).sort(function(a,b){return b.s-a.s}).slice(0,12);
     var ms=(performance.now()-t0).toFixed(0);
@@ -803,7 +730,7 @@ function screen(){
       log('ok','screening','"'+raw+'": no match on UK or OFAC lists');record('screening','screen','no match');return;
     }
     out.innerHTML=head+'<div class="scroll"><table class="tbl"><thead><tr><th>Listed name</th><th>Matched on</th><th>List</th><th>Type</th><th>Regime / programme</th><th>Match</th><th></th></tr></thead><tbody>'+
-      res.map(function(r){var strong=r.s>=0.95,p=r.rec;return '<tr class="newrow"><td>'+esc(p[4][0])+'</td><td class="mono" style="font-size:.74rem">'+esc(r.hit===p[4][0]?'primary name':r.hit)+'</td><td><span class="chip '+(p[0]==='uk'?'g':'b')+'">'+(p[0]==='uk'?'UK':'OFAC')+'</span></td><td>'+esc(p[2])+'</td><td>'+esc(p[3])+'</td><td class="mono '+(strong?'bad':'warn')+'">'+(r.s*100).toFixed(0)+'%</td><td><a href="'+officialLink(p)+'" target="_blank" rel="noopener">Official record</a></td></tr>'}).join('')+'</tbody></table></div>';
+      res.map(function(r){var strong=r.s>=0.95,p=r.rec;return '<tr class="newrow"><td>'+esc(p[4][0])+'</td><td class="mono" style="font-size:.74rem">'+esc(r.hit===p[4][0]?'primary name':r.hit)+'</td><td><span class="chip '+(p[0]==='uk'?'g':'b')+'">'+(p[0]==='uk'?'UK':'OFAC')+'</span></td><td>'+esc(p[2])+'</td><td>'+esc(String(p[3]).replace(/^\[|\]$/g,'').replace(/\]\s*\[/g,' \u00b7 '))+'</td><td class="mono '+(strong?'bad':'warn')+'">'+(r.s*100).toFixed(0)+'%</td><td><a href="'+officialLink(p)+'" target="_blank" rel="noopener">Official record</a></td></tr>'}).join('')+'</tbody></table></div>';
     var top=res[0].s>=0.95;
     log(top?'crit':'warn','screening','"'+raw+'": '+res.length+' possible match'+(res.length>1?'es':'')+' (top '+(res[0].s*100).toFixed(0)+'%). Review against the official record.');
     record('screening','screen',top?'strong match':'possible match');bump('caught');
@@ -1050,16 +977,16 @@ var PTS=(function(){
 var EDGES=(function(){var e=[],i,j;for(i=0;i<PTS.length;i++)for(j=i+1;j<PTS.length;j++){if(Math.hypot(PTS[i][0]-PTS[j][0],PTS[i][1]-PTS[j][1])<0.27)e.push([i,j])}return e})();
 function drawFace(){
   var t=vhT,turn=vhPhase==='live'?Math.sin(t/22)*0.35:0,cxp=W/2,cyp=H/2+6,s=H*0.36,g;
-  cx.clearRect(0,0,W,H);cx.strokeStyle='rgba(255,255,255,.05)';cx.lineWidth=1;
+  cx.clearRect(0,0,W,H);cx.strokeStyle='rgba(255,255,255,.025)';cx.lineWidth=1;
   for(g=0;g<W;g+=26){cx.beginPath();cx.moveTo(g,0);cx.lineTo(g,H);cx.stroke()}
   for(g=0;g<H;g+=26){cx.beginPath();cx.moveTo(0,g);cx.lineTo(W,g);cx.stroke()}
   var P=PTS.map(function(p,i){var depth=i<22?Math.abs(p[0])*0.6:1;return [cxp+(p[0]+turn*depth*0.6*(1-Math.abs(p[0])))*s*(1-Math.abs(turn)*0.15*(i<22?1:0)),cyp+p[1]*s]});
-  cx.strokeStyle=vhPhase==='done'?'#2FD06B':vhPhase==='idle'?'#3a3a55':'#5D5BFF';cx.globalAlpha=0.75;cx.lineWidth=1.3;
+  cx.strokeStyle=vhPhase==='done'?'#7FB89A':vhPhase==='idle'?'#3d3838':'#8f88c4';cx.globalAlpha=0.75;cx.lineWidth=1.3;
   EDGES.forEach(function(e){cx.beginPath();cx.moveTo(P[e[0]][0],P[e[0]][1]);cx.lineTo(P[e[1]][0],P[e[1]][1]);cx.stroke()});
-  cx.globalAlpha=1;cx.fillStyle=vhPhase==='done'?'#2FD06B':'#8F8CFF';
+  cx.globalAlpha=1;cx.fillStyle=vhPhase==='done'?'#7FB89A':'#B9B1E6';
   P.forEach(function(p){cx.beginPath();cx.arc(p[0],p[1],2.6,0,Math.PI*2);cx.fill()});
-  if(vhPhase==='live'){var y=cyp-s+((t*4)%(2*s));cx.strokeStyle='#FFB238';cx.lineWidth=2;cx.beginPath();cx.moveTo(cxp-s*0.8,y);cx.lineTo(cxp+s*0.8,y);cx.stroke()}
-  cx.strokeStyle=vhPhase==='done'?'#2FD06B':vhPhase==='live'?'#FF2EA6':'#2a2a3a';cx.lineWidth=2;
+  if(vhPhase==='live'){var y=cyp-s+((t*4)%(2*s));cx.strokeStyle='#D6A76A';cx.lineWidth=2;cx.beginPath();cx.moveTo(cxp-s*0.8,y);cx.lineTo(cxp+s*0.8,y);cx.stroke()}
+  cx.strokeStyle=vhPhase==='done'?'#7FB89A':vhPhase==='live'?'#D4848A':'#2b2929';cx.lineWidth=2;
   var bx=cxp-s*0.8,by=cyp-s*0.98,bw=s*1.6,bh=s*1.96,L=22;
   [[bx,by,1,1],[bx+bw,by,-1,1],[bx,by+bh,1,-1],[bx+bw,by+bh,-1,-1]].forEach(function(c){cx.beginPath();cx.moveTo(c[0],c[1]+L*c[3]);cx.lineTo(c[0],c[1]);cx.lineTo(c[0]+L*c[2],c[1]);cx.stroke()});
 }
@@ -1151,11 +1078,13 @@ function txRow(){
 }
 for(var i0=0;i0<5;i0++)txRow();
 
+$('#heroGo').addEventListener('click',function(){show('screening');var c=$('.console');if(c)c.scrollIntoView({behavior:'smooth'});setTimeout(function(){$('#scName').focus({preventScroll:true})},400)});
+
 /* ---------- demo feeds + start-up ---------- */
 var tick=0;
 setInterval(function(){if(paused)return;tick++;txRow();if(tick%8===0)addReq()},3200);
 $('#pauseBtn').addEventListener('click',function(){
-  paused=!paused;this.setAttribute('aria-pressed',paused);this.textContent=paused?'Resume demo feeds':'Pause demo feeds';
+  paused=!paused;this.setAttribute('aria-pressed',paused);this.textContent=paused?'resume demo feeds':'pause demo feeds';
   $('#streamDot').classList.toggle('off',paused);
 });
 if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)$('#pauseBtn').click();
