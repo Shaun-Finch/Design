@@ -5,6 +5,9 @@ Static portfolio for Shaun Finch. One page, no build step, no dependencies.
 ```
 index.html                 Design and motion work (CSS inlined)
 branding.html              Branding — static image galleries (CSS inlined)
+xovern.html                Xovern — AI security dashboard (work in progress)
+data/sanctions.json        Sanctions data for Xovern, refreshed daily by a GitHub Action
+scripts/build_sanctions.py Builds data/sanctions.json from the UK and OFAC lists
 work/                      Videos and poster images
 branding/                  Branding stills
 Shaun_Finch_CV_2026.pdf
@@ -80,3 +83,10 @@ If a piece has to stay high quality, host it on Vimeo or YouTube and swap the
 
 Plain HTML — open the file and change the words. Pieces are `<figure class="piece">`
 blocks; delete one and the grid closes up on its own.
+
+## Xovern sanctions data
+
+`.github/workflows/sanctions-data.yml` runs every day at 06:17 UTC (and on demand
+from the Actions tab). It downloads the official UK Sanctions List (FCDO) and the
+OFAC SDN list, writes `data/sanctions.json` and commits it if anything changed.
+If a download or parse fails, the job fails and the previous file stays in place.
