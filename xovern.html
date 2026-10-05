@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Xovern — AI security layer (WIP)</title>
-<meta name="description" content="Xovern, a work-in-progress security platform for companies building with AI: sanctions screening against the official UK and US lists, a prompt-injection firewall, commit-signature and leaked-secret checks, breached-password checks, passkey sign-up and payment fraud scoring.">
+<meta name="description" content="Xovern, a work-in-progress security platform for companies building with AI: sanctions screening against the official UK and US lists, a prompt-injection firewall, commit-signature and leaked-secret checks, and passkey sign-up. Everything runs in your browser.">
 <meta name="theme-color" content="#151414">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -84,7 +84,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .hero h1{font-weight:500;font-size:clamp(2.3rem,6.2vw,4.4rem);line-height:1.08;letter-spacing:-.03em;margin:0;max-width:14ch}
 .lede{color:var(--mute);font-size:clamp(.95rem,1.4vw,1.08rem);max-width:52ch;margin:1.4rem 0 0;line-height:1.75}
 .lede b{color:var(--ink);font-weight:500}
-.meta{margin:1.6rem 0 0;font-size:.78rem;color:var(--dim);display:flex;flex-wrap:wrap;gap:.3rem .7rem}
+.trust{margin:1.8rem 0 0;font-size:.78rem;color:var(--mute);display:flex;flex-wrap:wrap;gap:.4rem .8rem;align-items:center}
+.meta{margin:.9rem 0 0;font-size:.78rem;color:var(--dim);display:flex;flex-wrap:wrap;gap:.3rem .7rem}
 .meta b{color:var(--mute);font-weight:400}
 .meta .sep{color:#3d3939}
 
@@ -265,8 +266,9 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
     <div>
       <p class="label">security for ai &middot; work in progress</p>
       <h1>Guardrails for AI that acts.</h1>
-      <p class="lede">AI can now move money, send email and ship code on its own. Xovern sits between that power and the real world: <b>verify who is at the keyboard, supervise what agents do, screen who you deal with, recover tampered code and stop payment fraud</b>, with a person signing off anything risky.</p>
+      <p class="lede">AI can now move money, send email and ship code on its own. Xovern sits between that power and the real world: <b>verify who is at the keyboard, supervise what agents do, screen who you deal with and recover tampered code</b>, with a person signing off anything risky.</p>
       <div class="row" style="margin-top:2rem"><button class="btn accent" type="button" id="heroGo">screen a name</button><a class="btn ghost" href="#guardrails">how it stays legal &rarr;</a></div>
+      <p class="trust"><span class="st s-live">private by design</span> Everything runs in your browser. Xovern has no server and no accounts, so nothing you type is ever sent to us.</p>
       <p class="meta"><span><b data-stat="checks">0</b> checks run</span><span class="sep">&middot;</span><span><b data-stat="caught">0</b> caught</span><span class="sep">&middot;</span><span><b data-stat="records">&hellip;</b> sanctions records</span><span class="sep">&middot;</span><span>synced <b data-stat="updated">&hellip;</b></span></p>
     </div>
   </div>
@@ -274,16 +276,14 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
 
 <section class="wrap console" aria-label="Plug-ins">
   <div>
-    <p class="railhead">Plug-ins &middot; 6</p>
+    <p class="railhead">Plug-ins &middot; 4</p>
     <div class="rail" role="tablist" aria-label="Plug-ins" aria-orientation="vertical">
       <button class="tab" role="tab" id="t-screening" aria-controls="screening" aria-selected="true"><span class="ic">01</span><span class="nm">Screening<small>UK &amp; US sanctions lists</small></span><span class="st s-live">live</span></button>
       <button class="tab" role="tab" id="t-agent-guard" aria-controls="agent-guard" aria-selected="false" tabindex="-1"><span class="ic">02</span><span class="nm">Agent Guard<small>Supervise AI agents</small></span><span class="st s-part">part</span></button>
       <button class="tab" role="tab" id="t-code-recovery" aria-controls="code-recovery" aria-selected="false" tabindex="-1"><span class="ic">03</span><span class="nm">Code Recovery<small>Signed commits &amp; leaked secrets</small></span><span class="st s-live">live</span></button>
-      <button class="tab" role="tab" id="t-breach-watch" aria-controls="breach-watch" aria-selected="false" tabindex="-1"><span class="ic">04</span><span class="nm">Breach Watch<small>Breached passwords &amp; domains</small></span><span class="st s-live">live</span></button>
-      <button class="tab" role="tab" id="t-verified-human" aria-controls="verified-human" aria-selected="false" tabindex="-1"><span class="ic">05</span><span class="nm">Verified Human<small>Passkey + liveness sign-up</small></span><span class="st s-part">part</span></button>
-      <button class="tab" role="tab" id="t-fraud-shield" aria-controls="fraud-shield" aria-selected="false" tabindex="-1"><span class="ic">06</span><span class="nm">Fraud Shield<small>Payments &amp; account takeover</small></span><span class="st s-part">part</span></button>
+      <button class="tab" role="tab" id="t-verified-human" aria-controls="verified-human" aria-selected="false" tabindex="-1"><span class="ic">04</span><span class="nm">Verified Human<small>Passkey + liveness sign-up</small></span><span class="st s-part">part</span></button>
     </div>
-    <div class="more"><b>// roadmap</b>Agent Guard SDK &middot; on-device liveness &middot; bank connectors for Confirmation of Payee &middot; company-wide breach alerts &middot; deepfake call check. Every plug-in uses the same manifest, so new tools slot in without touching the core.</div>
+    <div class="more"><b>// roadmap</b>Agent Guard SDK &middot; on-device liveness &middot; UN and EU sanctions lists &middot; deepfake call check. Every plug-in uses the same manifest, so new tools slot in without touching the core.</div>
   </div>
 
   <div>
@@ -398,47 +398,6 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
       </div>
     </section>
 
-    <!-- ===== Breach Watch ===== -->
-    <section class="panel" id="breach-watch" role="tabpanel" aria-labelledby="t-breach-watch" hidden>
-      <div class="phead">
-        <div>
-          <p class="uri">plugin://breach-watch &middot; v0.1.0 &middot; <span class="st s-live">live</span></p>
-          <h2>Breach Watch</h2>
-          <p>Stops staff and customers using passwords that have already leaked, keeps an eye on new public breaches, and lets a company prove it owns its email domain before company-wide monitoring is switched on.</p>
-        </div>
-        <div class="basis"><b>Scope</b>Verified domains only &middot; passwords never leave the browser (k-anonymity) &middot; UK GDPR legitimate interests</div>
-      </div>
-      <div class="pgrid">
-        <div class="card">
-          <h3 class="p">Has this password leaked? <span class="st s-live">live</span></h3>
-          <label class="sr" for="pwIn">Password to check</label>
-          <div class="row" style="margin-top:0"><input type="password" id="pwIn" placeholder="Type a password" autocomplete="off" style="flex:1 1 12rem;background:#050508;border:1px solid var(--line);color:var(--ink);padding:.6rem .7rem"><button class="btn accent sm" id="pwGo" type="button">Check</button></div>
-          <div id="pwOut" aria-live="polite" style="margin-top:.7rem"></div>
-          <p class="note">Your browser hashes the password (SHA-1) and sends only the first 5 characters of the hash to <a href="https://haveibeenpwned.com/Passwords" rel="noopener">Pwned Passwords</a>. The match is made here, so neither the password nor its full hash is sent.</p>
-        </div>
-        <div class="card">
-          <h3 class="a">Latest public breaches <span class="st s-live">live</span></h3>
-          <div id="brList"><p class="note" style="margin:0">Loading from Have I Been Pwned&hellip;</p></div>
-          <p class="note">Breach data from <a href="https://haveibeenpwned.com" rel="noopener">Have I Been Pwned</a>, licensed under CC BY 4.0.</p>
-        </div>
-        <div class="card">
-          <h3 class="g">Prove you own a domain <span class="st s-live">live</span></h3>
-          <div class="row" style="margin-top:0">
-            <label class="sr" for="bwDomain">Domain</label>
-            <input type="text" id="bwDomain" placeholder="yourcompany.co.uk" autocomplete="off">
-            <button class="btn sm" id="bwAdd" type="button">Get DNS record</button>
-          </div>
-          <div id="bwTxt" style="margin-top:.8rem"></div>
-          <p class="note">"Check DNS" does a real lookup through Google Public DNS. Add the record to a domain you own and it will verify.</p>
-        </div>
-        <div class="card">
-          <h3>Company-wide alerts <span class="st s-prev">preview</span></h3>
-          <div class="scroll"><table class="tbl"><thead><tr><th>Domain</th><th>Status</th><th>Monitoring</th></tr></thead><tbody id="domains"><tr><td colspan="3" class="note">No verified domains yet.</td></tr></tbody></table></div>
-          <p class="note">Next: once a domain is verified, alert when any staff address appears in a new breach and require a passkey reset. Needs a back end and an HIBP domain subscription.</p>
-        </div>
-      </div>
-    </section>
-
     <!-- ===== Verified Human ===== -->
     <section class="panel" id="verified-human" role="tabpanel" aria-labelledby="t-verified-human" hidden>
       <div class="phead">
@@ -470,41 +429,6 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
         </div>
       </div>
     </section>
-
-    <!-- ===== Fraud Shield ===== -->
-    <section class="panel" id="fraud-shield" role="tabpanel" aria-labelledby="t-fraud-shield" hidden>
-      <div class="phead">
-        <div>
-          <p class="uri">plugin://fraud-shield &middot; v0.1.0 &middot; <span class="st s-part">partly live</span></p>
-          <h2>Fraud Shield</h2>
-          <p>Checks payee details before money moves and scores each payment for the signs of authorised push payment (APP) scams and account takeover: a new payee, a new device, a remote-access app running, a name that fails Confirmation of Payee. Risky payments get a passkey step-up or are held for a call.</p>
-        </div>
-        <div class="basis"><b>Built for</b>PSR APP-scam reimbursement requirement (in force since 7 Oct 2024) &middot; Confirmation of Payee &middot; Strong Customer Authentication (UK PSRs 2017)</div>
-      </div>
-      <div class="pgrid">
-        <div class="card">
-          <h3 class="g">Payee IBAN check <span class="st s-live">live</span></h3>
-          <div class="row" style="margin-top:0">
-            <label class="sr" for="ibanIn">IBAN</label>
-            <input type="text" id="ibanIn" placeholder="GB82 WEST 1234 5698 7654 32" autocomplete="off" spellcheck="false">
-            <button class="btn accent sm" id="ibanGo" type="button">Check</button>
-          </div>
-          <div id="ibanOut" aria-live="polite" style="margin-top:.7rem"></div>
-          <p class="note">Validates country, length and the ISO 13616 check digits, which catches most typing errors and doctored account numbers. The name check (Confirmation of Payee) needs a bank connector, which comes next.</p>
-        </div>
-        <div class="card">
-          <h3 class="a">Signal weights</h3>
-          <table class="tbl"><tbody id="weights"></tbody></table>
-          <p class="note">Below <b class="mono ok">35</b> allow &middot; <b class="mono warn">35&ndash;64</b> passkey step-up &middot; <b class="mono bad">65+</b> hold and call the customer.</p>
-          <label class="chk" style="margin-top:.6rem" for="fsStrict"><input type="checkbox" id="fsStrict"> Strict mode: hold anything over &pound;5,000 to a new payee</label>
-        </div>
-        <div class="card span">
-          <h3>Payment scoring <span class="st s-prev">preview</span><span class="r" id="fsSummary"></span></h3>
-          <div class="scroll"><table class="tbl" id="tx"><thead><tr><th>Time</th><th>Account</th><th>Payee</th><th>Amount</th><th>Signals</th><th>Risk</th><th>Action</th></tr></thead><tbody></tbody></table></div>
-          <p class="note">Synthetic payments generated in your browser to show the scoring. Real payments arrive once a bank connects.</p>
-        </div>
-      </div>
-    </section>
   </div>
 </section>
 
@@ -521,7 +445,7 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
     <h2>Defensive by design</h2>
     <p>Security tools can be turned on the people they are meant to protect. These rules are part of the product, and every plug-in has to declare how it meets them before it can be installed.</p>
     <div class="rules">
-      <div class="rule"><span class="n">01 &middot; owned only</span><b>Your systems, nobody else's</b><p>Changes, recovery and monitoring run only on repositories and domains you prove you control. No probing third parties.</p><small>Computer Misuse Act 1990 &middot; US CFAA, 18 U.S.C. &sect; 1030</small></div>
+      <div class="rule"><span class="n">01 &middot; owned only</span><b>Your systems, nobody else's</b><p>Changes and recovery run only on repositories you own and connect. No probing third parties.</p><small>Computer Misuse Act 1990 &middot; US CFAA, 18 U.S.C. &sect; 1030</small></div>
       <div class="rule"><span class="n">02 &middot; consent first</span><b>Biometrics stay on the device</b><p>Liveness runs on the person's own phone or laptop after explicit consent. Xovern stores a passkey public key, never a face.</p><small>UK GDPR Art. 9 &middot; Illinois BIPA (740 ILCS 14) &middot; EU AI Act Annex III</small></div>
       <div class="rule"><span class="n">03 &middot; no covert checks</span><b>Screening, not surveillance</b><p>Official sanctions lists only. Deeper checks go through accredited providers with the person's written consent.</p><small>MLR 2017 &middot; DBS &middot; FCRA</small></div>
       <div class="rule"><span class="n">04 &middot; human sign-off</span><b>People approve the risky actions</b><p>Agents can propose moving money, emailing customers or deploying, but a named person approves it with a passkey.</p><small>EU AI Act Art. 14 &middot; UK GDPR Arts. 22A&ndash;22D</small></div>
@@ -558,7 +482,7 @@ pre.code .k{color:var(--pink)} pre.code .s{color:var(--amber)} pre.code .c{color
 <footer class="foot">
   <div class="wrap">
     <span>Xovern is a work in progress by Shaun Finch, 2026. LIVE tools run on real data; PREVIEW tools use demo data while their back end is built.</span>
-    <span>Sanctions data: UK Sanctions List (FCDO, Open Government Licence v3.0) and OFAC SDN List (U.S. Treasury). Breach data: Have I Been Pwned (CC BY 4.0).</span>
+    <span>Sanctions data: UK Sanctions List (FCDO, Open Government Licence v3.0) and OFAC SDN List (U.S. Treasury).</span>
   </div>
 </footer>
 
@@ -572,7 +496,6 @@ function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 function pick(a){return a[Math.floor(Math.random()*a.length)]}
 function hex(n){var a=new Uint8Array(Math.ceil(n/2));(window.crypto||{getRandomValues:function(x){for(var i=0;i<x.length;i++)x[i]=Math.random()*256;return x}}).getRandomValues(a);return [].map.call(a,function(x){return ('0'+x.toString(16)).slice(-2)}).join('').slice(0,n)}
 function clock(){return new Date().toTimeString().slice(0,8)}
-function gbp(n){return '\u00a3'+n.toLocaleString('en-GB')}
 function J(){return [].join.call(arguments,'')}
 var paused=false;
 
@@ -598,7 +521,6 @@ var tabs=$$('.tab');
 function show(id,focus){
   tabs.forEach(function(t){var on=t.getAttribute('aria-controls')===id;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;$('#'+t.getAttribute('aria-controls')).hidden=!on;if(on&&focus)t.focus()});
   try{history.replaceState(null,'','#'+id)}catch(e){}
-  if(id==='breach-watch')loadBreaches();
 }
 tabs.forEach(function(t,i){
   t.addEventListener('click',function(){show(t.getAttribute('aria-controls'))});
@@ -910,54 +832,6 @@ $('#repoDeep').addEventListener('click',function(){
   }).catch(function(e){$('#repoPlan').innerHTML='<p class="note bad">'+esc(e.message)+'</p>';b.disabled=false});
 });
 
-/* ---------- Breach Watch: real Pwned Passwords + HIBP breach catalogue + DNS ---------- */
-$('#pwGo').addEventListener('click',checkPw);
-$('#pwIn').addEventListener('keydown',function(e){if(e.key==='Enter')checkPw()});
-function checkPw(){
-  var pw=$('#pwIn').value,out=$('#pwOut');if(!pw)return;
-  out.innerHTML='<p class="note" style="margin:0">Checking\u2026</p>';
-  digest('SHA-1',pw).then(function(h){
-    h=h.toUpperCase();var pre=h.slice(0,5),suf=h.slice(5);
-    return fetch('https://api.pwnedpasswords.com/range/'+pre).then(function(r){if(!r.ok)throw new Error('Pwned Passwords returned '+r.status);return r.text()}).then(function(txt){
-      var n=0;txt.split('\n').some(function(l){var p=l.trim().split(':');if(p[0]===suf){n=+p[1];return true}});
-      $('#pwIn').value='';bump('checks');
-      if(n){out.innerHTML='<div class="verdict on"><div class="big"><span class="bad">LEAKED</span><span style="font-weight:400;font-size:.8rem;color:var(--mute)">Seen '+n.toLocaleString('en-GB')+' times in data breaches. Don\'t use it anywhere.</span></div></div>';log('crit','breach-watch','Password check: found in breaches ('+n.toLocaleString('en-GB')+' times)');record('breach-watch','password_check','leaked');bump('caught')}
-      else{out.innerHTML='<div class="verdict on"><div class="big"><span class="ok">NOT FOUND</span><span style="font-weight:400;font-size:.8rem;color:var(--mute)">Not in any known breach. That doesn\'t make it strong: use a passkey or a password manager.</span></div></div>';log('ok','breach-watch','Password check: not found in known breaches');record('breach-watch','password_check','not found')}
-    });
-  }).catch(function(e){out.innerHTML='<p class="note bad" style="margin:0">'+esc(e.message||'Check failed')+'</p>'});
-}
-var brLoaded=false;
-function loadBreaches(){
-  if(brLoaded)return;brLoaded=true;
-  fetch('https://haveibeenpwned.com/api/v3/breaches').then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(function(all){
-    var recent=all.filter(function(b){return b.IsVerified&&!b.IsSpamList&&!b.IsFabricated}).sort(function(a,b){return a.AddedDate<b.AddedDate?1:-1}).slice(0,6);
-    $('#brList').innerHTML='<div class="scroll"><table class="tbl"><thead><tr><th>Breach</th><th>Date</th><th>Accounts</th><th>Data exposed</th></tr></thead><tbody>'+recent.map(function(b){
-      return '<tr><td><a href="https://haveibeenpwned.com/PwnedWebsites#'+encodeURIComponent(b.Name)+'" target="_blank" rel="noopener">'+esc(b.Title)+'</a></td><td class="mono">'+esc(b.BreachDate)+'</td><td class="mono">'+(+b.PwnCount).toLocaleString('en-GB')+'</td><td style="font-size:.76rem;color:var(--mute)">'+esc((b.DataClasses||[]).slice(0,4).join(', '))+'</td></tr>'}).join('')+'</tbody></table></div>';
-    log('info','breach-watch','Loaded '+all.length.toLocaleString('en-GB')+' public breaches from Have I Been Pwned');
-  }).catch(function(){brLoaded=false;$('#brList').innerHTML='<p class="note warn" style="margin:0">Couldn\'t reach Have I Been Pwned from this browser. <a href="https://haveibeenpwned.com/PwnedWebsites" target="_blank" rel="noopener">See the list there</a>.</p>'});
-}
-var verified=[],pending=null;
-function renderDomains(){
-  $('#domains').innerHTML=verified.length?verified.map(function(d){return '<tr><td class="mono">'+esc(d)+'</td><td><span class="chip g">verified</span></td><td><span class="chip m">coming next</span></td></tr>'}).join(''):'<tr><td colspan="3" class="note">No verified domains yet.</td></tr>';
-}
-$('#bwAdd').addEventListener('click',function(){
-  var d=$('#bwDomain').value.trim().toLowerCase().replace(/^https?:\/\//,'').replace(/\/.*$/,'');
-  if(!/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(d)){$('#bwTxt').innerHTML='<p class="note bad">Enter a domain like yourcompany.co.uk</p>';return}
-  pending={d:d,token:'xovern-verify='+hex(32)};
-  $('#bwTxt').innerHTML='<p class="note" style="margin-top:0">Add this TXT record at <b class="mono">'+esc(d)+'</b>:</p><pre class="code">'+esc(pending.token)+'</pre><div class="row"><button class="btn sm accent" id="bwCheck" type="button">Check DNS</button><span class="note" id="bwRes" style="margin:0"></span></div>';
-  log('info','breach-watch','Verification record issued for '+d);
-});
-$('#bwTxt').addEventListener('click',function(e){
-  if(!e.target.closest('#bwCheck')||!pending)return;
-  var res=$('#bwRes'),p=pending;res.textContent='Looking up TXT records\u2026';
-  fetch('https://dns.google/resolve?name='+encodeURIComponent(p.d)+'&type=TXT').then(function(r){return r.json()}).then(function(j){
-    bump('checks');
-    var found=(j.Answer||[]).some(function(a){return String(a.data).replace(/"/g,'').indexOf(p.token)>=0});
-    if(found){if(verified.indexOf(p.d)<0)verified.push(p.d);renderDomains();res.innerHTML='<span class="ok">\u2713 Verified: you control '+esc(p.d)+'.</span>';log('ok','breach-watch',p.d+' verified by DNS');record('breach-watch','verify_domain:'+p.d,'verified')}
-    else{res.innerHTML='<span class="warn">Record not found yet. DNS changes can take a few minutes; check again shortly.</span>'}
-  }).catch(function(){res.innerHTML='<span class="warn">DNS lookup failed from this browser. Try again later.</span>'});
-});
-
 /* ---------- Verified Human: real passkey + liveness preview ---------- */
 var cv=$('#face'),cx=cv.getContext('2d'),W=cv.width,H=cv.height,vhPhase='idle',vhT=0,vhRaf=0;
 var PTS=(function(){
@@ -1028,55 +902,9 @@ $('#vhReset').addEventListener('click',function(){
   $('#vhResult').innerHTML='<span class="c">// run the flow to see the response</span>';
 });
 
-/* ---------- Fraud Shield: real IBAN check ---------- */
-var IBAN_LEN={AD:24,AE:23,AT:20,BE:16,BG:22,CH:21,CY:28,CZ:24,DE:22,DK:18,EE:20,ES:24,FI:18,FR:27,GB:22,GI:23,GR:27,HR:21,HU:28,IE:22,IS:26,IT:27,LI:21,LT:20,LU:20,LV:21,MC:27,MT:31,NL:18,NO:15,PL:28,PT:25,RO:24,SA:24,SE:24,SI:19,SK:24,SM:27,TR:26};
-function ibanCheck(raw){
-  var s=raw.replace(/[\s-]+/g,'').toUpperCase();
-  if(!/^[A-Z]{2}[0-9]{2}[A-Z0-9]{10,30}$/.test(s))return {ok:false,why:'Not in IBAN format (two letters, two digits, then the account).'};
-  var cc=s.slice(0,2);
-  if(IBAN_LEN[cc]&&s.length!==IBAN_LEN[cc])return {ok:false,why:cc+' IBANs are '+IBAN_LEN[cc]+' characters; this one is '+s.length+'.'};
-  var re=s.slice(4)+s.slice(0,4),rem=0;
-  for(var i=0;i<re.length;i++){var c=re.charCodeAt(i),d=c>=65?String(c-55):re[i];for(var k=0;k<d.length;k++)rem=(rem*10+(+d[k]))%97}
-  if(rem!==1)return {ok:false,why:'Check digits don\'t match. There\'s a typo, or the number has been altered.'};
-  var info=cc==='GB'?'Bank code '+s.slice(4,8)+' \u00b7 sort code '+s.slice(8,10)+'-'+s.slice(10,12)+'-'+s.slice(12,14)+' \u00b7 account '+s.slice(14):'Country '+cc+(IBAN_LEN[cc]?'':' (length not checked for this country)');
-  return {ok:true,s:s.replace(/(.{4})/g,'$1 ').trim(),info:info};
-}
-function runIban(){
-  var v=$('#ibanIn').value.trim()||$('#ibanIn').placeholder,r=ibanCheck(v),out=$('#ibanOut');
-  bump('checks');
-  out.innerHTML='<div class="verdict on"><div class="big"><span class="'+(r.ok?'ok':'bad')+'">'+(r.ok?'VALID':'INVALID')+'</span><span class="mono" style="font-weight:400;font-size:.8rem;color:var(--mute)">'+esc(r.ok?r.s:r.why)+'</span></div>'+(r.ok?'<p class="note" style="margin:.4rem 0 0">'+esc(r.info)+'. A valid number still needs a name check before you pay.</p>':'')+'</div>';
-  log(r.ok?'ok':'warn','fraud-shield','IBAN check: '+(r.ok?'valid':'invalid ('+r.why+')'));record('fraud-shield','iban_check',r.ok?'valid':'invalid');if(!r.ok)bump('caught');
-}
-$('#ibanGo').addEventListener('click',runIban);
-$('#ibanIn').addEventListener('keydown',function(e){if(e.key==='Enter')runIban()});
-
-/* ---------- Fraud Shield: scoring preview (synthetic payments) ---------- */
-var SIGNALS=[{k:'new_payee',label:'New payee',w:18},{k:'new_device',label:'New device',w:16},{k:'remote',label:'Remote-access app',w:32},{k:'cop',label:'CoP: no match',w:26},{k:'mule',label:'Mule pattern',w:24},{k:'velocity',label:'Velocity',w:14},{k:'amount',label:'Unusual amount',w:12},{k:'hour',label:'Odd hour',w:6}];
-$('#weights').innerHTML=SIGNALS.map(function(s){return '<tr><td>'+s.label+'</td><td class="mono" style="color:var(--amber);text-align:right">+'+s.w+'</td></tr>'}).join('');
-var PAYEES=[['Northwind Energy',0],['City Council Tax',0],['Brightside Lettings',1],['R. Patel',1],['Quantix Crypto Desk',3],['Hartley & Co Solicitors',2],['Greenleaf Grocers',0],['Apex Investments 24',3],['M. Osei',1],['"Safe account" transfer',3]];
-var PR={new_payee:[.08,.4,.6,.85],new_device:[.04,.15,.25,.6],remote:[0,.03,.08,.45],cop:[0,.08,.2,.5],mule:[0,.05,.15,.55],velocity:[.03,.1,.15,.35],amount:[.02,.15,.4,.6],hour:[.05,.08,.1,.3]};
-var fsN=0,fsHeld=0;
-function txRow(){
-  var p=pick(PAYEES),lvl=p[1],sig=[];
-  var amt=lvl>=3?rnd(1800,14000):lvl===2?rnd(600,9000):rnd(12,1400);
-  SIGNALS.forEach(function(s){if(Math.random()<PR[s.k][lvl])sig.push(s)});
-  var risk=Math.min(99,sig.reduce(function(a,s){return a+s.w},0)+rnd(0,7));
-  if($('#fsStrict').checked&&amt>5000&&sig.some(function(s){return s.k==='new_payee'}))risk=Math.max(risk,70);
-  var act=risk>=65?'hold':risk>=35?'step':'allow';
-  fsN++;if(act==='hold'){fsHeld++;log('warn','fraud-shield','Held '+gbp(amt)+' to "'+p[0]+'": '+sig.map(function(s){return s.label}).join(', '),true)}
-  var tr=document.createElement('tr');tr.className='newrow';
-  tr.innerHTML='<td class="mono">'+clock()+'</td><td class="mono">\u2022\u2022'+rnd(1000,9999)+'</td><td>'+esc(p[0])+'</td><td class="mono">'+gbp(amt)+'</td><td>'+(sig.length?sig.map(function(s){return '<span class="chip '+(s.w>=24?'p':s.w>=14?'a':'m')+'">'+s.label+'</span>'}).join(' '):'<span class="chip m">none</span>')+'</td><td>'+riskBar(risk)+'</td><td>'+
-    (act==='hold'?'<span class="chip pf">HOLD \u00b7 call</span>':act==='step'?'<span class="chip a">STEP-UP</span>':'<span class="chip g">ALLOW</span>')+'</td>';
-  var tb=$('#tx tbody');tb.insertBefore(tr,tb.firstChild);while(tb.children.length>8)tb.removeChild(tb.lastChild);
-  $('#fsSummary').textContent='demo \u00b7 '+fsN+' scored \u00b7 '+fsHeld+' held';
-}
-for(var i0=0;i0<5;i0++)txRow();
-
-$('#heroGo').addEventListener('click',function(){show('screening');var c=$('.console');if(c)c.scrollIntoView({behavior:'smooth'});setTimeout(function(){$('#scName').focus({preventScroll:true})},400)});
-
 /* ---------- demo feeds + start-up ---------- */
 var tick=0;
-setInterval(function(){if(paused)return;tick++;txRow();if(tick%8===0)addReq()},3200);
+setInterval(function(){if(paused)return;tick++;if(tick%3===0)addReq()},8000);
 $('#pauseBtn').addEventListener('click',function(){
   paused=!paused;this.setAttribute('aria-pressed',paused);this.textContent=paused?'resume demo feeds':'pause demo feeds';
   $('#streamDot').classList.toggle('off',paused);
