@@ -178,8 +178,8 @@ figure.piece.wide .piece-body h3{font-size:clamp(1.35rem,2.4vw,1.75rem);letter-s
 @media (max-width:56rem){figure.piece.wide{grid-template-columns:1fr}figure.piece.wide .frame{aspect-ratio:16/9;min-height:0}}
 .mapframe{background:#121316}
 .frame.blank{background:#000}
-.brandvid{margin-bottom:clamp(1.5rem,3vw,2rem);border:1px solid rgba(255,255,255,.07)}
-.brandvid video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bookembed{margin-bottom:clamp(1.5rem,3vw,2rem);background:#0d0d12;border:1px solid rgba(255,255,255,.07);line-height:0}
+.bookembed iframe{display:block;width:100%;height:clamp(380px,46vw,580px);border:0;background:#0d0d12}
 .mapsvg{position:absolute;inset:0;width:100%;height:100%;display:block}
 .mapsvg .riv{font:600 2.6px Figtree,system-ui,sans-serif;fill:#2f5b7a;letter-spacing:.3px}
 .mapsvg .north text{font:700 3px Figtree,system-ui,sans-serif;fill:#6b6c74}
@@ -199,6 +199,17 @@ figure.piece.wide .piece-body h3{font-size:clamp(1.35rem,2.4vw,1.75rem);letter-s
 .maphint{position:absolute;right:.8rem;bottom:.8rem;background:rgba(0,0,0,.6);color:rgba(255,255,255,.82);font-size:.78rem;font-weight:600;padding:.3rem .7rem;border-radius:999px;pointer-events:none}
 .backlink{display:inline-flex;align-items:center;gap:.4rem;text-decoration:none;color:var(--mute);font-weight:600;font-size:.95rem;margin-bottom:1.4rem}
 .backlink:hover{color:var(--ink)}
+.split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(1.25rem,2.6vw,2rem);align-items:stretch}
+.splitcol{display:flex;flex-direction:column;min-width:0}
+.splitcol figure.piece{flex:1}
+.splitcol .frame{aspect-ratio:16/9}
+.splitcol .frame video{background:#000;object-fit:contain}
+.splitcol .piece-body{padding:1.35rem 1.5rem 1.6rem}
+.splitcol .piece-body h3{font-size:clamp(1.35rem,2.4vw,1.75rem);letter-spacing:-.03em}
+@media (max-width:56rem){.split{grid-template-columns:1fr;gap:clamp(2.5rem,6vw,3.5rem)}}
+figure.piece.blankslot{background:transparent;border:0}
+figure.piece.blankslot .frame{background:#000;border:1px solid rgba(255,255,255,.07)}
+@media (max-width:58rem){figure.piece.blankslot{display:none}}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(1.25rem,2.6vw,2rem)}
 .grid2 .piece-body h3{font-size:clamp(1.2rem,2vw,1.45rem);letter-spacing:-.03em}
 @media (max-width:48rem){.grid2{grid-template-columns:1fr}}
