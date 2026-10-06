@@ -3,9 +3,10 @@
 
 Scans a fixed universe of large, liquid US-listed stocks and ranks:
 
-  * Day trading - intraday setups from 5-minute bars (VWAP, EMA trend,
-    RSI, relative volume). Entry, exit and stop are set from the stock's
-    own intraday volatility (ATR), so every row has a fixed reward:risk.
+  * Day trading - opening-range breakouts from 5-minute bars. Entry at the
+    edge of the first 15 minutes' range, stop at its midpoint, exit target
+    at 2x the risk; each setup is tracked through the day (watching, open,
+    target hit, stopped, closed at the bell).
   * Long term   - 12-month ideas that combine the published Wall Street
     analyst consensus (rating, number of analysts, mean price target) with
     profitability, growth, trend and volatility.
@@ -76,8 +77,53 @@ def spark(series, n):
 
 
 # ---------------------------------------------------------------- day trading
-def day_setups(intra, daily, fund):
-    rows = []
+# Opening-range breakout (ORB): the first 15 minutes of the session set a
+# range. The first side to break it sets the trade: entry at the range edge,
+# stop at the range midpoint, exit target at 2x the risk. Every setup is then
+# tracked bar by bar so the table shows what actually happened today.
+OR_BARS = 3  # 3 x 5-minute bars = 15-minute opening range
+
+
+def ny_time(ts):
+    try:
+        return ts.tz_convert("America/New_York").strftime("%H:%M")
+    except (AttributeError, TypeError):
+        return ts.strftime("%H:%M")
+
+
+def orb_outcome(after, side, entry, stop, target):
+    """Walk the bars after the opening range: trigger, then stop or target (stop wins a tie)."""
+    long = side == "long"
+    trig = None
+    for ts, row in after.iterrows():
+        if trig is None:
+            if (long and row["High"] >= entry) or (not long and row["Low"] <= entry):
+                trig = ts
+            else:
+                continue
+        if (long and row["Low"] <= stop) or (not long and row["High"] >= stop):
+            return "stopped", -1.0, trig, ts
+        if (long and row["High"] >= target) or (not long and row["Low"] <= target):
+            return "target", 2.0, trig, ts
+    if trig is None:
+        return "watching", None, None, None
+    last = float(after["Close"].iloc[-1])
+    r = (last - entry) / (entry - stop) if long else (entry - last) / (stop - entry)
+    return "open", r, trig, None
+
+
+def first_break(after, orh, orl):
+    for _, row in after.iterrows():
+        up, dn = row["High"] > orh, row["Low"] < orl
+        if up and not dn:
+            return "long"
+        if dn and not up:
+            return "short"
+    return None
+
+
+def day_setups(intra, daily, fund, market_open):
+    rows, session = [], None
     for t in UNIVERSE:
         try:
             df = intra[t].dropna()
@@ -86,61 +132,72 @@ def day_setups(intra, daily, fund):
         if len(df) < 60:
             continue
         df = df.copy()
-        dates = df.index.tz_convert("America/New_York").date if df.index.tz is not None else df.index.date
-        df["d"] = dates
-        today = df["d"].iloc[-1]
-        td = df[df["d"] == today]
-        prev = df[df["d"] < today]
-        if len(td) < 3 or prev.empty:
+        df["d"] = df.index.tz_convert("America/New_York").date if df.index.tz is not None else df.index.date
+        days = [d for d, g in df.groupby("d") if len(g) > OR_BARS]
+        if len(days) < 2:
             continue
-        price = float(td["Close"].iloc[-1])
-        prev_close = float(prev["Close"].iloc[-1])
-        tp = (td["High"] + td["Low"] + td["Close"]) / 3
-        vol = td["Volume"].replace(0, np.nan)
-        vwap = float((tp * vol).sum() / vol.sum()) if vol.sum() > 0 else price
-        e9, e21 = float(ema(df["Close"], 9).iloc[-1]), float(ema(df["Close"], 21).iloc[-1])
-        r = float(rsi(df["Close"]).iloc[-1])
-        a = float(atr(df).iloc[-1]) or price * 0.002
-        # relative volume: today's volume so far vs the same number of bars on prior days
-        nb = len(td)
-        prior = [g["Volume"].iloc[:nb].sum() for _, g in prev.groupby("d") if len(g) >= nb]
-        relvol = float(td["Volume"].sum() / np.mean(prior)) if prior and np.mean(prior) > 0 else 1.0
-
+        today = days[-1]  # latest session with a complete opening range
+        td, prev = df[df["d"] == today], df[df["d"] < today]
+        session = str(today)
+        orr, after = td.iloc[:OR_BARS], td.iloc[OR_BARS:]
+        orh, orl = float(orr["High"].max()), float(orr["Low"].min())
+        open_px, price, prev_close = float(td["Open"].iloc[0]), float(td["Close"].iloc[-1]), float(prev["Close"].iloc[-1])
+        gap = (open_px / prev_close - 1) * 100
+        a5 = float(atr(df).iloc[-1]) or price * 0.002
+        width_pct = (orh - orl) / open_px * 100
+        if width_pct < 0.15 or width_pct > 4:
+            continue  # range too tight to trade or too wide to risk
         d = daily.get(t)
-        if d is None or len(d) < 20:
+        if d is None or len(d) < 25:
             continue
-        dollar_vol = float((d["Close"] * d["Volume"]).tail(20).mean())
-        if dollar_vol < 50e6:
+        if float((d["Close"] * d["Volume"]).tail(20).mean()) < 50e6:
             continue
         datr_pct = float(atr(d).iloc[-1] / d["Close"].iloc[-1] * 100)
+        sma20 = float(d["Close"].iloc[:-1].tail(20).mean())
+        # opening-range volume vs the same 15 minutes on prior days
+        prior = [g["Volume"].iloc[:OR_BARS].sum() for _, g in prev.groupby("d") if len(g) >= OR_BARS]
+        or_relvol = float(orr["Volume"].sum() / np.mean(prior)) if prior and np.mean(prior) > 0 else 1.0
 
-        s = (0.35 * math.tanh((price - vwap) / a)
-             + 0.25 * math.tanh((e9 - e21) / a * 2)
-             + 0.20 * max(-1, min(1, (r - 50) / 20))
-             + 0.20 * math.tanh(math.log(max(relvol, 0.05))) * (1 if price >= vwap else -1))
-        if (s > 0 and r > 78) or (s < 0 and r < 22):
-            s *= 0.5  # stretched: fade conviction
-        side = "long" if s >= 0 else "short"
-        sign = 1 if side == "long" else -1
-        stop = price - sign * 1.5 * a
-        target = price + sign * 3.0 * a
+        side = first_break(after, orh, orl)
+        if side is None:  # not broken yet: lean with the gap and the trend
+            side = "long" if (gap > 0 or price > (orh + orl) / 2) else "short"
+        long = side == "long"
+        entry = orh if long else orl
+        mid = (orh + orl) / 2
+        risk = max(abs(entry - mid), 0.5 * a5)
+        stop = entry - risk if long else entry + risk
+        target = entry + 2 * risk if long else entry - 2 * risk
+        status, r_mult, trig, done = orb_outcome(after, side, entry, stop, target)
+        if status == "open" and not market_open:
+            status = "closed"  # still open at the bell: closed flat at the last price
+
+        trend_ok = (d["Close"].iloc[-1] > sma20) == long
+        quality = (0.45 * math.tanh(abs(gap) / 1.5) + 0.35 * max(0.0, math.tanh(math.log(max(or_relvol, 0.05))))
+                   + 0.20 * (1 if trend_ok else 0) + (0.1 if (gap > 0) == long else 0))
         f = fund.get(t, {})
         rows.append({
-            "t": t, "name": f.get("name") or t, "exch": f.get("exch") or "",
-            "price": fnum(price), "chg": fnum((price / prev_close - 1) * 100),
-            "mcap": f.get("mcap"), "side": side,
-            "entry": fnum(price), "exit": fnum(target), "stop": fnum(stop),
-            "gain": fnum(abs(target - price) / price * 100), "risk": fnum(abs(price - stop) / price * 100),
-            "rr": 2.0, "riskLevel": "Low" if datr_pct < 2 else "Medium" if datr_pct < 4 else "High",
-            "relvol": fnum(relvol), "rsi": fnum(r, 0), "vwap": fnum(vwap),
-            "conf": int(round(math.tanh(abs(s) * math.sqrt(max(relvol, 0.3)) * 0.8) * 100)),
-            "spark": spark(td["Close"], 40),
-            "_rank": abs(s) * math.sqrt(max(relvol, 0.3)),
+            "t": t, "name": f.get("name") or t, "exch": f.get("exch") or "", "mcap": f.get("mcap"),
+            "price": fnum(price), "chg": fnum((price / prev_close - 1) * 100), "gap": fnum(gap),
+            "side": side, "orh": fnum(orh), "orl": fnum(orl),
+            "entry": fnum(entry), "exit": fnum(target), "stop": fnum(stop),
+            "gain": fnum(abs(target - entry) / entry * 100), "risk": fnum(abs(entry - stop) / entry * 100), "rr": 2.0,
+            "riskLevel": "Low" if datr_pct < 2 else "Medium" if datr_pct < 4 else "High",
+            "relvol": fnum(or_relvol), "conf": int(round(min(1.0, quality) * 100)),
+            "status": status, "r": fnum(r_mult, 2), "trig": ny_time(trig) if trig is not None else None,
+            "done": ny_time(done) if done is not None else None,
+            "spark": spark(td["Close"], 40), "_q": quality,
         })
-    rows.sort(key=lambda x: -x["_rank"])
+    rows.sort(key=lambda x: -x["_q"])
+    rows = rows[:TOP_N]
     for x in rows:
-        x.pop("_rank")
-    return rows[:TOP_N]
+        x.pop("_q")
+    card = {"session": session, "triggered": sum(1 for x in rows if x["status"] != "watching"),
+            "targets": sum(1 for x in rows if x["status"] == "target"),
+            "stops": sum(1 for x in rows if x["status"] == "stopped"),
+            "open": sum(1 for x in rows if x["status"] in ("open", "closed")),
+            "watching": sum(1 for x in rows if x["status"] == "watching"),
+            "totalR": fnum(sum(x["r"] or 0 for x in rows if x["status"] != "watching"), 2)}
+    return rows, card
 
 
 # ---------------------------------------------------------------- long term
@@ -249,6 +306,40 @@ def fetch_fundamentals(cache):
     return out
 
 
+def news_for(t, n=4):
+    """Recent articles for a ticker from Yahoo Finance (handles old and new yfinance formats)."""
+    import yfinance as yf
+    out = []
+    try:
+        items = yf.Ticker(t).news or []
+    except Exception as e:
+        print(f"news {t}: {e}", file=sys.stderr)
+        return out
+    for it in items:
+        c = it.get("content") or it
+        url = ((c.get("canonicalUrl") or {}).get("url") or (c.get("clickThroughUrl") or {}).get("url")
+               or c.get("link") or "")
+        title = c.get("title") or ""
+        if not url.startswith("http") or not title:
+            continue
+        src = (c.get("provider") or {}).get("displayName") or c.get("publisher") or ""
+        when = c.get("pubDate") or c.get("displayTime") or ""
+        if not when and c.get("providerPublishTime"):
+            when = datetime.fromtimestamp(c["providerPublishTime"], timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        out.append({"title": title[:180], "src": src[:60], "url": url, "date": str(when)[:10]})
+        if len(out) >= n:
+            break
+    return out
+
+
+def research_links(t):
+    return {
+        "analysts": f"https://finance.yahoo.com/quote/{t}/analysis",
+        "news": f"https://finance.yahoo.com/quote/{t}/news",
+        "filings": f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={t}&type=10-&dateb=&owner=include&count=40",
+    }
+
+
 def market_status(now):
     ny = now.astimezone(__import__("zoneinfo").ZoneInfo("America/New_York"))
     mins = ny.hour * 60 + ny.minute
@@ -272,12 +363,17 @@ def main():
         with open(cache_path, "w") as fh:
             json.dump({"_at": now.isoformat(), **fund}, fh, separators=(",", ":"))
     intra, daily = fetch_prices()
-    day = day_setups(intra, daily, fund)
+    status = market_status(now)
+    day, card = day_setups(intra, daily, fund, status == "open")
     lng = long_ideas(daily, fund)
+    for x in lng:
+        x["news"] = news_for(x["t"])
+        x["links"] = research_links(x["t"])
+        time.sleep(0.3)
     if len(day) < 5 and len(lng) < 5:
         sys.exit("too few results; keeping the previous file")
     doc = {
-        "generated": now.strftime("%Y-%m-%dT%H:%M:%SZ"), "market": market_status(now),
+        "generated": now.strftime("%Y-%m-%dT%H:%M:%SZ"), "market": status, "scorecard": card,
         "universe": len(UNIVERSE), "scanned": len(daily),
         "breadth": fnum(sum(1 for t, d in daily.items() if len(d) >= 200 and d["Close"].iloc[-1] > d["Close"].tail(200).mean()) / max(1, len(daily)) * 100, 0),
         "source": "Yahoo Finance via yfinance (may be delayed)",
