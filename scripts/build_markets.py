@@ -133,7 +133,7 @@ def day_setups(intra, daily, fund):
             "gain": fnum(abs(target - price) / price * 100), "risk": fnum(abs(price - stop) / price * 100),
             "rr": 2.0, "riskLevel": "Low" if datr_pct < 2 else "Medium" if datr_pct < 4 else "High",
             "relvol": fnum(relvol), "rsi": fnum(r, 0), "vwap": fnum(vwap),
-            "conf": int(round(min(1, abs(s) * math.sqrt(max(relvol, 0.3)) / 0.9) * 100)),
+            "conf": int(round(math.tanh(abs(s) * math.sqrt(max(relvol, 0.3)) * 0.8) * 100)),
             "spark": spark(td["Close"], 40),
             "_rank": abs(s) * math.sqrt(max(relvol, 0.3)),
         })
