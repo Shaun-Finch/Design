@@ -368,6 +368,45 @@ def news_for(t, n=4):
     return out
 
 
+def _txt(x):
+    if x is None or (isinstance(x, float) and math.isnan(x)):
+        return ""
+    return str(x).strip()
+
+
+def analysts_for(t):
+    """Published analyst data for a ticker: rating counts, price-target range and recent rating changes."""
+    import yfinance as yf
+    tk, out = yf.Ticker(t), {}
+    try:
+        r = tk.recommendations
+        if r is not None and len(r):
+            keys = ("strongBuy", "buy", "hold", "sell", "strongSell")
+            out["dist"] = {k: int(r.iloc[0].get(k, 0) or 0) for k in keys}
+            if len(r) > 1:
+                out["distPrev"] = {k: int(r.iloc[1].get(k, 0) or 0) for k in keys}
+    except Exception as e:
+        print(f"recs {t}: {e}", file=sys.stderr)
+    try:
+        pt = tk.analyst_price_targets or {}
+        if pt:
+            out["targets"] = {k: fnum(pt.get(k)) for k in ("low", "mean", "median", "high", "current")}
+    except Exception as e:
+        print(f"targets {t}: {e}", file=sys.stderr)
+    try:
+        ud = tk.upgrades_downgrades
+        if ud is not None and len(ud):
+            ud = ud.sort_index(ascending=False).head(10)
+            out["changes"] = [{
+                "date": str(idx)[:10], "firm": _txt(row.get("Firm")), "to": _txt(row.get("ToGrade")),
+                "from": _txt(row.get("FromGrade")), "action": _txt(row.get("Action")),
+                "pt": fnum(row.get("currentPriceTarget")), "ptPrev": fnum(row.get("priorPriceTarget")),
+            } for idx, row in ud.iterrows() if _txt(row.get("Firm"))]
+    except Exception as e:
+        print(f"changes {t}: {e}", file=sys.stderr)
+    return out
+
+
 def research_links(t):
     return {
         "analysts": f"https://finance.yahoo.com/quote/{t}/analysis",
@@ -404,6 +443,7 @@ def main():
     lng = long_ideas(daily, fund)
     for x in lng:
         x["news"] = news_for(x["t"])
+        x["an"] = analysts_for(x["t"])
         x["links"] = research_links(x["t"])
         time.sleep(0.3)
     if len(day) < 5 and len(lng) < 5:
