@@ -3,197 +3,218 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ventryx — trading ideas scanner (WIP)</title>
-<meta name="description" content="Ventryx scans large US stocks through the day and ranks 20 day-trading setups and 20 long-term ideas, with entry, exit, stop, risk and analyst targets. Work in progress, not financial advice.">
-<meta name="theme-color" content="#1C1D2A">
+<title>Ventryx — opening-bell and long-term trade scanner (WIP)</title>
+<meta name="description" content="Ventryx scans about 100 large US stocks: opening-range breakout setups tracked live through the day, and 20 long-term ideas with analyst targets and the articles behind them. Work in progress, not financial advice.">
+<meta name="theme-color" content="#0E0E10">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600;6..12,700;6..12,800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <style>
 :root{
-  --bg:#1C1D2A;--panel:#26283A;--panel2:#2D3045;--line:#353950;--line2:#2E3146;
-  --ink:#ECEEF6;--body:#C3C6D6;--mute:#8E93AC;--dim:#62677F;
-  --mint:#3DDBB0;--mint-ink:#0F2A23;--coral:#FF5C70;--pink:#E8508C;--purple:#8B5CF6;--violet:#A97BFF;--amber:#F5A623;
-  --r:18px;color-scheme:dark;
+  --bg:#0E0E10;--side:#121214;--card:#17171A;--card2:#1E1E22;--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.045);
+  --ink:#F4F4F5;--body:#C9C9CF;--mute:#8B8B94;--dim:#5C5C66;
+  --or:#FF5A1F;--or2:#FF8A3D;--pu:#7C6CFF;--pu2:#A79BFF;--up:#3DD68C;--dn:#FF5C5C;--amber:#F5B544;
+  --r:16px;color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
-body{margin:0;background:var(--bg);background-image:radial-gradient(70rem 40rem at 85% -10%,rgba(139,92,246,.16),transparent 60%),radial-gradient(50rem 30rem at -10% 30%,rgba(232,80,140,.07),transparent 60%);background-repeat:no-repeat;color:var(--ink);font-family:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden}
-a{color:var(--violet)}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px;line-height:1.5;font-feature-settings:"cv11","ss01";overflow-x:hidden}
+a{color:var(--or2)}
 button{font:inherit;color:inherit;cursor:pointer}
-:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
-.wrap{width:min(92rem,100%);margin-inline:auto;padding-inline:clamp(1rem,3vw,2.25rem)}
-.num{font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--or2);outline-offset:2px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.num{font-variant-numeric:tabular-nums}
 
-/* top bar */
-.top{display:flex;align-items:center;gap:1.6rem;padding-block:1.1rem;flex-wrap:wrap}
-.logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--ink);font-weight:300;font-size:1.65rem;letter-spacing:.01em}
-.logo svg{width:34px;height:34px;filter:drop-shadow(0 4px 14px rgba(139,92,246,.55))}
-.nav{display:flex;gap:1.4rem;font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
-.nav a{color:var(--body);text-decoration:none}
-.nav a:hover{color:var(--ink)}
-.right{margin-left:auto;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
-.chip{display:inline-flex;align-items:center;gap:.4rem;font-size:.74rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:.35rem .7rem;border-radius:8px;background:var(--panel);color:var(--body)}
-.chip i{width:.45rem;height:.45rem;border-radius:50%;background:var(--dim)}
-.chip.open i{background:var(--mint);box-shadow:0 0 0 4px rgba(61,219,176,.15)}
-.chip.wip{background:linear-gradient(135deg,var(--purple),var(--violet));color:#fff}
-.back{font-size:.82rem;color:var(--mute);text-decoration:none;font-weight:700}
-.back:hover{color:var(--ink)}
-@media (max-width:52rem){.nav{display:none}}
+.app{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}
+/* sidebar */
+.side{position:sticky;top:0;height:100vh;background:var(--side);border-right:1px solid var(--line2);padding:20px 14px;display:flex;flex-direction:column;gap:6px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:1.15rem;letter-spacing:-.01em;text-decoration:none;color:var(--ink);padding:2px 8px 14px}
+.logo svg{width:26px;height:26px}
+.search{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line2);border-radius:10px;padding:8px 10px;color:var(--dim);font-size:.85rem;margin-bottom:10px}
+.search svg{width:15px;height:15px}
+.mh{font-size:.72rem;color:var(--dim);padding:10px 10px 4px;font-weight:500}
+.menu a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;color:var(--mute);text-decoration:none;font-weight:500;font-size:.88rem}
+.menu a svg{width:17px;height:17px;flex:none}
+.menu a:hover{color:var(--ink);background:rgba(255,255,255,.03)}
+.menu a.on{background:var(--card2);color:var(--ink)}
+.promo{margin-top:auto;border-radius:14px;padding:14px;background:linear-gradient(150deg,#FF6A2B 0%,#E8471A 55%,#B8330F 100%);box-shadow:0 18px 40px -18px rgba(255,90,31,.6)}
+.promo b{display:flex;align-items:center;gap:6px;font-size:.92rem}
+.promo p{margin:6px 0 10px;font-size:.78rem;color:rgba(255,255,255,.85);line-height:1.45}
+.promo a{display:block;text-align:center;background:#0E0E10;color:#fff;text-decoration:none;font-weight:600;font-size:.82rem;padding:8px;border-radius:9px}
 
-/* scan bar (like a search bar) */
-.scanbar{display:flex;align-items:center;gap:1rem;background:var(--panel);border-radius:14px;padding:.95rem 1.2rem;margin-top:.4rem;flex-wrap:wrap;box-shadow:0 18px 40px -26px rgba(0,0,0,.8)}
-.scanbar svg{width:18px;height:18px;color:var(--mute);flex:none}
-.scanbar .tag{background:#33364C;color:var(--mint);font-weight:700;padding:.2rem .6rem;border-radius:6px;font-size:.9rem}
-.scanbar .txt{font-size:1.05rem;color:var(--body)}
-.scanbar .meta{margin-left:auto;font-size:.82rem;color:var(--mute)}
-.scanbar .meta b{color:var(--ink);font-weight:700}
+/* main */
+.main{padding:22px clamp(14px,2.4vw,30px) 40px;min-width:0}
+.top{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.top h1{margin:0;font-size:1.6rem;font-weight:500;letter-spacing:-.02em}
+.top p{margin:2px 0 0;color:var(--mute);font-size:.85rem}
+.top .r{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:7px 11px;font-size:.8rem;color:var(--body);font-weight:500}
+.pill svg{width:14px;height:14px}
+.pill i{width:7px;height:7px;border-radius:50%;background:var(--dim)}
+.pill.open i{background:var(--up);box-shadow:0 0 0 3px rgba(61,214,140,.18)}
+.pill.wip{border-style:dashed;border-color:rgba(255,138,61,.6);color:var(--or2)}
 
-/* hero */
-.hero{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,1fr));gap:1rem;margin-top:1.2rem}
-.card{background:linear-gradient(180deg,#2A2C3F,#25273A);border-radius:var(--r);padding:1.3rem 1.4rem;box-shadow:0 22px 44px -28px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.04);min-width:0}
-.hero h1{margin:0;font-weight:300;font-size:clamp(2rem,3.4vw,2.9rem);letter-spacing:-.01em;line-height:1.1}
-.hero h1 b{font-weight:800;background:linear-gradient(90deg,var(--violet),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p{margin:.7rem 0 0;color:var(--mute);font-size:.92rem;max-width:46ch}
-.kpi .k{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
-.kpi .v{font-size:2rem;font-weight:300;margin-top:.35rem;line-height:1.1}
-.kpi .s{font-size:.82rem;color:var(--mute);margin-top:.3rem}
-.kpi .s b{font-weight:700}
-.ringcard{display:flex;align-items:center;gap:1.1rem}
-.ring{--p:50;--c1:var(--purple);--c2:var(--violet);width:96px;height:96px;border-radius:50%;flex:none;display:grid;place-items:center;background:conic-gradient(var(--c1),var(--c2) calc(var(--p)*1%),#3A3D55 0);box-shadow:0 0 28px -4px color-mix(in srgb,var(--c1) 55%,transparent)}
-.ring::before{content:"";grid-area:1/1;width:72px;height:72px;border-radius:50%;background:#262838;box-shadow:inset 0 2px 8px rgba(0,0,0,.4)}
-.ring span{grid-area:1/1;font-size:1.25rem;font-weight:400;z-index:1}
-.ring.coral{--c1:var(--coral);--c2:var(--amber)}
-@media (max-width:70rem){.hero{grid-template-columns:repeat(2,minmax(0,1fr))}.hero .intro{grid-column:1/-1}}
-@media (max-width:34rem){.hero{grid-template-columns:1fr}}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:20px}
+.card{background:var(--card);border:1px solid var(--line2);border-radius:var(--r);padding:16px 18px;min-width:0;position:relative}
+.card.hl{background:linear-gradient(160deg,#25213F 0%,#1B1A26 60%);border-color:rgba(124,108,255,.35)}
+.k{display:flex;align-items:center;gap:8px;color:var(--mute);font-size:.82rem;font-weight:500}
+.k svg{width:15px;height:15px}
+.v{display:flex;align-items:baseline;gap:10px;margin-top:8px;font-size:1.65rem;font-weight:600;letter-spacing:-.02em}
+.v small{font-size:.8rem;font-weight:500}
+.mini{display:block;width:100%;height:46px;margin-top:10px}
+.up{color:var(--up)} .dn{color:var(--dn)} .ink{color:var(--ink);font-weight:600}
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:860px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side,.main{min-width:0}
+  .menu{min-width:0;max-width:100%}
+  .side{position:static;height:auto;flex-direction:row;align-items:center;flex-wrap:wrap;padding:12px 14px;border-right:0;border-bottom:1px solid var(--line2)}
+  .side .search,.side .mh,.promo{display:none}
+  .logo{padding:0 8px 0 0}
+  .menu{display:flex;gap:2px;overflow-x:auto}
+  .menu a{white-space:nowrap;padding:6px 9px}
+}
+@media (max-width:520px){.kpis{grid-template-columns:1fr}}
 
 /* sections */
-.sec{margin-top:2.2rem}
-.sechead{display:flex;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:.9rem}
-.sechead h2{margin:0;font-weight:300;font-size:1.9rem;letter-spacing:-.01em}
-.sechead h2 small{display:block;font-size:.74rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--violet);margin-bottom:.2rem}
-.sechead p{margin:0;color:var(--mute);font-size:.88rem;max-width:62ch}
-.seg{margin-left:auto;display:inline-flex;background:var(--panel);border-radius:999px;padding:4px;gap:2px}
-.seg button{border:0;background:none;padding:.42rem .95rem;border-radius:999px;font-weight:700;font-size:.84rem;color:var(--mute)}
-.seg button[aria-pressed="true"]{background:#3A3D55;color:var(--ink)}
+.sec{margin-top:18px}
+.sh{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;padding:16px 18px 12px}
+.sh h2{margin:0;font-size:1.05rem;font-weight:600;letter-spacing:-.01em}
+.sh p{margin:3px 0 0;color:var(--mute);font-size:.82rem;max-width:72ch}
+.seg{margin-left:auto;display:inline-flex;background:var(--bg);border:1px solid var(--line2);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:none;padding:5px 11px;border-radius:7px;font-weight:500;font-size:.8rem;color:var(--mute)}
+.seg button[aria-pressed="true"]{background:var(--card2);color:var(--ink)}
 .tablecard{padding:0;overflow:hidden}
-.scroll{overflow-x:auto;scrollbar-width:thin;scrollbar-color:#40445E transparent}
-table{width:100%;border-collapse:collapse;font-size:.82rem;white-space:nowrap}
-th{position:sticky;top:0;text-align:right;font-size:.66rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--mute);padding:1rem .55rem .7rem;background:#26283A;border-bottom:1px solid var(--line);cursor:pointer;user-select:none}
+.score{display:flex;gap:18px;flex-wrap:wrap;padding:0 18px 14px;font-size:.8rem;color:var(--mute)}
+.score b{color:var(--ink);font-weight:600}
+.scroll{overflow-x:auto;scrollbar-width:thin;scrollbar-color:#2c2c33 transparent}
+table{width:100%;border-collapse:collapse;font-size:.8rem;white-space:nowrap}
+th{text-align:right;font-size:.72rem;font-weight:500;color:var(--dim);padding:10px 10px 9px;border-top:1px solid var(--line2);border-bottom:1px solid var(--line2);cursor:pointer;user-select:none;background:var(--card)}
 th:hover{color:var(--ink)}
-th[aria-sort="ascending"]::after{content:" \25B2";font-size:.6rem}
-th[aria-sort="descending"]::after{content:" \25BC";font-size:.6rem}
+th[aria-sort="ascending"]::after{content:" \2191"}
+th[aria-sort="descending"]::after{content:" \2193"}
 th.l,td.l{text-align:left}
-td{padding:.65rem .55rem;text-align:right;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums;color:var(--body)}
-tbody tr:last-child td{border-bottom:0}
-tbody tr:hover td{background:rgba(255,255,255,.025)}
-td.rank{color:var(--dim);text-align:center;width:2.4rem}
-th.rank{text-align:center}
-.co{display:flex;align-items:center;gap:.65rem}
-.tk{display:inline-block;min-width:3.4rem;text-align:center;font-size:.72rem;font-weight:800;letter-spacing:.04em;padding:.22rem .45rem;border-radius:5px;background:rgba(61,219,176,.16);color:var(--mint)}
-.co .n{display:block;color:var(--ink);font-weight:600;max-width:11rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.co .x{display:block;font-size:.72rem;color:var(--dim);font-weight:600}
-.sig{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.06em;padding:.26rem .6rem;border-radius:6px}
-.sig.long{background:var(--mint);color:var(--mint-ink)}
-.sig.short{background:var(--coral);color:#2A0C11}
-.up{color:var(--mint)} .dn{color:var(--coral)} .ink{color:var(--ink);font-weight:700}
-.lvl{display:inline-block;font-size:.7rem;font-weight:800;padding:.18rem .5rem;border-radius:5px}
-.lvl.Low{background:rgba(61,219,176,.14);color:var(--mint)}
-.lvl.Medium{background:rgba(245,166,35,.16);color:var(--amber)}
-.lvl.High{background:rgba(255,92,112,.16);color:var(--coral)}
-.conf{display:inline-flex;align-items:center;gap:.5rem;min-width:5.6rem;justify-content:flex-end}
-.conf i{display:block;width:3.4rem;height:5px;border-radius:9px;background:#3A3D55;position:relative;overflow:hidden}
-.conf i::after{content:"";position:absolute;inset:0;width:var(--w);border-radius:9px;background:linear-gradient(90deg,var(--purple),var(--violet))}
-.range{display:inline-block;width:6rem;height:5px;border-radius:9px;background:#3A3D55;position:relative;vertical-align:middle}
-.range i{position:absolute;top:50%;width:9px;height:9px;border-radius:50%;background:var(--violet);transform:translate(-50%,-50%);box-shadow:0 0 0 3px rgba(169,123,255,.25)}
-.rating{font-weight:700;color:var(--ink)}
-.rating small{color:var(--dim);font-weight:600}
-.where{font-size:.76rem;color:var(--mute)}
-.where b{color:var(--body);font-weight:700}
-svg.sp{width:76px;height:28px;display:block;margin-left:auto}
+td{padding:10px 10px;text-align:right;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums;color:var(--body)}
+tbody tr:hover td{background:rgba(255,255,255,.018)}
+td.rank,th.rank{text-align:center;color:var(--dim);width:2.2rem}
+th:nth-child(2),td:nth-child(2){position:sticky;left:0;z-index:1;background:var(--card)}
+.co{display:flex;align-items:center;gap:10px}
+.lg{width:34px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:.54rem;font-weight:700;color:#fff;flex:none;letter-spacing:0}
+.co .n{display:block;color:var(--ink);font-weight:500;max-width:10.5rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.co .x{display:block;font-size:.7rem;color:var(--dim)}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:500;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--card2);color:var(--body)}
+.tag.long{color:var(--up);border-color:rgba(61,214,140,.3);background:rgba(61,214,140,.08)}
+.tag.short{color:var(--dn);border-color:rgba(255,92,92,.3);background:rgba(255,92,92,.08)}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;font-weight:500}
+.st::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.st.watching{color:var(--mute)} .st.open{color:var(--or2)} .st.target{color:var(--up)} .st.stopped{color:var(--dn)} .st.closed{color:var(--pu2)}
+.lvl{font-size:.72rem;font-weight:500}
+.lvl.Low{color:var(--up)} .lvl.Medium{color:var(--amber)} .lvl.High{color:var(--dn)}
+.bar{display:inline-flex;align-items:center;gap:7px;justify-content:flex-end}
+.bar i{display:block;width:3.2rem;height:4px;border-radius:9px;background:#26262c;position:relative;overflow:hidden}
+.bar i::after{content:"";position:absolute;inset:0;width:var(--w);border-radius:9px;background:linear-gradient(90deg,var(--or),var(--or2))}
+.range{display:inline-block;width:5.4rem;height:4px;border-radius:9px;background:#26262c;position:relative;vertical-align:middle}
+.range i{position:absolute;top:50%;width:9px;height:9px;border-radius:50%;background:var(--pu2);transform:translate(-50%,-50%);box-shadow:0 0 0 3px rgba(124,108,255,.25)}
+.where{font-size:.74rem;color:var(--mute)}
+svg.sp{width:80px;height:26px;display:block;margin-left:auto}
+.rbtn{border:1px solid var(--line);background:var(--card2);border-radius:8px;padding:4px 9px;font-size:.74rem;color:var(--body);display:inline-flex;align-items:center;gap:6px}
+.rbtn:hover{border-color:rgba(255,138,61,.5);color:var(--ink)}
+.rbtn[aria-expanded="true"]{border-color:var(--or2);color:var(--or2)}
+tr.more td{background:#141417;white-space:normal;text-align:left;padding:14px 18px}
+.morein{position:sticky;left:18px;width:min(66rem,calc(100vw - 300px))}
+@media (max-width:860px){.morein{width:calc(100vw - 64px)}}
+.arts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(17rem,100%),1fr));gap:10px}
+.art{display:block;text-decoration:none;border:1px solid var(--line2);background:var(--card);border-radius:12px;padding:11px 13px;color:var(--ink)}
+.art:hover{border-color:rgba(255,138,61,.45)}
+.art b{display:block;font-weight:500;font-size:.84rem;line-height:1.4}
+.art span{display:block;margin-top:5px;font-size:.72rem;color:var(--mute)}
+.links{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:.8rem}
+.links a{text-decoration:none;font-weight:500}
+.links a:hover{text-decoration:underline}
 .flash td{animation:flash 1.6s ease-out}
-th:nth-child(2),td:nth-child(2){position:sticky;left:0;z-index:2;background:#26283A;box-shadow:6px 0 10px -8px rgba(0,0,0,.6)}
-th:nth-child(2){z-index:3}
-@keyframes flash{from{background:rgba(169,123,255,.16)}to{background:transparent}}
-.empty{padding:2.2rem 1.4rem;color:var(--mute);text-align:center}
-.empty b{display:block;color:var(--ink);font-size:1.05rem;margin-bottom:.3rem;font-weight:700}
+@keyframes flash{from{background:rgba(255,138,61,.12)}to{background:transparent}}
+.empty{padding:26px 18px;color:var(--mute);text-align:center;white-space:normal}
+.empty b{display:block;color:var(--ink);font-weight:600;margin-bottom:4px}
 
-/* how + risk */
-.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(17rem,100%),1fr));gap:1rem}
-.how h3{margin:0 0 .5rem;font-size:.74rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--violet)}
-.how p,.how li{color:var(--mute);font-size:.86rem;margin:0}
-.how ul{margin:0;padding-left:1.1rem;display:grid;gap:.35rem}
-.risk{margin-top:1rem;border:1px solid rgba(245,166,35,.35);background:rgba(245,166,35,.06);border-radius:14px;padding:1rem 1.2rem;font-size:.84rem;color:var(--body)}
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16rem,100%),1fr));gap:14px}
+.how h3{margin:0 0 8px;font-size:.88rem;font-weight:600}
+.how li,.how p{color:var(--mute);font-size:.8rem;margin:0}
+.how ul{margin:0;padding-left:1rem;display:grid;gap:5px}
+.risk{margin-top:14px;border:1px solid rgba(245,181,68,.3);background:rgba(245,181,68,.05);border-radius:14px;padding:13px 16px;font-size:.8rem;color:var(--body)}
 .risk b{color:var(--amber)}
-.foot{color:var(--dim);font-size:.78rem;padding-block:2rem 2.6rem}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;scroll-behavior:auto!important}}
+.foot{color:var(--dim);font-size:.75rem;margin-top:22px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
+<div class="app">
+  <aside class="side" aria-label="Ventryx">
     <a class="logo" href="#top" aria-label="Ventryx">
-      <svg viewBox="0 0 34 34" aria-hidden="true"><defs><linearGradient id="vg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A97BFF"/><stop offset="1" stop-color="#E8508C"/></linearGradient></defs><rect width="34" height="34" rx="9" fill="url(#vg)"/><path d="M8 11l9 13 9-13" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="26" cy="11" r="2.4" fill="#3DDBB0"/></svg>
-      ventryx
+      <svg viewBox="0 0 26 26" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#FF4D1A"/></linearGradient></defs><rect x="1" y="3" width="24" height="6" rx="3" fill="url(#lg)"/><rect x="5" y="11" width="16" height="6" rx="3" fill="url(#lg)" opacity=".85"/><rect x="9" y="19" width="8" height="6" rx="3" fill="url(#lg)" opacity=".7"/></svg>
+      Ventryx
     </a>
-    <nav class="nav" aria-label="Sections"><a href="#day">Day trading</a><a href="#long">Long term</a><a href="#how">How it works</a></nav>
-    <div class="right">
-      <span class="chip" id="mkt"><i></i><span>Market</span></span>
-      <span class="chip wip">WIP</span>
-      <a class="back" href="index.html">&larr; Portfolio</a>
-    </div>
-  </header>
+    <div class="search" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span id="sideN">Scanning US stocks</span></div>
+    <div class="mh">Menu</div>
+    <nav class="menu" aria-label="Sections">
+      <a class="on" href="#top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Overview</a>
+      <a href="#day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v3M5.6 5.6l2.1 2.1M3 12h3M18.4 5.6l-2.1 2.1M21 12h-3"/><path d="M5 18h14M8 21h8"/><path d="M8 15a4 4 0 0 1 8 0"/></svg>Opening bell</a>
+      <a href="#long"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Long term</a>
+      <a href="#how"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>How it works</a>
+      <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>Portfolio</a>
+    </nav>
+    <div class="promo"><b><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2.4 6.9H22l-6 4.6 2.3 7.1L12 16.3 5.7 20.6 8 13.5 2 8.9h7.6z"/></svg>Work in progress</b><p>A live scanner built by Shaun Finch. Ideas only, never advice.</p><a href="index.html">See the portfolio</a></div>
+  </aside>
 
-  <div class="scanbar" role="status" aria-live="polite">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-    <span class="tag" id="sbN">&hellip;</span>
-    <span class="txt">US stocks scanned for day trades and long-term ideas</span>
-    <span class="meta" id="sbMeta">Loading the latest scan&hellip;</span>
-  </div>
+  <main class="main" id="top">
+    <header class="top">
+      <div><h1 id="hello">Good day</h1><p id="sub">Here&rsquo;s the US market across the stocks Ventryx watches.</p></div>
+      <div class="r">
+        <span class="pill" id="datePill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>&ndash;</span></span>
+        <span class="pill" id="mkt"><i></i><span>US market</span></span>
+        <span class="pill wip">WIP</span>
+      </div>
+    </header>
 
-  <section class="hero" id="top">
-    <div class="card intro">
-      <h1>Find the <b>trade</b>,<br>skip the noise.</h1>
-      <p>Ventryx scans the market through the day and lines up the 20 strongest day-trading setups and the 20 best long-term ideas, each with an entry, an exit, a stop and the risk spelled out.</p>
-    </div>
-    <div class="card kpi"><div class="k">Day setups</div><div class="v num" id="kDay">&ndash;</div><div class="s" id="kDayS">&nbsp;</div><div class="s">Each risks 1 to make 2, with the stop and exit set from the stock's own volatility.</div><div class="k" style="margin-top:1rem">Long-term ideas</div><div class="v num" id="kLong" style="font-size:1.5rem">&ndash;</div></div>
-    <div class="card ringcard"><div class="ring" id="rBreadth"><span class="num">&ndash;</span></div><div class="kpi"><div class="k">Market breadth</div><div class="s">Share of scanned stocks above their 200-day average</div></div></div>
-    <div class="card ringcard"><div class="ring coral" id="rUp"><span class="num">&ndash;</span></div><div class="kpi"><div class="k">Avg. upside</div><div class="s">Analyst targets vs price across the long-term list</div></div></div>
-  </section>
+    <section class="kpis" aria-label="Summary">
+      <div class="card hl"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v3M5.6 5.6l2.1 2.1M18.4 5.6l-2.1 2.1M5 18h14"/><path d="M8 15a4 4 0 0 1 8 0"/></svg>Opening bell, today</div><div class="v num"><span id="kR">&ndash;</span><small id="kRs" class="up"></small></div><svg class="mini" id="mR" viewBox="0 0 200 46" preserveAspectRatio="none" aria-hidden="true"></svg></div>
+      <div class="card"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>Breakout setups</div><div class="v num"><span id="kN">&ndash;</span><small id="kNs" style="color:var(--mute)"></small></div><svg class="mini" id="mN" viewBox="0 0 200 46" preserveAspectRatio="none" aria-hidden="true"></svg></div>
+      <div class="card"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 9 9h-9z"/></svg>Market breadth</div><div class="v num"><span id="kB">&ndash;</span><small style="color:var(--mute)">above 200-day avg</small></div><svg class="mini" id="mB" viewBox="0 0 200 46" preserveAspectRatio="none" aria-hidden="true"></svg></div>
+      <div class="card"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Avg. analyst upside</div><div class="v num"><span id="kU">&ndash;</span><small style="color:var(--mute)">long-term list</small></div><svg class="mini" id="mU" viewBox="0 0 200 46" preserveAspectRatio="none" aria-hidden="true"></svg></div>
+    </section>
 
-  <section class="sec" id="day" aria-labelledby="dayH">
-    <div class="sechead">
-      <div><h2 id="dayH"><small>Section 01</small>Day trading</h2><p>Intraday setups from 5-minute bars: price vs VWAP, EMA trend, RSI and unusual volume. Exits and stops come from each stock's own intraday volatility, so every idea risks 1 to make 2.</p></div>
-      <div class="seg" role="group" aria-label="Filter day setups"><button aria-pressed="true" data-f="all">All</button><button aria-pressed="false" data-f="long">Long</button><button aria-pressed="false" data-f="short">Short</button></div>
-    </div>
-    <div class="card tablecard"><div class="scroll"><table id="tDay"><thead><tr>
-      <th class="rank" data-k="i">#</th><th class="l" data-k="t">Company</th><th class="l" data-k="side">Signal</th><th data-k="price">Price</th><th data-k="chg">Today</th><th data-k="mcap">Market value</th><th data-k="entry">Entry</th><th data-k="exit">Exit target</th><th data-k="stop">Stop</th><th data-k="gain">Profit</th><th data-k="risk">Risk</th><th data-k="rr">R:R</th><th data-k="riskLevel">Volatility</th><th data-k="relvol">Rel. vol</th><th data-k="conf">Confidence</th><th data-k="spark">Today</th><th class="l" data-k="where">Where to trade</th>
-    </tr></thead><tbody></tbody></table></div></div>
-  </section>
+    <section class="sec card tablecard" id="day" aria-labelledby="dayH">
+      <div class="sh">
+        <div><h2 id="dayH">Opening bell &middot; breakout scanner</h2><p>The first 15 minutes after the 14:30 UK open set each stock&rsquo;s opening range. The first side to break it sets the trade: entry at the edge of the range, stop at its midpoint, exit target at twice the risk. Every setup is then tracked through the day, so you can see which hit the target and which were stopped out.</p></div>
+        <div class="seg" role="group" aria-label="Filter breakout setups"><button aria-pressed="true" data-f="all">All</button><button aria-pressed="false" data-f="long">Long</button><button aria-pressed="false" data-f="short">Short</button><button aria-pressed="false" data-f="live">Live now</button></div>
+      </div>
+      <div class="score num" id="score"></div>
+      <div class="scroll"><table id="tDay"><thead><tr>
+        <th class="rank" data-k="i">#</th><th class="l" data-k="t">Company</th><th class="l" data-k="side">Signal</th><th class="l" data-k="status">Status</th><th data-k="r">Result</th><th data-k="gap">Gap</th><th data-k="orh">Opening range</th><th data-k="entry">Entry</th><th data-k="exit">Exit target</th><th data-k="stop">Stop</th><th data-k="gain">Profit</th><th data-k="risk">Risk</th><th data-k="trig">Triggered</th><th data-k="price">Price</th><th data-k="chg">Today</th><th data-k="mcap">Market value</th><th data-k="relvol">Open vol.</th><th data-k="conf">Setup score</th><th data-k="spark">Today</th><th class="l" data-k="where">Where to trade</th>
+      </tr></thead><tbody></tbody></table></div>
+    </section>
 
-  <section class="sec" id="long" aria-labelledby="longH">
-    <div class="sechead">
-      <div><h2 id="longH"><small>Section 02</small>Long term</h2><p>12-month ideas. Ranked on the published Wall Street analyst consensus (rating, number of analysts and mean price target) plus profitability, growth, trend and volatility. The exit value is the analysts' mean 12-month target.</p></div>
-      <div class="seg" role="group" aria-label="Filter long-term ideas"><button aria-pressed="true" data-f="all">All</button><button aria-pressed="false" data-f="Low">Lower risk</button><button aria-pressed="false" data-f="Medium">Medium</button><button aria-pressed="false" data-f="High">Higher</button></div>
-    </div>
-    <div class="card tablecard"><div class="scroll"><table id="tLong"><thead><tr>
-      <th class="rank" data-k="i">#</th><th class="l" data-k="t">Company</th><th class="l" data-k="sector">Sector</th><th data-k="price">Price</th><th data-k="mcap">Market value</th><th data-k="profit">Profit (12m)</th><th data-k="margin">Margin</th><th data-k="pe">P/E</th><th data-k="growth">Rev. growth</th><th class="l" data-k="recMean">Analysts</th><th data-k="exit">Exit value</th><th data-k="upside">Upside</th><th data-k="pos52">52-wk range</th><th data-k="vol">Risk</th><th data-k="div">Dividend</th><th data-k="score">Score</th><th data-k="spark">1 year</th><th class="l" data-k="where">Where to trade</th>
-    </tr></thead><tbody></tbody></table></div></div>
-  </section>
+    <section class="sec card tablecard" id="long" aria-labelledby="longH">
+      <div class="sh">
+        <div><h2 id="longH">Long term &middot; 12-month ideas</h2><p>Ranked on the published Wall Street analyst consensus (rating, number of analysts, mean price target) plus profitability, growth, trend and volatility. The exit value is the analysts&rsquo; mean 12-month target. Open <b>Research</b> on any row to read the latest articles and check the analysts and filings yourself.</p></div>
+        <div class="seg" role="group" aria-label="Filter long-term ideas"><button aria-pressed="true" data-f="all">All</button><button aria-pressed="false" data-f="Low">Lower risk</button><button aria-pressed="false" data-f="Medium">Medium</button><button aria-pressed="false" data-f="High">Higher</button></div>
+      </div>
+      <div class="scroll"><table id="tLong"><thead><tr>
+        <th class="rank" data-k="i">#</th><th class="l" data-k="t">Company</th><th class="l" data-k="news">Research</th><th class="l" data-k="sector">Sector</th><th data-k="price">Price</th><th data-k="exit">Exit value</th><th data-k="upside">Upside</th><th class="l" data-k="recMean">Analysts</th><th data-k="mcap">Market value</th><th data-k="profit">Profit (12m)</th><th data-k="margin">Margin</th><th data-k="pe">P/E</th><th data-k="growth">Rev. growth</th><th data-k="pos52">52-wk range</th><th data-k="vol">Risk</th><th data-k="div">Dividend</th><th data-k="score">Score</th><th data-k="spark">1 year</th><th class="l" data-k="where">Where to trade</th>
+      </tr></thead><tbody></tbody></table></div>
+    </section>
 
-  <section class="sec" id="how" aria-labelledby="howH">
-    <div class="sechead"><div><h2 id="howH"><small>Method</small>How it works</h2></div></div>
-    <div class="how">
-      <div class="card"><h3>Scan</h3><ul><li>About 100 large, liquid US-listed stocks.</li><li>Every 15 minutes while the US market is open (14:30&ndash;21:00 UK time), plus once after the close.</li><li>This page checks for a new scan every minute and highlights rows that changed.</li></ul></div>
-      <div class="card"><h3>Day trading</h3><ul><li>Long when price is above VWAP, the 9-bar EMA is above the 21-bar and volume is heavier than usual; short for the mirror image.</li><li>Stop at 1.5&times; the 5-minute ATR, exit target at 3&times;: risk 1 to make 2.</li><li>Stocks trading under $50m a day are skipped.</li></ul></div>
-      <div class="card"><h3>Long term</h3><ul><li>Needs at least 8 analysts covering the stock and a profit over the last 12 months.</li><li>Score weights analyst upside, rating, 6-month momentum, revenue growth, margin, the 200-day trend and volatility.</li></ul></div>
-      <div class="card"><h3>Where to trade</h3><p>Long ideas can be bought as shares through any FCA-authorised broker offering US stocks, for example Interactive Brokers, Trading 212, IG, Hargreaves Lansdown, Freetrade or eToro. Short ideas need a product that profits from falls, such as CFDs or spread bets. Ventryx has no link to any broker; check any firm on the <a href="https://register.fca.org.uk/" rel="noopener">FCA Register</a>.</p></div>
-    </div>
-    <div class="risk"><b>Important:</b> Ventryx is a work-in-progress research tool, not financial advice and not a recommendation to buy or sell anything. Ideas are generated automatically from delayed market data and published analyst forecasts, and they don't know your circumstances. Prices can fall as well as rise and you could lose money. Day trading is high risk. CFDs and spread bets are complex, leveraged products and a high proportion of retail accounts lose money using them. Ventryx doesn't place trades.</div>
-  </section>
-
-  <footer class="foot">Ventryx is a self-initiated work in progress by Shaun Finch, 2026. <span id="src">Market data: Yahoo Finance via yfinance, may be delayed.</span></footer>
+    <section class="sec" id="how" aria-labelledby="howH">
+      <h2 id="howH" class="sr">How it works</h2>
+      <div class="how">
+        <div class="card"><h3>Scan</h3><ul><li>About 100 large, liquid US-listed stocks.</li><li>Every 15 minutes while the US market is open (14:30&ndash;21:00 UK time), plus once after the close.</li><li>This page checks for a new scan every minute and highlights changed rows.</li></ul></div>
+        <div class="card"><h3>Opening bell</h3><ul><li>Opening range = high and low of the first 15 minutes.</li><li>Ranked at 09:45 New York time on the gap, opening volume against normal and the 20-day trend, never on how the trade turned out.</li><li>If a bar touches both the stop and the target, it counts as stopped.</li></ul></div>
+        <div class="card"><h3>Long term</h3><ul><li>Needs 8+ analysts and a profit over the last 12 months.</li><li>Score weights analyst upside, rating, 6-month momentum, revenue growth, margin, the 200-day trend and volatility.</li><li>Articles come from Yahoo Finance&rsquo;s news feed for each stock.</li></ul></div>
+        <div class="card"><h3>Where to trade</h3><p>Long ideas can be bought as shares through any FCA-authorised broker offering US stocks, such as Interactive Brokers, Trading 212, IG, Hargreaves Lansdown, Freetrade or eToro. Short ideas need a product that profits from falls, such as CFDs or spread bets. Ventryx has no link to any broker; check any firm on the <a href="https://register.fca.org.uk/" rel="noopener">FCA Register</a>.</p></div>
+      </div>
+      <div class="risk"><b>Important:</b> Ventryx is a work-in-progress research tool, not financial advice and not a recommendation to buy or sell anything. Setups are generated automatically from delayed market data and published analyst forecasts, and today&rsquo;s results are tracked on paper, not traded. Past results don&rsquo;t predict future ones. Prices can fall as well as rise and you could lose money. Day trading is high risk. CFDs and spread bets are complex, leveraged products and a high proportion of retail accounts lose money using them.</div>
+      <p class="foot">Ventryx is a self-initiated work in progress by Shaun Finch, 2026. <span id="src">Market data and articles: Yahoo Finance via yfinance, may be delayed.</span></p>
+    </section>
+  </main>
 </div>
 
 <script>
@@ -203,56 +224,67 @@ var DATA_URL='https://raw.githubusercontent.com/Shaun-Finch/Design/market-data/m
 var $=function(s,r){return (r||document).querySelector(s)};
 var $$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function safeUrl(u){return /^https:\/\//.test(String(u||''))?esc(u):'#'}
 function money(n){if(n==null)return '&ndash;';var a=Math.abs(n),s=n<0?'-':'';return s+'$'+(a>=1e12?(a/1e12).toFixed(2)+'T':a>=1e9?(a/1e9).toFixed(1)+'B':a>=1e6?(a/1e6).toFixed(0)+'M':a.toLocaleString('en-GB'))}
 function px(n){return n==null?'&ndash;':'$'+Number(n).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function pct(n,d){if(n==null)return '&ndash;';var v=Number(n);return '<span class="'+(v>0?'up':v<0?'dn':'')+'">'+(v>0?'+':'')+v.toFixed(d==null?2:d)+'%</span>'}
+function rfmt(r){if(r==null)return '<span style="color:var(--dim)">&ndash;</span>';var v=Number(r);return '<span class="'+(v>0?'up':v<0?'dn':'')+'">'+(v>0?'+':'')+v.toFixed(1)+'R</span>'}
 function exch(x){x=String(x||'');return /nasdaq/i.test(x)?'NASDAQ':/nyse|new york/i.test(x)?'NYSE':x||'US'}
-function rating(k){return ({strong_buy:'Strong buy',buy:'Buy',hold:'Hold',underperform:'Underperform',sell:'Sell',none:'&ndash;'})[k]||(k?esc(k):'&ndash;')}
-function spark(v,up){
+function rating(k){return ({strong_buy:'Strong buy',buy:'Buy',hold:'Hold',underperform:'Underperform',sell:'Sell'})[k]||(k?esc(k):'&ndash;')}
+var COLS=['#FF5A1F','#7C6CFF','#2A8CFF','#E0457B','#14B8A6','#F59E0B','#8B5CF6','#EF4444'];
+function lg(t){var h=0;for(var i=0;i<t.length;i++)h=(h*31+t.charCodeAt(i))>>>0;return '<span class="lg" style="background:'+COLS[h%COLS.length]+'">'+esc(t.slice(0,4))+'</span>'}
+function spark(v){
   v=(v||[]).filter(function(x){return x!=null});if(v.length<2)return '';
-  var mn=Math.min.apply(null,v),mx=Math.max.apply(null,v),r=mx-mn||1,W=92,H=28;
+  var mn=Math.min.apply(null,v),mx=Math.max.apply(null,v),r=mx-mn||1,W=80,H=26,up=v[v.length-1]>=v[0];
   var d=v.map(function(y,i){return (i?'L':'M')+(i/(v.length-1)*W).toFixed(1)+' '+(H-2-(y-mn)/r*(H-4)).toFixed(1)}).join('');
-  var c=up?'#3DDBB0':'#E8508C';
-  return '<svg class="sp" viewBox="0 0 92 28" aria-hidden="true"><path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+  return '<svg class="sp" viewBox="0 0 80 26" aria-hidden="true"><path d="'+d+'" fill="none" stroke="'+(up?'#FF8A3D':'#A79BFF')+'" stroke-width="1.6" stroke-linejoin="round"/></svg>';
 }
-var DATA=null,prevKeys={day:{},long:{}},state={day:{f:'all',k:'i',dir:1},long:{f:'all',k:'i',dir:1}};
+var STATUS={watching:'Watching',open:'In trade',target:'Target hit',stopped:'Stopped out',closed:'Closed at bell'};
+var DATA=null,prevKeys={day:{},long:{}},open={},state={day:{f:'all',k:'i',dir:1},long:{f:'all',k:'i',dir:1}};
 
-function coCell(x){return '<td class="l"><div class="co"><span class="tk">'+esc(x.t)+'</span><span><span class="n">'+esc(x.name)+'</span><span class="x">'+exch(x.exch)+'</span></span></div></td>'}
+function coCell(x){return '<td class="l"><div class="co">'+lg(x.t)+'<span><span class="n" title="'+esc(x.name)+'">'+esc(x.name)+'</span><span class="x">'+esc(x.t)+' &middot; '+exch(x.exch)+'</span></span></div></td>'}
 function dayRow(x){
   var long=x.side==='long';
   return '<td class="rank">'+x.i+'</td>'+coCell(x)+
-    '<td class="l"><span class="sig '+x.side+'">'+(long?'LONG':'SHORT')+'</span></td>'+
-    '<td class="ink">'+px(x.price)+'</td><td>'+pct(x.chg)+'</td><td>'+money(x.mcap)+'</td>'+
-    '<td>'+px(x.entry)+'</td><td class="up">'+px(x.exit)+'</td><td class="dn">'+px(x.stop)+'</td>'+
-    '<td class="up">+'+Number(x.gain).toFixed(2)+'%</td><td class="dn">&minus;'+Number(x.risk).toFixed(2)+'%</td><td>1:'+Number(x.rr).toFixed(1)+'</td>'+
-    '<td><span class="lvl '+esc(x.riskLevel)+'">'+esc(x.riskLevel)+'</span></td><td>'+Number(x.relvol).toFixed(2)+'&times;</td>'+
-    '<td><span class="conf"><i style="--w:'+x.conf+'%"></i>'+x.conf+'</span></td>'+
-    '<td>'+spark(x.spark,(x.spark&&x.spark[x.spark.length-1]>=x.spark[0]))+'</td>'+
-    '<td class="l where"><b>'+exch(x.exch)+'</b> &middot; '+(long?'shares':'CFD / spread bet')+'</td>';
+    '<td class="l"><span class="tag '+x.side+'">'+(long?'&#8599; Long':'&#8600; Short')+'</span></td>'+
+    '<td class="l"><span class="st '+esc(x.status)+'">'+(STATUS[x.status]||esc(x.status))+'</span>'+(x.done?' <small style="color:var(--dim)">'+esc(x.done)+'</small>':'')+'</td>'+
+    '<td>'+rfmt(x.r)+'</td><td>'+pct(x.gap)+'</td><td>'+px(x.orl)+' &ndash; '+px(x.orh)+'</td>'+
+    '<td class="ink">'+px(x.entry)+'</td><td class="up">'+px(x.exit)+'</td><td class="dn">'+px(x.stop)+'</td>'+
+    '<td class="up">+'+Number(x.gain).toFixed(2)+'%</td><td class="dn">&minus;'+Number(x.risk).toFixed(2)+'%</td>'+
+    '<td>'+(x.trig?esc(x.trig)+' <small style="color:var(--dim)">NY</small>':'&ndash;')+'</td>'+
+    '<td class="ink">'+px(x.price)+'</td><td>'+pct(x.chg)+'</td><td>'+money(x.mcap)+'</td><td>'+Number(x.relvol).toFixed(2)+'&times;</td>'+
+    '<td><span class="bar"><i style="--w:'+x.conf+'%"></i>'+x.conf+'</span></td><td>'+spark(x.spark)+'</td>'+
+    '<td class="l where">'+exch(x.exch)+' &middot; '+(long?'shares':'CFD / spread bet')+'</td>';
 }
 function longRow(x){
-  var pos=(x.hi52>x.lo52)?Math.max(0,Math.min(100,(x.price-x.lo52)/(x.hi52-x.lo52)*100)):50;
-  return '<td class="rank">'+x.i+'</td>'+coCell(x)+'<td class="l">'+esc(x.sector||'')+'</td>'+
-    '<td class="ink">'+px(x.price)+'</td><td>'+money(x.mcap)+'</td><td>'+money(x.profit)+'</td><td>'+(x.margin==null?'&ndash;':x.margin.toFixed(1)+'%')+'</td>'+
+  var pos=(x.hi52>x.lo52)?Math.max(0,Math.min(100,(x.price-x.lo52)/(x.hi52-x.lo52)*100)):50,n=(x.news||[]).length,isOpen=!!open[x.t];
+  return '<td class="rank">'+x.i+'</td>'+coCell(x)+
+    '<td class="l"><button class="rbtn" type="button" data-t="'+esc(x.t)+'" aria-expanded="'+isOpen+'">'+(n?n+' article'+(n>1?'s':''):'Sources')+' '+(isOpen?'&#9652;':'&#9662;')+'</button></td>'+
+    '<td class="l">'+esc(x.sector||'')+'</td><td class="ink">'+px(x.price)+'</td><td class="ink">'+px(x.exit)+'</td><td>'+pct(x.upside,1)+'</td>'+
+    '<td class="l"><span class="ink">'+rating(x.rating)+'</span> <small style="color:var(--dim)">'+(x.analysts||0)+' analysts</small></td>'+
+    '<td>'+money(x.mcap)+'</td><td>'+money(x.profit)+'</td><td>'+(x.margin==null?'&ndash;':x.margin.toFixed(1)+'%')+'</td>'+
     '<td>'+(x.pe==null?'&ndash;':x.pe.toFixed(1))+'</td><td>'+pct(x.growth,1)+'</td>'+
-    '<td class="l"><span class="rating">'+rating(x.rating)+'</span> <small style="color:var(--dim)">'+(x.analysts||0)+' analysts</small></td>'+
-    '<td class="ink">'+px(x.exit)+'</td><td>'+pct(x.upside,1)+'</td>'+
     '<td title="'+(x.lo52!=null?'$'+x.lo52+' to $'+x.hi52:'')+'"><span class="range"><i style="left:'+pos.toFixed(0)+'%"></i></span></td>'+
     '<td><span class="lvl '+esc(x.riskLevel)+'">'+esc(x.riskLevel)+'</span> <small style="color:var(--dim)">'+(x.vol==null?'':x.vol.toFixed(0)+'% vol')+'</small></td>'+
-    '<td>'+(x.div?Number(x.div).toFixed(2)+'%':'&ndash;')+'</td>'+
-    '<td><span class="conf"><i style="--w:'+x.score+'%"></i>'+x.score+'</span></td>'+
-    '<td>'+spark(x.spark,(x.spark&&x.spark[x.spark.length-1]>=x.spark[0]))+'</td>'+
-    '<td class="l where"><b>'+exch(x.exch)+'</b> &middot; shares</td>';
+    '<td>'+(x.div?Number(x.div).toFixed(2)+'%':'&ndash;')+'</td><td><span class="bar"><i style="--w:'+x.score+'%"></i>'+x.score+'</span></td>'+
+    '<td>'+spark(x.spark)+'</td><td class="l where">'+exch(x.exch)+' &middot; shares</td>';
+}
+function moreRow(x){
+  var arts=(x.news||[]).map(function(a){return '<a class="art" href="'+safeUrl(a.url)+'" target="_blank" rel="noopener noreferrer"><b>'+esc(a.title)+'</b><span>'+esc(a.src||'')+(a.date?' &middot; '+esc(a.date):'')+' &#8599;</span></a>'}).join('');
+  var L=x.links||{};
+  return '<tr class="more"><td colspan="19"><div class="morein">'+(arts?'<div class="arts">'+arts+'</div>':'<p style="margin:0;color:var(--mute)">No recent articles in the feed for '+esc(x.t)+'.</p>')+
+    '<div class="links">'+(L.analysts?'<a href="'+safeUrl(L.analysts)+'" target="_blank" rel="noopener">Analyst ratings &amp; targets &#8599;</a>':'')+(L.news?'<a href="'+safeUrl(L.news)+'" target="_blank" rel="noopener">All '+esc(x.t)+' news &#8599;</a>':'')+(L.filings?'<a href="'+safeUrl(L.filings)+'" target="_blank" rel="noopener">SEC filings (10-K, 10-Q) &#8599;</a>':'')+'</div></div></td></tr>';
 }
 function render(which){
-  var rows=(DATA&&DATA[which==='day'?'day':'long'])||[],st=state[which],tb=$('#'+(which==='day'?'tDay':'tLong')+' tbody');
-  rows=rows.map(function(x,i){x.i=i+1;if(which==='long')x.pos52=(x.hi52>x.lo52)?(x.price-x.lo52)/(x.hi52-x.lo52):0;return x});
-  var list=rows.filter(function(x){return st.f==='all'||(which==='day'?x.side===st.f:x.riskLevel===st.f)});
-  if(st.k!=='i')list.sort(function(a,b){var A=a[st.k],B=b[st.k];if(st.k==='spark'){A=a.spark?a.spark[a.spark.length-1]/a.spark[0]:0;B=b.spark?b.spark[b.spark.length-1]/b.spark[0]:0}if(A==null)return 1;if(B==null)return -1;return (A>B?1:A<B?-1:0)*st.dir});
-  if(!DATA){tb.innerHTML='<tr><td colspan="18" class="empty"><b>Waiting for the first scan</b>The scanner runs every 15 minutes while the US market is open.</td></tr>';return}
-  if(!list.length){tb.innerHTML='<tr><td colspan="18" class="empty"><b>Nothing in this filter right now</b>Try another filter.</td></tr>';return}
-  var seen=prevKeys[which],next={};
-  tb.innerHTML=list.map(function(x){var key=x.t+'|'+(x.side||'')+'|'+x.price;next[x.t]=key;var changed=seen[x.t]!==undefined&&seen[x.t]!==key||(Object.keys(seen).length&&seen[x.t]===undefined);return '<tr'+(changed?' class="flash"':'')+'>'+(which==='day'?dayRow(x):longRow(x))+'</tr>'}).join('');
+  var rows=(DATA&&DATA[which])||[],st=state[which],tb=$('#'+(which==='day'?'tDay':'tLong')+' tbody');
+  rows=rows.map(function(x,i){x.i=i+1;if(which==='long'){x.pos52=(x.hi52>x.lo52)?(x.price-x.lo52)/(x.hi52-x.lo52):0;x.news_n=(x.news||[]).length}return x});
+  var list=rows.filter(function(x){if(st.f==='all')return true;if(which==='day')return st.f==='live'?x.status==='open':x.side===st.f;return x.riskLevel===st.f});
+  if(st.k!=='i')list.sort(function(a,b){var k=st.k==='news'?'news_n':st.k,A=a[k],B=b[k];if(k==='spark'){A=a.spark?a.spark[a.spark.length-1]/a.spark[0]:0;B=b.spark?b.spark[b.spark.length-1]/b.spark[0]:0}if(A==null)return 1;if(B==null)return -1;return (A>B?1:A<B?-1:0)*st.dir});
+  if(!DATA){tb.innerHTML='<tr><td colspan="20" class="empty"><b>Waiting for the first scan</b>The scanner runs every 15 minutes while the US market is open.</td></tr>';return}
+  if(!list.length){tb.innerHTML='<tr><td colspan="20" class="empty"><b>Nothing in this filter right now</b>Try another filter.</td></tr>';return}
+  var seen=prevKeys[which],next={},had=Object.keys(seen).length;
+  tb.innerHTML=list.map(function(x){var key=[x.side,x.status,x.price].join('|');next[x.t]=key;var ch=had&&seen[x.t]!==key;
+    return '<tr'+(ch?' class="flash"':'')+'>'+(which==='day'?dayRow(x):longRow(x))+'</tr>'+(which==='long'&&open[x.t]?moreRow(x):'')}).join('');
   prevKeys[which]=next;
 }
 function headers(){
@@ -260,7 +292,7 @@ function headers(){
     var which=tbl.id==='tDay'?'day':'long';
     $$('th',tbl).forEach(function(th){
       th.tabIndex=0;
-      function go(){var k=th.getAttribute('data-k'),st=state[which];if(k==='where')return;st.dir=st.k===k?-st.dir:(k==='i'||k==='t'||k==='sector'||k==='recMean'?1:-1);st.k=k;$$('th',tbl).forEach(function(h){h.removeAttribute('aria-sort')});if(k!=='i')th.setAttribute('aria-sort',st.dir>0?'ascending':'descending');render(which)}
+      function go(){var k=th.getAttribute('data-k'),st=state[which];if(k==='where')return;st.dir=st.k===k?-st.dir:(['i','t','sector','recMean','status','trig'].indexOf(k)>=0?1:-1);st.k=k;$$('th',tbl).forEach(function(h){h.removeAttribute('aria-sort')});if(k!=='i')th.setAttribute('aria-sort',st.dir>0?'ascending':'descending');render(which)}
       th.addEventListener('click',go);th.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
     });
   });
@@ -268,21 +300,45 @@ function headers(){
     var which=seg.closest('section').id==='day'?'day':'long';
     seg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;$$('button',seg).forEach(function(x){x.setAttribute('aria-pressed',x===b)});state[which].f=b.getAttribute('data-f');render(which)});
   });
+  $('#tLong').addEventListener('click',function(e){var b=e.target.closest('.rbtn');if(!b)return;var t=b.getAttribute('data-t');open[t]=!open[t];render('long')});
 }
 function ago(iso){var m=Math.round((Date.now()-new Date(iso).getTime())/60000);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'}
+function bars(svg,vals,colorFn){
+  if(!vals.length){svg.innerHTML='';return}
+  var mx=Math.max.apply(null,vals.map(Math.abs))||1,w=200/vals.length;
+  svg.innerHTML=vals.map(function(v,i){var h=Math.max(3,Math.abs(v)/mx*40);return '<rect x="'+(i*w+w*0.18).toFixed(1)+'" y="'+(44-h).toFixed(1)+'" width="'+(w*0.64).toFixed(1)+'" height="'+h.toFixed(1)+'" rx="2" fill="'+colorFn(v,i)+'"/>'}).join('');
+}
+function line(svg,vals,c){
+  if(vals.length<2){svg.innerHTML='';return}
+  var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),r=mx-mn||1;
+  var pts=vals.map(function(y,i){return [(i/(vals.length-1)*196+2).toFixed(1),(42-(y-mn)/r*36).toFixed(1)]});
+  var d='M'+pts.map(function(p){return p.join(' ')}).join(' L');
+  svg.innerHTML='<defs><linearGradient id="g'+svg.id+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+c+'" stop-opacity=".35"/><stop offset="1" stop-color="'+c+'" stop-opacity="0"/></linearGradient></defs><path d="'+d+' L198 46 L2 46Z" fill="url(#g'+svg.id+')"/><path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="2" vector-effect="non-scaling-stroke"/><circle cx="'+pts[pts.length-1][0]+'" cy="'+pts[pts.length-1][1]+'" r="3.5" fill="'+c+'" stroke="#17171A" stroke-width="2"/>';
+}
 function summary(){
   var d=DATA;if(!d)return;
-  var nl=d.day.filter(function(x){return x.side==='long'}).length;
-  $('#kDay').textContent=d.day.length;$('#kLong').textContent=d.long.length;
-  $('#kDayS').innerHTML='<b class="up">'+nl+' long</b> &middot; <b class="dn">'+(d.day.length-nl)+' short</b>';
-  var b=$('#rBreadth');b.style.setProperty('--p',d.breadth||0);b.querySelector('span').textContent=(d.breadth==null?'–':d.breadth+'%');
-  var ups=d.long.map(function(x){return x.upside}).filter(function(x){return x!=null});var avg=ups.length?ups.reduce(function(a,c){return a+c},0)/ups.length:0;
-  var r=$('#rUp');r.style.setProperty('--p',Math.max(0,Math.min(100,avg*2.5)));r.querySelector('span').textContent=(avg>0?'+':'')+avg.toFixed(0)+'%';
-  $('#sbN').textContent=d.scanned+' stocks';
-  var t=new Date(d.generated);
-  $('#sbMeta').innerHTML='Updated <b>'+t.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+'</b> ('+ago(d.generated)+')'+(d.market==='open'?' &middot; next scan in about 15 min':' &middot; next scan when the US market opens');
+  var sc=d.scorecard||{},day=d.day||[],lng=d.long||[];
+  var tr=sc.totalR;$('#kR').textContent=(tr==null?'–':(tr>0?'+':'')+Number(tr).toFixed(1)+'R');
+  $('#kRs').innerHTML=(sc.targets||0)+' targets &middot; '+(sc.stops||0)+' stops';
+  $('#kRs').className=(tr||0)>=0?'up':'dn';
+  bars($('#mR'),day.filter(function(x){return x.r!=null}).map(function(x){return x.r}),function(v){return v>=0?'#FF7A33':'#7C6CFF'});
+  var nl=day.filter(function(x){return x.side==='long'}).length;
+  $('#kN').textContent=day.length;$('#kNs').textContent=nl+' long · '+(day.length-nl)+' short';
+  bars($('#mN'),day.map(function(x){return x.conf}),function(v,i){return day[i].side==='long'?'#FF7A33':'#3a3a44'});
+  $('#kB').textContent=(d.breadth==null?'–':d.breadth+'%');
+  var ub=lng.map(function(x){return x.upside}).filter(function(x){return x!=null});
+  var avg=ub.length?ub.reduce(function(a,c){return a+c},0)/ub.length:0;
+  $('#kU').textContent=(avg>0?'+':'')+avg.toFixed(0)+'%';
+  line($('#mU'),ub.slice().sort(function(a,b){return a-b}),'#FF7A33');
+  var br=(lng[0]&&lng[0].spark)||[];line($('#mB'),br,'#A79BFF');
+  var t=new Date(d.generated),h=new Date().getHours();
+  $('#hello').textContent=h<12?'Good morning':h<18?'Good afternoon':'Good evening';
+  $('#sub').innerHTML='Here&rsquo;s the US market across '+d.scanned+' stocks &middot; updated '+ago(d.generated)+(sc.session?' &middot; session '+esc(sc.session):'');
+  $('#sideN').textContent=d.scanned+' stocks scanned';
+  $('#datePill span').textContent=t.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+' · '+t.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
   var m=$('#mkt');m.classList.toggle('open',d.market==='open');m.querySelector('span').textContent=d.market==='open'?'US market open':'US market closed';
-  if(d.source)$('#src').textContent='Market data: '+d.source+'.';
+  $('#score').innerHTML='<span>Session <b>'+esc(sc.session||'–')+'</b></span><span>Triggered <b>'+(sc.triggered||0)+'</b></span><span class="up">Targets hit <b class="up">'+(sc.targets||0)+'</b></span><span>Stopped <b class="dn">'+(sc.stops||0)+'</b></span><span>In trade / closed <b>'+(sc.open||0)+'</b></span><span>Watching <b>'+(sc.watching||0)+'</b></span><span>Net, if every setup were taken at 1R risk <b class="'+((tr||0)>=0?'up':'dn')+'">'+(tr==null?'–':(tr>0?'+':'')+Number(tr).toFixed(1)+'R')+'</b></span>';
+  if(d.source)$('#src').textContent='Market data and articles: '+d.source+'.';
 }
 function load(){
   var bucket=Math.floor(Date.now()/60000);
@@ -292,7 +348,7 @@ function load(){
     if(fresh){render('day');render('long');}
     summary();
   }).catch(function(){
-    if(!DATA){render('day');render('long');$('#sbMeta').textContent='First scan pending. Data appears here after the scanner runs.';$('#sbN').textContent='~100 stocks';}
+    if(!DATA){render('day');render('long');$('#sub').textContent='First scan pending. Data appears here after the scanner runs.';}
   });
 }
 headers();load();
