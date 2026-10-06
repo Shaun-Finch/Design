@@ -173,9 +173,40 @@ tr.more td{background:#141417;white-space:normal;text-align:left;padding:14px 18
 .risk{margin-top:14px;border:1px solid rgba(245,181,68,.3);background:rgba(245,181,68,.05);border-radius:14px;padding:13px 16px;font-size:.8rem;color:var(--body)}
 .risk b{color:var(--amber)}
 .foot{color:var(--dim);font-size:.75rem;margin-top:22px}
+/* auto-trader */
+.bstat{display:inline-flex;align-items:center;gap:7px;font-size:.78rem;font-weight:600;padding:5px 10px;border:1px solid var(--line);color:var(--mute);margin-left:auto}
+.bstat::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.bstat.paper{color:var(--pu2);border-color:rgba(124,108,255,.4)}
+.bstat.live{color:var(--up);border-color:rgba(61,214,140,.4)}
+.bstat.paused,.bstat.err{color:var(--amber);border-color:rgba(245,181,68,.4)}
+.bkpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line2);border-top:1px solid var(--line2);border-bottom:1px solid var(--line2)}
+.bkpis>div{background:var(--card);padding:14px 18px;min-width:0}
+.bkpis .v{font-size:1.35rem;margin-top:6px}
+.bkpis .mini{height:34px;margin-top:6px}
+@media (max-width:860px){.bkpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.bcols{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:1px;background:var(--line2)}
+.bcols>div{background:var(--card);padding:14px 18px 16px;min-width:0}
+@media (max-width:1000px){.bcols{grid-template-columns:minmax(0,1fr)}}
+.bcols h3{margin:0 0 10px;font-size:.8rem;font-weight:500;color:var(--mute)}
+.bcols h3+.bt,.bcols h3+.blist{margin-bottom:18px}
+.blist b.up{color:var(--up)} .blist b.dn{color:var(--dn)}
+.bt{width:100%;border-collapse:collapse;font-size:.78rem}
+.bt td,.bt th{padding:7px 8px;border-bottom:1px solid var(--line2);background:none;position:static;cursor:default}
+.bt th{font-size:.7rem;color:var(--dim);font-weight:500;border-top:0}
+.bt td:first-child,.bt th:first-child{text-align:left;padding-left:0}
+.blist{list-style:none;margin:0;padding:0;display:grid;gap:7px;font-size:.78rem;color:var(--body)}
+.blist li{display:flex;gap:8px;align-items:baseline;white-space:normal}
+.blist b{color:var(--ink);font-weight:600;flex:none}
+.blist .why{color:var(--mute)}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.74rem}
+.setup{padding:4px 18px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(15rem,100%),1fr));gap:12px}
+.setup>div{border:1px solid var(--line2);background:var(--bg);padding:12px 14px;font-size:.8rem;color:var(--mute)}
+.setup b{display:block;color:var(--ink);font-weight:600;margin-bottom:4px;font-size:.84rem}
+.setup code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.74rem;color:var(--or2);word-break:break-all}
+.bnote{padding:0 18px 16px;font-size:.76rem;color:var(--dim)}
 /* square corners: every box, card, pill and button is straight-edged */
 *,*::before,*::after{border-radius:0!important}
-.st::before,.pill i,.range i{border-radius:50%!important}
+.st::before,.pill i,.range i,.bstat::before{border-radius:50%!important}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important}}
 </style>
 </head>
@@ -191,6 +222,7 @@ tr.more td{background:#141417;white-space:normal;text-align:left;padding:14px 18
     <nav class="menu" aria-label="Sections">
       <a class="on" href="#top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Overview</a>
       <a href="#day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v3M5.6 5.6l2.1 2.1M3 12h3M18.4 5.6l-2.1 2.1M21 12h-3"/><path d="M5 18h14M8 21h8"/><path d="M8 15a4 4 0 0 1 8 0"/></svg>Opening bell</a>
+      <a href="#bot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="8" width="16" height="12"/><path d="M12 8V4M9 13v2M15 13v2M2 13v3M22 13v3"/></svg>Auto-trader</a>
       <a href="#long"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Long term</a>
       <a href="#how"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>How it works</a>
       <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>Portfolio</a>
@@ -231,6 +263,14 @@ tr.more td{background:#141417;white-space:normal;text-align:left;padding:14px 18
       </tr></thead><tbody></tbody></table></div>
     </section>
 
+    <section class="sec card tablecard" id="bot" aria-labelledby="botH">
+      <div class="sh">
+        <div><h2 id="botH">Auto-trader &middot; opening bell on autopilot</h2><p>Connects the breakout scanner to a broker account at Alpaca. Between 09:45 and 11:00 New York time (14:45&ndash;16:00 UK) it buys fresh breakouts as bracket orders, so the exit target and the stop sit on the broker&rsquo;s servers and each trade closes itself. If Claude is connected it reads each stock&rsquo;s latest headlines first and vetoes trades with obvious news risk. Everything still open is closed by 15:40 New York time; nothing is held overnight.</p></div>
+        <span class="bstat" id="bStat">Checking&hellip;</span>
+      </div>
+      <div id="bBody"></div>
+    </section>
+
     <section class="sec card tablecard" id="long" aria-labelledby="longH">
       <div class="sh">
         <div><h2 id="longH">Long term &middot; 12-month ideas</h2><p>Ranked on the published Wall Street analyst consensus (rating, number of analysts, mean price target) plus profitability, growth, trend and volatility. The exit value is the analysts&rsquo; mean 12-month target. Click the <b>analysts</b> on any row to see how they rate it, their price targets and recent upgrades or downgrades, or open <b>Articles</b> to read the latest coverage.</p></div>
@@ -249,7 +289,7 @@ tr.more td{background:#141417;white-space:normal;text-align:left;padding:14px 18
         <div class="card"><h3>Long term</h3><ul><li>Needs 8+ analysts and a profit over the last 12 months.</li><li>Score weights analyst upside, rating, 6-month momentum, revenue growth, margin, the 200-day trend and volatility.</li><li>Articles come from Yahoo Finance&rsquo;s news feed for each stock.</li></ul></div>
         <div class="card"><h3>Where to trade</h3><p>Long ideas can be bought as shares through any FCA-authorised broker offering US stocks, such as Interactive Brokers, Trading 212, IG, Hargreaves Lansdown, Freetrade or eToro. Short ideas need a product that profits from falls, such as CFDs or spread bets. Ventryx has no link to any broker; check any firm on the <a href="https://register.fca.org.uk/" rel="noopener">FCA Register</a>.</p></div>
       </div>
-      <div class="risk"><b>Important:</b> Ventryx is a work-in-progress research tool, not financial advice and not a recommendation to buy or sell anything. Setups are generated automatically from delayed market data and published analyst forecasts, and today&rsquo;s results are tracked on paper, not traded. Past results don&rsquo;t predict future ones. Prices can fall as well as rise and you could lose money. Day trading is high risk. CFDs and spread bets are complex, leveraged products and a high proportion of retail accounts lose money using them.</div>
+      <div class="risk"><b>Important:</b> Ventryx is a work-in-progress research tool, not financial advice and not a recommendation to buy or sell anything. Setups are generated automatically from delayed market data and published analyst forecasts, and the scanner&rsquo;s results are tracked on paper. The auto-trader only trades the owner&rsquo;s own broker account, in Alpaca&rsquo;s simulated paper mode unless live trading is switched on deliberately. Past results don&rsquo;t predict future ones. Prices can fall as well as rise and you could lose money. Day trading is high risk. CFDs and spread bets are complex, leveraged products and a high proportion of retail accounts lose money using them.</div>
       <p class="foot">Ventryx is a self-initiated work in progress by Shaun Finch, 2026. <span id="src">Market data and articles: Yahoo Finance via yfinance, may be delayed.</span></p>
     </section>
   </main>
@@ -427,9 +467,60 @@ function load(){
     if(!DATA){render('day');render('long');$('#sub').textContent='First scan pending. Data appears here after the scanner runs.';}
   });
 }
-headers();load();
-setInterval(function(){if(!document.hidden)load()},60000);
-document.addEventListener('visibilitychange',function(){if(!document.hidden)load()});
+var BOT_URL=DATA_URL.replace('markets.json','bot.json'),BOT=null;
+function usd(n,sign){if(n==null)return '&ndash;';var v=Number(n);return (sign&&v>0?'+':'')+(v<0?'-':'')+'$'+Math.abs(v).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function outcome(o){
+  var tp=(o.legs||[]).filter(function(l){return l.type==='limit'})[0],sl=(o.legs||[]).filter(function(l){return l.type==='stop'})[0];
+  if(tp&&tp.status==='filled')return '<span class="st target">Target hit '+px(tp.fill)+'</span>';
+  if(sl&&sl.status==='filled')return '<span class="st stopped">Stopped '+px(sl.fill)+'</span>';
+  if(o.status==='filled')return '<span class="st open">In trade</span>';
+  if(o.status==='new'||o.status==='accepted'||o.status==='pending_new')return '<span class="st watching">Waiting to fill</span>';
+  return '<span class="st closed">'+esc(String(o.status).replace(/_/g,' '))+'</span>';
+}
+function setupHtml(){
+  return '<div class="setup">'+
+    '<div><b>1 &middot; Open an Alpaca account</b>Sign up at <a href="https://alpaca.markets/" rel="noopener">alpaca.markets</a>. Every account comes with a free paper (simulated) account; start there.</div>'+
+    '<div><b>2 &middot; Add the keys to GitHub</b>Repository Settings &rarr; Secrets and variables &rarr; Actions: add <code>ALPACA_KEY_ID</code> and <code>ALPACA_SECRET_KEY</code> from Alpaca&rsquo;s paper dashboard.</div>'+
+    '<div><b>3 &middot; Optional: connect Claude</b>Add an <code>ANTHROPIC_API_KEY</code> secret and Claude checks each stock&rsquo;s headlines before every trade.</div>'+
+    '<div><b>4 &middot; Going live</b>Only after watching paper results: fund a live account, swap in its keys, and set the variable <code>ALPACA_LIVE</code> to <code>yes-i-understand-the-risk</code>. Set <code>BOT_PAUSED</code> to <code>true</code> to stop new trades at any time.</div>'+
+  '</div>';
+}
+function renderBot(){
+  var b=BOT,st=$('#bStat'),body=$('#bBody');
+  if(!b||!b.connected){
+    st.className='bstat';st.textContent='Not connected';
+    body.innerHTML=setupHtml()+'<p class="bnote">The scanner above works without this. The bot runs on the same 15-minute schedule as the scan.</p>';return;
+  }
+  var mode=b.error?'err':b.paused?'paused':b.mode;
+  st.className='bstat '+mode;
+  st.textContent=(b.error?'Error':b.paused?'Paused':b.mode==='live'?'Live account':'Paper account')+(b.updated?' · '+ago(b.updated):'');
+  var hist=b.history||[],pos=b.positions||[],ord=b.orders||[],dec=b.decisions||{},log=b.log||[];
+  var dt=b.dayTrades==null?'&ndash;':b.dayTrades+(b.equity!=null&&b.equity<25000?' / 3':'');
+  var h='<div class="bkpis num">'+
+    '<div><div class="k">Account value</div><div class="v">'+usd(b.equity)+'</div><svg class="mini" id="mBot" viewBox="0 0 200 46" preserveAspectRatio="none" aria-hidden="true"></svg></div>'+
+    '<div><div class="k">Today</div><div class="v"><span class="'+((b.dayPL||0)>=0?'up':'dn')+'">'+usd(b.dayPL,1)+'</span><small>'+pct(b.dayPLPct)+'</small></div></div>'+
+    '<div><div class="k">Day trades, last 5 days</div><div class="v">'+dt+'</div></div>'+
+    '<div><div class="k">Claude news check</div><div class="v" style="font-size:1rem">'+(b.newsCheck?'<span class="up">On</span>':'<span style="color:var(--mute)">Off</span>')+'</div></div>'+
+  '</div>';
+  if(b.error)h+='<p class="bnote" style="color:var(--amber);padding-top:12px">Last run hit an error: '+esc(b.error)+'</p>';
+  var left='<h3>Today&rsquo;s trades</h3>'+(ord.length?'<table class="bt"><thead><tr><th>Stock</th><th>Side</th><th>Qty</th><th>Entry</th><th>Outcome</th></tr></thead><tbody>'+
+    ord.map(function(o){return '<tr><td class="ink">'+esc(o.t)+'</td><td><span class="tag '+(o.side==='buy'?'long':'short')+'">'+(o.side==='buy'?'Buy':'Short')+'</span></td><td>'+esc(o.qty)+'</td><td>'+px(o.fill)+'</td><td>'+outcome(o)+'</td></tr>'}).join('')+'</tbody></table>':'<ul class="blist"><li class="why">No trades yet today.</li></ul>')+
+    '<h3>Open positions</h3>'+(pos.length?'<table class="bt"><thead><tr><th>Stock</th><th>Qty</th><th>Avg</th><th>Price</th><th>P&amp;L</th></tr></thead><tbody>'+
+    pos.map(function(p){return '<tr><td class="ink">'+esc(p.t)+'</td><td>'+esc(p.qty)+'</td><td>'+px(p.avg)+'</td><td>'+px(p.price)+'</td><td><span class="'+((p.pl||0)>=0?'up':'dn')+'">'+usd(p.pl,1)+'</span> '+pct(p.plPct,1)+'</td></tr>'}).join('')+'</tbody></table>':'<ul class="blist"><li class="why">None. The bot is flat.</li></ul>');
+  var dk=Object.keys(dec);
+  var right='<h3>Claude&rsquo;s news check</h3><ul class="blist">'+(dk.length?dk.map(function(t){var d=dec[t];return '<li><b class="'+(d.take?'up':'dn')+'">'+(d.take?'&#10003;':'&#10005;')+' '+esc(t)+'</b><span class="why">'+esc(d.reason)+'</span></li>'}).join(''):'<li class="why">'+(b.newsCheck?'No candidates checked yet today.':'Not connected: add an ANTHROPIC_API_KEY secret to turn it on.')+'</li>')+'</ul>'+
+    '<h3>Bot log</h3><ul class="blist mono">'+(log.length?log.slice(0,12).map(function(l){return '<li>'+esc(l)+'</li>'}).join(''):'<li class="why">Nothing logged yet today.</li>')+'</ul>';
+  h+='<div class="bcols"><div>'+left+'</div><div>'+right+'</div></div>';
+  h+='<p class="bnote" style="padding-top:12px">Risk per trade '+esc(b.riskPct)+'% of the account &middot; max '+esc(b.maxPositions)+' positions &middot; stops for the day at &minus;'+esc(b.dailyLossPct)+'% &middot; US day-trade limit respected under $25,000.</p>';
+  body.innerHTML=h;
+  if(hist.length>1)line($('#mBot'),hist,'#A79BFF');
+}
+function loadBot(){
+  return fetch(BOT_URL+'?m='+Math.floor(Date.now()/60000),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(function(b){BOT=b;renderBot()}).catch(function(){if(!BOT)renderBot()});
+}
+headers();load();loadBot();
+setInterval(function(){if(!document.hidden){load();loadBot()}},60000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden){load();loadBot()}});
 })();
 </script>
 </body>

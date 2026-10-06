@@ -3,9 +3,13 @@ name: Update market data
 # Builds markets.json for Ventryx (ventryx.html) and publishes it to the
 # `market-data` branch, which the page reads from raw.githubusercontent.com.
 # Every 15 minutes on weekdays across US market hours, plus once after the close.
+# The same run drives the Ventryx auto-trader (scripts/trade_bot.py), which does
+# nothing until Alpaca keys are added as repository secrets. The extra :42/:52
+# runs give it more chances to flatten positions before the 16:00 New York close.
 on:
   schedule:
     - cron: "*/15 13-20 * * 1-5"
+    - cron: "42,52 19,20 * * 1-5"
     - cron: "40 21 * * 1-5"
   workflow_dispatch:
     inputs:
@@ -31,7 +35,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install
-        run: pip install --quiet --upgrade yfinance pandas numpy
+        run: pip install --quiet --upgrade yfinance pandas numpy anthropic
       - name: Fetch previous data
         run: |
           mkdir -p md
@@ -43,12 +47,25 @@ jobs:
         env:
           REFRESH_FUNDAMENTALS: ${{ inputs.refresh_fundamentals && '1' || '' }}
         run: python scripts/build_markets.py md
+      - name: Auto-trader (Alpaca; paper unless ALPACA_LIVE is set)
+        # runs even if the scan failed, so the 15:40 close-all is never skipped
+        # (a stale scan blocks new entries inside trade_bot.py)
+        if: ${{ !cancelled() }}
+        env:
+          ALPACA_KEY_ID: ${{ secrets.ALPACA_KEY_ID }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ALPACA_LIVE: ${{ vars.ALPACA_LIVE }}
+          BOT_PAUSED: ${{ vars.BOT_PAUSED }}
+          RISK_PCT: ${{ vars.RISK_PCT }}
+          MAX_POS: ${{ vars.MAX_POS }}
+        run: python scripts/trade_bot.py md
       - name: Publish to market-data branch
         run: |
           cd md
           git init -q -b market-data
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add markets.json fundamentals.json
+          git add markets.json fundamentals.json bot.json
           git commit -q -m "Market data $(date -u +%Y-%m-%dT%H:%MZ)"
           git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:market-data
