@@ -85,6 +85,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .seg button{border:0;background:none;padding:5px 11px;border-radius:7px;font-weight:500;font-size:.8rem;color:var(--mute)}
 .seg button[aria-pressed="true"]{background:var(--card2);color:var(--ink)}
 .tablecard{padding:0;overflow:hidden}
+.explain{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line2);border-top:1px solid var(--line2);border-bottom:1px solid var(--line2);margin-bottom:12px}
+.step{background:var(--card);padding:14px 18px}
+.step svg{display:block;width:150px;height:64px;margin-bottom:10px;overflow:visible}
+.step b{display:block;font-size:.84rem;font-weight:600}
+.step p{margin:4px 0 0;font-size:.78rem;color:var(--mute);line-height:1.5}
+@media (max-width:860px){.explain{grid-template-columns:1fr}}
 .score{display:flex;gap:18px;flex-wrap:wrap;padding:0 18px 14px;font-size:.8rem;color:var(--mute)}
 .score b{color:var(--ink);font-weight:600}
 .scroll{overflow-x:auto;scrollbar-width:thin;scrollbar-color:#2c2c33 transparent}
@@ -120,6 +126,30 @@ svg.sp{width:80px;height:26px;display:block;margin-left:auto}
 .rbtn{border:1px solid var(--line);background:var(--card2);border-radius:8px;padding:4px 9px;font-size:.74rem;color:var(--body);display:inline-flex;align-items:center;gap:6px}
 .rbtn:hover{border-color:rgba(255,138,61,.5);color:var(--ink)}
 .rbtn[aria-expanded="true"]{border-color:var(--or2);color:var(--or2)}
+.ab{border:1px solid transparent;background:none;padding:4px 6px;margin:-4px -6px;text-align:left;display:inline-flex;align-items:center;gap:6px}
+.ab:hover,.ab[aria-expanded="true"]{border-color:rgba(255,138,61,.5)}
+.ab .ink{text-decoration:underline;text-decoration-color:rgba(255,138,61,.6);text-underline-offset:3px}
+.tabs{display:flex;gap:2px;margin-bottom:14px;border-bottom:1px solid var(--line)}
+.tabs button{border:0;background:none;padding:7px 12px;font-size:.8rem;font-weight:500;color:var(--mute);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--or2)}
+.an{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:860px){.an{grid-template-columns:1fr}}
+.an h4{margin:0 0 8px;font-size:.78rem;font-weight:500;color:var(--mute)}
+.dist{display:flex;height:12px;width:100%;background:#26262c;overflow:hidden}
+.dist span{display:block;height:100%}
+.leg{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:.74rem;color:var(--mute)}
+.leg b{color:var(--ink);font-weight:600}
+.leg i{display:inline-block;width:8px;height:8px;margin-right:5px;vertical-align:0}
+.ptbox{position:relative;height:42px;margin:6px 40px 0}
+.ptline{position:absolute;left:0;right:0;top:20px;height:2px;background:linear-gradient(90deg,#3a3a44,var(--or2))}
+.ptm{position:absolute;top:0;transform:translateX(-50%);font-size:.7rem;white-space:nowrap;text-align:center}
+.ptm::after{content:"";display:block;width:2px;height:14px;margin:2px auto 0;background:currentColor}
+.ptends{display:flex;justify-content:space-between;font-size:.72rem;color:var(--mute)}
+.chg{width:100%;border-collapse:collapse;font-size:.76rem;white-space:normal}
+.chg td,.chg th{padding:6px 8px;border-bottom:1px solid var(--line2);text-align:left;background:none;position:static;cursor:default}
+.chg th{font-size:.7rem;color:var(--dim);font-weight:500;border-top:0}
+.act{font-size:.7rem;font-weight:600;padding:2px 7px;border:1px solid var(--line)}
+.act.up{color:var(--up);border-color:rgba(61,214,140,.35)} .act.down{color:var(--dn);border-color:rgba(255,92,92,.35)} .act.init{color:var(--pu2);border-color:rgba(124,108,255,.4)}
 tr.more td{background:#141417;white-space:normal;text-align:left;padding:14px 18px}
 .morein{position:sticky;left:18px;width:min(66rem,calc(100vw - 300px))}
 @media (max-width:860px){.morein{width:calc(100vw - 64px)}}
@@ -143,6 +173,9 @@ tr.more td{background:#141417;white-space:normal;text-align:left;padding:14px 18
 .risk{margin-top:14px;border:1px solid rgba(245,181,68,.3);background:rgba(245,181,68,.05);border-radius:14px;padding:13px 16px;font-size:.8rem;color:var(--body)}
 .risk b{color:var(--amber)}
 .foot{color:var(--dim);font-size:.75rem;margin-top:22px}
+/* square corners: every box, card, pill and button is straight-edged */
+*,*::before,*::after{border-radius:0!important}
+.st::before,.pill i,.range i{border-radius:50%!important}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important}}
 </style>
 </head>
@@ -150,7 +183,7 @@ tr.more td{background:#141417;white-space:normal;text-align:left;padding:14px 18
 <div class="app">
   <aside class="side" aria-label="Ventryx">
     <a class="logo" href="#top" aria-label="Ventryx">
-      <svg viewBox="0 0 26 26" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#FF4D1A"/></linearGradient></defs><rect x="1" y="3" width="24" height="6" rx="3" fill="url(#lg)"/><rect x="5" y="11" width="16" height="6" rx="3" fill="url(#lg)" opacity=".85"/><rect x="9" y="19" width="8" height="6" rx="3" fill="url(#lg)" opacity=".7"/></svg>
+      <svg viewBox="0 0 26 26" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#FF4D1A"/></linearGradient></defs><rect width="26" height="26" fill="url(#lg)"/><path d="M5.5 8.5 11 19 20.5 4.5" fill="none" stroke="#0E0E10" stroke-width="3.2" stroke-linecap="square" stroke-linejoin="miter"/><rect x="18.5" y="2.5" width="4" height="4" fill="#0E0E10"/></svg>
       Ventryx
     </a>
     <div class="search" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span id="sideN">Scanning US stocks</span></div>
@@ -184,8 +217,13 @@ tr.more td{background:#141417;white-space:normal;text-align:left;padding:14px 18
 
     <section class="sec card tablecard" id="day" aria-labelledby="dayH">
       <div class="sh">
-        <div><h2 id="dayH">Opening bell &middot; breakout scanner</h2><p>The first 15 minutes after the 14:30 UK open set each stock&rsquo;s opening range. The first side to break it sets the trade: entry at the edge of the range, stop at its midpoint, exit target at twice the risk. Every setup is then tracked through the day, so you can see which hit the target and which were stopped out.</p></div>
+        <div><h2 id="dayH">Opening bell &middot; breakout scanner</h2><p>A classic day-trading method: let the first 15 minutes settle, then trade the stocks that break out of that early range. Every setup is tracked live, so you can see which reached their target and which were stopped out.</p></div>
         <div class="seg" role="group" aria-label="Filter breakout setups"><button aria-pressed="true" data-f="all">All</button><button aria-pressed="false" data-f="long">Long</button><button aria-pressed="false" data-f="short">Short</button><button aria-pressed="false" data-f="live">Live now</button></div>
+      </div>
+      <div class="explain">
+        <div class="step"><svg viewBox="0 0 120 54" aria-hidden="true"><rect x="8" y="14" width="34" height="24" fill="rgba(124,108,255,.18)" stroke="#7C6CFF"/><path d="M12 30l5-8 5 6 5-10 5 8 5-4" fill="none" stroke="#C9C9CF" stroke-width="1.6"/><text x="48" y="18" font-size="9" fill="#8B8B94">high</text><text x="48" y="40" font-size="9" fill="#8B8B94">low</text></svg><b>1 &middot; Mark the range</b><p>From 14:30 to 14:45 UK time, note each stock&rsquo;s highest and lowest price. That box is the &ldquo;opening range&rdquo;.</p></div>
+        <div class="step"><svg viewBox="0 0 120 54" aria-hidden="true"><rect x="8" y="20" width="30" height="20" fill="rgba(124,108,255,.18)" stroke="#7C6CFF"/><path d="M14 32l6-6 6 4 6-6 8-8 10-6 10-2" fill="none" stroke="#FF8A3D" stroke-width="2"/><path d="M38 20h76" stroke="#FF8A3D" stroke-dasharray="3 3"/><text x="70" y="15" font-size="9" fill="#FF8A3D">break out &#8599;</text></svg><b>2 &middot; Wait for a breakout</b><p>If the price pushes above the box, that&rsquo;s a buy signal (long). If it drops below, that&rsquo;s a short. Stocks that gapped and opened on heavy volume rank highest.</p></div>
+        <div class="step"><svg viewBox="0 0 150 64" aria-hidden="true"><text x="2" y="10" font-size="9" fill="#3DD68C">exit target: 2 &times; the risk</text><path d="M2 14h146" stroke="#3DD68C"/><text x="2" y="32" font-size="9" fill="#8B8B94">entry</text><path d="M2 36h146" stroke="#5C5C66" stroke-dasharray="3 3"/><text x="2" y="54" font-size="9" fill="#FF5C5C">stop: middle of the box</text><path d="M2 58h146" stroke="#FF5C5C"/></svg><b>3 &middot; Exit automatically</b><p>Each trade has a target twice as far away as its stop. Whichever is hit first ends it; anything still open is closed at 21:00 UK time.</p></div>
       </div>
       <div class="score num" id="score"></div>
       <div class="scroll"><table id="tDay"><thead><tr>
@@ -195,7 +233,7 @@ tr.more td{background:#141417;white-space:normal;text-align:left;padding:14px 18
 
     <section class="sec card tablecard" id="long" aria-labelledby="longH">
       <div class="sh">
-        <div><h2 id="longH">Long term &middot; 12-month ideas</h2><p>Ranked on the published Wall Street analyst consensus (rating, number of analysts, mean price target) plus profitability, growth, trend and volatility. The exit value is the analysts&rsquo; mean 12-month target. Open <b>Research</b> on any row to read the latest articles and check the analysts and filings yourself.</p></div>
+        <div><h2 id="longH">Long term &middot; 12-month ideas</h2><p>Ranked on the published Wall Street analyst consensus (rating, number of analysts, mean price target) plus profitability, growth, trend and volatility. The exit value is the analysts&rsquo; mean 12-month target. Click the <b>analysts</b> on any row to see how they rate it, their price targets and recent upgrades or downgrades, or open <b>Articles</b> to read the latest coverage.</p></div>
         <div class="seg" role="group" aria-label="Filter long-term ideas"><button aria-pressed="true" data-f="all">All</button><button aria-pressed="false" data-f="Low">Lower risk</button><button aria-pressed="false" data-f="Medium">Medium</button><button aria-pressed="false" data-f="High">Higher</button></div>
       </div>
       <div class="scroll"><table id="tLong"><thead><tr>
@@ -257,11 +295,11 @@ function dayRow(x){
     '<td class="l where">'+exch(x.exch)+' &middot; '+(long?'shares':'CFD / spread bet')+'</td>';
 }
 function longRow(x){
-  var pos=(x.hi52>x.lo52)?Math.max(0,Math.min(100,(x.price-x.lo52)/(x.hi52-x.lo52)*100)):50,n=(x.news||[]).length,isOpen=!!open[x.t];
+  var pos=(x.hi52>x.lo52)?Math.max(0,Math.min(100,(x.price-x.lo52)/(x.hi52-x.lo52)*100)):50,n=(x.news||[]).length,isOpen=open[x.t]==='articles',anOpen=open[x.t]==='analysts';
   return '<td class="rank">'+x.i+'</td>'+coCell(x)+
-    '<td class="l"><button class="rbtn" type="button" data-t="'+esc(x.t)+'" aria-expanded="'+isOpen+'">'+(n?n+' article'+(n>1?'s':''):'Sources')+' '+(isOpen?'&#9652;':'&#9662;')+'</button></td>'+
+    '<td class="l"><button class="rbtn" type="button" data-t="'+esc(x.t)+'" data-tab="articles" aria-expanded="'+isOpen+'">'+(n?n+' article'+(n>1?'s':''):'Sources')+' '+(isOpen?'&#9652;':'&#9662;')+'</button></td>'+
     '<td class="l">'+esc(x.sector||'')+'</td><td class="ink">'+px(x.price)+'</td><td class="ink">'+px(x.exit)+'</td><td>'+pct(x.upside,1)+'</td>'+
-    '<td class="l"><span class="ink">'+rating(x.rating)+'</span> <small style="color:var(--dim)">'+(x.analysts||0)+' analysts</small></td>'+
+    '<td class="l"><button class="ab" type="button" data-t="'+esc(x.t)+'" data-tab="analysts" aria-expanded="'+anOpen+'" title="See what the analysts are saying"><span class="ink">'+rating(x.rating)+'</span> <small style="color:var(--dim)">'+(x.analysts||0)+' analysts '+(anOpen?'&#9652;':'&#9662;')+'</small></button></td>'+
     '<td>'+money(x.mcap)+'</td><td>'+money(x.profit)+'</td><td>'+(x.margin==null?'&ndash;':x.margin.toFixed(1)+'%')+'</td>'+
     '<td>'+(x.pe==null?'&ndash;':x.pe.toFixed(1))+'</td><td>'+pct(x.growth,1)+'</td>'+
     '<td title="'+(x.lo52!=null?'$'+x.lo52+' to $'+x.hi52:'')+'"><span class="range"><i style="left:'+pos.toFixed(0)+'%"></i></span></td>'+
@@ -269,11 +307,45 @@ function longRow(x){
     '<td>'+(x.div?Number(x.div).toFixed(2)+'%':'&ndash;')+'</td><td><span class="bar"><i style="--w:'+x.score+'%"></i>'+x.score+'</span></td>'+
     '<td>'+spark(x.spark)+'</td><td class="l where">'+exch(x.exch)+' &middot; shares</td>';
 }
-function moreRow(x){
+var ACT={up:['Upgrade','up'],down:['Downgrade','down'],init:['New coverage','init'],main:['Maintained',''],reit:['Reiterated','']};
+function analystsPanel(x){
+  var A=x.an||{},d=A.dist,T=A.targets,ch=A.changes||[],L=x.links||{},h='';
+  if(!d&&!T&&!ch.length)return '<p style="margin:0;color:var(--mute)">No detailed analyst data in the feed for '+esc(x.t)+' right now.</p>'+(L.analysts?'<div class="links"><a href="'+safeUrl(L.analysts)+'" target="_blank" rel="noopener">Analyst page for '+esc(x.t)+' &#8599;</a></div>':'');
+  h+='<div class="an">';
+  if(d){
+    var keys=[['strongBuy','Strong buy','#3DD68C'],['buy','Buy','#2A9D6A'],['hold','Hold','#5C5C66'],['sell','Sell','#FF8A3D'],['strongSell','Strong sell','#FF5C5C']],tot=keys.reduce(function(a,k){return a+(d[k[0]]||0)},0)||1;
+    var P=A.distPrev,bullNow=(d.strongBuy||0)+(d.buy||0),bullPrev=P?(P.strongBuy||0)+(P.buy||0):null;
+    h+='<div><h4>How '+tot+' analysts rate '+esc(x.t)+' this month</h4><div class="dist">'+keys.map(function(k){var v=d[k[0]]||0;return v?'<span style="width:'+(v/tot*100).toFixed(1)+'%;background:'+k[2]+'" title="'+k[1]+': '+v+'"></span>':''}).join('')+'</div>'+
+      '<div class="leg">'+keys.map(function(k){return '<span><i style="background:'+k[2]+'"></i>'+k[1]+' <b>'+(d[k[0]]||0)+'</b></span>'}).join('')+'</div>'+
+      '<p style="margin:10px 0 0;font-size:.78rem;color:var(--mute)"><b class="ink">'+Math.round(bullNow/tot*100)+'%</b> say buy or strong buy'+(bullPrev!=null?' ('+(bullNow>bullPrev?'up':bullNow<bullPrev?'down':'no change')+' from '+bullPrev+' analysts last month)':'')+'.</p></div>';
+  }
+  if(T&&T.low!=null&&T.high!=null&&T.high>T.low){
+    var now=T.current||x.price,lo=Math.min(T.low,now),hi=Math.max(T.high,now),pos=function(v){return ((v-lo)/(hi-lo)*100).toFixed(1)+'%'};
+    h+='<div><h4>12-month price targets vs today</h4><div class="ptbox"><div class="ptline"></div>'+
+      '<span class="ptm" style="left:'+pos(now)+';color:var(--body)">Now '+px(now)+'</span>'+
+      (T.mean!=null?'<span class="ptm" style="left:'+pos(T.mean)+';color:var(--or2)">Avg '+px(T.mean)+'</span>':'')+
+      '</div><div class="ptends num"><span>Lowest '+px(T.low)+'</span><span>Highest '+px(T.high)+'</span></div>'+
+      '<p style="margin:10px 0 0;font-size:.78rem;color:var(--mute)">The most cautious target is '+pct((T.low/now-1)*100,0)+' from today, the most bullish '+pct((T.high/now-1)*100,0)+'.</p></div>';
+  }
+  h+='</div>';
+  if(ch.length){
+    h+='<h4 style="margin:18px 0 6px;font-size:.78rem;font-weight:500;color:var(--mute)">Latest rating changes</h4><div class="scroll"><table class="chg"><thead><tr><th>Date</th><th>Firm</th><th>Action</th><th>Rating</th><th>Price target</th></tr></thead><tbody>'+
+      ch.map(function(c){var a=ACT[c.action]||[esc(c.action||'–'),''];return '<tr><td class="num">'+esc(c.date)+'</td><td class="ink">'+esc(c.firm)+'</td><td><span class="act '+a[1]+'">'+a[0]+'</span></td><td>'+(c.from&&c.from!==c.to?esc(c.from)+' &rarr; ':'')+'<b class="ink">'+esc(c.to||'–')+'</b></td><td class="num">'+(c.ptPrev>0&&c.pt&&c.ptPrev!==c.pt?px(c.ptPrev)+' &rarr; ':'')+(c.pt?'<b class="ink">'+px(c.pt)+'</b>':'&ndash;')+'</td></tr>'}).join('')+'</tbody></table></div>';
+  }
+  h+='<p style="margin:12px 0 0;font-size:.74rem;color:var(--dim)">These are the ratings and targets brokers publish. Their full written reports are usually for clients only.</p>';
+  if(L.analysts)h+='<div class="links"><a href="'+safeUrl(L.analysts)+'" target="_blank" rel="noopener">Full analyst page for '+esc(x.t)+' &#8599;</a></div>';
+  return h;
+}
+function articlesPanel(x){
   var arts=(x.news||[]).map(function(a){return '<a class="art" href="'+safeUrl(a.url)+'" target="_blank" rel="noopener noreferrer"><b>'+esc(a.title)+'</b><span>'+esc(a.src||'')+(a.date?' &middot; '+esc(a.date):'')+' &#8599;</span></a>'}).join('');
   var L=x.links||{};
-  return '<tr class="more"><td colspan="19"><div class="morein">'+(arts?'<div class="arts">'+arts+'</div>':'<p style="margin:0;color:var(--mute)">No recent articles in the feed for '+esc(x.t)+'.</p>')+
-    '<div class="links">'+(L.analysts?'<a href="'+safeUrl(L.analysts)+'" target="_blank" rel="noopener">Analyst ratings &amp; targets &#8599;</a>':'')+(L.news?'<a href="'+safeUrl(L.news)+'" target="_blank" rel="noopener">All '+esc(x.t)+' news &#8599;</a>':'')+(L.filings?'<a href="'+safeUrl(L.filings)+'" target="_blank" rel="noopener">SEC filings (10-K, 10-Q) &#8599;</a>':'')+'</div></div></td></tr>';
+  return (arts?'<div class="arts">'+arts+'</div>':'<p style="margin:0;color:var(--mute)">No recent articles in the feed for '+esc(x.t)+'.</p>')+
+    '<div class="links">'+(L.news?'<a href="'+safeUrl(L.news)+'" target="_blank" rel="noopener">All '+esc(x.t)+' news &#8599;</a>':'')+(L.filings?'<a href="'+safeUrl(L.filings)+'" target="_blank" rel="noopener">SEC filings (10-K, 10-Q) &#8599;</a>':'')+'</div>';
+}
+function moreRow(x){
+  var tab=open[x.t];
+  return '<tr class="more"><td colspan="19"><div class="morein"><div class="tabs" role="tablist"><button type="button" role="tab" data-t="'+esc(x.t)+'" data-tab="analysts" aria-selected="'+(tab==='analysts')+'">What analysts say</button><button type="button" role="tab" data-t="'+esc(x.t)+'" data-tab="articles" aria-selected="'+(tab==='articles')+'">Articles ('+(x.news||[]).length+')</button></div>'+
+    (tab==='analysts'?analystsPanel(x):articlesPanel(x))+'</div></td></tr>';
 }
 function render(which){
   var rows=(DATA&&DATA[which])||[],st=state[which],tb=$('#'+(which==='day'?'tDay':'tLong')+' tbody');
@@ -300,13 +372,17 @@ function headers(){
     var which=seg.closest('section').id==='day'?'day':'long';
     seg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;$$('button',seg).forEach(function(x){x.setAttribute('aria-pressed',x===b)});state[which].f=b.getAttribute('data-f');render(which)});
   });
-  $('#tLong').addEventListener('click',function(e){var b=e.target.closest('.rbtn');if(!b)return;var t=b.getAttribute('data-t');open[t]=!open[t];render('long')});
+  $('#tLong').addEventListener('click',function(e){
+    var b=e.target.closest('.rbtn,.ab,.tabs button');if(!b)return;
+    var t=b.getAttribute('data-t'),tab=b.getAttribute('data-tab');
+    open[t]=(b.closest('.tabs')||open[t]!==tab)?tab:null;render('long');
+  });
 }
 function ago(iso){var m=Math.round((Date.now()-new Date(iso).getTime())/60000);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'}
 function bars(svg,vals,colorFn){
   if(!vals.length){svg.innerHTML='';return}
   var mx=Math.max.apply(null,vals.map(Math.abs))||1,w=200/vals.length;
-  svg.innerHTML=vals.map(function(v,i){var h=Math.max(3,Math.abs(v)/mx*40);return '<rect x="'+(i*w+w*0.18).toFixed(1)+'" y="'+(44-h).toFixed(1)+'" width="'+(w*0.64).toFixed(1)+'" height="'+h.toFixed(1)+'" rx="2" fill="'+colorFn(v,i)+'"/>'}).join('');
+  svg.innerHTML=vals.map(function(v,i){var h=Math.max(3,Math.abs(v)/mx*40);return '<rect x="'+(i*w+w*0.18).toFixed(1)+'" y="'+(44-h).toFixed(1)+'" width="'+(w*0.64).toFixed(1)+'" height="'+h.toFixed(1)+'" rx="0" fill="'+colorFn(v,i)+'"/>'}).join('');
 }
 function line(svg,vals,c){
   if(vals.length<2){svg.innerHTML='';return}
