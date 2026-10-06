@@ -7,7 +7,7 @@
 <meta name="description" content="Gizmo: a 3D personal AI helper. Talk to it, study with it, and let it handle email, meetings, Slack, Teams and Figma decks on a daily routine.">
 <meta property="og:title" content="Gizmo — personal AI helper">
 <meta property="og:description" content="A voice-first AI helper by Shaun Finch. Study your books and articles, and let Gizmo run your inbox, meetings, Slack, Teams and decks.">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#1B1B1F">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='12.5' width='4.5' height='8' rx='2.2' fill='%2315181d'/%3E%3Crect x='25.5' y='12.5' width='4.5' height='8' rx='2.2' fill='%2315181d'/%3E%3Cellipse cx='16' cy='16.2' rx='12.2' ry='11.6' fill='%23f2f4f7' stroke='%23cfd6de'/%3E%3Cpath d='M6.4 10.4c3-1.6 16.2-1.6 19.2 0' fill='none' stroke='%23b9c2cc' stroke-width='.7'/%3E%3Crect x='7.2' y='11.6' width='17.6' height='10.4' rx='4.6' fill='%2307090c' stroke='%2329dcff' stroke-width='.8'/%3E%3Cellipse cx='12' cy='16.8' rx='2.9' ry='3.4' fill='%235f97b3'/%3E%3Cellipse cx='20' cy='16.8' rx='2.9' ry='3.4' fill='%235f97b3'/%3E%3Ccircle cx='12' cy='16.8' r='1.6' fill='%236ff4ff'/%3E%3Ccircle cx='20' cy='16.8' r='1.6' fill='%236ff4ff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -234,6 +234,46 @@ code{background:#f1f4f8;border-radius:6px;padding:1px 6px;font-size:.84em}
   .src .ico{width:36px;height:44px}
   .src>div:last-child{grid-column:1/-1}
 }
+/* ---------- dark mode ---------- */
+:root{--ink:#F2F2F5;--body:#C8C8D0;--mute:#8D8D98;--line:#2A2A30;--line2:#35353C;--side:#141416;--acc:#4C8DFF;--acc2:rgba(76,141,255,.16);--sky:#7FB2E0;--ok:#4CC38A;--okbg:rgba(76,195,138,.14);--warn:#E8A04A;--warnbg:rgba(232,160,74,.14);--bad:#F0715A;--badbg:rgba(240,113,90,.14);color-scheme:dark}
+body{background:#1B1B1F;color:var(--ink)}
+.brand small{border-color:#3a3a42}
+.newchat{background:#212126;border-color:var(--line2)}
+.newchat:hover{border-color:#4a4a54}
+.nav button:hover,.recent button:hover{background:#232329}
+.nav button[aria-current="page"]{background:#2a2c34;color:var(--ink)}
+.recent button{color:#B3B3BC}
+.sw{background:#3a3a42}
+.log .u{background:#28282E}
+.log .g{background:#202025;border-color:var(--line)}
+.log .act button,.chips button,.q .opts button,.seg button{background:#232328;border-color:var(--line2);color:var(--body)}
+.log .act button.right{background:var(--okbg);border-color:rgba(76,195,138,.4)}
+.log .act button.wrong{background:var(--badbg);border-color:rgba(240,113,90,.4)}
+.composer{background:#202025;border-color:var(--line2);box-shadow:0 8px 28px -14px rgba(0,0,0,.7)}
+.iconbtn{background:#2A2A30;color:var(--body)}
+.iconbtn.plain{background:none}
+.app[data-s="listening"] .mic{background:#F2F2F5;color:#16161A}
+.card{background:#202025}
+.soft{background:#1E1E23}
+input[type=text],input[type=password],input[type=url],input[type=time],input[type=email],textarea,select{background:#17171B;border-color:var(--line2);color:var(--ink)}
+.btn{background:#F2F2F5;color:#16161A}
+.btn.blue{background:var(--acc);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line2)}
+.x:hover{background:#2A2A30}
+.pill{background:#2A2A30;color:#C8C8D0}
+.bar{background:#2A2A30}
+.toast{background:#2E2E35;color:#F2F2F5}
+.ask{background:#1D2230;border-color:#2E3A55}
+.drop{background:#1D1F25;border-color:#3A3F4A}
+.drop.over{background:#1F2635}
+.subj{background:#202025}
+.ring{background:conic-gradient(var(--acc) calc(var(--p)*1%),#33333A 0)}
+.ring::before{background:#202025}
+.src:hover{border-color:#3A3F4A}
+.src .ico{background:linear-gradient(160deg,#232A38,#1E2330)}
+.sl{background:#202026;color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--acc);color:#fff}
+code{background:#2A2A30;color:#E2E2E8}
 @media (prefers-reduced-motion:reduce){.app[data-s="listening"] .mic .r{animation:none}}
 </style>
 </head>

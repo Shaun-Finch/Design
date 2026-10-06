@@ -6,6 +6,8 @@ Static portfolio for Shaun Finch. One page, no build step, no dependencies.
 index.html                 Design and motion work (CSS inlined)
 branding.html              Branding — static image galleries (CSS inlined)
 xovern.html                Xovern — AI security dashboard (work in progress)
+ventryx.html               Ventryx — trading ideas scanner (work in progress)
+scripts/build_markets.py   Builds Ventryx's markets.json (run by a GitHub Action)
 data/sanctions.json        Sanctions data for Xovern, refreshed daily by a GitHub Action
 scripts/build_sanctions.py Builds data/sanctions.json from the UK and OFAC lists
 work/                      Videos and poster images
@@ -90,3 +92,12 @@ blocks; delete one and the grid closes up on its own.
 from the Actions tab). It downloads the official UK Sanctions List (FCDO) and the
 OFAC SDN list, writes `data/sanctions.json` and commits it if anything changed.
 If a download or parse fails, the job fails and the previous file stays in place.
+
+## Ventryx market data
+
+`.github/workflows/markets-data.yml` runs `scripts/build_markets.py` every 15
+minutes on weekdays during US market hours, plus once after the close. It
+writes `markets.json` (and a daily `fundamentals.json` cache) to the
+`market-data` branch, which `ventryx.html` reads from raw.githubusercontent.com,
+so frequent refreshes never add commits to `main`. Data comes from Yahoo
+Finance via yfinance and may be delayed.
