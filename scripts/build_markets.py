@@ -22,6 +22,7 @@ import math
 import os
 import sys
 import time
+import urllib.request
 from datetime import datetime, timezone
 
 import numpy as np
@@ -306,29 +307,64 @@ def fetch_fundamentals(cache):
     return out
 
 
-def news_for(t, n=4):
-    """Recent articles for a ticker from Yahoo Finance (handles old and new yfinance formats)."""
+def _news_items_yf(t):
     import yfinance as yf
-    out = []
+    tk = yf.Ticker(t)
     try:
-        items = yf.Ticker(t).news or []
-    except Exception as e:
-        print(f"news {t}: {e}", file=sys.stderr)
-        return out
-    for it in items:
-        c = it.get("content") or it
-        url = ((c.get("canonicalUrl") or {}).get("url") or (c.get("clickThroughUrl") or {}).get("url")
-               or c.get("link") or "")
-        title = c.get("title") or ""
-        if not url.startswith("http") or not title:
+        items = tk.get_news(count=12, tab="news")
+    except Exception:
+        items = tk.news
+    return items or []
+
+
+def _news_items_rss(t):
+    """Yahoo Finance's public RSS headline feed for one ticker."""
+    import xml.etree.ElementTree as ET
+    from email.utils import parsedate_to_datetime
+    url = f"https://feeds.finance.yahoo.com/rss/2.0/headline?s={t}&region=US&lang=en-US"
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Ventryx research links)"})
+    with urllib.request.urlopen(req, timeout=20) as r:
+        root = ET.fromstring(r.read())
+    out = []
+    for it in root.iter("item"):
+        when = it.findtext("pubDate") or ""
+        try:
+            when = parsedate_to_datetime(when).strftime("%Y-%m-%d")
+        except (TypeError, ValueError):
+            when = ""
+        out.append({"title": it.findtext("title") or "", "link": it.findtext("link") or "",
+                    "publisher": it.findtext("source") or "Yahoo Finance", "pubDate": when})
+    return out
+
+
+def news_for(t, n=4):
+    """Recent articles for a ticker: yfinance first, then Yahoo's RSS headline feed."""
+    out, seen, notes = [], set(), []
+    for name, fetch in (("yfinance", _news_items_yf), ("rss", _news_items_rss)):
+        try:
+            items = fetch(t)
+        except Exception as e:
+            notes.append(f"{name} error {type(e).__name__}: {str(e)[:80]}")
             continue
-        src = (c.get("provider") or {}).get("displayName") or c.get("publisher") or ""
-        when = c.get("pubDate") or c.get("displayTime") or ""
-        if not when and c.get("providerPublishTime"):
-            when = datetime.fromtimestamp(c["providerPublishTime"], timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-        out.append({"title": title[:180], "src": src[:60], "url": url, "date": str(when)[:10]})
+        notes.append(f"{name} {len(items)}")
+        for it in items:
+            c = it.get("content") or it
+            url = ((c.get("canonicalUrl") or {}).get("url") or (c.get("clickThroughUrl") or {}).get("url")
+                   or c.get("link") or "")
+            title = (c.get("title") or "").strip()
+            if not url.startswith("http") or not title or url in seen:
+                continue
+            src = (c.get("provider") or {}).get("displayName") or c.get("publisher") or ""
+            when = c.get("pubDate") or c.get("displayTime") or ""
+            if not when and c.get("providerPublishTime"):
+                when = datetime.fromtimestamp(c["providerPublishTime"], timezone.utc).strftime("%Y-%m-%d")
+            seen.add(url)
+            out.append({"title": title[:180], "src": str(src)[:60], "url": url, "date": str(when)[:10]})
+            if len(out) >= n:
+                break
         if len(out) >= n:
             break
+    print(f"news {t}: {len(out)} kept ({', '.join(notes)})")
     return out
 
 
