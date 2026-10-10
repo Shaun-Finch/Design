@@ -674,7 +674,7 @@ headers();load();loadBot();
     return '<div class="bkw"><a class="bk" href="'+u+'" target="_blank" rel="noopener" aria-label="Read '+esc(b.t)+' by '+esc(b.a)+' (opens '+esc(b.src)+')">'+
       '<span class="cover '+esc(b.c)+'"><span class="cy">'+esc(b.y)+'</span><span class="ct">'+esc(b.t)+(b.sub?'<span class="cs">'+esc(b.sub)+'</span>':'')+'<span class="orn"></span></span><span class="ca">'+esc(b.a)+'</span></span>'+
       '<span class="bt2">'+esc(b.t)+'</span><span class="ba">'+esc(b.a)+' &middot; '+esc(b.y)+'</span><span class="bw">'+esc(b.why)+'</span></a>'+
-      '<div class="bmeta" style="margin-top:8px"><a class="read" href="'+u+'" target="_blank" rel="noopener" tabindex="-1">Read free &rarr;</a>'+(b.pdf?'<a class="bpdf" href="'+safeUrl(b.pdf)+'" target="_blank" rel="noopener">PDF</a>':'')+'<span>'+esc(b.src)+' &middot; '+esc(b.lic)+'</span></div></div>';
+      '<div class="bmeta" style="margin-top:8px"><a class="read" href="'+u+'" target="_blank" rel="noopener" tabindex="-1">Read free &rarr;</a>'+(b.pdf?'<a class="bpdf" href="'+safeUrl(b.pdf)+'" target="_blank" rel="noopener">PDF</a>':'')+'<span>'+esc(b.src)+(b.lic!==b.src?' &middot; '+esc(b.lic):'')+'</span></div></div>';
   }).join('');
 })();
 try{var sr=localStorage.getItem('vx.stake');if(sr)$('#riskAmt').value=sr;var stf=localStorage.getItem('vx.tf');if(stf!=null)TF=+stf}catch(e){}
