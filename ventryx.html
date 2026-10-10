@@ -766,7 +766,7 @@ function momPerf(){
   var done=win.filter(function(x){return !x.live}),upM=done.filter(function(x){return x.pct>0}).length,best=null,worst=null;
   done.filter(function(x){return !x.cash}).forEach(function(x){if(best==null||x.pct>best.pct)best=x;if(worst==null||x.pct<worst.pct)worst=x});
   var cell=function(k,v){return '<div><div class="k">'+k+'</div><div class="v">'+v+'</div></div>'};
-  $('#mStats').innerHTML='<div class="hero"><div class="k">With '+stakeLabel()+' in each holding, '+(isNow?'this month so far':MTF?'last '+win.length+' months':'all '+win.length+' months')+'</div><div class="v"><span class="'+signCls(R)+'">'+gbp(n?R:null,1)+'</span><small>'+(n?'from '+gbp(100*n)+' invested':'')+'</small></div></div>'+
+  $('#mStats').innerHTML='<div class="hero"><div class="k">With '+stakeLabel()+' in each holding, '+(isNow?'this month so far':MTF?'last '+win.length+' months':'all '+win.length+' months')+'</div><div class="v"><span class="'+signCls(R)+'">'+gbp(n?R:null,1)+'</span><small>'+(n?'on your '+gbp(100*M.top)+(isNow||win.length<2?'':', reused each month')+' &middot; <span class="'+signCls(R)+'">'+(R>0?'+':R<0?'&minus;':'')+Math.abs(R/M.top).toFixed(1)+'%</span>':'')+'</small></div></div>'+
     cell('Holdings',n)+cell('Win rate',n?Math.round(w/n*100)+'%':'&ndash;')+
     cell('Avg per holding',n?'<span class="'+signCls(R)+'">'+gbp(R/n,1)+'</span>':'&ndash;')+
     (isNow?cell('Up / down',(win[0]&&!win[0].cash?win[0].wins+' / '+(win[0].n-win[0].wins):'In cash')):cell('Profitable months',done.length?upM+' of '+(done.length-done.filter(function(x){return x.cash}).length)+(done.some(function(x){return x.cash})?' <small>'+done.filter(function(x){return x.cash}).length+' in cash</small>':''):'&ndash;'))+
@@ -774,7 +774,7 @@ function momPerf(){
   pchart(pts,'m');
   $('#mPerfSub').textContent=isNow?'This month so far, holding by holding, with the same amount in each of the 5.':'Running total, month by month, with the same amount in each of the 5 holdings every month (£0 in months spent in cash).';
   var first=all[0];
-  $('#mNote').innerHTML='Each month&rsquo;s holdings are rebuilt from past prices with the same rule'+(first?', back to '+fmtM(first.d):'')+'. Past results, not a prediction; before fees and currency conversion. A month here is one calendar month; holdings change at the last trading day&rsquo;s close.';
+  $('#mNote').innerHTML='You only ever need '+gbp(100*M.top)+' in: sell at each swap and reuse the money for the new five. Profits assume you put back to '+stakeLabel()+' a stock each swap; letting profits ride would compound them, and losses too. Each month&rsquo;s holdings are rebuilt from past prices with the same rule'+(first?', back to '+fmtM(first.d):'')+'. Past results, not a prediction; before fees and currency conversion. A month here is one calendar month; holdings change at the last trading day&rsquo;s close.';
 }
 function syncStake(v){['#riskAmt','#mStake'].forEach(function(id){if($(id).value!==v)$(id).value=v});try{localStorage.setItem('vx.stake',v)}catch(e){}$('#plH').innerHTML=stakeLabel()+' in';perf();render('day');renderMom();momPerf()}
 headers();load();loadBot();
