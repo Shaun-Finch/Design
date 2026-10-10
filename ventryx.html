@@ -205,6 +205,7 @@ tfoot td:nth-child(2){background:var(--card2)}
 .ptip b{display:block;color:var(--ink);font-weight:600;margin-bottom:2px}
 .pnote{margin:10px 0 0;font-size:.74rem;color:var(--dim)}
 .tf button,.tfm button{white-space:nowrap}
+@media (max-width:560px){.tfm{flex-wrap:wrap}.tfm button{flex:1 1 30%!important}}
 .evid{margin-top:12px;border:1px solid rgba(124,108,255,.3);background:rgba(124,108,255,.06);padding:11px 14px;font-size:.78rem;color:var(--body);line-height:1.55}
 .evid b{color:var(--pu2)}
 .howto{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:0 18px 14px}
@@ -375,7 +376,7 @@ tfoot td:nth-child(2){background:var(--card2)}
       <div class="perf" id="mperf" aria-labelledby="mPerfH">
         <div class="perfh">
           <div><h3 id="mPerfH">Overall profit</h3><p id="mPerfSub">What you would have made putting the same amount into each of the 5 holdings every month.</p></div>
-          <div class="seg tfm" role="group" aria-label="Time frame"><button aria-pressed="false" data-tfm="1" title="The month in progress">This month</button><button aria-pressed="false" data-tfm="3" title="The last 3 months">3 months</button><button aria-pressed="false" data-tfm="6" title="The last 6 months">6 months</button><button aria-pressed="true" data-tfm="12" title="The last 12 months">1 year</button><button aria-pressed="false" data-tfm="0" title="Every month we can replay">All</button></div>
+          <div class="seg tfm" role="group" aria-label="Time frame"><button aria-pressed="false" data-tfm="1" title="The cycle you are in now: from the last swap to today">Current month</button><button aria-pressed="false" data-tfm="-1" title="The last full cycle, swap to swap">Last month</button><button aria-pressed="false" data-tfm="3" title="The last 3 months">3 months</button><button aria-pressed="false" data-tfm="6" title="The last 6 months">6 months</button><button aria-pressed="true" data-tfm="12" title="The last 12 months">1 year</button><button aria-pressed="false" data-tfm="0" title="Every month we can replay">All</button></div>
           <label class="riskin">Amount per trade <span>&pound;<input id="mStake" type="number" min="1" max="1000000" step="1" value="10" inputmode="numeric"></span></label>
         </div>
         <div class="pgrid">
@@ -759,20 +760,20 @@ function momMonths(){
 function fmtM(iso){var p=String(iso).split('-');return new Date(Date.UTC(+p[0],+p[1]-1,+p[2])).toLocaleDateString('en-GB',{month:'short',year:'numeric',timeZone:'UTC'})}
 function momPerf(){
   var M=DATA&&DATA.momentum;if(!M){$('#mStats').innerHTML='';pchart([],'m');return}
-  var all=momMonths(),win=MTF?all.slice(-MTF):all,isNow=MTF===1,pts=[],run=0;
+  var all=momMonths(),isLast=MTF===-1,win=isLast?all.filter(function(x){return !x.live}).slice(-1):MTF?all.slice(-MTF):all,isNow=MTF===1,one=isNow||isLast,pts=[],run=0;
   if(isNow){M.rows.filter(function(x){return x.hold}).forEach(function(x){run+=x.pct||0;pts.push({label:x.t+' · since '+fmtD(M.formed),step:x.pct||0,cum:run,stepName:'Holding'})})}
   else win.forEach(function(x){run+=x.pct||0;pts.push({label:(x.live?'This month so far':fmtM(x.d))+(x.cash?' (in cash)':''),step:x.pct||0,cum:run,stepName:'Month'})});
   var n=win.reduce(function(a,x){return a+(x.n||0)},0),R=win.reduce(function(a,x){return a+(x.pct||0)},0),w=win.reduce(function(a,x){return a+(x.wins||0)},0);
   var done=win.filter(function(x){return !x.live}),upM=done.filter(function(x){return x.pct>0}).length,best=null,worst=null;
   done.filter(function(x){return !x.cash}).forEach(function(x){if(best==null||x.pct>best.pct)best=x;if(worst==null||x.pct<worst.pct)worst=x});
   var cell=function(k,v){return '<div><div class="k">'+k+'</div><div class="v">'+v+'</div></div>'};
-  $('#mStats').innerHTML='<div class="hero"><div class="k">With '+stakeLabel()+' in each holding, '+(isNow?'this month so far':MTF?'last '+win.length+' months':'all '+win.length+' months')+'</div><div class="v"><span class="'+signCls(R)+'">'+gbp(n?R:null,1)+'</span><small>'+(n?'on your '+gbp(100*M.top)+(isNow||win.length<2?'':', reused each month')+' &middot; <span class="'+signCls(R)+'">'+(R>0?'+':R<0?'&minus;':'')+Math.abs(R/M.top).toFixed(1)+'%</span>':'')+'</small></div></div>'+
+  $('#mStats').innerHTML='<div class="hero"><div class="k">With '+stakeLabel()+' in each holding, '+(isNow?'current month so far':isLast?'last month'+(win[0]?' ('+fmtM(win[0].d)+')':''):MTF?'last '+win.length+' months':'all '+win.length+' months')+'</div><div class="v"><span class="'+signCls(R)+'">'+gbp(n?R:null,1)+'</span><small>'+(n?'on your '+gbp(100*M.top)+(one||win.length<2?'':', reused each month')+' &middot; <span class="'+signCls(R)+'">'+(R>0?'+':R<0?'&minus;':'')+Math.abs(R/M.top).toFixed(1)+'%</span>':'')+'</small></div></div>'+
     cell('Holdings',n)+cell('Win rate',n?Math.round(w/n*100)+'%':'&ndash;')+
     cell('Avg per holding',n?'<span class="'+signCls(R)+'">'+gbp(R/n,1)+'</span>':'&ndash;')+
-    (isNow?cell('Up / down',(win[0]&&!win[0].cash?win[0].wins+' / '+(win[0].n-win[0].wins):'In cash')):cell('Profitable months',done.length?upM+' of '+(done.length-done.filter(function(x){return x.cash}).length)+(done.some(function(x){return x.cash})?' <small>'+done.filter(function(x){return x.cash}).length+' in cash</small>':''):'&ndash;'))+
-    (isNow?'':cell('Best month',best?'<span class="'+signCls(best.pct)+'">'+gbp(best.pct,1)+'</span> <small>'+fmtM(best.d)+'</small>':'&ndash;')+cell('Worst month',worst?'<span class="'+signCls(worst.pct)+'">'+gbp(worst.pct,1)+'</span> <small>'+fmtM(worst.d)+'</small>':'&ndash;'));
+    (one?cell('Up / down',(win[0]&&!win[0].cash?win[0].wins+' / '+(win[0].n-win[0].wins):'In cash')):cell('Profitable months',done.length?upM+' of '+(done.length-done.filter(function(x){return x.cash}).length)+(done.some(function(x){return x.cash})?' <small>'+done.filter(function(x){return x.cash}).length+' in cash</small>':''):'&ndash;'))+
+    (isLast?(win[0]&&!win[0].cash?cell('Best holding','<span class="'+signCls(win[0].best)+'">'+gbp(win[0].best,1)+'</span>')+cell('Worst holding','<span class="'+signCls(win[0].worst)+'">'+gbp(win[0].worst,1)+'</span>'):''):isNow?'':cell('Best month',best?'<span class="'+signCls(best.pct)+'">'+gbp(best.pct,1)+'</span> <small>'+fmtM(best.d)+'</small>':'&ndash;')+cell('Worst month',worst?'<span class="'+signCls(worst.pct)+'">'+gbp(worst.pct,1)+'</span> <small>'+fmtM(worst.d)+'</small>':'&ndash;'));
   pchart(pts,'m');
-  $('#mPerfSub').textContent=isNow?'This month so far, holding by holding, with the same amount in each of the 5.':'Running total, month by month, with the same amount in each of the 5 holdings every month (£0 in months spent in cash).';
+  $('#mPerfSub').textContent=isNow?'The cycle you are in now (since the last swap), holding by holding, with the same amount in each of the 5.':isLast?'The last full cycle, from one month-end swap to the next. Check this each time you swap.':'Running total, month by month, with the same amount in each of the 5 holdings every month (£0 in months spent in cash).';
   var first=all[0];
   $('#mNote').innerHTML='You only ever need '+gbp(100*M.top)+' in: sell at each swap and reuse the money for the new five. Profits assume you put back to '+stakeLabel()+' a stock each swap; letting profits ride would compound them, and losses too. Each month&rsquo;s holdings are rebuilt from past prices with the same rule'+(first?', back to '+fmtM(first.d):'')+'. Past results, not a prediction; before fees and currency conversion. A month here is one calendar month; holdings change at the last trading day&rsquo;s close.';
 }
