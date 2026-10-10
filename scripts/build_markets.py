@@ -390,12 +390,13 @@ def momentum_list(daily, fund, spy=None):
         if sc is None:
             continue
         if not _spy_ok(spy, a):  # market filter: in cash this month
-            hist.append({"d": str(b.date()), "m": b.strftime("%Y-%m"), "n": 0, "pct": 0.0, "wins": 0, "cash": True})
+            hist.append({"d": str(b.date()), "start": str(a.date()), "m": b.strftime("%Y-%m"), "n": 0, "pct": 0.0, "wins": 0,
+                         "cash": True, "picks": []})
             continue
         picks = list(sc.sort_values(ascending=False).index[:MOM_TOP])
         rets = [(float(close.at[b, t]) / float(close.at[a, t]) - 1) * 100 for t in picks
                 if np.isfinite(close.at[a, t]) and np.isfinite(close.at[b, t])]
-        hist.append({"d": str(b.date()), "m": b.strftime("%Y-%m"), "n": len(rets), "pct": fnum(sum(rets), 3),
+        hist.append({"d": str(b.date()), "start": str(a.date()), "picks": picks, "m": b.strftime("%Y-%m"), "n": len(rets), "pct": fnum(sum(rets), 3),
                      "wins": sum(1 for x in rets if x > 0), "best": fnum(max(rets), 2) if rets else None,
                      "worst": fnum(min(rets), 2) if rets else None})
     nxt = (formed + pd.offsets.BMonthEnd(1))

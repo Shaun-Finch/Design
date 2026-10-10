@@ -216,6 +216,22 @@ tfoot td:nth-child(2){background:var(--card2)}
 .howto b{color:var(--ink);font-weight:600}
 .howto .big{display:block;font-size:1rem;color:var(--ink);font-weight:600;margin:2px 0 4px}
 .howto .warn{color:var(--amber)}
+.plan{margin-top:14px;border:1px solid rgba(255,138,61,.35);background:linear-gradient(180deg,rgba(255,138,61,.06),rgba(255,138,61,0) 60%)}
+.planh{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;padding:14px 16px 4px}
+.planh h3{margin:0;font-size:.95rem;font-weight:600}
+.planh p{margin:3px 0 0;color:var(--mute);font-size:.8rem}
+.planh .riskin{margin-left:auto}
+.planh input[type=date]{width:auto;color-scheme:dark}
+.planlist{list-style:none;margin:0;padding:6px 16px 16px;display:grid;gap:0;counter-reset:pl}
+.planlist>li{counter-increment:pl;display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 12px;padding:12px 0;border-top:1px solid var(--line2);font-size:.82rem;color:var(--body);line-height:1.55}
+.planlist>li:first-child{border-top:0}
+.planlist>li::before{content:counter(pl);display:grid;place-items:center;width:24px;height:24px;background:var(--card2);border:1px solid var(--line);color:var(--or2);font-weight:700;font-size:.78rem}
+.planlist b{color:var(--ink);font-weight:600}
+.planlist .when{display:block;font-size:1rem;color:var(--ink);font-weight:600}
+.planlist .tk{display:inline-block;font-weight:600;font-size:.76rem;padding:1px 7px;margin:2px 4px 2px 0;border:1px solid var(--line)}
+.planlist .tk.sell{color:var(--dn);border-color:rgba(255,92,92,.4)} .planlist .tk.buy{color:var(--up);border-color:rgba(61,214,140,.4)} .planlist .tk.keep{color:var(--ink)}
+.planlist small{color:var(--dim)}
+.planlist .warn{color:var(--amber)}
 @media (max-width:560px){.perfh .seg{margin-left:0;width:100%;display:flex}.tf button,.tfm button{flex:1;padding:5px 2px}}
 /* free books */
 .shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(168px,100%),1fr));gap:22px 18px;padding:4px 18px 22px}
@@ -382,6 +398,12 @@ tfoot td:nth-child(2){background:var(--card2)}
         <div class="pgrid">
           <div class="pstats num" id="mStats"></div>
           <div class="pchart"><svg id="mChart" viewBox="0 0 600 190" preserveAspectRatio="none" role="img" aria-label="Running profit"></svg><div class="ptip" id="mTip" hidden></div><div class="paxis" id="mAxis"></div></div>
+        </div>
+        <div class="plan" id="mPlanBox">
+          <div class="planh"><div><h3>Your plan</h3><p>Tell it the day you bought and it works out when to cash out and what to swap.</p></div>
+            <label class="riskin">I bought on <span><input id="mBuyDate" type="date"></span></label>
+            <button type="button" class="rbtn" id="mIcs" title="Download the next swap and buy days as calendar events">&#128197; Add swap dates to my calendar</button></div>
+          <ol class="planlist" id="mPlan"></ol>
         </div>
         <div class="evid"><b>Why this one:</b> tested on 12 years of daily prices for the same ~100 stocks (Oct 2014 &ndash; Oct 2026): 545 monthly holdings averaged <span class="up">+3.4%</span> each, <span class="up">1.9 points better</span> than simply holding the average stock over the same month, and it passed the luck check (t&nbsp;=&nbsp;2.5, ahead by a similar amount in both halves of the period). Momentum is one of the most-studied effects in finance research, and the market rule kept it out of the worst sell-offs. Five stocks is concentrated: single months can swing hard, and momentum can fall sharply when the market turns.</div>
         <p class="pnote" id="mNote"></p>
@@ -656,7 +678,7 @@ function load(){
     if(!d||!d.day)throw new Error('bad data');
     var fresh=!DATA||DATA.generated!==d.generated;DATA=d;
     if(fresh){render('day');render('long');}
-    summary();perf();renderMom();momPerf();
+    summary();perf();renderMom();momPerf();plan();
   }).catch(function(){
     if(!DATA){render('day');render('long');$('#sub').textContent='First scan pending. Data appears here after the scanner runs.';}
   });
@@ -777,7 +799,67 @@ function momPerf(){
   var first=all[0];
   $('#mNote').innerHTML='You only ever need '+gbp(100*M.top)+' in: sell at each swap and reuse the money for the new five. Profits assume you put back to '+stakeLabel()+' a stock each swap; letting profits ride would compound them, and losses too. Each month&rsquo;s holdings are rebuilt from past prices with the same rule'+(first?', back to '+fmtM(first.d):'')+'. Past results, not a prediction; before fees and currency conversion. A month here is one calendar month; holdings change at the last trading day&rsquo;s close.';
 }
-function syncStake(v){['#riskAmt','#mStake'].forEach(function(id){if($(id).value!==v)$(id).value=v});try{localStorage.setItem('vx.stake',v)}catch(e){}$('#plH').innerHTML=stakeLabel()+' in';perf();render('day');renderMom();momPerf()}
+
+// ---------------------------------------------------------------- your plan (momentum)
+function isoDate(d){return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0')+'-'+String(d.getUTCDate()).padStart(2,'0')}
+function parseIso(iso){var p=String(iso).split('-');return new Date(Date.UTC(+p[0],+p[1]-1,+p[2]))}
+function lastWeekday(y,m){var d=new Date(Date.UTC(y,m+1,0));while(d.getUTCDay()===0||d.getUTCDay()===6)d.setUTCDate(d.getUTCDate()-1);return isoDate(d)}
+function swapAfter(iso){var d=parseIso(iso),s=lastWeekday(d.getUTCFullYear(),d.getUTCMonth());if(iso>=s){var n=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1));s=lastWeekday(n.getUTCFullYear(),n.getUTCMonth())}return s}
+function todayIso(){var t=new Date();return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0')}
+function daysUntil(iso){return Math.round((parseIso(iso)-parseIso(todayIso()))/864e5)}
+function tks(list,cls){return list.length?list.map(function(t){return '<span class="tk '+cls+'">'+esc(t)+'</span>'}).join(''):'<small>none</small>'}
+function holdingsFor(M,iso){ // the cycle a purchase on `iso` belongs to: picked at the last swap on or before the day before
+  if(iso>M.formed)return {start:M.formed,end:M.nextRebalance,picks:M.rows.filter(function(x){return x.hold}).map(function(x){return x.t}),cash:!M.invested,live:true};
+  var h=(M.history||[]).filter(function(x){return x.start&&x.start<iso&&iso<=x.d})[0];
+  return h?{start:h.start,end:h.d,picks:h.picks||[],cash:!!h.cash}:null;
+}
+function nextPicksAfter(M,end){ // what the strategy held from swap `end`
+  if(end===M.formed)return {picks:M.rows.filter(function(x){return x.hold}).map(function(x){return x.t}),cash:!M.invested};
+  var h=(M.history||[]).filter(function(x){return x.start===end})[0];return h?{picks:h.picks||[],cash:!!h.cash}:null;
+}
+function plan(){
+  var M=DATA&&DATA.momentum,out=$('#mPlan');if(!M){out.innerHTML='';return}
+  var inp=$('#mBuyDate'),iso=inp.value||todayIso(),amt=stake(),gb=function(v){return '&pound;'+(v%1?v.toFixed(2):v)};
+  inp.max=todayIso();
+  var cyc=holdingsFor(M,iso),li=[],closeUK='after the US close (usually 21:00 UK; 20:00 UK for a week or so in late Mar and late Oct/early Nov, when UK and US clocks change on different dates)',openUK='from the US open (usually 14:30 UK)';
+  if(!cyc){out.innerHTML='<li><span>We only have the strategy&rsquo;s picks back to '+fmtM(((M.history||[])[0]||{}).start||M.formed)+'. Pick a later date.</span></li>';return}
+  if(cyc.cash)li.push('<span>On <b>'+fmtDay(iso)+'</b> the strategy was <b class="warn">in cash</b> (the S&amp;P 500 was below its 200-day average at the '+fmtD(cyc.start)+' swap), so there was nothing to buy that month.</span>');
+  else li.push('<span><span class="when">You should own these '+cyc.picks.length+': '+tks(cyc.picks,'keep')+'</span>'+gb(amt)+' in each, '+gb(amt*cyc.picks.length)+' in total. These were picked at the close on '+fmtD(cyc.start)+(iso>M.formed?' and are this month&rsquo;s holdings.':'.')+'</span>');
+  var swap=cyc.live?M.nextRebalance:swapAfter(iso),buy=addTradingDays(swap,1),du=daysUntil(swap);
+  if(cyc.end&&!cyc.live)swap=cyc.end,buy=addTradingDays(swap,1),du=daysUntil(swap);
+  var when=' '+fmtDay(swap)+(du>0?' <small>(in '+du+' day'+(du===1?'':'s')+')</small>':du===0?' <small>(today)</small>':' <small>(already happened)</small>');
+  li.push('<span><span class="when">'+(cyc.cash?'Next swap:':'Cash out / swap:')+when+'</span>'+(du<0?'That swap has already happened; see below for what changed.':(cyc.cash?'Nothing to hold until then. ':'Hold until then: no selling in between. ')+'The new top 5 is fixed '+closeUK+'. This page shows it that evening.')+'</span>');
+  if(cyc.live){
+    var keep=M.rows.filter(function(x){return x.hold&&x.next==='stays'}).map(function(x){return x.t}),sell=M.rows.filter(function(x){return x.hold&&x.next==='leaves'}).map(function(x){return x.t}),bys=M.rows.filter(function(x){return x.next==='joins'}).map(function(x){return x.t});
+    var what;
+    if(M.invested&&!M.marketOkNow)what='<b class="warn">The market rule is off right now.</b> If the S&amp;P 500 is still below its 200-day average at the close on '+fmtD(swap)+', sell all of '+tks(keep.concat(sell),'sell')+' and hold cash for the month. If it recovers, sell '+tks(sell,'sell')+(bys.length?', buy '+tks(bys,'buy'):'')+' and keep the rest.';
+    else if(M.invested)what=(sell.length?'Sell '+tks(sell,'sell')+' and put that money into '+tks(bys,'buy')+'. ':'No changes expected: ')+'Keep '+tks(keep,'keep')+(sell.length?'':' as they are')+'.';
+    else if(M.marketOkNow)what='The strategy is in cash this month but the market rule has turned back on, so buy '+tks(bys,'buy')+' with '+gb(amt)+' each ('+gb(amt*bys.length)+').';
+    else what='Stay in cash: the market rule is still off. If it turns back on by the close on '+fmtD(swap)+', this page will list the 5 to buy.';
+    li.push('<span><span class="when">Then, '+fmtDay(buy)+' '+openUK+':</span>'+what+
+      '<br><small>This is how things stand today ('+fmtD(M.asOf)+'). Stocks can still move in or out of the top 5 before the close on '+fmtD(swap)+', so check this page that evening for the final list.</small></span>');
+  }else{
+    var nx=nextPicksAfter(M,swap);
+    if(nx){var was=cyc.picks,now=nx.picks,sell2=was.filter(function(t){return now.indexOf(t)<0}),buy2=now.filter(function(t){return was.indexOf(t)<0}),keep2=was.filter(function(t){return now.indexOf(t)>=0});
+      li.push('<span><span class="when">At that swap you should have:</span>'+(nx.cash?'Sold everything '+tks(was,'sell')+' and held cash (the market rule turned off).':'Sold '+tks(sell2,'sell')+', bought '+tks(buy2,'buy')+' and kept '+tks(keep2,'keep')+'.')+' Then carried on from there.</span>');
+      li.push('<span><span class="when">Today you should own: '+tks(M.invested?M.rows.filter(function(x){return x.hold}).map(function(x){return x.t}):[],'keep')+'</span>'+(M.invested?'':'Nothing: the strategy is in cash this month. ')+'Your next swap is <b>'+fmtDay(M.nextRebalance)+'</b>. Pick today&rsquo;s date above to see it step by step.</span>');
+    }
+  }
+  li.push('<span><span class="when">Then repeat every month</span>Next swaps: '+[0,1,2].map(function(k){var s0=M.nextRebalance,d=parseIso(s0);var n=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+k,1));return '<b>'+fmtDay(k?lastWeekday(n.getUTCFullYear(),n.getUTCMonth()):s0)+'</b>'}).join(', ')+'. Same routine each time: check the page after the close, then sell the drop-outs and buy the newcomers the next day. Dates ignore US holidays; if one falls at a month end, the swap moves to the trading day before.</span>');
+  out.innerHTML=li.map(function(x){return '<li>'+x+'</li>'}).join('');
+  try{localStorage.setItem('vx.buydate',inp.value||'')}catch(e){}
+}
+function downloadIcs(){
+  var M=DATA&&DATA.momentum;if(!M)return;
+  var ev=[],d=parseIso(M.nextRebalance),stamp=new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
+  for(var k=0;k<6;k++){var n=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+k,1)),sw=k?lastWeekday(n.getUTCFullYear(),n.getUTCMonth()):M.nextRebalance,by=addTradingDays(sw,1);
+    [[sw,'Ventryx momentum swap day','After the US close (about 21:00 UK) the new top 5 is fixed. Check shaun-finch.github.io/Design/ventryx.html#mom for what to sell and buy.'],[by,'Ventryx: sell drop-outs, buy the new top 5','From the US open (about 14:30 UK). See shaun-finch.github.io/Design/ventryx.html#mom']].forEach(function(e,i){
+      var a=e[0].replace(/-/g,''),b=isoDate(new Date(parseIso(e[0]).getTime()+864e5)).replace(/-/g,'');
+      ev.push('BEGIN:VEVENT\r\nUID:ventryx-'+a+'-'+i+'@shaun-finch.github.io\r\nDTSTAMP:'+stamp+'\r\nDTSTART;VALUE=DATE:'+a+'\r\nDTEND;VALUE=DATE:'+b+'\r\nSUMMARY:'+e[1]+'\r\nDESCRIPTION:'+e[2]+'\r\nEND:VEVENT')});}
+  var ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Ventryx//Momentum//EN\r\nCALSCALE:GREGORIAN\r\n'+ev.join('\r\n')+'\r\nEND:VCALENDAR\r\n';
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));a.download='ventryx-momentum-swaps.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
+}
+function syncStake(v){['#riskAmt','#mStake'].forEach(function(id){if($(id).value!==v)$(id).value=v});try{localStorage.setItem('vx.stake',v)}catch(e){}$('#plH').innerHTML=stakeLabel()+' in';perf();render('day');renderMom();momPerf();plan()}
 headers();load();loadBot();
 (function(){ // free books shelf
   var B=[];try{B=JSON.parse($('#booksData').textContent)}catch(e){}
@@ -799,6 +881,8 @@ $$('#tMom th').forEach(function(th){th.tabIndex=0;function go(){var k=th.getAttr
   th.addEventListener('click',go);th.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}})});
 $('.tf').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;TF=+b.getAttribute('data-tf');$$('.tf button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});try{localStorage.setItem('vx.tf',TF)}catch(e){}perf()});
 $('#mStake').addEventListener('input',function(){syncStake($('#mStake').value)});
+try{var sbd=localStorage.getItem('vx.buydate');if(sbd)$('#mBuyDate').value=sbd}catch(e){}
+$('#mBuyDate').addEventListener('change',plan);$('#mIcs').addEventListener('click',downloadIcs);
 $('#riskAmt').addEventListener('input',function(){syncStake($('#riskAmt').value)});
 setInterval(function(){if(!document.hidden){load();loadBot()}},60000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden){load();loadBot()}});
