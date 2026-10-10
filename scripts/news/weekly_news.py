@@ -43,31 +43,54 @@ def nice_date(d):
     return f"{d.strftime('%A')} {d.day} {d.strftime('%B')}"
 
 
+def _closes(syms, period="1mo", tries=3):
+    """{symbol: closes}. Downloads one symbol at a time with retries: parallel yfinance downloads can
+    fail with 'database is locked' on its shared cache."""
+    import time
+    import yfinance as yf
+    out = {}
+    for s in syms:
+        for k in range(tries):
+            try:
+                c = yf.Ticker(s).history(period=period, interval="1d", auto_adjust=True)["Close"].dropna()
+                if len(c):
+                    out[s] = c
+                    break
+            except Exception as e:
+                print(f"{s}: {e}", file=sys.stderr)
+            time.sleep(1 + k)
+    return out
+
+
 def week_data():
     import yfinance as yf
-    syms = [s for s, _ in INDICES]
-    idx = yf.download(syms, period="1mo", interval="1d", group_by="ticker", auto_adjust=True, progress=False, threads=True)
-    rows = []
-    for s, name in INDICES:
-        try:
-            c = idx[s]["Close"].dropna()
-        except KeyError:
-            continue
-        back = 7 if s == "BTC-USD" else 5
-        if len(c) > back:
-            rows.append({"name": name, "sym": s, "pct": pct(float(c.iloc[-1]), float(c.iloc[-1 - back])), "last": round(float(c.iloc[-1]), 2)})
-    spx = idx["^GSPC"]["Close"].dropna()
-    week_end = spx.index[-1].date()
-    st = yf.download(bm.UNIVERSE, period="1mo", interval="1d", group_by="ticker", auto_adjust=True, progress=False, threads=True)
-    moves = []
+    idx = _closes([s for s, _ in INDICES])
+    st = yf.download(bm.UNIVERSE, period="1mo", interval="1d", group_by="ticker", auto_adjust=True, progress=False, threads=False)
+    closes = {}
     for t in bm.UNIVERSE:
         try:
             c = st[t]["Close"].dropna()
         except KeyError:
             continue
-        if len(c) > 5 and c.index[-1].date() == week_end:
-            moves.append({"t": t, "pct": pct(float(c.iloc[-1]), float(c.iloc[-6]))})
+        if len(c) > 5:
+            closes[t] = c
+    days = [c.index[-1].date() for c in closes.values()]
+    if "^GSPC" in idx:
+        week_end = idx["^GSPC"].index[-1].date()
+    elif days:
+        week_end = max(set(days), key=days.count)  # the most common last trading day
+    else:
+        raise SystemExit("no price data this week")
+    rows = []
+    for s, name in INDICES:
+        c = idx.get(s)
+        back = 7 if s == "BTC-USD" else 5
+        if c is not None and len(c) > back:
+            rows.append({"name": name, "sym": s, "pct": pct(float(c.iloc[-1]), float(c.iloc[-1 - back])), "last": round(float(c.iloc[-1]), 2)})
+    moves = [{"t": t, "pct": pct(float(c.iloc[-1]), float(c.iloc[-6]))} for t, c in closes.items() if c.index[-1].date() == week_end]
     moves.sort(key=lambda x: -x["pct"])
+    if len(moves) < 6:
+        raise SystemExit(f"only {len(moves)} stocks had prices for {week_end}")
     return rows, moves, week_end
 
 
