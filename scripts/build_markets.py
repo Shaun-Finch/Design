@@ -210,6 +210,8 @@ def day_setups(prep, daily, fund, market_open, session=None):
             "open": sum(1 for x in rows if x["status"] in ("open", "closed")),
             "watching": sum(1 for x in rows if x["status"] == "watching"),
             "wins": sum(1 for x in rows if x["status"] != "watching" and (x["r"] or 0) > 0),
+            # summed % move of every triggered trade: x £ per trade / 100 = profit with that much in each trade
+            "pct": fnum(sum((x["r"] or 0) * x["risk"] for x in rows if x["status"] != "watching"), 3),
             "totalR": fnum(sum(x["r"] or 0 for x in rows if x["status"] != "watching"), 2)}
     return rows, card
 
@@ -228,12 +230,12 @@ def update_history(out_dir, prep, daily, fund, market_open):
     added = 0
     for i, sess in enumerate(sessions):
         key = str(sess)
-        if key in hist or i < 2 or (sess == ny_today and market_open):
+        if (key in hist and "pct" in hist[key]) or i < 2 or (sess == ny_today and market_open):
             continue  # already recorded, too little history before it, or still trading
         _, c = day_setups(prep, daily, fund, False, session=sess)
         if c["session"] is None:
             continue
-        hist[key] = {k: c[k] for k in ("triggered", "targets", "stops", "open", "wins", "totalR")}
+        hist[key] = {k: c[k] for k in ("triggered", "targets", "stops", "open", "wins", "totalR", "pct")}
         added += 1
     hist = dict(sorted(hist.items())[-400:])
     with open(path, "w") as fh:
@@ -478,7 +480,12 @@ def main():
         fund = fetch_fundamentals(fund)
         with open(cache_path, "w") as fh:
             json.dump({"_at": now.isoformat(), **fund}, fh, separators=(",", ":"))
-    backfill = not os.path.exists(os.path.join(out_dir, "orb_history.json")) or os.environ.get("BACKFILL_HISTORY")
+    try:  # rebuild from 60 days of bars on the first run, or when older entries lack a newer field
+        with open(os.path.join(out_dir, "orb_history.json")) as fh:
+            backfill = any("pct" not in v for v in json.load(fh).values())
+    except (OSError, ValueError):
+        backfill = True
+    backfill = backfill or bool(os.environ.get("BACKFILL_HISTORY"))
     intra, daily = fetch_prices("60d" if backfill else "5d")  # Yahoo keeps about 60 days of 5-minute bars
     status = market_status(now)
     prep = prepare_intraday(intra)
