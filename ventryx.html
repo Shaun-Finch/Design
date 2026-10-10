@@ -291,13 +291,13 @@ tfoot td:nth-child(2){background:var(--card2)}
       </div>
       <div class="score num" id="score"></div>
       <div class="scroll"><table id="tDay"><thead><tr>
-        <th class="rank" data-k="i">#</th><th class="l" data-k="t">Company</th><th class="l" data-k="side">Signal</th><th class="l" data-k="status">Status</th><th data-k="r">Result</th><th data-k="gap">Gap</th><th data-k="orh">Opening range</th><th data-k="entry">Entry</th><th data-k="exit">Exit target</th><th data-k="stop">Stop</th><th data-k="gain">Profit</th><th data-k="risk">Risk</th><th data-k="trig">Triggered</th><th data-k="price">Price</th><th data-k="chg">Today</th><th data-k="mcap">Market value</th><th data-k="relvol">Open vol.</th><th data-k="conf">Setup score</th><th data-k="spark">Today</th><th class="l" data-k="where">Where to trade</th>
+        <th class="rank" data-k="i">#</th><th class="l" data-k="t">Company</th><th class="l" data-k="side">Signal</th><th class="l" data-k="status">Status</th><th data-k="r">Result</th><th data-k="pl" id="plH">&pound;10 in</th><th data-k="gap">Gap</th><th data-k="orh">Opening range</th><th data-k="entry">Entry</th><th data-k="exit">Exit target</th><th data-k="stop">Stop</th><th data-k="gain">Profit</th><th data-k="risk">Risk</th><th data-k="trig">Triggered</th><th data-k="price">Price</th><th data-k="chg">Today</th><th data-k="mcap">Market value</th><th data-k="relvol">Open vol.</th><th data-k="conf">Setup score</th><th data-k="spark">Today</th><th class="l" data-k="where">Where to trade</th>
       </tr></thead><tbody></tbody><tfoot id="dayFoot"></tfoot></table></div>
       <div class="perf" id="perf" aria-labelledby="perfH">
         <div class="perfh">
-          <div><h3 id="perfH">Overall profit</h3><p id="perfSub">How the strategy has done if every triggered setup was taken at the same risk.</p></div>
+          <div><h3 id="perfH">Overall profit</h3><p id="perfSub">What you would have made putting the same amount into every trade that triggered.</p></div>
           <div class="seg tf" role="group" aria-label="Time frame"><button aria-pressed="false" data-tf="1">Today</button><button aria-pressed="true" data-tf="5">1 week</button><button aria-pressed="false" data-tf="21">1 month</button><button aria-pressed="false" data-tf="63">3 months</button><button aria-pressed="false" data-tf="0">All</button></div>
-          <label class="riskin">Risk per trade <span>&pound;<input id="riskAmt" type="number" min="1" max="100000" step="1" value="10" inputmode="numeric"></span></label>
+          <label class="riskin">Amount per trade <span>&pound;<input id="riskAmt" type="number" min="1" max="1000000" step="1" value="10" inputmode="numeric"></span></label>
         </div>
         <div class="pgrid">
           <div class="pstats num" id="pStats"></div>
@@ -370,7 +370,7 @@ function dayRow(x){
   return '<td class="rank">'+x.i+'</td>'+coCell(x)+
     '<td class="l"><span class="tag '+x.side+'">'+(long?'&#8599; Long':'&#8600; Short')+'</span></td>'+
     '<td class="l"><span class="st '+esc(x.status)+'">'+(STATUS[x.status]||esc(x.status))+'</span>'+(x.done?' <small style="color:var(--dim)">'+esc(x.done)+'</small>':'')+'</td>'+
-    '<td>'+rfmt(x.r)+'</td><td>'+pct(x.gap)+'</td><td>'+px(x.orl)+' &ndash; '+px(x.orh)+'</td>'+
+    '<td>'+rfmt(x.r)+'</td><td>'+(x.pl==null?'<span style="color:var(--dim)">&ndash;</span>':'<span class="'+signCls(x.pl)+'">'+gbp(x.pl,1)+'</span>')+'</td><td>'+pct(x.gap)+'</td><td>'+px(x.orl)+' &ndash; '+px(x.orh)+'</td>'+
     '<td class="ink">'+px(x.entry)+'</td><td class="up">'+px(x.exit)+'</td><td class="dn">'+px(x.stop)+'</td>'+
     '<td class="up">+'+Number(x.gain).toFixed(2)+'%</td><td class="dn">&minus;'+Number(x.risk).toFixed(2)+'%</td>'+
     '<td>'+(x.trig?esc(x.trig)+' <small style="color:var(--dim)">NY</small>':'&ndash;')+'</td>'+
@@ -433,32 +433,36 @@ function moreRow(x){
 }
 function render(which){
   var rows=(DATA&&DATA[which])||[],st=state[which],tb=$('#'+(which==='day'?'tDay':'tLong')+' tbody');
-  rows=rows.map(function(x,i){x.i=i+1;if(which==='long'){x.pos52=(x.hi52>x.lo52)?(x.price-x.lo52)/(x.hi52-x.lo52):0;x.news_n=(x.news||[]).length}return x});
+  rows=rows.map(function(x,i){x.i=i+1;if(which==='day')x.pl=tradePct(x);if(which==='long'){x.pos52=(x.hi52>x.lo52)?(x.price-x.lo52)/(x.hi52-x.lo52):0;x.news_n=(x.news||[]).length}return x});
   var list=rows.filter(function(x){if(st.f==='all')return true;if(which==='day')return st.f==='live'?x.status==='open':x.side===st.f;return x.riskLevel===st.f});
   if(st.k!=='i')list.sort(function(a,b){var k=st.k==='news'?'news_n':st.k,A=a[k],B=b[k];if(k==='spark'){A=a.spark?a.spark[a.spark.length-1]/a.spark[0]:0;B=b.spark?b.spark[b.spark.length-1]/b.spark[0]:0}if(A==null)return 1;if(B==null)return -1;return (A>B?1:A<B?-1:0)*st.dir});
-  if(!DATA){tb.innerHTML='<tr><td colspan="20" class="empty"><b>Waiting for the first scan</b>The scanner runs every 15 minutes while the US market is open.</td></tr>';return}
-  if(!list.length){tb.innerHTML='<tr><td colspan="20" class="empty"><b>Nothing in this filter right now</b>Try another filter.</td></tr>';return}
+  if(!DATA){tb.innerHTML='<tr><td colspan="21" class="empty"><b>Waiting for the first scan</b>The scanner runs every 15 minutes while the US market is open.</td></tr>';return}
+  if(!list.length){tb.innerHTML='<tr><td colspan="21" class="empty"><b>Nothing in this filter right now</b>Try another filter.</td></tr>';return}
   var seen=prevKeys[which],next={},had=Object.keys(seen).length;
   tb.innerHTML=list.map(function(x){var key=[x.side,x.status,x.price].join('|');next[x.t]=key;var ch=had&&seen[x.t]!==key;
     return '<tr'+(ch?' class="flash"':'')+'>'+(which==='day'?dayRow(x):longRow(x))+'</tr>'+(which==='long'&&open[x.t]?moreRow(x):'')}).join('');
   prevKeys[which]=next;
   if(which==='day')dayFoot(list);
 }
-function riskAmt(){var v=Number($('#riskAmt').value);return v>0?v:10}
-function gbp(r,sign){if(r==null)return '&ndash;';var v=r*riskAmt();return (sign&&v>0?'+':'')+(v<0?'&minus;':'')+'&pound;'+Math.abs(v).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function stake(){var v=Number($('#riskAmt').value);return v>0?v:10}
+// money from a % move: £ in the trade x % / 100. Under £1 it reads in pence so small results stay visible.
+function gbp(pct,sign){if(pct==null)return '&ndash;';var v=pct/100*stake(),a=Math.abs(v),sg=(sign&&v>0?'+':'')+(v<0?'&minus;':'');
+  if(a>0&&a<1)return sg+(a*100).toFixed(a<0.1?1:0)+'p';return sg+'&pound;'+a.toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function signCls(v){return v>0?'up':v<0?'dn':''}
+function tradePct(x){return x.status==='watching'||x.r==null?null:x.r*x.risk}
+function stakeLabel(){var v=stake();return '&pound;'+(v%1?v.toFixed(2):v)}
 function dayFoot(list){
   var f=$('#dayFoot');if(!DATA||!list.length){f.innerHTML='';return}
-  var tr=list.filter(function(x){return x.status!=='watching'}),R=tr.reduce(function(a,x){return a+(x.r||0)},0),tg=tr.filter(function(x){return x.status==='target'}).length,sp=tr.filter(function(x){return x.status==='stopped'}).length;
+  var tr=list.filter(function(x){return x.status!=='watching'}),R=tr.reduce(function(a,x){return a+(x.r||0)},0),P=tr.reduce(function(a,x){return a+(tradePct(x)||0)},0),tg=tr.filter(function(x){return x.status==='target'}).length,sp=tr.filter(function(x){return x.status==='stopped'}).length;
   var shown=list.length<(DATA.day||[]).length?' (filtered)':'';
-  f.innerHTML='<tr><td class="rank"></td><td class="l">Total'+shown+'</td><td class="l">'+tr.length+' triggered</td><td class="l"><span class="up">'+tg+' hit</span> &middot; <span class="dn">'+sp+' stopped</span></td><td>'+rfmt(tr.length?R:null)+'</td>'+
-    '<td class="sum" colspan="15"><b class="'+signCls(R)+'">'+gbp(tr.length?R:null,1)+'</b> at '+gbp(1)+' risk per trade &middot; scroll down for other time frames</td></tr>';
+  f.innerHTML='<tr><td class="rank"></td><td class="l">Total'+shown+'</td><td class="l">'+tr.length+' triggered</td><td class="l"><span class="up">'+tg+' hit</span> &middot; <span class="dn">'+sp+' stopped</span></td><td>'+rfmt(tr.length?R:null)+'</td><td><b class="'+signCls(P)+'">'+gbp(tr.length?P:null,1)+'</b></td>'+
+    '<td class="sum" colspan="15">'+(tr.length?'With '+stakeLabel()+' in each of the '+tr.length+' trades ('+gbp(100*tr.length)+' in total), you&rsquo;d have made <b class="'+signCls(P)+'">'+gbp(P,1)+'</b> before fees':'No trades triggered yet')+' &middot; other time frames below</td></tr>';
 }
 var TF=5;
 function sessions(){
-  var d=DATA||{},sc=d.scorecard||{},h=(d.history||[]).filter(function(x){return x.d!==sc.session});
+  var d=DATA||{},sc=d.scorecard||{},h=(d.history||[]).filter(function(x){return x.d!==sc.session&&x.pct!=null});
   var tr=(d.day||[]).filter(function(x){return x.status!=='watching'});  // today straight from the table rows, so it always matches the totals row
-  if(sc.session&&tr.length)h.push({d:sc.session,triggered:tr.length,targets:tr.filter(function(x){return x.status==='target'}).length,stops:tr.filter(function(x){return x.status==='stopped'}).length,wins:tr.filter(function(x){return (x.r||0)>0}).length,totalR:tr.reduce(function(a,x){return a+(x.r||0)},0),live:d.market==='open'});
+  if(sc.session&&tr.length)h.push({d:sc.session,triggered:tr.length,targets:tr.filter(function(x){return x.status==='target'}).length,stops:tr.filter(function(x){return x.status==='stopped'}).length,wins:tr.filter(function(x){return (x.r||0)>0}).length,totalR:tr.reduce(function(a,x){return a+(x.r||0)},0),pct:tr.reduce(function(a,x){return a+(tradePct(x)||0)},0),live:d.market==='open'});
   return h.sort(function(a,b){return a.d<b.d?-1:1});
 }
 function fmtD(iso){var p=String(iso).split('-');return new Date(Date.UTC(+p[0],+p[1]-1,+p[2])).toLocaleDateString('en-GB',{day:'numeric',month:'short',timeZone:'UTC'})}
@@ -468,21 +472,21 @@ function perf(){
   var isToday=TF===1,today=all[all.length-1];
   if(isToday){ // running total trade by trade through the session
     var trs=(DATA.day||[]).filter(function(x){return x.status!=='watching'}).sort(function(a,b){return (a.trig||'')<(b.trig||'')?-1:1}),run=0;
-    pts=trs.map(function(x){run+=x.r||0;return {label:x.t+(x.trig?' · '+x.trig+' NY':''),step:x.r||0,cum:run,stepName:'Trade'}});
-  }else{var run2=0;pts=win.map(function(x){run2+=x.totalR||0;return {label:fmtD(x.d)+(x.live?' (live)':''),step:x.totalR||0,cum:run2,stepName:'Day'}})}
-  var n=win.reduce(function(a,x){return a+(x.triggered||0)},0),R=win.reduce(function(a,x){return a+(x.totalR||0)},0),w=win.reduce(function(a,x){return a+(x.wins||0)},0);
-  var upDays=win.filter(function(x){return (x.totalR||0)>0}).length,best=null,worst=null;
-  win.forEach(function(x){if(best==null||x.totalR>best.totalR)best=x;if(worst==null||x.totalR<worst.totalR)worst=x});
+    pts=trs.map(function(x){var p=tradePct(x)||0;run+=p;return {label:x.t+(x.trig?' · '+x.trig+' NY':''),step:p,cum:run,stepName:'Trade'}});
+  }else{var run2=0;pts=win.map(function(x){run2+=x.pct||0;return {label:fmtD(x.d)+(x.live?' (live)':''),step:x.pct||0,cum:run2,stepName:'Day'}})}
+  var n=win.reduce(function(a,x){return a+(x.triggered||0)},0),R=win.reduce(function(a,x){return a+(x.pct||0)},0),w=win.reduce(function(a,x){return a+(x.wins||0)},0);
+  var upDays=win.filter(function(x){return (x.pct||0)>0}).length,best=null,worst=null;
+  win.forEach(function(x){if(best==null||x.pct>best.pct)best=x;if(worst==null||x.pct<worst.pct)worst=x});
   var cell=function(k,v){return '<div><div class="k">'+k+'</div><div class="v">'+v+'</div></div>'};
-  $('#pStats').innerHTML='<div class="hero"><div class="k">Profit, '+(isToday?(today&&today.live?'today so far':'last session'):TF?'last '+win.length+' session'+(win.length===1?'':'s'):'all '+win.length+' sessions')+'</div><div class="v"><span class="'+signCls(R)+'">'+gbp(n?R:null,1)+'</span><small>'+(n?(R>0?'+':'')+R.toFixed(1)+'R':'')+'</small></div></div>'+
+  $('#pStats').innerHTML='<div class="hero"><div class="k">With '+stakeLabel()+' in every trade, '+(isToday?(today&&today.live?'today so far':'last session'):TF?'last '+win.length+' session'+(win.length===1?'':'s'):'all '+win.length+' sessions')+'</div><div class="v"><span class="'+signCls(R)+'">'+gbp(n?R:null,1)+'</span><small>'+(n?'from '+gbp(100*n)+' traded':'')+'</small></div></div>'+
     cell('Trades',n)+cell('Win rate',n?Math.round(w/n*100)+'%':'&ndash;')+
     cell('Avg per trade',n?'<span class="'+signCls(R)+'">'+gbp(R/n,1)+'</span>':'&ndash;')+
     (isToday?cell('Targets / stops',today?(today.targets||0)+' / '+(today.stops||0):'&ndash;'):cell('Profitable days',win.length?upDays+' of '+win.length:'&ndash;'))+
-    (isToday?'':cell('Best day',best?'<span class="'+signCls(best.totalR)+'">'+gbp(best.totalR,1)+'</span> <small>'+fmtD(best.d)+'</small>':'&ndash;')+cell('Worst day',worst?'<span class="'+signCls(worst.totalR)+'">'+gbp(worst.totalR,1)+'</span> <small>'+fmtD(worst.d)+'</small>':'&ndash;'));
+    (isToday?'':cell('Best day',best?'<span class="'+signCls(best.pct)+'">'+gbp(best.pct,1)+'</span> <small>'+fmtD(best.d)+'</small>':'&ndash;')+cell('Worst day',worst?'<span class="'+signCls(worst.pct)+'">'+gbp(worst.pct,1)+'</span> <small>'+fmtD(worst.d)+'</small>':'&ndash;'));
   pchart(pts);
   var first=all[0];
-  $('#perfSub').textContent=isToday?'Running total through the session, trade by trade, if every triggered setup was taken.':'Running total, day by day, if every triggered setup was taken at the same risk.';
-  $('#pNote').innerHTML='Paper results from the scanner, before fees, spreads and slippage, so real trading would do worse. 1R = the amount risked per trade. '+(first?'Tracking since '+fmtD(first.d)+'; the first weeks were rebuilt from Yahoo&rsquo;s 5-minute prices using the same rules. ':'')+'Real-money results are in the Auto-trader panel.';
+  $('#perfSub').textContent=isToday?'What you would have made putting the same amount into every trade that triggered, trade by trade.':'What you would have made putting the same amount into every trade that triggered, day by day.';
+  $('#pNote').innerHTML='Past results from the scanner, not a prediction. Before fees, spreads and currency conversion, which on small amounts can cost more than the profit itself. '+(first?'Tracking since '+fmtD(first.d)+'; the first weeks were rebuilt from Yahoo&rsquo;s 5-minute prices using the same rules. ':'')+'Real-money results are in the Auto-trader panel.';
 }
 function pchart(pts){
   var svg=$('#pChart'),tip=$('#pTip'),ax=$('#pAxis');
@@ -502,7 +506,7 @@ function pchart(pts){
   svg.onmousemove=function(e){var r=svg.getBoundingClientRect(),fx=(e.clientX-r.left)/r.width*W,i=Math.max(1,Math.min(pts.length,Math.round((fx-L)/(W-L-Rr)*pts.length))),p=pts[i-1];
     var px_=X(i)/W*r.width,py=Y(p.cum)/H*r.height;$('#pX').setAttribute('x1',X(i));$('#pX').setAttribute('x2',X(i));$('#pX').setAttribute('visibility','visible');
     dot.style.display='block';dot.style.left=px_+'px';dot.style.top=py+'px';
-    tip.hidden=false;tip.innerHTML='<b>'+esc(p.label)+'</b>'+p.stepName+': <span class="'+signCls(p.step)+'">'+gbp(p.step,1)+'</span> ('+(p.step>0?'+':'')+p.step.toFixed(1)+'R)<br>Running total: <span class="'+signCls(p.cum)+'">'+gbp(p.cum,1)+'</span>';
+    tip.hidden=false;tip.innerHTML='<b>'+esc(p.label)+'</b>'+p.stepName+': <span class="'+signCls(p.step)+'">'+gbp(p.step,1)+'</span><br>Running total: <span class="'+signCls(p.cum)+'">'+gbp(p.cum,1)+'</span>';
     var tw=tip.offsetWidth;tip.style.left=Math.max(4,Math.min(r.width-tw-4,px_+12))+'px'};
   svg.onmouseleave=function(){tip.hidden=true;dot.style.display='none';$('#pX').setAttribute('visibility','hidden')};
   svg.setAttribute('aria-label','Running profit: '+(last>=0?'up ':'down ')+gbp(Math.abs(last)).replace(/&[a-z]+;/g,'£')+' over '+pts.length+(pts[0].stepName==='Day'?' sessions':' trades'));
@@ -627,10 +631,11 @@ function loadBot(){
   return fetch(BOT_URL+'?m='+Math.floor(Date.now()/60000),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(function(b){BOT=b;renderBot()}).catch(function(){if(!BOT)renderBot()});
 }
 headers();load();loadBot();
-try{var sr=localStorage.getItem('vx.risk');if(sr)$('#riskAmt').value=sr;var stf=localStorage.getItem('vx.tf');if(stf!=null)TF=+stf}catch(e){}
+try{var sr=localStorage.getItem('vx.stake');if(sr)$('#riskAmt').value=sr;var stf=localStorage.getItem('vx.tf');if(stf!=null)TF=+stf}catch(e){}
 $$('.tf button').forEach(function(b){b.setAttribute('aria-pressed',+b.getAttribute('data-tf')===TF)});
+$('#plH').innerHTML=stakeLabel()+' in';
 $('.tf').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;TF=+b.getAttribute('data-tf');$$('.tf button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});try{localStorage.setItem('vx.tf',TF)}catch(e){}perf()});
-$('#riskAmt').addEventListener('input',function(){try{localStorage.setItem('vx.risk',$('#riskAmt').value)}catch(e){}perf();render('day')});
+$('#riskAmt').addEventListener('input',function(){try{localStorage.setItem('vx.stake',$('#riskAmt').value)}catch(e){}$('#plH').innerHTML=stakeLabel()+' in';perf();render('day')});
 setInterval(function(){if(!document.hidden){load();loadBot()}},60000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden){load();loadBot()}});
 })();
