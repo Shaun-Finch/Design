@@ -1019,7 +1019,7 @@ var WEEKLY_URL='https://raw.githubusercontent.com/Shaun-Finch/Design/news-video/
 function loadWeekly(){
   fetch(WEEKLY_URL+'?d='+Math.floor(Date.now()/36e5),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(W){
     var v=$('#wkVideo'),mm=function(s){s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
-    if(v.dataset.src!==W.video){v.dataset.src=W.video;v.poster=W.poster;v.src=W.video;v.innerHTML='<track kind="captions" srclang="en" label="English" src="'+safeUrl(W.captions)+'">';}
+    if(v.dataset.src!==W.video){v.dataset.src=W.video;v.poster=W.poster;v.src=W.video;v.onerror=function(){if(W.videoFallback&&v.src!==W.videoFallback){v.onerror=null;v.src=W.videoFallback}};v.innerHTML='<track kind="captions" srclang="en" label="English" src="'+safeUrl(W.captions)+'">';}
     $('#wkPh').hidden=true;
     $('#wkSub').textContent='Week ending '+fmtD(W.weekEnding)+' · '+mm(W.duration);
     $('#wkWhen').textContent='Published '+fmtD(String(W.published).slice(0,10))+' · new every Sunday';

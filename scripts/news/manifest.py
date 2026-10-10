@@ -12,7 +12,8 @@ tl = json.load(open(f"{out}/timeline.json"))
 cdn = f"https://cdn.jsdelivr.net/gh/Shaun-Finch/Design@{sha}/"
 print(json.dumps({
     "weekEnding": ep["weekEnding"], "published": ep["published"], "writer": ep.get("writer"), "voice": tl.get("engine"),
-    "duration": tl["duration"], "video": cdn + fname, "poster": cdn + "poster.jpg", "captions": cdn + "captions.vtt",
+    "duration": tl["duration"], "video": cdn + fname,
+    "videoFallback": f"https://raw.githubusercontent.com/Shaun-Finch/Design/news-video/{fname}", "poster": cdn + "poster.jpg", "captions": cdn + "captions.vtt",
     "chapters": [{"title": s["title"], "start": s["start"]} for s in ep["segments"]],
     "transcript": [{"title": s["title"], "text": s["text"]} for s in ep["segments"]],
 }, ensure_ascii=False))
