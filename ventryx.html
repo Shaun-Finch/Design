@@ -197,14 +197,17 @@ tfoot td:nth-child(2){background:var(--card2)}
 .pstats .v{font-size:1.05rem;margin-top:3px}
 .pstats .hero .v{font-size:1.9rem}
 .pstats .v small{color:var(--mute);font-weight:500}
+.pstats .v{flex-wrap:wrap;row-gap:2px;column-gap:8px}.pstats .v>span{white-space:nowrap}
 .pchart{position:relative;min-height:190px;border:1px solid var(--line2);background:var(--bg)}
 .pchart svg{display:block;width:100%;height:190px}
 .paxis{display:flex;justify-content:space-between;padding:4px 8px 6px;font-size:.7rem;color:var(--dim)}
 .ptip{position:absolute;top:8px;pointer-events:none;background:var(--card2);border:1px solid var(--line);padding:7px 9px;font-size:.74rem;color:var(--body);white-space:nowrap;z-index:2;box-shadow:0 8px 24px rgba(0,0,0,.5)}
 .ptip b{display:block;color:var(--ink);font-weight:600;margin-bottom:2px}
 .pnote{margin:10px 0 0;font-size:.74rem;color:var(--dim)}
-.tf button{white-space:nowrap}
-@media (max-width:560px){.perfh .seg{margin-left:0;width:100%;display:flex}.tf button{flex:1;padding:5px 2px}}
+.tf button,.tfm button{white-space:nowrap}
+.evid{margin-top:12px;border:1px solid rgba(124,108,255,.3);background:rgba(124,108,255,.06);padding:11px 14px;font-size:.78rem;color:var(--body);line-height:1.55}
+.evid b{color:var(--pu2)}
+@media (max-width:560px){.perfh .seg{margin-left:0;width:100%;display:flex}.tf button,.tfm button{flex:1;padding:5px 2px}}
 /* free books */
 .shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(168px,100%),1fr));gap:22px 18px;padding:4px 18px 22px}
 .bk{display:flex;flex-direction:column;gap:9px;text-decoration:none;color:var(--ink);min-width:0}
@@ -284,6 +287,7 @@ tfoot td:nth-child(2){background:var(--card2)}
       <a class="on" href="#top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Overview</a>
       <a href="#day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v3M5.6 5.6l2.1 2.1M3 12h3M18.4 5.6l-2.1 2.1M21 12h-3"/><path d="M5 18h14M8 21h8"/><path d="M8 15a4 4 0 0 1 8 0"/></svg>Opening bell</a>
       <a href="#bot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="8" width="16" height="12"/><path d="M12 8V4M9 13v2M15 13v2M2 13v3M22 13v3"/></svg>Auto-trader</a>
+      <a href="#mom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18h3V13H4zM10.5 18h3V9h-3zM17 18h3V5h-3z"/></svg>Momentum</a>
       <a href="#long"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Long term</a>
       <a href="#books"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6v15H4zM10 5h4v15h-4zM15 6l4-1 3 14-4 1z"/></svg>Free books</a>
       <a href="#how"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>How it works</a>
@@ -343,6 +347,35 @@ tfoot td:nth-child(2){background:var(--card2)}
         <span class="bstat" id="bStat">Checking&hellip;</span>
       </div>
       <div id="bBody"></div>
+    </section>
+
+    <section class="sec card tablecard" id="mom" aria-labelledby="momH">
+      <div class="sh">
+        <div><h2 id="momH">Momentum &middot; monthly top 10</h2><p>The strongest-tested strategy so far. Once a month, hold the 10 stocks that have risen most over the past year, then swap them at the next month end. No day trading and no stop-losses: one decision a month.</p></div>
+        <div class="seg mseg" role="group" aria-label="Filter momentum list"><button aria-pressed="true" data-mf="all">All</button><button aria-pressed="false" data-mf="hold">Holdings</button><button aria-pressed="false" data-mf="next">Next in line</button></div>
+      </div>
+      <div class="explain">
+        <div class="step"><svg viewBox="0 0 150 54" aria-hidden="true"><rect x="6" y="34" width="14" height="14" fill="#3a3a44"/><rect x="26" y="26" width="14" height="22" fill="#3a3a44"/><rect x="46" y="16" width="14" height="32" fill="#7C6CFF"/><rect x="66" y="8" width="14" height="40" fill="#FF8A3D"/><text x="88" y="20" font-size="9" fill="#8B8B94">12-month</text><text x="88" y="32" font-size="9" fill="#8B8B94">rise</text></svg><b>1 &middot; Rank by the past year</b><p>At each month end, rank every stock by how much it rose over the last 12 months, leaving out the latest month (very short-term moves tend to reverse).</p></div>
+        <div class="step"><svg viewBox="0 0 150 54" aria-hidden="true"><g fill="#FF8A3D"><rect x="6" y="10" width="10" height="10"/><rect x="20" y="10" width="10" height="10"/><rect x="34" y="10" width="10" height="10"/><rect x="48" y="10" width="10" height="10"/><rect x="62" y="10" width="10" height="10"/><rect x="6" y="24" width="10" height="10"/><rect x="20" y="24" width="10" height="10"/><rect x="34" y="24" width="10" height="10"/><rect x="48" y="24" width="10" height="10"/><rect x="62" y="24" width="10" height="10"/></g><text x="80" y="27" font-size="9" fill="#8B8B94">top 10, equal &pound;</text></svg><b>2 &middot; Hold the top 10</b><p>Put the same amount into each of the 10 strongest and hold them for the whole month. The table shows how each is doing since it was picked.</p></div>
+        <div class="step"><svg viewBox="0 0 150 54" aria-hidden="true"><path d="M10 30a24 24 0 0 1 44-10" fill="none" stroke="#3DD68C" stroke-width="2"/><path d="M54 12v9h-9" fill="none" stroke="#3DD68C" stroke-width="2"/><path d="M58 34a24 24 0 0 1-44 10" fill="none" stroke="#FF5C5C" stroke-width="2"/><text x="72" y="24" font-size="9" fill="#3DD68C">joins</text><text x="72" y="40" font-size="9" fill="#FF5C5C">leaves</text></svg><b>3 &middot; Swap monthly</b><p>At the next month end, re-rank. Sell the ones that dropped out of the top 10 and buy the newcomers. &ldquo;Next month&rdquo; shows who looks set to stay, join or leave.</p></div>
+      </div>
+      <div class="score num" id="mScore"></div>
+      <div class="scroll"><table id="tMom"><thead><tr>
+        <th class="rank" data-mk="rank">#</th><th class="l" data-mk="t">Company</th><th class="l" data-mk="hold">Signal</th><th class="l" data-mk="rankNow">Next month</th><th data-mk="pct">This month</th><th data-mk="pct" id="mplH">&pound;10 in</th><th data-mk="entry">Bought at</th><th data-mk="price">Price</th><th data-mk="chg">Today</th><th data-mk="mom">12-month rise</th><th data-mk="vol">Risk</th><th data-mk="mcap">Market value</th><th data-mk="spark">1 year</th><th class="l" data-mk="where">Where to trade</th>
+      </tr></thead><tbody></tbody><tfoot id="momFoot"></tfoot></table></div>
+      <div class="perf" id="mperf" aria-labelledby="mPerfH">
+        <div class="perfh">
+          <div><h3 id="mPerfH">Overall profit</h3><p id="mPerfSub">What you would have made putting the same amount into each of the 10 holdings every month.</p></div>
+          <div class="seg tfm" role="group" aria-label="Time frame"><button aria-pressed="false" data-tfm="1" title="The month in progress">This month</button><button aria-pressed="false" data-tfm="3" title="The last 3 months">3 months</button><button aria-pressed="false" data-tfm="6" title="The last 6 months">6 months</button><button aria-pressed="true" data-tfm="12" title="The last 12 months">1 year</button><button aria-pressed="false" data-tfm="0" title="Every month we can replay">All</button></div>
+          <label class="riskin">Amount per trade <span>&pound;<input id="mStake" type="number" min="1" max="1000000" step="1" value="10" inputmode="numeric"></span></label>
+        </div>
+        <div class="pgrid">
+          <div class="pstats num" id="mStats"></div>
+          <div class="pchart"><svg id="mChart" viewBox="0 0 600 190" preserveAspectRatio="none" role="img" aria-label="Running profit"></svg><div class="ptip" id="mTip" hidden></div><div class="paxis" id="mAxis"></div></div>
+        </div>
+        <div class="evid"><b>Why this one:</b> tested on 12 years of daily prices for the same ~100 stocks (Oct 2014 &ndash; Oct 2026): 1,320 monthly holdings averaged <span class="up">+3.0%</span> each, <span class="up">1.2 points better</span> than simply holding the average stock over the same month, and it passed the luck check (t&nbsp;=&nbsp;2.1, ahead in both halves of the period). Momentum is also one of the most-studied effects in finance research. It still has bad stretches: in 2021 it trailed the average stock, and momentum can fall sharply when markets turn.</div>
+        <p class="pnote" id="mNote"></p>
+      </div>
     </section>
 
     <section class="sec card tablecard" id="long" aria-labelledby="longH">
@@ -524,31 +557,33 @@ function perf(){
   $('#perfSub').textContent=isToday?'What you would have made putting the same amount into every trade that triggered, trade by trade.':'What you would have made putting the same amount into every trade that triggered, day by day.';
   $('#pNote').innerHTML='A trading day is one US market session, 14:30&ndash;21:00 UK time; 1 week = 5 trading days, 1 month = 21, 3 months = 63. Past results from the scanner, not a prediction. Before fees, spreads and currency conversion, which on small amounts can cost more than the profit itself. '+(first?'Tracking since '+fmtD(first.d)+'; the first weeks were rebuilt from Yahoo&rsquo;s 5-minute prices using the same rules. ':'')+'Real-money results are in the Auto-trader panel.';
 }
-function pchart(pts){
-  var svg=$('#pChart'),tip=$('#pTip'),ax=$('#pAxis');
+function pchart(pts,P){
+  P=P||'p';
+  var svg=$('#'+P+'Chart'),tip=$('#'+P+'Tip'),ax=$('#'+P+'Axis');
   if(!pts.length){svg.innerHTML='<text x="300" y="100" text-anchor="middle" font-size="13" fill="#8B8B94">No trades in this time frame yet</text>';ax.innerHTML='';svg.onmousemove=svg.onmouseleave=null;tip.hidden=true;return}
   var vals=[0].concat(pts.map(function(p){return p.cum})),mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),pad=(mx-mn)*0.12||1;mn-=pad;mx+=pad;
   var W=600,H=190,L=8,Rr=8,T=12,B=12,X=function(i){return L+(i/(pts.length))*(W-L-Rr)},Y=function(v){return T+(1-(v-mn)/(mx-mn))*(H-T-B)};
   var xy=[[X(0),Y(0)]].concat(pts.map(function(p,i){return [X(i+1),Y(p.cum)]}));
   var d='M'+xy.map(function(p){return p[0].toFixed(1)+' '+p[1].toFixed(1)}).join(' L'),y0=Y(0).toFixed(1),last=pts[pts.length-1].cum,c=last>=0?'#3DD68C':'#FF5C5C';
-  svg.innerHTML='<defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+c+'" stop-opacity=".22"/><stop offset="1" stop-color="'+c+'" stop-opacity="0"/></linearGradient></defs>'+
+  svg.innerHTML='<defs><linearGradient id="'+P+'g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+c+'" stop-opacity=".22"/><stop offset="1" stop-color="'+c+'" stop-opacity="0"/></linearGradient></defs>'+
     '<line x1="0" x2="'+W+'" y1="'+y0+'" y2="'+y0+'" stroke="#5C5C66" stroke-dasharray="3 4" stroke-width="1" vector-effect="non-scaling-stroke"/>'+
-    '<path d="'+d+' L'+xy[xy.length-1][0].toFixed(1)+' '+y0+' L'+L+' '+y0+'Z" fill="url(#pg)"/>'+
+    '<path d="'+d+' L'+xy[xy.length-1][0].toFixed(1)+' '+y0+' L'+L+' '+y0+'Z" fill="url(#'+P+'g)"/>'+
     '<path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'+
-    '<line id="pX" y1="0" y2="'+H+'" stroke="#8B8B94" stroke-width="1" vector-effect="non-scaling-stroke" visibility="hidden"/>';
+    '<line id="'+P+'X" y1="0" y2="'+H+'" stroke="#8B8B94" stroke-width="1" vector-effect="non-scaling-stroke" visibility="hidden"/>';
   ax.innerHTML='<span>Start</span><span>&pound;0 = dashed line</span><span>'+esc(pts[pts.length-1].label.split(' · ')[0])+'</span>';
   var dot=document.createElement('div');dot.style.cssText='position:absolute;width:10px;height:10px;border-radius:50%!important;background:'+c+';border:2px solid #0E0E10;transform:translate(-50%,-50%);pointer-events:none;display:none';svg.parentNode.appendChild(dot);
   if(svg._dot)svg._dot.remove();svg._dot=dot;
   svg.onmousemove=function(e){var r=svg.getBoundingClientRect(),fx=(e.clientX-r.left)/r.width*W,i=Math.max(1,Math.min(pts.length,Math.round((fx-L)/(W-L-Rr)*pts.length))),p=pts[i-1];
-    var px_=X(i)/W*r.width,py=Y(p.cum)/H*r.height;$('#pX').setAttribute('x1',X(i));$('#pX').setAttribute('x2',X(i));$('#pX').setAttribute('visibility','visible');
+    var px_=X(i)/W*r.width,py=Y(p.cum)/H*r.height;$('#'+P+'X').setAttribute('x1',X(i));$('#'+P+'X').setAttribute('x2',X(i));$('#'+P+'X').setAttribute('visibility','visible');
     dot.style.display='block';dot.style.left=px_+'px';dot.style.top=py+'px';
     tip.hidden=false;tip.innerHTML='<b>'+esc(p.label)+'</b>'+p.stepName+': <span class="'+signCls(p.step)+'">'+gbp(p.step,1)+'</span><br>Running total: <span class="'+signCls(p.cum)+'">'+gbp(p.cum,1)+'</span>';
     var tw=tip.offsetWidth;tip.style.left=Math.max(4,Math.min(r.width-tw-4,px_+12))+'px'};
-  svg.onmouseleave=function(){tip.hidden=true;dot.style.display='none';$('#pX').setAttribute('visibility','hidden')};
-  svg.setAttribute('aria-label','Running profit: '+(last>=0?'up ':'down ')+gbp(Math.abs(last)).replace(/&[a-z]+;/g,'£')+' over '+pts.length+(pts[0].stepName==='Day'?' sessions':' trades'));
+  svg.onmouseleave=function(){tip.hidden=true;dot.style.display='none';$('#'+P+'X').setAttribute('visibility','hidden')};
+  svg.setAttribute('aria-label','Running profit: '+(last>=0?'up ':'down ')+gbp(Math.abs(last)).replace(/&[a-z]+;/g,'£')+' over '+pts.length+(pts[0].stepName==='Trade'||pts[0].stepName==='Holding'?' trades':' periods'));
 }
 function headers(){
   $$('table').forEach(function(tbl){
+    if(tbl.id!=='tDay'&&tbl.id!=='tLong')return;
     var which=tbl.id==='tDay'?'day':'long';
     $$('th',tbl).forEach(function(th){
       th.tabIndex=0;
@@ -557,6 +592,7 @@ function headers(){
     });
   });
   $$('.sh .seg').forEach(function(seg){
+    if(['day','long'].indexOf(seg.closest('section').id)<0)return;
     var which=seg.closest('section').id==='day'?'day':'long';
     seg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;$$('button',seg).forEach(function(x){x.setAttribute('aria-pressed',x===b)});state[which].f=b.getAttribute('data-f');render(which)});
   });
@@ -610,7 +646,7 @@ function load(){
     if(!d||!d.day)throw new Error('bad data');
     var fresh=!DATA||DATA.generated!==d.generated;DATA=d;
     if(fresh){render('day');render('long');}
-    summary();perf();
+    summary();perf();renderMom();momPerf();
   }).catch(function(){
     if(!DATA){render('day');render('long');$('#sub').textContent='First scan pending. Data appears here after the scanner runs.';}
   });
@@ -666,6 +702,57 @@ function renderBot(){
 function loadBot(){
   return fetch(BOT_URL+'?m='+Math.floor(Date.now()/60000),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(function(b){BOT=b;renderBot()}).catch(function(){if(!BOT)renderBot()});
 }
+
+// ---------------------------------------------------------------- momentum
+var MTF=12,mState={k:'rank',dir:1,f:'all'};
+function volLvl(v){return v==null?'':v<25?'Low':v<40?'Medium':'High'}
+var NEXTM={stays:['Stays','target'],joins:['Joins','open'],leaves:['Leaves','stopped'],out:['Not yet','watching']};
+function renderMom(){
+  var M=DATA&&DATA.momentum,tb=$('#tMom tbody'),f=$('#momFoot');
+  $('#mplH').innerHTML=stakeLabel()+' in';
+  if(!M){tb.innerHTML='<tr><td colspan="14" class="empty"><b>Waiting for the next scan</b>The momentum list appears after the scanner runs.</td></tr>';f.innerHTML='';$('#mScore').innerHTML='';return}
+  var list=M.rows.filter(function(x){return mState.f==='all'||(mState.f==='hold'?x.hold:!x.hold)}),k=mState.k;
+  if(k!=='rank')list.sort(function(a,b){var A=a[k],B=b[k];if(k==='spark'){A=a.spark?a.spark[a.spark.length-1]/a.spark[0]:0;B=b.spark?b.spark[b.spark.length-1]/b.spark[0]:0}if(k==='hold'){A=a.hold?0:1;B=b.hold?0:1}if(A==null)return 1;if(B==null)return -1;return (A>B?1:A<B?-1:0)*mState.dir});
+  tb.innerHTML=list.map(function(x){var nx=NEXTM[x.next]||['',''],lv=volLvl(x.vol);
+    return '<tr><td class="rank">'+x.rank+'</td>'+coCell(x)+
+      '<td class="l"><span class="tag '+(x.hold?'long':'')+'">'+(x.hold?'&#9679; Hold':'Next in line')+'</span></td>'+
+      '<td class="l"><span class="st '+nx[1]+'">'+nx[0]+'</span>'+(x.rankNow?' <small style="color:var(--dim)">now #'+x.rankNow+'</small>':'')+'</td>'+
+      '<td>'+pct(x.pct)+'</td><td>'+(x.hold?'<span class="'+signCls(x.pct)+'">'+gbp(x.pct,1)+'</span>':'<span style="color:var(--dim)" title="Not held this month">&ndash;</span>')+'</td>'+
+      '<td>'+px(x.entry)+'</td><td class="ink">'+px(x.price)+'</td><td>'+pct(x.chg)+'</td><td>'+pct(x.mom,1)+'</td>'+
+      '<td><span class="lvl '+lv+'">'+lv+'</span></td><td>'+money(x.mcap)+'</td><td>'+spark(x.spark)+'</td><td class="l where">'+exch(x.exch)+' &middot; shares</td></tr>';
+  }).join('');
+  var h=M.rows.filter(function(x){return x.hold}),P=h.reduce(function(a,x){return a+(x.pct||0)},0),up=h.filter(function(x){return x.pct>0}).length;
+  f.innerHTML='<tr><td class="rank"></td><td class="l">This month</td><td class="l">'+h.length+' holdings</td><td class="l"><span class="up">'+up+' up</span> &middot; <span class="dn">'+(h.length-up)+' down</span></td><td>'+pct(h.length?P/h.length:null)+'</td><td><b class="'+signCls(P)+'">'+gbp(P,1)+'</b></td>'+
+    '<td class="sum" colspan="8">With '+stakeLabel()+' in each of the '+h.length+' holdings since '+fmtD(M.formed)+' ('+gbp(100*h.length)+' in total), you&rsquo;d be '+(P>=0?'up':'down')+' <b class="'+signCls(P)+'">'+gbp(Math.abs(P))+'</b> before fees</td></tr>';
+  $('#mScore').innerHTML='<span>Picked at the close on <b>'+fmtD(M.formed)+'</b></span><span>Prices as of <b>'+fmtD(M.asOf)+'</b></span><span>Next swap around <b>'+fmtD(M.nextRebalance)+'</b></span><span>Set to leave <b class="dn">'+M.rows.filter(function(x){return x.next==='leaves'}).length+'</b></span><span>Set to join <b class="up">'+M.rows.filter(function(x){return x.next==='joins'}).length+'</b></span>';
+}
+function momMonths(){
+  var M=DATA&&DATA.momentum;if(!M)return [];
+  var h=(M.history||[]).slice(),cur=M.rows.filter(function(x){return x.hold});
+  h.push({d:M.asOf,m:'now',n:cur.length,pct:cur.reduce(function(a,x){return a+(x.pct||0)},0),wins:cur.filter(function(x){return x.pct>0}).length,live:true});
+  return h;
+}
+function fmtM(iso){var p=String(iso).split('-');return new Date(Date.UTC(+p[0],+p[1]-1,+p[2])).toLocaleDateString('en-GB',{month:'short',year:'numeric',timeZone:'UTC'})}
+function momPerf(){
+  var M=DATA&&DATA.momentum;if(!M){$('#mStats').innerHTML='';pchart([],'m');return}
+  var all=momMonths(),win=MTF?all.slice(-MTF):all,isNow=MTF===1,pts=[],run=0;
+  if(isNow){M.rows.filter(function(x){return x.hold}).forEach(function(x){run+=x.pct||0;pts.push({label:x.t+' · since '+fmtD(M.formed),step:x.pct||0,cum:run,stepName:'Holding'})})}
+  else win.forEach(function(x){run+=x.pct||0;pts.push({label:(x.live?'This month so far':fmtM(x.d)),step:x.pct||0,cum:run,stepName:'Month'})});
+  var n=win.reduce(function(a,x){return a+(x.n||0)},0),R=win.reduce(function(a,x){return a+(x.pct||0)},0),w=win.reduce(function(a,x){return a+(x.wins||0)},0);
+  var done=win.filter(function(x){return !x.live}),upM=done.filter(function(x){return x.pct>0}).length,best=null,worst=null;
+  done.forEach(function(x){if(best==null||x.pct>best.pct)best=x;if(worst==null||x.pct<worst.pct)worst=x});
+  var cell=function(k,v){return '<div><div class="k">'+k+'</div><div class="v">'+v+'</div></div>'};
+  $('#mStats').innerHTML='<div class="hero"><div class="k">With '+stakeLabel()+' in each holding, '+(isNow?'this month so far':MTF?'last '+win.length+' months':'all '+win.length+' months')+'</div><div class="v"><span class="'+signCls(R)+'">'+gbp(n?R:null,1)+'</span><small>'+(n?'from '+gbp(100*n)+' invested':'')+'</small></div></div>'+
+    cell('Holdings',n)+cell('Win rate',n?Math.round(w/n*100)+'%':'&ndash;')+
+    cell('Avg per holding',n?'<span class="'+signCls(R)+'">'+gbp(R/n,1)+'</span>':'&ndash;')+
+    (isNow?cell('Up / down',(win[0]?win[0].wins:0)+' / '+(win[0]?win[0].n-win[0].wins:0)):cell('Profitable months',done.length?upM+' of '+done.length:'&ndash;'))+
+    (isNow?'':cell('Best month',best?'<span class="'+signCls(best.pct)+'">'+gbp(best.pct,1)+'</span> <small>'+fmtM(best.d)+'</small>':'&ndash;')+cell('Worst month',worst?'<span class="'+signCls(worst.pct)+'">'+gbp(worst.pct,1)+'</span> <small>'+fmtM(worst.d)+'</small>':'&ndash;'));
+  pchart(pts,'m');
+  $('#mPerfSub').textContent=isNow?'This month so far, holding by holding, with the same amount in each of the 10.':'Running total, month by month, with the same amount in each of the 10 holdings every month.';
+  var first=all[0];
+  $('#mNote').innerHTML='Each month&rsquo;s holdings are rebuilt from past prices with the same rule'+(first?', back to '+fmtM(first.d):'')+'. Past results, not a prediction; before fees and currency conversion. A month here is one calendar month; holdings change at the last trading day&rsquo;s close.';
+}
+function syncStake(v){['#riskAmt','#mStake'].forEach(function(id){if($(id).value!==v)$(id).value=v});try{localStorage.setItem('vx.stake',v)}catch(e){}$('#plH').innerHTML=stakeLabel()+' in';perf();render('day');renderMom();momPerf()}
 headers();load();loadBot();
 (function(){ // free books shelf
   var B=[];try{B=JSON.parse($('#booksData').textContent)}catch(e){}
@@ -677,11 +764,17 @@ headers();load();loadBot();
       '<div class="bmeta" style="margin-top:8px"><a class="read" href="'+u+'" target="_blank" rel="noopener" tabindex="-1">Read free &rarr;</a>'+(b.pdf?'<a class="bpdf" href="'+safeUrl(b.pdf)+'" target="_blank" rel="noopener">PDF</a>':'')+'<span>'+esc(b.src)+(b.lic!==b.src?' &middot; '+esc(b.lic):'')+'</span></div></div>';
   }).join('');
 })();
-try{var sr=localStorage.getItem('vx.stake');if(sr)$('#riskAmt').value=sr;var stf=localStorage.getItem('vx.tf');if(stf!=null)TF=+stf}catch(e){}
+try{var sr=localStorage.getItem('vx.stake');if(sr){$('#riskAmt').value=sr;$('#mStake').value=sr}var smt=localStorage.getItem('vx.mtf');if(smt!=null)MTF=+smt;var stf=localStorage.getItem('vx.tf');if(stf!=null)TF=+stf}catch(e){}
 $$('.tf button').forEach(function(b){b.setAttribute('aria-pressed',+b.getAttribute('data-tf')===TF)});
 $('#plH').innerHTML=stakeLabel()+' in';
+$$('.tfm button').forEach(function(b){b.setAttribute('aria-pressed',+b.getAttribute('data-tfm')===MTF)});
+$('.tfm').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;MTF=+b.getAttribute('data-tfm');$$('.tfm button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});try{localStorage.setItem('vx.mtf',MTF)}catch(e){}momPerf()});
+$('.mseg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;$$('.mseg button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});mState.f=b.getAttribute('data-mf');renderMom()});
+$$('#tMom th').forEach(function(th){th.tabIndex=0;function go(){var k=th.getAttribute('data-mk');if(k==='where')return;mState.dir=mState.k===k?-mState.dir:(['rank','t','hold','rankNow','vol'].indexOf(k)>=0?1:-1);mState.k=k;$$('#tMom th').forEach(function(h){h.removeAttribute('aria-sort')});if(k!=='rank')th.setAttribute('aria-sort',mState.dir>0?'ascending':'descending');renderMom()}
+  th.addEventListener('click',go);th.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}})});
 $('.tf').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;TF=+b.getAttribute('data-tf');$$('.tf button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});try{localStorage.setItem('vx.tf',TF)}catch(e){}perf()});
-$('#riskAmt').addEventListener('input',function(){try{localStorage.setItem('vx.stake',$('#riskAmt').value)}catch(e){}$('#plH').innerHTML=stakeLabel()+' in';perf();render('day')});
+$('#mStake').addEventListener('input',function(){syncStake($('#mStake').value)});
+$('#riskAmt').addEventListener('input',function(){syncStake($('#riskAmt').value)});
 setInterval(function(){if(!document.hidden){load();loadBot()}},60000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden){load();loadBot()}});
 })();

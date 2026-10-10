@@ -306,12 +306,81 @@ def long_ideas(daily, fund):
     return out
 
 
+# ---------------------------------------------------------------- momentum
+# Monthly momentum: at each month end, rank stocks by their return over the past 12 months
+# skipping the most recent month (252 and 21 trading days), hold the top 10 for the next month,
+# then re-rank. Tested on ~12 years of daily bars (scripts/backtest_swing.py) before going live.
+MOM_TOP = 10
+
+
+def _month_ends(idx):
+    s = pd.Series(idx, index=idx)
+    return list(s.groupby([idx.year, idx.month]).max())
+
+
+def _mom_scores(close, i):
+    if i < 252:
+        return None
+    return (close.iloc[i - 21] / close.iloc[i - 252] - 1).dropna()
+
+
+def momentum_list(daily, fund):
+    close = pd.DataFrame({t: d["Close"] for t, d in daily.items() if len(d) > 260}).sort_index()
+    if close.shape[1] < 20 or len(close) < 300:
+        return None
+    idx = close.index
+    ends = _month_ends(idx)
+    last = idx[-1]
+    # holdings are picked at the close of the latest month end before today; today's bar may still be moving
+    formed = [e for e in ends if e < last][-1]
+    fi = idx.get_loc(formed)
+    score_then = _mom_scores(close, fi)
+    score_now = _mom_scores(close, len(idx) - 1)
+    if score_then is None:
+        return None
+    hold = list(score_then.sort_values(ascending=False).index[:MOM_TOP])
+    next_rank = {t: r + 1 for r, t in enumerate(score_now.sort_values(ascending=False).index)} if score_now is not None else {}
+    rows = []
+    for r, t in enumerate(score_then.sort_values(ascending=False).index[:2 * MOM_TOP]):
+        d, f = daily[t], fund.get(t, {})
+        entry, price = float(close.at[formed, t]), float(close[t].iloc[-1])
+        nr = next_rank.get(t)
+        rows.append({
+            "t": t, "name": f.get("name") or t, "exch": f.get("exch") or "", "mcap": f.get("mcap"),
+            "rank": r + 1, "hold": r < MOM_TOP, "mom": fnum(score_then[t] * 100, 1),
+            "entry": fnum(entry), "price": fnum(price), "pct": fnum((price / entry - 1) * 100, 2),
+            "chg": fnum((price / float(close[t].iloc[-2]) - 1) * 100), "rankNow": nr,
+            "next": ("stays" if r < MOM_TOP else "joins") if nr and nr <= MOM_TOP else ("leaves" if r < MOM_TOP else "out"),
+            "vol": fnum(float(d["Close"].pct_change().tail(252).std() * math.sqrt(252) * 100), 1),
+            "spark": spark(d["Close"].tail(252).iloc[::5], 52),
+        })
+    # history: every completed month in the data, replayed with the same rule (all inputs are past closes)
+    hist = []
+    for a, b in zip(ends[:-1], ends[1:]):
+        if b > formed:
+            break
+        ia = idx.get_loc(a)
+        sc = _mom_scores(close, ia)
+        if sc is None:
+            continue
+        picks = list(sc.sort_values(ascending=False).index[:MOM_TOP])
+        rets = [(float(close.at[b, t]) / float(close.at[a, t]) - 1) * 100 for t in picks
+                if np.isfinite(close.at[a, t]) and np.isfinite(close.at[b, t])]
+        hist.append({"d": str(b.date()), "m": b.strftime("%Y-%m"), "n": len(rets), "pct": fnum(sum(rets), 3),
+                     "wins": sum(1 for x in rets if x > 0), "best": fnum(max(rets), 2) if rets else None,
+                     "worst": fnum(min(rets), 2) if rets else None})
+    nxt = (formed + pd.offsets.BMonthEnd(1))
+    nxt = nxt if nxt > last else (last + pd.offsets.BMonthEnd(1))
+    return {"formed": str(formed.date()), "asOf": str(last.date()), "nextRebalance": str(nxt.date()),
+            "top": MOM_TOP, "rows": rows, "history": hist}
+
+
 # ---------------------------------------------------------------- data fetch
 def fetch_prices(intra_period="5d"):
     import yfinance as yf
     intra = yf.download(UNIVERSE, period=intra_period, interval="5m", group_by="ticker", auto_adjust=False,
                         prepost=False, threads=True, progress=False)
-    daily_all = yf.download(UNIVERSE, period="1y", interval="1d", group_by="ticker", auto_adjust=True,
+    daily_all = yf.download(UNIVERSE, period="3y", interval="1d", group_by="ticker", auto_adjust=True,
                             threads=True, progress=False)
     daily = {}
     for t in UNIVERSE:
@@ -496,6 +565,11 @@ def main():
         print(f"history update failed: {e}", file=sys.stderr)
         hist = {}
     lng = long_ideas(daily, fund)
+    try:
+        mom = momentum_list(daily, fund)
+    except Exception as e:  # a new section must never block the scan
+        print(f"momentum failed: {e}", file=sys.stderr)
+        mom = None
     for x in lng:
         x["news"] = news_for(x["t"])
         x["an"] = analysts_for(x["t"])
@@ -510,6 +584,7 @@ def main():
         "source": "Yahoo Finance via yfinance (may be delayed)",
         "day": day, "long": lng,
         "history": [{"d": k, **v} for k, v in hist.items()],
+        "momentum": mom,
     }
     with open(os.path.join(out_dir, "markets.json"), "w") as fh:
         json.dump(doc, fh, separators=(",", ":"))
