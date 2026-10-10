@@ -1,24 +1,35 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#0a1440}canvas{display:block}</style>
 <script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script></head>
 <body><script type="module">
-// Preview a GLB avatar as a head-and-shoulders news anchor shot. ?m=file.glb
+// Preview an FBX/GLB avatar as a head-and-shoulders news shot and report its face rig. ?m=URL&tex=TEXTURE_DIR_URL
 import * as THREE from 'three';
+import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { TGALoader } from 'three/addons/loaders/TGALoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+const q=new URLSearchParams(location.search),m=q.get('m'),tex=q.get('tex');
 const W=800,H=800,r=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
 r.setSize(W,H);r.outputColorSpace=THREE.SRGBColorSpace;r.toneMapping=THREE.ACESFilmicToneMapping;document.body.appendChild(r.domElement);
 const sc=new THREE.Scene();sc.background=new THREE.Color(0x0a1440);
 sc.environment=new THREE.PMREMGenerator(r).fromScene(new RoomEnvironment(),0.04).texture;
-const key=new THREE.DirectionalLight(0xffffff,2.2);key.position.set(1.5,2.5,3);sc.add(key);
-const rim=new THREE.DirectionalLight(0xff4fa3,1.6);rim.position.set(-3,2,-2);sc.add(rim);
-const fill=new THREE.DirectionalLight(0x19e3ff,0.6);fill.position.set(-2,1,2);sc.add(fill);
-const cam=new THREE.PerspectiveCamera(28,W/H,0.01,100);
-const m=new URLSearchParams(location.search).get('m');
-new GLTFLoader().load(m,g=>{const o=g.scene;sc.add(o);
-  let head=null;o.traverse(n=>{if(n.isBone&&/head$/i.test(n.name)&&!head)head=n});
+const key=new THREE.DirectionalLight(0xffffff,2.4);key.position.set(1.5,2.5,3);sc.add(key);
+const rim=new THREE.DirectionalLight(0xff4fa3,1.8);rim.position.set(-3,2,-2);sc.add(rim);
+const fill=new THREE.DirectionalLight(0x19e3ff,0.7);fill.position.set(-2,1,2);sc.add(fill);
+sc.add(new THREE.AmbientLight(0xffffff,0.25));
+const cam=new THREE.PerspectiveCamera(24,W/H,0.01,1000);
+const mgr=new THREE.LoadingManager();mgr.addHandler(/\.tga$/i,new TGALoader(mgr));
+if(tex)mgr.setURLModifier(u=>{if(/\.(tga|png|jpe?g|bmp|dds)$/i.test(u)&&!u.startsWith(tex)){const f=decodeURIComponent(u.split(/[\\/]/).pop());return tex+'/'+encodeURIComponent(f)}return u});
+const done=o=>{sc.add(o);
+  const info={bones:[],morphs:{},materials:[]};let head=null;
+  o.traverse(n=>{if(n.isBone){info.bones.push(n.name);if(/head$/i.test(n.name)&&!head)head=n}
+    if(n.isMesh){if(n.morphTargetDictionary)info.morphs[n.name]=Object.keys(n.morphTargetDictionary);[].concat(n.material).forEach(mt=>info.materials.push(mt.name+(mt.map?' (tex)':'')))}});
+  o.updateMatrixWorld(true);
   const box=new THREE.Box3().setFromObject(o),size=box.getSize(new THREE.Vector3());
   const hp=head?head.getWorldPosition(new THREE.Vector3()):new THREE.Vector3(0,box.max.y-size.y*0.07,0);
-  cam.position.set(hp.x,hp.y-size.y*0.02,hp.z+size.y*0.42);cam.lookAt(hp.x,hp.y-size.y*0.05,hp.z);
-  r.render(sc,cam);window.READY=JSON.stringify({height:size.y,head:head&&head.name});
-},undefined,e=>{window.READY='ERR '+e.message});
+  const s=size.y;cam.near=s*0.001;cam.far=s*10;cam.updateProjectionMatrix();
+  cam.position.set(hp.x,hp.y-s*0.03,hp.z+s*0.55);cam.lookAt(hp.x,hp.y-s*0.06,hp.z);
+  setTimeout(()=>{r.render(sc,cam);info.height=s;info.head=head&&head.name;window.READY=JSON.stringify(info)},1500);
+};
+const err=e=>{window.READY='ERR '+(e&&e.message||e)};
+if(/\.fbx$/i.test(m))new FBXLoader(mgr).load(m,done,undefined,err);else new GLTFLoader(mgr).load(m,g=>done(g.scene),undefined,err);
 </script></body></html>

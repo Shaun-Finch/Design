@@ -23,34 +23,18 @@ jobs:
           node-version: "20"
       - name: Tools
         run: |
-          sudo apt-get update -q && sudo apt-get install -y -q blender git-lfs
+          sudo apt-get update -q && sudo apt-get install -y -q git-lfs
           cd scripts/news/avatar && npm init -y >/dev/null && npm install --silent --no-audit --no-fund playwright@1.48.2 three@0.169.0 && npx playwright install --with-deps chromium
       - name: Fetch Rocketbox avatars
         run: |
           git clone -q --depth 1 --filter=blob:none --sparse https://github.com/microsoft/Microsoft-Rocketbox.git rb
           cd rb
-          git ls-tree -r --name-only HEAD | grep -iE '\.fbx$' | grep -iE 'business|professions' | head -60 > ../fbx_list.txt || true
-          echo "== FBX candidates:"; cat ../fbx_list.txt
-          cp LICENSE ../ROCKETBOX_LICENSE 2>/dev/null || ls
-          for n in ${{ inputs.names }}; do
-            d=$(grep -i "/$n/" ../fbx_list.txt | head -1 | xargs -r dirname)
-            [ -z "$d" ] && { echo "no FBX for $n"; continue; }
-            top=$(dirname "$d")
-            git sparse-checkout add "$top"
-          done
-          git lfs install --local && git lfs pull || true
-          ls -la $(dirname $(head -1 ../fbx_list.txt)) || true
-      - name: Convert and preview
-        run: |
-          mkdir -p out
-          for n in ${{ inputs.names }}; do
-            f=$(grep -i "/$n/" fbx_list.txt | grep -iv '_facial\|lod' | head -1)
-            [ -z "$f" ] && continue
-            blender -b -P scripts/news/avatar/convert.py -- "rb/$f" "out/$n.glb" 2>&1 | tail -3 || true
-          done
-          ls -la out
-          node scripts/news/avatar/preview.cjs out || true
-          for j in out/*.json; do echo "== $j"; python3 -c "import json,sys;d=json.load(open('$j'));print('bones',len(d['bones']),[b for b in d['bones'] if any(k in b.lower() for k in ('jaw','lip','eye','lid','mouth','brow','head','neck','teeth','tongue'))]);print('meshes',d['meshes']);print('shapekeys',{k:v[:40] for k,v in d['shapeKeys'].items()});print('images',d['images'][:8])"; done
+          for n in ${{ inputs.names }}; do git sparse-checkout add "Assets/Avatars/Professions/$n"; done
+          git lfs install --local && git lfs pull
+          mkdir -p ../out && cp LICENSE.md ../out/ROCKETBOX_LICENSE.md
+          for n in ${{ inputs.names }}; do d="Assets/Avatars/Professions/$n"; [ -d "$d" ] && cp -r "$d" ../out/ && du -sh "../out/$n"; ls "../out/$n/Textures" | head -20; done
+      - name: Preview and face rig
+        run: node scripts/news/avatar/preview.cjs out
       - name: Publish to research-data/avatar
         run: |
           mkdir pub && cd pub
@@ -58,5 +42,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           if git fetch -q --depth=1 "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" research-data; then git checkout -q FETCH_HEAD -- . || true; fi
-          rm -rf avatar && mkdir avatar && cp ../out/* avatar/ 2>/dev/null; cp ../fbx_list.txt avatar/; cp ../ROCKETBOX_LICENSE avatar/ 2>/dev/null || true
+          rm -rf avatar && mkdir avatar && cp -r ../out/* avatar/
           git add -A && git commit -q -m "Avatar probe $(date -u +%Y-%m-%dT%H:%MZ)" && git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:research-data

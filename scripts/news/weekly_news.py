@@ -124,7 +124,7 @@ def short_name(n):
     return {"JP Morgan Chase": "JPMorgan Chase", "Alphabet": "Alphabet", "Meta": "Meta"}.get(n, n)
 
 
-CLICKBAIT = __import__("re").compile(r"(\bvs\.?\b|\?|^(better|best|top|should|is it|why i|buy|sell|the \d+)|\b\d+ (stocks?|reasons?)\b|millionaire|forever|no-brainer|motley)", __import__("re").I)
+CLICKBAIT = __import__("re").compile(r"(\bvs\.?\b|\?|^(better|best|top|should|is it|why i|buy|sell|the \d+)|\b\d+ (stocks?|reasons?)\b|millionaire|forever|no-brainer|motley|^\\d+\\s|hard to ignore|right now|here'?s why|what to know|could soar|soar|smash|wall street (thinks|says)|analysts? (say|think))", __import__("re").I)
 
 
 def pick_headline(items, name, ticker):
