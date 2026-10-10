@@ -360,7 +360,7 @@ tfoot td:nth-child(2){background:var(--card2)}
     <section class="sec card tablecard" id="mom" aria-labelledby="momH">
       <div class="sh">
         <div><h2 id="momH">Momentum &middot; monthly top 5</h2><p>The strongest-tested strategy so far. Once a month, hold the 5 stocks that have risen most over the past year, then swap them at the next month end. A market safety rule keeps you in cash when the whole market is falling. One decision a month: no day trading, no stop-losses.</p></div>
-        <div class="seg mseg" role="group" aria-label="Filter momentum list"><button aria-pressed="true" data-mf="all">All</button><button aria-pressed="false" data-mf="hold">Holdings</button><button aria-pressed="false" data-mf="next">Next in line</button></div>
+        <div class="seg mseg" role="group" aria-label="Filter momentum list"><button aria-pressed="true" data-mf="hold">Your 5 holdings</button><button aria-pressed="false" data-mf="next">Next in line</button><button aria-pressed="false" data-mf="all">All</button></div>
       </div>
       <div class="explain">
         <div class="step"><svg viewBox="0 0 150 54" aria-hidden="true"><rect x="6" y="34" width="14" height="14" fill="#3a3a44"/><rect x="26" y="26" width="14" height="22" fill="#3a3a44"/><rect x="46" y="16" width="14" height="32" fill="#7C6CFF"/><rect x="66" y="8" width="14" height="40" fill="#FF8A3D"/><text x="88" y="20" font-size="9" fill="#8B8B94">12-month</text><text x="88" y="32" font-size="9" fill="#8B8B94">rise</text></svg><b>1 &middot; Rank by the past year</b><p>At each month end, rank every stock by how much it rose over the last 12 months, leaving out the latest month (very short-term moves tend to reverse).</p></div>
@@ -713,7 +713,7 @@ function loadBot(){
 }
 
 // ---------------------------------------------------------------- momentum
-var MTF=12,mState={k:'rank',dir:1,f:'all'};
+var MTF=12,mState={k:'rank',dir:1,f:'hold'};
 function volLvl(v){return v==null?'':v<25?'Low':v<40?'Medium':'High'}
 var NEXTM={stays:['Keep','target'],joins:['Buy at swap','open'],leaves:['Sell at swap','stopped'],out:['Watch','watching']};
 function addTradingDays(iso,n){var p=String(iso).split('-'),d=new Date(Date.UTC(+p[0],+p[1]-1,+p[2]));while(n>0){d.setUTCDate(d.getUTCDate()+1);var w=d.getUTCDay();if(w!==0&&w!==6)n--}return d.toISOString().slice(0,10)}
@@ -722,7 +722,8 @@ function renderMom(){
   var M=DATA&&DATA.momentum,tb=$('#tMom tbody'),f=$('#momFoot');
   $('#mplH').innerHTML=stakeLabel()+' in';
   if(!M){tb.innerHTML='<tr><td colspan="14" class="empty"><b>Waiting for the next scan</b>The momentum list appears after the scanner runs.</td></tr>';f.innerHTML='';$('#mScore').innerHTML='';return}
-  var list=M.rows.filter(function(x){return mState.f==='all'||(mState.f==='hold'?x.hold:!x.hold)}),k=mState.k;
+  var f0=mState.f==='hold'&&!M.invested?'top':mState.f;  // in a cash month show what it would hold
+  var list=M.rows.filter(function(x){return f0==='all'||(f0==='top'?x.rank<=M.top:f0==='hold'?x.hold:!x.hold)}),k=mState.k;
   if(k!=='rank')list.sort(function(a,b){var A=a[k],B=b[k];if(k==='spark'){A=a.spark?a.spark[a.spark.length-1]/a.spark[0]:0;B=b.spark?b.spark[b.spark.length-1]/b.spark[0]:0}if(k==='hold'){A=a.hold?0:1;B=b.hold?0:1}if(A==null)return 1;if(B==null)return -1;return (A>B?1:A<B?-1:0)*mState.dir});
   tb.innerHTML=list.map(function(x){var nx=NEXTM[x.next]||['',''],lv=volLvl(x.vol);
     return '<tr><td class="rank">'+x.rank+'</td>'+coCell(x)+
