@@ -286,6 +286,33 @@ tfoot td:nth-child(2){background:var(--card2)}
 .bmeta .read{color:var(--or2);font-weight:600;text-decoration:none}
 .bpdf{font-size:.7rem;color:var(--body);border:1px solid var(--line);padding:2px 7px;text-decoration:none}
 .bpdf:hover{border-color:var(--or2);color:var(--ink)}
+/* weekly news video */
+.weekly{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:0;padding:0;margin-top:18px;overflow:hidden;--card:#14141A;background:linear-gradient(120deg,#16122a 0%,#121218 60%)}
+@media (max-width:980px){.weekly{grid-template-columns:minmax(0,1fr)}}
+.wkv{position:relative;aspect-ratio:16/9;background:#04081a}
+.wkv video{position:absolute;inset:0;width:100%;height:100%;display:block;background:#04081a}
+.wkph{position:absolute;inset:0;display:grid;place-content:center;text-align:center;gap:8px;background:radial-gradient(circle at 30% 35%,#132a6b,#04081a 70%);color:#9ff3ff}
+.wkph b{font-family:"Inter",sans-serif;font-weight:800;font-size:2.4rem;color:#fff;background:#e8173b;padding:6px 14px;justify-self:center}
+.wkph span{font-size:.9rem}
+.wkph[hidden]{display:none}
+.wki{padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0;border-left:1px solid var(--line2)}
+.wkt{display:flex;gap:12px;align-items:center}
+.vxl{display:inline-grid;place-items:center;width:46px;height:52px;background:#e8173b;color:#fff;font-weight:800;font-size:1.25rem;letter-spacing:-.04em;line-height:1;padding-top:4px;box-shadow:0 0 0 2px #fff}
+.vxl i{font-style:normal;display:block;background:#fff;color:#e8173b;font-size:.5rem;letter-spacing:.18em;width:100%;text-align:center;padding:2px 0}
+.wkt h2{margin:0;font-size:1.15rem;font-weight:700;letter-spacing:-.01em}
+.wkt p{margin:2px 0 0;color:var(--mute);font-size:.8rem}
+.wkb{display:flex;gap:6px;flex-wrap:wrap}
+.wkb span{font-size:.66rem;font-weight:600;letter-spacing:.04em;color:#9ff3ff;border:1px solid rgba(25,227,255,.35);padding:3px 8px}
+.wkb span:first-child{color:#ff7ab8;border-color:rgba(255,46,136,.45)}
+.wkc{list-style:none;margin:0;padding:0;display:grid;gap:0;max-height:150px;overflow:auto;scrollbar-width:thin;scrollbar-color:#2c2c33 transparent}
+.wkc button{width:100%;display:flex;gap:10px;align-items:center;border:0;background:none;padding:4px 8px;text-align:left;font-size:.8rem;color:var(--body)}
+.wkc button:hover,.wkc button.on{background:rgba(255,255,255,.05);color:var(--ink)}
+.wkc button b{font-variant-numeric:tabular-nums;color:#ffe600;font-weight:600;font-size:.74rem;min-width:2.6rem}
+.wkx summary{cursor:pointer;font-size:.8rem;color:var(--or2);font-weight:600}
+.wkx div{margin-top:8px;max-height:220px;overflow:auto;font-size:.8rem;color:var(--body);line-height:1.55}
+.wkx div p{margin:0 0 8px}
+.wkx div b{color:var(--ink)}
+.wkn{margin:auto 0 0;font-size:.72rem;color:var(--dim)}
 /* auto-trader */
 .bstat{display:inline-flex;align-items:center;gap:7px;font-size:.78rem;font-weight:600;padding:5px 10px;border:1px solid var(--line);color:var(--mute);margin-left:auto}
 .bstat::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
@@ -334,6 +361,7 @@ tfoot td:nth-child(2){background:var(--card2)}
     <div class="mh">Menu</div>
     <nav class="menu" aria-label="Sections">
       <a class="on" href="#top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Overview</a>
+      <a href="#weekly"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14"/><path d="M10 9.5v5l4.5-2.5z"/></svg>Weekly news</a>
       <a href="#day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v3M5.6 5.6l2.1 2.1M3 12h3M18.4 5.6l-2.1 2.1M21 12h-3"/><path d="M5 18h14M8 21h8"/><path d="M8 15a4 4 0 0 1 8 0"/></svg>Opening bell</a>
       <a href="#bot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="8" width="16" height="12"/><path d="M12 8V4M9 13v2M15 13v2M2 13v3M22 13v3"/></svg>Auto-trader</a>
       <a href="#mom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18h3V13H4zM10.5 18h3V9h-3zM17 18h3V5h-3z"/></svg>Momentum</a>
@@ -355,6 +383,17 @@ tfoot td:nth-child(2){background:var(--card2)}
         <span class="pill wip">WIP</span>
       </div>
     </header>
+
+    <section class="sec card weekly" id="weekly" aria-labelledby="wkH">
+      <div class="wkv"><video id="wkVideo" controls playsinline preload="none" crossorigin="anonymous"></video><div class="wkph" id="wkPh"><b>VX NEWS</b><span>The first Ventryx Weekly arrives on Sunday.</span></div></div>
+      <div class="wki">
+        <div class="wkt"><span class="vxl">VX<i>NEWS</i></span><div><h2 id="wkH">Ventryx Weekly</h2><p id="wkSub">Two-minute market round-up, every Sunday</p></div></div>
+        <div class="wkb"><span>AI presenter: Nova</span><span id="wkWhen">Updated every Sunday</span></div>
+        <ol class="wkc" id="wkChap"></ol>
+        <details class="wkx"><summary>Read the transcript</summary><div id="wkTx"></div></details>
+        <p class="wkn">Nova is an AI presenter and the script is generated from Ventryx&rsquo;s own data. Research, not financial advice.</p>
+      </div>
+    </section>
 
     <section class="kpis" aria-label="Summary">
       <div class="card hl"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v3M5.6 5.6l2.1 2.1M18.4 5.6l-2.1 2.1M5 18h14"/><path d="M8 15a4 4 0 0 1 8 0"/></svg>Opening bell, today</div><div class="v num"><span id="kR">&ndash;</span><small id="kRs" class="up"></small></div><svg class="mini" id="mR" viewBox="0 0 200 46" preserveAspectRatio="none" aria-hidden="true"></svg></div>
@@ -974,6 +1013,23 @@ function renderPoly(){
       '<small>Ends '+fmtD(e.end.slice(0,10))+' &middot; '+usd(e.vol24)+' traded in 24h</small></a>'}).join('')+'</div>';
 }
 function syncStake(v){['#riskAmt','#mStake','#cStake'].forEach(function(id){if($(id)&&$(id).value!==v)$(id).value=v});try{localStorage.setItem('vx.stake',v)}catch(e){}$('#plH').innerHTML=stakeLabel()+' in';perf();render('day');STRATS.forEach(function(x){x.all()})}
+
+// ---------------------------------------------------------------- Ventryx Weekly (news video, published every Sunday)
+var WEEKLY_URL='https://raw.githubusercontent.com/Shaun-Finch/Design/news-video/latest.json';
+function loadWeekly(){
+  fetch(WEEKLY_URL+'?d='+Math.floor(Date.now()/36e5),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(W){
+    var v=$('#wkVideo'),mm=function(s){s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+    if(v.dataset.src!==W.video){v.dataset.src=W.video;v.poster=W.poster;v.src=W.video;v.innerHTML='<track kind="captions" srclang="en" label="English" src="'+safeUrl(W.captions)+'">';}
+    $('#wkPh').hidden=true;
+    $('#wkSub').textContent='Week ending '+fmtD(W.weekEnding)+' · '+mm(W.duration);
+    $('#wkWhen').textContent='Published '+fmtD(String(W.published).slice(0,10))+' · new every Sunday';
+    $('#wkChap').innerHTML=(W.chapters||[]).map(function(c){return '<li><button type="button" data-t="'+(+c.start||0)+'"><b>'+mm(c.start)+'</b>'+esc(c.title)+'</button></li>'}).join('');
+    $('#wkTx').innerHTML=(W.transcript||[]).map(function(x){return '<p><b>'+esc(x.title)+'.</b> '+esc(x.text)+'</p>'}).join('');
+  }).catch(function(){$('#wkPh').hidden=false});
+}
+$('#wkChap').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var v=$('#wkVideo');v.currentTime=+b.dataset.t;v.play().catch(function(){})});
+$('#wkVideo').addEventListener('timeupdate',function(){var t=this.currentTime,bs=$$('#wkChap button'),on=null;bs.forEach(function(b){if(+b.dataset.t<=t+0.2)on=b});bs.forEach(function(b){b.classList.toggle('on',b===on)})});
+loadWeekly();
 headers();load();loadBot();
 (function(){ // free books shelf
   var B=[];try{B=JSON.parse($('#booksData').textContent)}catch(e){}

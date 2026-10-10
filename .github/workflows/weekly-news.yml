@@ -1,0 +1,69 @@
+name: Weekly news video
+
+# Every Sunday: write the Ventryx Weekly script from the latest data, voice it, render the animated
+# presenter video and publish it to the `news-video` branch, which ventryx.html plays via jsDelivr.
+# Free to run: Kokoro (open-weight text-to-speech) on the CPU, Chromium + ffmpeg for the video.
+# If the ANTHROPIC_API_KEY secret is set, Claude polishes the script (facts and numbers stay fixed).
+on:
+  schedule:
+    - cron: "7 8 * * 0"   # Sundays 08:07 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-news
+  cancel-in-progress: false
+
+jobs:
+  video:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: System packages
+        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg espeak-ng
+      - name: Python packages
+        run: |
+          pip install --quiet torch --index-url https://download.pytorch.org/whl/cpu
+          pip install --quiet "kokoro>=0.9" soundfile yfinance pandas numpy anthropic
+      - name: Browser
+        working-directory: scripts/news
+        run: |
+          npm init -y >/dev/null
+          npm install --silent --no-audit --no-fund playwright@1.48.2
+          npx playwright install --with-deps chromium
+      - name: Latest Ventryx data
+        run: |
+          mkdir -p md
+          git fetch --depth=1 origin market-data
+          git --work-tree=md checkout FETCH_HEAD -- markets.json fundamentals.json
+      - name: Write the script
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/news/weekly_news.py md out
+      - name: Voice it
+        run: python scripts/news/tts.py out
+      - name: Render the video
+        run: node scripts/news/render.cjs out
+      - name: Publish to news-video branch
+        run: |
+          WEEK=$(python3 -c "import json;print(json.load(open('out/episode.json'))['weekEnding'])")
+          FILE="weekly-$WEEK.mp4"
+          mkdir pub && cd pub
+          git init -q -b news-video
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp ../out/weekly.mp4 "$FILE"; cp ../out/poster.jpg ../out/captions.vtt ../out/episode.json .
+          git add -A && git commit -q -m "Ventryx Weekly $WEEK: media"
+          python3 ../scripts/news/manifest.py ../out "$(git rev-parse HEAD)" "$FILE" > latest.json
+          git add latest.json && git commit -q -m "Ventryx Weekly $WEEK: manifest"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:news-video
+          cat latest.json | head -c 600
