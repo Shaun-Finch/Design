@@ -129,17 +129,17 @@ def run_variant(feats, name):
                 width = (x["h"][:3].max() - x["l"][:3].min()) / x["o"][0] * 100
                 if width < 0.15 or width > 4:
                     continue
-                s = orb15(x, "far" if name == "orb15_widestop" else "mid")
+                s = orb15(x, "far" if "widestop" in name else "mid")
                 if s is None:
                     continue
                 if name == "orb15_gapdir" and (x["gap"] > 0) != (s[0] > 0):
                     continue
-                if name == "orb15_inplay" and (x["rv15"] < 1.5 or abs(x["gap"]) < 1):
+                if name.startswith("orb15_inplay") and (x["rv15"] < 1.5 or abs(x["gap"]) < 1):
                     continue
                 setups.append((quality(x, s[0]), x, s))
             setups.sort(key=lambda z: -z[0])
             scanner = name == "orb15_scanner"
-            for _, x, (side, entry, stop, target) in setups[:20]:
+            for _, x, (side, entry, stop, target) in setups[:5 if name.endswith("top5") else 20]:
                 r = sim(x["o"], x["h"], x["l"], x["c"], side, entry, stop, target, 3,
                         10 ** 6 if scanner else ENTRY_DEADLINE, len(x["c"]) - 1 if scanner else EXIT_BAR,
                         gap_fill=not scanner)
@@ -188,18 +188,75 @@ VARIANTS = {
     "orb15_widestop": "Bot rules, stop at the far side of the range instead of the middle",
     "orb15_gapdir": "Bot rules, only trades in the direction of the morning gap",
     "orb15_inplay": "Bot rules, only 'stocks in play': gap of 1%+ and opening volume 1.5x normal or more",
+    "orb15_inplay_widestop": "Stocks in play with the stop at the far side of the range",
+    "orb15_inplay_top5": "Stocks in play, only the 5 strongest setups each day",
     "orb5_inplay": "5-minute range on the 20 stocks with the heaviest first-5-minute volume vs normal; direction of the first candle; stop 10% of daily ATR; no target, held to 15:40",
     "orb5_inplay_top10": "Same as above, top 10 only",
 }
 
 
+def wide_universe():
+    """S&P 500 + S&P MidCap 400 + Nasdaq-100 constituents (from Wikipedia), deduplicated."""
+    import pandas as pd
+    pages = {"https://en.wikipedia.org/wiki/List_of_S%26P_500_companies": "Symbol",
+             "https://en.wikipedia.org/wiki/List_of_S%26P_400_companies": "Symbol",
+             "https://en.wikipedia.org/wiki/Nasdaq-100": "Ticker"}
+    out = list(bm.UNIVERSE)
+    for url, col in pages.items():
+        try:
+            import urllib.request
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Ventryx research backtest)"})
+            html = urllib.request.urlopen(req, timeout=30).read().decode("utf-8")
+            for tbl in pd.read_html(__import__("io").StringIO(html)):
+                if col in tbl.columns:
+                    out += [str(x).strip().replace(".", "-") for x in tbl[col].dropna()]
+                    break
+        except Exception as e:
+            print(f"universe page failed: {url}: {e}", file=sys.stderr)
+    out = list(dict.fromkeys(t for t in out if t and t.replace("-", "").isalnum()))
+    print(f"wide universe: {len(out)} tickers")
+    return out
+
+
+def fetch_chunked(tickers, size=150):
+    """Download in chunks so a large universe doesn't trip Yahoo's limits; returns {ticker: DataFrame}."""
+    import time
+    import yfinance as yf
+    intra, daily = {}, {}
+    for i in range(0, len(tickers), size):
+        chunk = tickers[i:i + size]
+        for period, interval, dest, adj in (("60d", "5m", intra, False), ("1y", "1d", daily, True)):
+            try:
+                df = yf.download(chunk, period=period, interval=interval, group_by="ticker", auto_adjust=adj,
+                                 prepost=False, threads=True, progress=False)
+            except Exception as e:
+                print(f"download failed for chunk {i}: {e}", file=sys.stderr)
+                continue
+            for t in chunk:
+                try:
+                    d = df[t].dropna()
+                except KeyError:
+                    continue
+                if len(d):
+                    dest[t] = d
+        time.sleep(2)
+    print(f"loaded {len(intra)} intraday / {len(daily)} daily")
+    return intra, daily
+
+
 def main():
     out_dir = sys.argv[1] if len(sys.argv) > 1 else "."
     os.makedirs(out_dir, exist_ok=True)
-    intra, daily = bm.fetch_prices("60d")
+    wide = os.environ.get("UNIVERSE_SET") == "wide"
+    if wide:
+        bm.UNIVERSE = wide_universe()
+        intra, daily = fetch_chunked(bm.UNIVERSE)
+    else:
+        intra, daily = bm.fetch_prices("60d")
     feats = features(bm.prepare_intraday(intra), daily)
     results = [dict(run_variant(feats, k), desc=v) for k, v in VARIANTS.items()]
     doc = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "costPct": COST_PCT,
+           "universeSet": "wide" if wide else "core", "loaded": len(daily),
            "stakeGBP": STAKE, "universe": len(bm.UNIVERSE), "sessions": len(feats), "variants": results}
     with open(os.path.join(out_dir, "backtest.json"), "w") as fh:
         json.dump(doc, fh, separators=(",", ":"))

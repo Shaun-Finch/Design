@@ -8,6 +8,11 @@ on:
       cost_pct:
         description: "Round-trip cost per trade in % (spread + slippage)"
         default: "0.05"
+      universe:
+        description: "core = Ventryx's ~100 large caps; wide = S&P 500 + MidCap 400 + Nasdaq-100"
+        type: choice
+        options: [core, wide]
+        default: core
 
 permissions:
   contents: write
@@ -15,24 +20,33 @@ permissions:
 jobs:
   backtest:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Install
-        run: pip install --quiet --upgrade yfinance pandas numpy
+        run: pip install --quiet --upgrade yfinance pandas numpy lxml
       - name: Backtest
         env:
           COST_PCT: ${{ inputs.cost_pct }}
+          UNIVERSE_SET: ${{ inputs.universe }}
         run: python scripts/backtest_orb.py out
       - name: Publish to research-data branch
+        env:
+          U: ${{ inputs.universe }}
         run: |
-          cd out
+          mkdir pub && cd pub
           git init -q -b research-data
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add backtest.json
-          git commit -q -m "Backtest $(date -u +%Y-%m-%dT%H:%MZ)"
+          # keep earlier results (e.g. the other universe), then add this run's
+          if git fetch -q --depth=1 "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" research-data; then
+            git checkout -q FETCH_HEAD -- . || true
+          fi
+          cp ../out/backtest.json "backtest-${U:-core}.json"
+          cp ../out/backtest.json backtest.json
+          git add -A
+          git commit -q -m "Backtest (${U:-core}) $(date -u +%Y-%m-%dT%H:%MZ)"
           git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:research-data
