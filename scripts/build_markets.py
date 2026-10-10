@@ -308,9 +308,26 @@ def long_ideas(daily, fund):
 
 # ---------------------------------------------------------------- momentum
 # Monthly momentum: at each month end, rank stocks by their return over the past 12 months
-# skipping the most recent month (252 and 21 trading days), hold the top 10 for the next month,
-# then re-rank. Tested on ~12 years of daily bars (scripts/backtest_swing.py) before going live.
-MOM_TOP = 10
+# skipping the most recent month (252 and 21 trading days), hold the top 5 for the next month,
+# then re-rank. Market filter: if the S&P 500 closed below its 200-day average at the month end,
+# hold cash for that month. This is "momentum5_filter" in scripts/backtest_swing.py, tested on
+# ~12 years of daily bars before going live.
+MOM_TOP = 5
+
+
+def fetch_spy():
+    import yfinance as yf
+    d = yf.download("SPY", period="3y", interval="1d", auto_adjust=True, progress=False)
+    c = d["Close"]
+    return (c.iloc[:, 0] if hasattr(c, "columns") else c).dropna()
+
+
+def _spy_ok(spy, day):
+    """True when the S&P 500 closed above its 200-day average on `day` (None = no filter)."""
+    if spy is None:
+        return True
+    s = spy[spy.index <= day]
+    return len(s) >= 200 and float(s.iloc[-1]) > float(s.tail(200).mean())
 
 
 def _month_ends(idx):
@@ -324,7 +341,11 @@ def _mom_scores(close, i):
     return (close.iloc[i - 21] / close.iloc[i - 252] - 1).dropna()
 
 
-def momentum_list(daily, fund):
+def _next_state(held, will_hold):
+    return ("stays" if will_hold else "leaves") if held else ("joins" if will_hold else "out")
+
+
+def momentum_list(daily, fund, spy=None):
     close = pd.DataFrame({t: d["Close"] for t, d in daily.items() if len(d) > 260}).sort_index()
     if close.shape[1] < 20 or len(close) < 300:
         return None
@@ -338,19 +359,24 @@ def momentum_list(daily, fund):
     score_now = _mom_scores(close, len(idx) - 1)
     if score_then is None:
         return None
-    hold = list(score_then.sort_values(ascending=False).index[:MOM_TOP])
+    invested = _spy_ok(spy, formed)       # market filter at the moment the holdings were picked
+    filter_now = _spy_ok(spy, last)
     next_rank = {t: r + 1 for r, t in enumerate(score_now.sort_values(ascending=False).index)} if score_now is not None else {}
     rows = []
-    for r, t in enumerate(score_then.sort_values(ascending=False).index[:2 * MOM_TOP]):
+    order = list(score_then.sort_values(ascending=False).index)
+    shown = order[:2 * MOM_TOP]
+    shown += [t for t, nr in sorted(next_rank.items(), key=lambda kv: kv[1]) if nr <= MOM_TOP and t not in shown and t in score_then]
+    for t in shown:  # top 10 at the last swap, plus anything now heading into the top 5
+        r = order.index(t)
         d, f = daily[t], fund.get(t, {})
         entry, price = float(close.at[formed, t]), float(close[t].iloc[-1])
         nr = next_rank.get(t)
         rows.append({
             "t": t, "name": f.get("name") or t, "exch": f.get("exch") or "", "mcap": f.get("mcap"),
-            "rank": r + 1, "hold": r < MOM_TOP, "mom": fnum(score_then[t] * 100, 1),
+            "rank": r + 1, "hold": invested and r < MOM_TOP, "mom": fnum(score_then[t] * 100, 1),
             "entry": fnum(entry), "price": fnum(price), "pct": fnum((price / entry - 1) * 100, 2),
             "chg": fnum((price / float(close[t].iloc[-2]) - 1) * 100), "rankNow": nr,
-            "next": ("stays" if r < MOM_TOP else "joins") if nr and nr <= MOM_TOP else ("leaves" if r < MOM_TOP else "out"),
+            "next": _next_state(invested and r < MOM_TOP, bool(filter_now and nr and nr <= MOM_TOP)),
             "vol": fnum(float(d["Close"].pct_change().tail(252).std() * math.sqrt(252) * 100), 1),
             "spark": spark(d["Close"].tail(252).iloc[::5], 52),
         })
@@ -363,6 +389,9 @@ def momentum_list(daily, fund):
         sc = _mom_scores(close, ia)
         if sc is None:
             continue
+        if not _spy_ok(spy, a):  # market filter: in cash this month
+            hist.append({"d": str(b.date()), "m": b.strftime("%Y-%m"), "n": 0, "pct": 0.0, "wins": 0, "cash": True})
+            continue
         picks = list(sc.sort_values(ascending=False).index[:MOM_TOP])
         rets = [(float(close.at[b, t]) / float(close.at[a, t]) - 1) * 100 for t in picks
                 if np.isfinite(close.at[a, t]) and np.isfinite(close.at[b, t])]
@@ -372,7 +401,9 @@ def momentum_list(daily, fund):
     nxt = (formed + pd.offsets.BMonthEnd(1))
     nxt = nxt if nxt > last else (last + pd.offsets.BMonthEnd(1))
     return {"formed": str(formed.date()), "asOf": str(last.date()), "nextRebalance": str(nxt.date()),
-            "top": MOM_TOP, "rows": rows, "history": hist}
+            "top": MOM_TOP, "invested": invested, "marketOkNow": filter_now,
+            "spyVs200": fnum((float(spy.iloc[-1]) / float(spy.tail(200).mean()) - 1) * 100, 1) if spy is not None and len(spy) >= 200 else None,
+            "rows": rows, "history": hist}
 
 
 # ---------------------------------------------------------------- data fetch
@@ -566,7 +597,12 @@ def main():
         hist = {}
     lng = long_ideas(daily, fund)
     try:
-        mom = momentum_list(daily, fund)
+        try:
+            spy = fetch_spy()
+        except Exception as e:
+            print(f"SPY download failed, momentum shown without the market filter: {e}", file=sys.stderr)
+            spy = None
+        mom = momentum_list(daily, fund, spy)
     except Exception as e:  # a new section must never block the scan
         print(f"momentum failed: {e}", file=sys.stderr)
         mom = None
