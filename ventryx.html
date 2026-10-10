@@ -77,7 +77,13 @@ button{font:inherit;color:inherit;cursor:pointer}
 @media (max-width:520px){.kpis{grid-template-columns:1fr}}
 
 /* sections */
-.sec{margin-top:18px}
+.sec{margin-top:26px}
+/* each strategy section has its own shade of grey; everything inside (tables, sticky column, steps, totals, calculator) follows it */
+#mom{--card:#232328;--card2:#2C2C32;--line2:rgba(255,255,255,.075);--line:rgba(255,255,255,.1)}
+#day{--card:#1B1B1F;--card2:#242429}
+#long{--card:#131316;--card2:#1B1B1F;--line2:rgba(255,255,255,.055)}
+#mom,#day,#long{background:var(--card)}
+.sec .sh h2 .stag{display:inline-block;font-size:.66rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);border:1px solid var(--line);padding:2px 6px;margin-right:8px;vertical-align:2px}
 .sh{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;padding:16px 18px 12px}
 .sh h2{margin:0;font-size:1.05rem;font-weight:600;letter-spacing:-.01em}
 .sh p{margin:3px 0 0;color:var(--mute);font-size:.82rem;max-width:72ch}
@@ -150,7 +156,7 @@ svg.sp{width:80px;height:26px;display:block;margin-left:auto}
 .chg th{font-size:.7rem;color:var(--dim);font-weight:500;border-top:0}
 .act{font-size:.7rem;font-weight:600;padding:2px 7px;border:1px solid var(--line)}
 .act.up{color:var(--up);border-color:rgba(61,214,140,.35)} .act.down{color:var(--dn);border-color:rgba(255,92,92,.35)} .act.init{color:var(--pu2);border-color:rgba(124,108,255,.4)}
-tr.more td{background:#141417;white-space:normal;text-align:left;padding:14px 18px}
+tr.more td{background:rgba(0,0,0,.28);white-space:normal;text-align:left;padding:14px 18px}
 .morein{position:sticky;left:18px;width:min(66rem,calc(100vw - 300px))}
 @media (max-width:860px){.morein{width:calc(100vw - 64px)}}
 .arts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(17rem,100%),1fr));gap:10px}
@@ -340,7 +346,7 @@ tfoot td:nth-child(2){background:var(--card2)}
 
     <section class="sec card tablecard" id="day" aria-labelledby="dayH">
       <div class="sh">
-        <div><h2 id="dayH">Opening bell &middot; breakout scanner</h2><p>A classic day-trading method: let the first 15 minutes settle, then trade the stocks that break out of that early range. Every setup is tracked live, so you can see which reached their target and which were stopped out.</p></div>
+        <div><h2 id="dayH"><span class="stag">Day trading</span>Opening bell &middot; breakout scanner</h2><p>A classic day-trading method: let the first 15 minutes settle, then trade the stocks that break out of that early range. Every setup is tracked live, so you can see which reached their target and which were stopped out.</p></div>
         <div class="seg" role="group" aria-label="Filter breakout setups"><button aria-pressed="true" data-f="all">All</button><button aria-pressed="false" data-f="long">Long</button><button aria-pressed="false" data-f="short">Short</button><button aria-pressed="false" data-f="live">Live now</button></div>
       </div>
       <div class="explain">
@@ -376,7 +382,7 @@ tfoot td:nth-child(2){background:var(--card2)}
 
     <section class="sec card tablecard" id="mom" aria-labelledby="momH">
       <div class="sh">
-        <div><h2 id="momH">Momentum &middot; monthly top 5</h2><p>The strongest-tested strategy so far. Once a month, hold the 5 stocks that have risen most over the past year, then swap them at the next month end. A market safety rule keeps you in cash when the whole market is falling. One decision a month: no day trading, no stop-losses.</p></div>
+        <div><h2 id="momH"><span class="stag">Monthly</span>Momentum &middot; monthly top 5</h2><p>The strongest-tested strategy so far. Once a month, hold the 5 stocks that have risen most over the past year, then swap them at the next month end. A market safety rule keeps you in cash when the whole market is falling. One decision a month: no day trading, no stop-losses.</p></div>
         <div class="seg mseg" role="group" aria-label="Filter momentum list"><button aria-pressed="true" data-mf="hold">Your 5 holdings</button><button aria-pressed="false" data-mf="next">Next in line</button><button aria-pressed="false" data-mf="all">All</button></div>
       </div>
       <div class="explain">
@@ -412,7 +418,7 @@ tfoot td:nth-child(2){background:var(--card2)}
 
     <section class="sec card tablecard" id="long" aria-labelledby="longH">
       <div class="sh">
-        <div><h2 id="longH">Long term &middot; 12-month ideas</h2><p>Ranked on the published Wall Street analyst consensus (rating, number of analysts, mean price target) plus profitability, growth, trend and volatility. The exit value is the analysts&rsquo; mean 12-month target. Click the <b>analysts</b> on any row to see how they rate it, their price targets and recent upgrades or downgrades, or open <b>Articles</b> to read the latest coverage.</p></div>
+        <div><h2 id="longH"><span class="stag">12 months</span>Long term &middot; 12-month ideas</h2><p>Ranked on the published Wall Street analyst consensus (rating, number of analysts, mean price target) plus profitability, growth, trend and volatility. The exit value is the analysts&rsquo; mean 12-month target. Click the <b>analysts</b> on any row to see how they rate it, their price targets and recent upgrades or downgrades, or open <b>Articles</b> to read the latest coverage.</p></div>
         <div class="seg" role="group" aria-label="Filter long-term ideas"><button aria-pressed="true" data-f="all">All</button><button aria-pressed="false" data-f="Low">Lower risk</button><button aria-pressed="false" data-f="Medium">Medium</button><button aria-pressed="false" data-f="High">Higher</button></div>
       </div>
       <div class="scroll"><table id="tLong"><thead><tr>
