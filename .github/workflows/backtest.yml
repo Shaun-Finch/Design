@@ -8,7 +8,7 @@ on:
       kind:
         description: "orb = opening-bell variants (60 days of 5-minute bars); swing = dip-buying and momentum (12 years of daily bars)"
         type: choice
-        options: [orb, swing]
+        options: [orb, swing, crypto]
         default: orb
       cost_pct:
         description: "Round-trip cost per trade in % (spread + slippage)"
@@ -39,7 +39,15 @@ jobs:
           UNIVERSE_SET: ${{ inputs.universe }}
           KIND: ${{ inputs.kind }}
         run: |
-          if [ "$KIND" = "swing" ]; then python scripts/backtest_swing.py out; else python scripts/backtest_orb.py out; fi
+          case "$KIND" in
+            swing) python scripts/backtest_swing.py out ;;
+            crypto) python scripts/backtest_crypto.py out ;;
+            *) python scripts/backtest_orb.py out ;;
+          esac
+      - name: Probe Polymarket API (crypto runs only)
+        if: ${{ inputs.kind == 'crypto' }}
+        continue-on-error: true
+        run: python scripts/probe_polymarket.py
       - name: Publish to research-data branch
         env:
           U: ${{ inputs.universe }}
@@ -55,6 +63,8 @@ jobs:
           fi
           if [ "$KIND" = "swing" ]; then
             cp ../out/backtest-swing.json backtest-swing.json
+          elif [ "$KIND" = "crypto" ]; then
+            cp ../out/backtest-crypto.json backtest-crypto.json
           else
             cp ../out/backtest.json "backtest-${U:-core}.json"
             cp ../out/backtest.json backtest.json
