@@ -173,6 +173,38 @@ tr.more td{background:#141417;white-space:normal;text-align:left;padding:14px 18
 .risk{margin-top:14px;border:1px solid rgba(245,181,68,.3);background:rgba(245,181,68,.05);border-radius:14px;padding:13px 16px;font-size:.8rem;color:var(--body)}
 .risk b{color:var(--amber)}
 .foot{color:var(--dim);font-size:.75rem;margin-top:22px}
+/* opening-bell totals and performance */
+tfoot td{background:var(--card2);color:var(--ink);font-weight:600;border-top:1px solid var(--line);border-bottom:0;white-space:nowrap}
+tfoot td.sum{text-align:left;font-weight:500;color:var(--mute)}
+tfoot td.sum b{color:var(--ink);font-weight:600}
+tfoot td:nth-child(2){background:var(--card2)}
+.perf{border-top:1px solid var(--line2);padding:16px 18px 18px}
+.perfh{display:flex;align-items:flex-end;gap:12px 16px;flex-wrap:wrap;margin-bottom:14px}
+.perfh h3{margin:0;font-size:.95rem;font-weight:600}
+.perfh p{margin:3px 0 0;color:var(--mute);font-size:.8rem}
+.perfh .seg{margin-left:auto}
+.riskin{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;color:var(--mute)}
+.riskin span{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--bg);padding:0 0 0 8px;color:var(--body)}
+.riskin input{width:4.2rem;border:0;background:none;color:var(--ink);font:inherit;font-size:.82rem;padding:5px 6px;font-variant-numeric:tabular-nums}
+.riskin input:focus{outline:none}
+.riskin span:focus-within{border-color:var(--or2)}
+.pgrid{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:18px;align-items:stretch}
+@media (max-width:860px){.pgrid{grid-template-columns:minmax(0,1fr)}}
+.pstats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line2);border:1px solid var(--line2);align-content:start}
+.pstats>div{background:var(--card);padding:10px 12px;min-width:0}
+.pstats .hero{grid-column:1/-1;padding:14px 12px}
+.pstats .k{font-size:.74rem}
+.pstats .v{font-size:1.05rem;margin-top:3px}
+.pstats .hero .v{font-size:1.9rem}
+.pstats .v small{color:var(--mute);font-weight:500}
+.pchart{position:relative;min-height:190px;border:1px solid var(--line2);background:var(--bg)}
+.pchart svg{display:block;width:100%;height:190px}
+.paxis{display:flex;justify-content:space-between;padding:4px 8px 6px;font-size:.7rem;color:var(--dim)}
+.ptip{position:absolute;top:8px;pointer-events:none;background:var(--card2);border:1px solid var(--line);padding:7px 9px;font-size:.74rem;color:var(--body);white-space:nowrap;z-index:2;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.ptip b{display:block;color:var(--ink);font-weight:600;margin-bottom:2px}
+.pnote{margin:10px 0 0;font-size:.74rem;color:var(--dim)}
+.tf button{white-space:nowrap}
+@media (max-width:560px){.perfh .seg{margin-left:0;width:100%;display:flex}.tf button{flex:1;padding:5px 2px}}
 /* auto-trader */
 .bstat{display:inline-flex;align-items:center;gap:7px;font-size:.78rem;font-weight:600;padding:5px 10px;border:1px solid var(--line);color:var(--mute);margin-left:auto}
 .bstat::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
@@ -260,7 +292,19 @@ tr.more td{background:#141417;white-space:normal;text-align:left;padding:14px 18
       <div class="score num" id="score"></div>
       <div class="scroll"><table id="tDay"><thead><tr>
         <th class="rank" data-k="i">#</th><th class="l" data-k="t">Company</th><th class="l" data-k="side">Signal</th><th class="l" data-k="status">Status</th><th data-k="r">Result</th><th data-k="gap">Gap</th><th data-k="orh">Opening range</th><th data-k="entry">Entry</th><th data-k="exit">Exit target</th><th data-k="stop">Stop</th><th data-k="gain">Profit</th><th data-k="risk">Risk</th><th data-k="trig">Triggered</th><th data-k="price">Price</th><th data-k="chg">Today</th><th data-k="mcap">Market value</th><th data-k="relvol">Open vol.</th><th data-k="conf">Setup score</th><th data-k="spark">Today</th><th class="l" data-k="where">Where to trade</th>
-      </tr></thead><tbody></tbody></table></div>
+      </tr></thead><tbody></tbody><tfoot id="dayFoot"></tfoot></table></div>
+      <div class="perf" id="perf" aria-labelledby="perfH">
+        <div class="perfh">
+          <div><h3 id="perfH">Overall profit</h3><p id="perfSub">How the strategy has done if every triggered setup was taken at the same risk.</p></div>
+          <div class="seg tf" role="group" aria-label="Time frame"><button aria-pressed="false" data-tf="1">Today</button><button aria-pressed="true" data-tf="5">1 week</button><button aria-pressed="false" data-tf="21">1 month</button><button aria-pressed="false" data-tf="63">3 months</button><button aria-pressed="false" data-tf="0">All</button></div>
+          <label class="riskin">Risk per trade <span>&pound;<input id="riskAmt" type="number" min="1" max="100000" step="1" value="10" inputmode="numeric"></span></label>
+        </div>
+        <div class="pgrid">
+          <div class="pstats num" id="pStats"></div>
+          <div class="pchart"><svg id="pChart" viewBox="0 0 600 190" preserveAspectRatio="none" role="img" aria-label="Running profit"></svg><div class="ptip" id="pTip" hidden></div><div class="paxis" id="pAxis"></div></div>
+        </div>
+        <p class="pnote" id="pNote"></p>
+      </div>
     </section>
 
     <section class="sec card tablecard" id="bot" aria-labelledby="botH">
@@ -398,6 +442,70 @@ function render(which){
   tb.innerHTML=list.map(function(x){var key=[x.side,x.status,x.price].join('|');next[x.t]=key;var ch=had&&seen[x.t]!==key;
     return '<tr'+(ch?' class="flash"':'')+'>'+(which==='day'?dayRow(x):longRow(x))+'</tr>'+(which==='long'&&open[x.t]?moreRow(x):'')}).join('');
   prevKeys[which]=next;
+  if(which==='day')dayFoot(list);
+}
+function riskAmt(){var v=Number($('#riskAmt').value);return v>0?v:10}
+function gbp(r,sign){if(r==null)return '&ndash;';var v=r*riskAmt();return (sign&&v>0?'+':'')+(v<0?'&minus;':'')+'&pound;'+Math.abs(v).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function signCls(v){return v>0?'up':v<0?'dn':''}
+function dayFoot(list){
+  var f=$('#dayFoot');if(!DATA||!list.length){f.innerHTML='';return}
+  var tr=list.filter(function(x){return x.status!=='watching'}),R=tr.reduce(function(a,x){return a+(x.r||0)},0),tg=tr.filter(function(x){return x.status==='target'}).length,sp=tr.filter(function(x){return x.status==='stopped'}).length;
+  var shown=list.length<(DATA.day||[]).length?' (filtered)':'';
+  f.innerHTML='<tr><td class="rank"></td><td class="l">Total'+shown+'</td><td class="l">'+tr.length+' triggered</td><td class="l"><span class="up">'+tg+' hit</span> &middot; <span class="dn">'+sp+' stopped</span></td><td>'+rfmt(tr.length?R:null)+'</td>'+
+    '<td class="sum" colspan="15"><b class="'+signCls(R)+'">'+gbp(tr.length?R:null,1)+'</b> at '+gbp(1)+' risk per trade &middot; scroll down for other time frames</td></tr>';
+}
+var TF=5;
+function sessions(){
+  var d=DATA||{},sc=d.scorecard||{},h=(d.history||[]).filter(function(x){return x.d!==sc.session});
+  var tr=(d.day||[]).filter(function(x){return x.status!=='watching'});  // today straight from the table rows, so it always matches the totals row
+  if(sc.session&&tr.length)h.push({d:sc.session,triggered:tr.length,targets:tr.filter(function(x){return x.status==='target'}).length,stops:tr.filter(function(x){return x.status==='stopped'}).length,wins:tr.filter(function(x){return (x.r||0)>0}).length,totalR:tr.reduce(function(a,x){return a+(x.r||0)},0),live:d.market==='open'});
+  return h.sort(function(a,b){return a.d<b.d?-1:1});
+}
+function fmtD(iso){var p=String(iso).split('-');return new Date(Date.UTC(+p[0],+p[1]-1,+p[2])).toLocaleDateString('en-GB',{day:'numeric',month:'short',timeZone:'UTC'})}
+function perf(){
+  if(!DATA)return;
+  var all=sessions(),win=TF?all.slice(-TF):all,pts=[];
+  var isToday=TF===1,today=all[all.length-1];
+  if(isToday){ // running total trade by trade through the session
+    var trs=(DATA.day||[]).filter(function(x){return x.status!=='watching'}).sort(function(a,b){return (a.trig||'')<(b.trig||'')?-1:1}),run=0;
+    pts=trs.map(function(x){run+=x.r||0;return {label:x.t+(x.trig?' · '+x.trig+' NY':''),step:x.r||0,cum:run,stepName:'Trade'}});
+  }else{var run2=0;pts=win.map(function(x){run2+=x.totalR||0;return {label:fmtD(x.d)+(x.live?' (live)':''),step:x.totalR||0,cum:run2,stepName:'Day'}})}
+  var n=win.reduce(function(a,x){return a+(x.triggered||0)},0),R=win.reduce(function(a,x){return a+(x.totalR||0)},0),w=win.reduce(function(a,x){return a+(x.wins||0)},0);
+  var upDays=win.filter(function(x){return (x.totalR||0)>0}).length,best=null,worst=null;
+  win.forEach(function(x){if(best==null||x.totalR>best.totalR)best=x;if(worst==null||x.totalR<worst.totalR)worst=x});
+  var cell=function(k,v){return '<div><div class="k">'+k+'</div><div class="v">'+v+'</div></div>'};
+  $('#pStats').innerHTML='<div class="hero"><div class="k">Profit, '+(isToday?(today&&today.live?'today so far':'last session'):TF?'last '+win.length+' session'+(win.length===1?'':'s'):'all '+win.length+' sessions')+'</div><div class="v"><span class="'+signCls(R)+'">'+gbp(n?R:null,1)+'</span><small>'+(n?(R>0?'+':'')+R.toFixed(1)+'R':'')+'</small></div></div>'+
+    cell('Trades',n)+cell('Win rate',n?Math.round(w/n*100)+'%':'&ndash;')+
+    cell('Avg per trade',n?'<span class="'+signCls(R)+'">'+gbp(R/n,1)+'</span>':'&ndash;')+
+    (isToday?cell('Targets / stops',today?(today.targets||0)+' / '+(today.stops||0):'&ndash;'):cell('Profitable days',win.length?upDays+' of '+win.length:'&ndash;'))+
+    (isToday?'':cell('Best day',best?'<span class="'+signCls(best.totalR)+'">'+gbp(best.totalR,1)+'</span> <small>'+fmtD(best.d)+'</small>':'&ndash;')+cell('Worst day',worst?'<span class="'+signCls(worst.totalR)+'">'+gbp(worst.totalR,1)+'</span> <small>'+fmtD(worst.d)+'</small>':'&ndash;'));
+  pchart(pts);
+  var first=all[0];
+  $('#perfSub').textContent=isToday?'Running total through the session, trade by trade, if every triggered setup was taken.':'Running total, day by day, if every triggered setup was taken at the same risk.';
+  $('#pNote').innerHTML='Paper results from the scanner, before fees, spreads and slippage, so real trading would do worse. 1R = the amount risked per trade. '+(first?'Tracking since '+fmtD(first.d)+'; the first weeks were rebuilt from Yahoo&rsquo;s 5-minute prices using the same rules. ':'')+'Real-money results are in the Auto-trader panel.';
+}
+function pchart(pts){
+  var svg=$('#pChart'),tip=$('#pTip'),ax=$('#pAxis');
+  if(!pts.length){svg.innerHTML='<text x="300" y="100" text-anchor="middle" font-size="13" fill="#8B8B94">No trades in this time frame yet</text>';ax.innerHTML='';svg.onmousemove=svg.onmouseleave=null;tip.hidden=true;return}
+  var vals=[0].concat(pts.map(function(p){return p.cum})),mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),pad=(mx-mn)*0.12||1;mn-=pad;mx+=pad;
+  var W=600,H=190,L=8,Rr=8,T=12,B=12,X=function(i){return L+(i/(pts.length))*(W-L-Rr)},Y=function(v){return T+(1-(v-mn)/(mx-mn))*(H-T-B)};
+  var xy=[[X(0),Y(0)]].concat(pts.map(function(p,i){return [X(i+1),Y(p.cum)]}));
+  var d='M'+xy.map(function(p){return p[0].toFixed(1)+' '+p[1].toFixed(1)}).join(' L'),y0=Y(0).toFixed(1),last=pts[pts.length-1].cum,c=last>=0?'#3DD68C':'#FF5C5C';
+  svg.innerHTML='<defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+c+'" stop-opacity=".22"/><stop offset="1" stop-color="'+c+'" stop-opacity="0"/></linearGradient></defs>'+
+    '<line x1="0" x2="'+W+'" y1="'+y0+'" y2="'+y0+'" stroke="#5C5C66" stroke-dasharray="3 4" stroke-width="1" vector-effect="non-scaling-stroke"/>'+
+    '<path d="'+d+' L'+xy[xy.length-1][0].toFixed(1)+' '+y0+' L'+L+' '+y0+'Z" fill="url(#pg)"/>'+
+    '<path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'+
+    '<line id="pX" y1="0" y2="'+H+'" stroke="#8B8B94" stroke-width="1" vector-effect="non-scaling-stroke" visibility="hidden"/>';
+  ax.innerHTML='<span>Start</span><span>&pound;0 = dashed line</span><span>'+esc(pts[pts.length-1].label.split(' · ')[0])+'</span>';
+  var dot=document.createElement('div');dot.style.cssText='position:absolute;width:10px;height:10px;border-radius:50%!important;background:'+c+';border:2px solid #0E0E10;transform:translate(-50%,-50%);pointer-events:none;display:none';svg.parentNode.appendChild(dot);
+  if(svg._dot)svg._dot.remove();svg._dot=dot;
+  svg.onmousemove=function(e){var r=svg.getBoundingClientRect(),fx=(e.clientX-r.left)/r.width*W,i=Math.max(1,Math.min(pts.length,Math.round((fx-L)/(W-L-Rr)*pts.length))),p=pts[i-1];
+    var px_=X(i)/W*r.width,py=Y(p.cum)/H*r.height;$('#pX').setAttribute('x1',X(i));$('#pX').setAttribute('x2',X(i));$('#pX').setAttribute('visibility','visible');
+    dot.style.display='block';dot.style.left=px_+'px';dot.style.top=py+'px';
+    tip.hidden=false;tip.innerHTML='<b>'+esc(p.label)+'</b>'+p.stepName+': <span class="'+signCls(p.step)+'">'+gbp(p.step,1)+'</span> ('+(p.step>0?'+':'')+p.step.toFixed(1)+'R)<br>Running total: <span class="'+signCls(p.cum)+'">'+gbp(p.cum,1)+'</span>';
+    var tw=tip.offsetWidth;tip.style.left=Math.max(4,Math.min(r.width-tw-4,px_+12))+'px'};
+  svg.onmouseleave=function(){tip.hidden=true;dot.style.display='none';$('#pX').setAttribute('visibility','hidden')};
+  svg.setAttribute('aria-label','Running profit: '+(last>=0?'up ':'down ')+gbp(Math.abs(last)).replace(/&[a-z]+;/g,'£')+' over '+pts.length+(pts[0].stepName==='Day'?' sessions':' trades'));
 }
 function headers(){
   $$('table').forEach(function(tbl){
@@ -408,7 +516,7 @@ function headers(){
       th.addEventListener('click',go);th.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
     });
   });
-  $$('.seg').forEach(function(seg){
+  $$('.sh .seg').forEach(function(seg){
     var which=seg.closest('section').id==='day'?'day':'long';
     seg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;$$('button',seg).forEach(function(x){x.setAttribute('aria-pressed',x===b)});state[which].f=b.getAttribute('data-f');render(which)});
   });
@@ -462,7 +570,7 @@ function load(){
     if(!d||!d.day)throw new Error('bad data');
     var fresh=!DATA||DATA.generated!==d.generated;DATA=d;
     if(fresh){render('day');render('long');}
-    summary();
+    summary();perf();
   }).catch(function(){
     if(!DATA){render('day');render('long');$('#sub').textContent='First scan pending. Data appears here after the scanner runs.';}
   });
@@ -519,6 +627,10 @@ function loadBot(){
   return fetch(BOT_URL+'?m='+Math.floor(Date.now()/60000),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(function(b){BOT=b;renderBot()}).catch(function(){if(!BOT)renderBot()});
 }
 headers();load();loadBot();
+try{var sr=localStorage.getItem('vx.risk');if(sr)$('#riskAmt').value=sr;var stf=localStorage.getItem('vx.tf');if(stf!=null)TF=+stf}catch(e){}
+$$('.tf button').forEach(function(b){b.setAttribute('aria-pressed',+b.getAttribute('data-tf')===TF)});
+$('.tf').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;TF=+b.getAttribute('data-tf');$$('.tf button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});try{localStorage.setItem('vx.tf',TF)}catch(e){}perf()});
+$('#riskAmt').addEventListener('input',function(){try{localStorage.setItem('vx.risk',$('#riskAmt').value)}catch(e){}perf();render('day')});
 setInterval(function(){if(!document.hidden){load();loadBot()}},60000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden){load();loadBot()}});
 })();

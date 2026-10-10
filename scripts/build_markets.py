@@ -123,8 +123,9 @@ def first_break(after, orh, orl):
     return None
 
 
-def day_setups(intra, daily, fund, market_open):
-    rows, session = [], None
+def prepare_intraday(intra):
+    """Per ticker: the 5-minute bars tagged with their New York session date, and the sessions that have a full opening range."""
+    prep = {}
     for t in UNIVERSE:
         try:
             df = intra[t].dropna()
@@ -134,29 +135,40 @@ def day_setups(intra, daily, fund, market_open):
             continue
         df = df.copy()
         df["d"] = df.index.tz_convert("America/New_York").date if df.index.tz is not None else df.index.date
-        days = [d for d, g in df.groupby("d") if len(g) > OR_BARS]
-        if len(days) < 2:
+        prep[t] = (df, [d for d, g in df.groupby("d") if len(g) > OR_BARS])
+    return prep
+
+
+def day_setups(prep, daily, fund, market_open, session=None):
+    """Opening-bell setups for one session (default: the latest). Levels and sizing use only data known by the
+    end of the opening range, and nothing about how a trade turned out, so past sessions replay as they ran."""
+    rows, sess = [], None
+    for t, (df, days) in prep.items():
+        today = session or (days[-1] if days else None)
+        if today not in days or days.index(today) < 1:
             continue
-        today = days[-1]  # latest session with a complete opening range
         td, prev = df[df["d"] == today], df[df["d"] < today]
-        session = str(today)
+        sess = str(today)
         orr, after = td.iloc[:OR_BARS], td.iloc[OR_BARS:]
         orh, orl = float(orr["High"].max()), float(orr["Low"].min())
         open_px, price, prev_close = float(td["Open"].iloc[0]), float(td["Close"].iloc[-1]), float(prev["Close"].iloc[-1])
         gap = (open_px / prev_close - 1) * 100
-        a5 = float(atr(df).iloc[-1]) or price * 0.002
+        a5 = float(atr(df.loc[:orr.index[-1]]).iloc[-1]) or open_px * 0.002  # as of the end of the opening range
         width_pct = (orh - orl) / open_px * 100
         if width_pct < 0.15 or width_pct > 4:
             continue  # range too tight to trade or too wide to risk
         d = daily.get(t)
-        if d is None or len(d) < 25:
+        if d is None:
+            continue
+        d = d[d.index.date < today]  # daily history up to the previous close
+        if len(d) < 25:
             continue
         if float((d["Close"] * d["Volume"]).tail(20).mean()) < 50e6:
             continue
         datr_pct = float(atr(d).iloc[-1] / d["Close"].iloc[-1] * 100)
-        sma20 = float(d["Close"].iloc[:-1].tail(20).mean())
-        # opening-range volume vs the same 15 minutes on prior days
-        prior = [g["Volume"].iloc[:OR_BARS].sum() for _, g in prev.groupby("d") if len(g) >= OR_BARS]
+        sma20 = float(d["Close"].tail(20).mean())
+        # opening-range volume vs the same 15 minutes on the previous (up to) 4 sessions
+        prior = [g["Volume"].iloc[:OR_BARS].sum() for _, g in prev.groupby("d") if len(g) >= OR_BARS][-4:]
         or_relvol = float(orr["Volume"].sum() / np.mean(prior)) if prior and np.mean(prior) > 0 else 1.0
 
         side = first_break(after, orh, orl)
@@ -169,10 +181,10 @@ def day_setups(intra, daily, fund, market_open):
         stop = entry - risk if long else entry + risk
         target = entry + 2 * risk if long else entry - 2 * risk
         status, r_mult, trig, done = orb_outcome(after, side, entry, stop, target)
-        if status == "open" and not market_open:
+        if status == "open" and not (market_open and session is None):
             status = "closed"  # still open at the bell: closed flat at the last price
 
-        trend_ok = (d["Close"].iloc[-1] > sma20) == long
+        trend_ok = (open_px > sma20) == long
         quality = (0.45 * math.tanh(abs(gap) / 1.5) + 0.35 * max(0.0, math.tanh(math.log(max(or_relvol, 0.05))))
                    + 0.20 * (1 if trend_ok else 0) + (0.1 if (gap > 0) == long else 0))
         f = fund.get(t, {})
@@ -192,13 +204,42 @@ def day_setups(intra, daily, fund, market_open):
     rows = rows[:TOP_N]
     for x in rows:
         x.pop("_q")
-    card = {"session": session, "triggered": sum(1 for x in rows if x["status"] != "watching"),
+    card = {"session": sess, "triggered": sum(1 for x in rows if x["status"] != "watching"),
             "targets": sum(1 for x in rows if x["status"] == "target"),
             "stops": sum(1 for x in rows if x["status"] == "stopped"),
             "open": sum(1 for x in rows if x["status"] in ("open", "closed")),
             "watching": sum(1 for x in rows if x["status"] == "watching"),
+            "wins": sum(1 for x in rows if x["status"] != "watching" and (x["r"] or 0) > 0),
             "totalR": fnum(sum(x["r"] or 0 for x in rows if x["status"] != "watching"), 2)}
     return rows, card
+
+
+def update_history(out_dir, prep, daily, fund, market_open):
+    """Keep one scorecard per finished session in orb_history.json, so performance can be read over any time frame.
+    Sessions already recorded are never recomputed; the first run backfills everything in the intraday window."""
+    path = os.path.join(out_dir, "orb_history.json")
+    try:
+        with open(path) as fh:
+            hist = json.load(fh)
+    except (OSError, ValueError):
+        hist = {}
+    sessions = sorted({d for _, days in prep.values() for d in days})
+    ny_today = datetime.now(timezone.utc).astimezone(__import__("zoneinfo").ZoneInfo("America/New_York")).date()
+    added = 0
+    for i, sess in enumerate(sessions):
+        key = str(sess)
+        if key in hist or i < 2 or (sess == ny_today and market_open):
+            continue  # already recorded, too little history before it, or still trading
+        _, c = day_setups(prep, daily, fund, False, session=sess)
+        if c["session"] is None:
+            continue
+        hist[key] = {k: c[k] for k in ("triggered", "targets", "stops", "open", "wins", "totalR")}
+        added += 1
+    hist = dict(sorted(hist.items())[-400:])
+    with open(path, "w") as fh:
+        json.dump(hist, fh, separators=(",", ":"))
+    print(f"history: {len(hist)} sessions ({added} added)")
+    return hist
 
 
 # ---------------------------------------------------------------- long term
@@ -264,9 +305,9 @@ def long_ideas(daily, fund):
 
 
 # ---------------------------------------------------------------- data fetch
-def fetch_prices():
+def fetch_prices(intra_period="5d"):
     import yfinance as yf
-    intra = yf.download(UNIVERSE, period="5d", interval="5m", group_by="ticker", auto_adjust=False,
+    intra = yf.download(UNIVERSE, period=intra_period, interval="5m", group_by="ticker", auto_adjust=False,
                         prepost=False, threads=True, progress=False)
     daily_all = yf.download(UNIVERSE, period="1y", interval="1d", group_by="ticker", auto_adjust=True,
                             threads=True, progress=False)
@@ -437,9 +478,16 @@ def main():
         fund = fetch_fundamentals(fund)
         with open(cache_path, "w") as fh:
             json.dump({"_at": now.isoformat(), **fund}, fh, separators=(",", ":"))
-    intra, daily = fetch_prices()
+    backfill = not os.path.exists(os.path.join(out_dir, "orb_history.json")) or os.environ.get("BACKFILL_HISTORY")
+    intra, daily = fetch_prices("60d" if backfill else "5d")  # Yahoo keeps about 60 days of 5-minute bars
     status = market_status(now)
-    day, card = day_setups(intra, daily, fund, status == "open")
+    prep = prepare_intraday(intra)
+    day, card = day_setups(prep, daily, fund, status == "open")
+    try:
+        hist = update_history(out_dir, prep, daily, fund, status == "open")
+    except Exception as e:  # history is a nice-to-have: never block the live scan
+        print(f"history update failed: {e}", file=sys.stderr)
+        hist = {}
     lng = long_ideas(daily, fund)
     for x in lng:
         x["news"] = news_for(x["t"])
@@ -454,6 +502,7 @@ def main():
         "breadth": fnum(sum(1 for t, d in daily.items() if len(d) >= 200 and d["Close"].iloc[-1] > d["Close"].tail(200).mean()) / max(1, len(daily)) * 100, 0),
         "source": "Yahoo Finance via yfinance (may be delayed)",
         "day": day, "long": lng,
+        "history": [{"d": k, **v} for k, v in hist.items()],
     }
     with open(os.path.join(out_dir, "markets.json"), "w") as fh:
         json.dump(doc, fh, separators=(",", ":"))
