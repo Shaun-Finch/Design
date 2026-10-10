@@ -5,6 +5,11 @@ name: Backtest opening-bell variants
 on:
   workflow_dispatch:
     inputs:
+      kind:
+        description: "orb = opening-bell variants (60 days of 5-minute bars); swing = dip-buying and momentum (12 years of daily bars)"
+        type: choice
+        options: [orb, swing]
+        default: orb
       cost_pct:
         description: "Round-trip cost per trade in % (spread + slippage)"
         default: "0.05"
@@ -32,10 +37,13 @@ jobs:
         env:
           COST_PCT: ${{ inputs.cost_pct }}
           UNIVERSE_SET: ${{ inputs.universe }}
-        run: python scripts/backtest_orb.py out
+          KIND: ${{ inputs.kind }}
+        run: |
+          if [ "$KIND" = "swing" ]; then python scripts/backtest_swing.py out; else python scripts/backtest_orb.py out; fi
       - name: Publish to research-data branch
         env:
           U: ${{ inputs.universe }}
+          KIND: ${{ inputs.kind }}
         run: |
           mkdir pub && cd pub
           git init -q -b research-data
@@ -45,8 +53,12 @@ jobs:
           if git fetch -q --depth=1 "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" research-data; then
             git checkout -q FETCH_HEAD -- . || true
           fi
-          cp ../out/backtest.json "backtest-${U:-core}.json"
-          cp ../out/backtest.json backtest.json
+          if [ "$KIND" = "swing" ]; then
+            cp ../out/backtest-swing.json backtest-swing.json
+          else
+            cp ../out/backtest.json "backtest-${U:-core}.json"
+            cp ../out/backtest.json backtest.json
+          fi
           git add -A
-          git commit -q -m "Backtest (${U:-core}) $(date -u +%Y-%m-%dT%H:%MZ)"
+          git commit -q -m "Backtest (${KIND:-orb}, ${U:-core}) $(date -u +%Y-%m-%dT%H:%MZ)"
           git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:research-data
