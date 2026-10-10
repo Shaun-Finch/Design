@@ -115,9 +115,26 @@ def earnings_next_week(fund, start, end, top=40):
 
 
 def short_name(n):
-    for suf in (", Inc.", " Inc.", " Corporation", " Corp.", " Incorporated", " Holdings", " Company", " plc", " N.V.", " Ltd", ", Inc"):
-        n = n.replace(suf, "")
-    return n.strip().rstrip(",")
+    n = str(n).split(" - ")[0]            # "ASML Holding N.V. - New York Registry" -> "ASML Holding N.V."
+    for suf in (", Inc.", " Inc.", " Corporation", " Corp.", " Incorporated", " Holdings", " Holding", " Company",
+                " & Co.", " & Co", " plc", " N.V.", " Ltd", ", Inc", " Group", " Platforms", " Technologies"):
+        if n.endswith(suf) or suf in (" N.V.", " & Co.", ", Inc."):
+            n = n.replace(suf, "")
+    n = n.strip().rstrip(",&").strip()
+    return {"JP Morgan Chase": "JPMorgan Chase", "Alphabet": "Alphabet", "Meta": "Meta"}.get(n, n)
+
+
+CLICKBAIT = __import__("re").compile(r"(\bvs\.?\b|\?|^(better|best|top|should|is it|why i|buy|sell|the \d+)|\b\d+ (stocks?|reasons?)\b|millionaire|forever|no-brainer|motley)", __import__("re").I)
+
+
+def pick_headline(items, name, ticker):
+    """A news headline about the company, skipping listicles and buy/sell opinion pieces."""
+    key = name.split()[0].lower()
+    for it in items:
+        t = (it.get("title") or "").strip()
+        if t and (key in t.lower() or ticker.lower() in t.lower()) and not CLICKBAIT.search(t):
+            return it
+    return None
 
 
 def build(md_dir):
@@ -141,9 +158,9 @@ def build(md_dir):
     news = []
     for x in (up[:1] + down[:1]):
         try:
-            n = bm.news_for(x["t"], 1)
-            if n:
-                news.append({"t": x["t"], "name": x["name"], "pct": x["pct"], "title": n[0].get("title", ""), "src": n[0].get("src", "")})
+            h = pick_headline(bm.news_for(x["t"], 8) or [], x["name"], x["t"])
+            if h:
+                news.append({"t": x["t"], "name": x["name"], "pct": x["pct"], "title": h.get("title", ""), "src": h.get("src", "")})
         except Exception:
             pass
     mom, cry, poly = mk.get("momentum") or {}, mk.get("crypto") or {}, mk.get("polymarket") or []
