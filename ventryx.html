@@ -207,6 +207,14 @@ tfoot td:nth-child(2){background:var(--card2)}
 .tf button,.tfm button{white-space:nowrap}
 .evid{margin-top:12px;border:1px solid rgba(124,108,255,.3);background:rgba(124,108,255,.06);padding:11px 14px;font-size:.78rem;color:var(--body);line-height:1.55}
 .evid b{color:var(--pu2)}
+.howto{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:0 18px 14px}
+@media (max-width:860px){.howto{grid-template-columns:minmax(0,1fr)}}
+.howto>div{border:1px solid var(--line2);background:var(--bg);padding:12px 14px;font-size:.79rem;color:var(--mute);line-height:1.55}
+.howto h4{margin:0 0 6px;font-size:.84rem;color:var(--ink);font-weight:600;display:flex;align-items:center;gap:8px}
+.howto h4 i{font-style:normal;font-size:.68rem;font-weight:600;color:#0E0E10;background:var(--or2);padding:1px 6px}
+.howto b{color:var(--ink);font-weight:600}
+.howto .big{display:block;font-size:1rem;color:var(--ink);font-weight:600;margin:2px 0 4px}
+.howto .warn{color:var(--amber)}
 @media (max-width:560px){.perfh .seg{margin-left:0;width:100%;display:flex}.tf button,.tfm button{flex:1;padding:5px 2px}}
 /* free books */
 .shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(168px,100%),1fr));gap:22px 18px;padding:4px 18px 22px}
@@ -351,21 +359,22 @@ tfoot td:nth-child(2){background:var(--card2)}
 
     <section class="sec card tablecard" id="mom" aria-labelledby="momH">
       <div class="sh">
-        <div><h2 id="momH">Momentum &middot; monthly top 10</h2><p>The strongest-tested strategy so far. Once a month, hold the 10 stocks that have risen most over the past year, then swap them at the next month end. No day trading and no stop-losses: one decision a month.</p></div>
+        <div><h2 id="momH">Momentum &middot; monthly top 5</h2><p>The strongest-tested strategy so far. Once a month, hold the 5 stocks that have risen most over the past year, then swap them at the next month end. A market safety rule keeps you in cash when the whole market is falling. One decision a month: no day trading, no stop-losses.</p></div>
         <div class="seg mseg" role="group" aria-label="Filter momentum list"><button aria-pressed="true" data-mf="all">All</button><button aria-pressed="false" data-mf="hold">Holdings</button><button aria-pressed="false" data-mf="next">Next in line</button></div>
       </div>
       <div class="explain">
         <div class="step"><svg viewBox="0 0 150 54" aria-hidden="true"><rect x="6" y="34" width="14" height="14" fill="#3a3a44"/><rect x="26" y="26" width="14" height="22" fill="#3a3a44"/><rect x="46" y="16" width="14" height="32" fill="#7C6CFF"/><rect x="66" y="8" width="14" height="40" fill="#FF8A3D"/><text x="88" y="20" font-size="9" fill="#8B8B94">12-month</text><text x="88" y="32" font-size="9" fill="#8B8B94">rise</text></svg><b>1 &middot; Rank by the past year</b><p>At each month end, rank every stock by how much it rose over the last 12 months, leaving out the latest month (very short-term moves tend to reverse).</p></div>
-        <div class="step"><svg viewBox="0 0 150 54" aria-hidden="true"><g fill="#FF8A3D"><rect x="6" y="10" width="10" height="10"/><rect x="20" y="10" width="10" height="10"/><rect x="34" y="10" width="10" height="10"/><rect x="48" y="10" width="10" height="10"/><rect x="62" y="10" width="10" height="10"/><rect x="6" y="24" width="10" height="10"/><rect x="20" y="24" width="10" height="10"/><rect x="34" y="24" width="10" height="10"/><rect x="48" y="24" width="10" height="10"/><rect x="62" y="24" width="10" height="10"/></g><text x="80" y="27" font-size="9" fill="#8B8B94">top 10, equal &pound;</text></svg><b>2 &middot; Hold the top 10</b><p>Put the same amount into each of the 10 strongest and hold them for the whole month. The table shows how each is doing since it was picked.</p></div>
-        <div class="step"><svg viewBox="0 0 150 54" aria-hidden="true"><path d="M10 30a24 24 0 0 1 44-10" fill="none" stroke="#3DD68C" stroke-width="2"/><path d="M54 12v9h-9" fill="none" stroke="#3DD68C" stroke-width="2"/><path d="M58 34a24 24 0 0 1-44 10" fill="none" stroke="#FF5C5C" stroke-width="2"/><text x="72" y="24" font-size="9" fill="#3DD68C">joins</text><text x="72" y="40" font-size="9" fill="#FF5C5C">leaves</text></svg><b>3 &middot; Swap monthly</b><p>At the next month end, re-rank. Sell the ones that dropped out of the top 10 and buy the newcomers. &ldquo;Next month&rdquo; shows who looks set to stay, join or leave.</p></div>
+        <div class="step"><svg viewBox="0 0 150 54" aria-hidden="true"><g fill="#FF8A3D"><rect x="6" y="18" width="12" height="12"/><rect x="22" y="18" width="12" height="12"/><rect x="38" y="18" width="12" height="12"/><rect x="54" y="18" width="12" height="12"/><rect x="70" y="18" width="12" height="12"/></g><text x="90" y="28" font-size="9" fill="#8B8B94">top 5, equal &pound;</text></svg><b>2 &middot; Hold the top 5, if the market is healthy</b><p>Put the same amount into each of the 5 strongest and hold them all month. If the S&amp;P 500 ended the month below its 200-day average, hold cash instead.</p></div>
+        <div class="step"><svg viewBox="0 0 150 54" aria-hidden="true"><path d="M10 30a24 24 0 0 1 44-10" fill="none" stroke="#3DD68C" stroke-width="2"/><path d="M54 12v9h-9" fill="none" stroke="#3DD68C" stroke-width="2"/><path d="M58 34a24 24 0 0 1-44 10" fill="none" stroke="#FF5C5C" stroke-width="2"/><text x="72" y="24" font-size="9" fill="#3DD68C">buy newcomers</text><text x="72" y="40" font-size="9" fill="#FF5C5C">sell drop-outs</text></svg><b>3 &middot; Swap monthly</b><p>At the next month end, re-rank. Sell the ones that dropped out of the top 5 and buy the newcomers. &ldquo;At the swap&rdquo; shows what to do with each.</p></div>
       </div>
+      <div class="howto" id="mHow"></div>
       <div class="score num" id="mScore"></div>
       <div class="scroll"><table id="tMom"><thead><tr>
-        <th class="rank" data-mk="rank">#</th><th class="l" data-mk="t">Company</th><th class="l" data-mk="hold">Signal</th><th class="l" data-mk="rankNow">Next month</th><th data-mk="pct">This month</th><th data-mk="pct" id="mplH">&pound;10 in</th><th data-mk="entry">Bought at</th><th data-mk="price">Price</th><th data-mk="chg">Today</th><th data-mk="mom">12-month rise</th><th data-mk="vol">Risk</th><th data-mk="mcap">Market value</th><th data-mk="spark">1 year</th><th class="l" data-mk="where">Where to trade</th>
+        <th class="rank" data-mk="rank">#</th><th class="l" data-mk="t">Company</th><th class="l" data-mk="hold">Signal</th><th class="l" data-mk="rankNow">At the swap</th><th data-mk="pct">This month</th><th data-mk="pct" id="mplH">&pound;10 in</th><th data-mk="entry">Bought at</th><th data-mk="price">Price</th><th data-mk="chg">Today</th><th data-mk="mom">12-month rise</th><th data-mk="vol">Risk</th><th data-mk="mcap">Market value</th><th data-mk="spark">1 year</th><th class="l" data-mk="where">Where to trade</th>
       </tr></thead><tbody></tbody><tfoot id="momFoot"></tfoot></table></div>
       <div class="perf" id="mperf" aria-labelledby="mPerfH">
         <div class="perfh">
-          <div><h3 id="mPerfH">Overall profit</h3><p id="mPerfSub">What you would have made putting the same amount into each of the 10 holdings every month.</p></div>
+          <div><h3 id="mPerfH">Overall profit</h3><p id="mPerfSub">What you would have made putting the same amount into each of the 5 holdings every month.</p></div>
           <div class="seg tfm" role="group" aria-label="Time frame"><button aria-pressed="false" data-tfm="1" title="The month in progress">This month</button><button aria-pressed="false" data-tfm="3" title="The last 3 months">3 months</button><button aria-pressed="false" data-tfm="6" title="The last 6 months">6 months</button><button aria-pressed="true" data-tfm="12" title="The last 12 months">1 year</button><button aria-pressed="false" data-tfm="0" title="Every month we can replay">All</button></div>
           <label class="riskin">Amount per trade <span>&pound;<input id="mStake" type="number" min="1" max="1000000" step="1" value="10" inputmode="numeric"></span></label>
         </div>
@@ -373,7 +382,7 @@ tfoot td:nth-child(2){background:var(--card2)}
           <div class="pstats num" id="mStats"></div>
           <div class="pchart"><svg id="mChart" viewBox="0 0 600 190" preserveAspectRatio="none" role="img" aria-label="Running profit"></svg><div class="ptip" id="mTip" hidden></div><div class="paxis" id="mAxis"></div></div>
         </div>
-        <div class="evid"><b>Why this one:</b> tested on 12 years of daily prices for the same ~100 stocks (Oct 2014 &ndash; Oct 2026): 1,320 monthly holdings averaged <span class="up">+3.0%</span> each, <span class="up">1.2 points better</span> than simply holding the average stock over the same month, and it passed the luck check (t&nbsp;=&nbsp;2.1, ahead in both halves of the period). Momentum is also one of the most-studied effects in finance research. It still has bad stretches: in 2021 it trailed the average stock, and momentum can fall sharply when markets turn.</div>
+        <div class="evid"><b>Why this one:</b> tested on 12 years of daily prices for the same ~100 stocks (Oct 2014 &ndash; Oct 2026): 545 monthly holdings averaged <span class="up">+3.4%</span> each, <span class="up">1.9 points better</span> than simply holding the average stock over the same month, and it passed the luck check (t&nbsp;=&nbsp;2.5, ahead by a similar amount in both halves of the period). Momentum is one of the most-studied effects in finance research, and the market rule kept it out of the worst sell-offs. Five stocks is concentrated: single months can swing hard, and momentum can fall sharply when the market turns.</div>
         <p class="pnote" id="mNote"></p>
       </div>
     </section>
@@ -706,7 +715,9 @@ function loadBot(){
 // ---------------------------------------------------------------- momentum
 var MTF=12,mState={k:'rank',dir:1,f:'all'};
 function volLvl(v){return v==null?'':v<25?'Low':v<40?'Medium':'High'}
-var NEXTM={stays:['Stays','target'],joins:['Joins','open'],leaves:['Leaves','stopped'],out:['Not yet','watching']};
+var NEXTM={stays:['Keep','target'],joins:['Buy at swap','open'],leaves:['Sell at swap','stopped'],out:['Watch','watching']};
+function addTradingDays(iso,n){var p=String(iso).split('-'),d=new Date(Date.UTC(+p[0],+p[1]-1,+p[2]));while(n>0){d.setUTCDate(d.getUTCDate()+1);var w=d.getUTCDay();if(w!==0&&w!==6)n--}return d.toISOString().slice(0,10)}
+function fmtDay(iso){var p=String(iso).split('-');return new Date(Date.UTC(+p[0],+p[1]-1,+p[2])).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'})}
 function renderMom(){
   var M=DATA&&DATA.momentum,tb=$('#tMom tbody'),f=$('#momFoot');
   $('#mplH').innerHTML=stakeLabel()+' in';
@@ -719,17 +730,29 @@ function renderMom(){
       '<td class="l"><span class="st '+nx[1]+'">'+nx[0]+'</span>'+(x.rankNow?' <small style="color:var(--dim)">now #'+x.rankNow+'</small>':'')+'</td>'+
       '<td>'+pct(x.pct)+'</td><td>'+(x.hold?'<span class="'+signCls(x.pct)+'">'+gbp(x.pct,1)+'</span>':'<span style="color:var(--dim)" title="Not held this month">&ndash;</span>')+'</td>'+
       '<td>'+px(x.entry)+'</td><td class="ink">'+px(x.price)+'</td><td>'+pct(x.chg)+'</td><td>'+pct(x.mom,1)+'</td>'+
-      '<td><span class="lvl '+lv+'">'+lv+'</span></td><td>'+money(x.mcap)+'</td><td>'+spark(x.spark)+'</td><td class="l where">'+exch(x.exch)+' &middot; shares</td></tr>';
+      '<td><span class="lvl '+lv+'">'+lv+'</span></td><td>'+money(x.mcap)+'</td><td>'+spark(x.spark)+'</td><td class="l where">'+exch(x.exch)+' &middot; shares (fractional OK)</td></tr>';
   }).join('');
   var h=M.rows.filter(function(x){return x.hold}),P=h.reduce(function(a,x){return a+(x.pct||0)},0),up=h.filter(function(x){return x.pct>0}).length;
-  f.innerHTML='<tr><td class="rank"></td><td class="l">This month</td><td class="l">'+h.length+' holdings</td><td class="l"><span class="up">'+up+' up</span> &middot; <span class="dn">'+(h.length-up)+' down</span></td><td>'+pct(h.length?P/h.length:null)+'</td><td><b class="'+signCls(P)+'">'+gbp(P,1)+'</b></td>'+
+  howTo(M);
+  if(!M.invested){f.innerHTML='<tr><td class="rank"></td><td class="l">This month</td><td class="l">In cash</td><td class="l" colspan="11" style="text-align:left;font-weight:500;color:var(--mute)">The S&amp;P 500 ended last month below its 200-day average, so the strategy holds cash until the next swap. The list shows what it would hold.</td></tr>'}
+  else f.innerHTML='<tr><td class="rank"></td><td class="l">This month</td><td class="l">'+h.length+' holdings</td><td class="l"><span class="up">'+up+' up</span> &middot; <span class="dn">'+(h.length-up)+' down</span></td><td>'+pct(h.length?P/h.length:null)+'</td><td><b class="'+signCls(P)+'">'+gbp(P,1)+'</b></td>'+
     '<td class="sum" colspan="8">With '+stakeLabel()+' in each of the '+h.length+' holdings since '+fmtD(M.formed)+' ('+gbp(100*h.length)+' in total), you&rsquo;d be '+(P>=0?'up':'down')+' <b class="'+signCls(P)+'">'+gbp(Math.abs(P))+'</b> before fees</td></tr>';
-  $('#mScore').innerHTML='<span>Picked at the close on <b>'+fmtD(M.formed)+'</b></span><span>Prices as of <b>'+fmtD(M.asOf)+'</b></span><span>Next swap around <b>'+fmtD(M.nextRebalance)+'</b></span><span>Set to leave <b class="dn">'+M.rows.filter(function(x){return x.next==='leaves'}).length+'</b></span><span>Set to join <b class="up">'+M.rows.filter(function(x){return x.next==='joins'}).length+'</b></span>';
+  $('#mScore').innerHTML='<span>Market rule <b class="'+(M.marketOkNow?'up':'dn')+'">'+(M.marketOkNow?'healthy':'falling: cash')+'</b>'+(M.spyVs200!=null?' <small>(S&amp;P 500 '+(M.spyVs200>0?'+':'')+M.spyVs200+'% vs 200-day avg)</small>':'')+'</span><span>Picked at the close on <b>'+fmtD(M.formed)+'</b></span><span>Prices as of <b>'+fmtD(M.asOf)+'</b></span><span>Next swap around <b>'+fmtD(M.nextRebalance)+'</b></span><span>Set to leave <b class="dn">'+M.rows.filter(function(x){return x.next==='leaves'}).length+'</b></span><span>Set to join <b class="up">'+M.rows.filter(function(x){return x.next==='joins'}).length+'</b></span>';
+}
+
+function howTo(M){
+  var swap=M.nextRebalance,buy=addTradingDays(swap,1),amt=stake(),tot=amt*M.top,lv=M.rows.filter(function(x){return x.hold&&x.next==='leaves'}).map(function(x){return x.t}),jn=M.rows.filter(function(x){return x.next==='joins'}).map(function(x){return x.t}),cur=M.rows.filter(function(x){return x.hold}).map(function(x){return x.t});
+  var gb=function(v){return '&pound;'+(v%1?v.toFixed(2):v)};
+  $('#mHow').innerHTML=
+   '<div><h4><i>1</i>Where to buy</h4>US shares, listed on <b>NASDAQ or NYSE</b> (each row says which). Buy them as <b>ordinary shares</b>, not CFDs or spread bets, through an FCA-authorised UK broker that offers <b>fractional US shares</b> so small amounts work: for example Trading 212, Freetrade, Interactive Brokers or eToro. Use a <b>Stocks &amp; Shares ISA</b> if you can, so gains are tax-free; sign the broker&rsquo;s <b>W-8BEN</b> form; and check the <b>currency-conversion fee</b>, which on small amounts is usually the biggest cost.</div>'+
+   '<div><h4><i>2</i>When to buy</h4>'+(M.invested?'<span class="big">Now holding: '+esc(cur.join(', '))+'</span>Starting mid-month? Buy these '+M.top+' now with '+gb(amt)+' each ('+gb(tot)+' in total), or wait for the swap so you start in step.<br>':'<span class="big warn">In cash this month</span>The market rule is off, so the strategy isn&rsquo;t holding anything until the next swap.<br>')+
+     'Next swap: after the US close on <b>'+fmtDay(swap)+'</b> (usually 21:00 UK). Place your buys for the next US trading day, <b>'+fmtDay(buy)+'</b>, once the market opens (usually 14:30 UK).</div>'+
+   '<div><h4><i>3</i>When to cash out</h4><b>On the swap day only.</b> Sell anything marked <b class="dn">Sell at swap</b>'+(lv.length?' (now: '+esc(lv.join(', '))+')':'')+' and buy anything marked <b class="up">Buy at swap</b>'+(jn.length?' (now: '+esc(jn.join(', '))+')':'')+'; keep the rest. '+(M.marketOkNow?'If the S&amp;P 500 ends the month below its 200-day average, sell all '+M.top+' and hold cash.':'The market rule is currently off: unless it recovers by the swap, stay in cash.')+' There is no price target or stop-loss: the monthly re-rank is the exit. To end the test, sell everything at a swap.</div>';
 }
 function momMonths(){
   var M=DATA&&DATA.momentum;if(!M)return [];
   var h=(M.history||[]).slice(),cur=M.rows.filter(function(x){return x.hold});
-  h.push({d:M.asOf,m:'now',n:cur.length,pct:cur.reduce(function(a,x){return a+(x.pct||0)},0),wins:cur.filter(function(x){return x.pct>0}).length,live:true});
+  h.push({d:M.asOf,m:'now',n:cur.length,pct:cur.reduce(function(a,x){return a+(x.pct||0)},0),wins:cur.filter(function(x){return x.pct>0}).length,live:true,cash:!M.invested});
   return h;
 }
 function fmtM(iso){var p=String(iso).split('-');return new Date(Date.UTC(+p[0],+p[1]-1,+p[2])).toLocaleDateString('en-GB',{month:'short',year:'numeric',timeZone:'UTC'})}
@@ -737,18 +760,18 @@ function momPerf(){
   var M=DATA&&DATA.momentum;if(!M){$('#mStats').innerHTML='';pchart([],'m');return}
   var all=momMonths(),win=MTF?all.slice(-MTF):all,isNow=MTF===1,pts=[],run=0;
   if(isNow){M.rows.filter(function(x){return x.hold}).forEach(function(x){run+=x.pct||0;pts.push({label:x.t+' · since '+fmtD(M.formed),step:x.pct||0,cum:run,stepName:'Holding'})})}
-  else win.forEach(function(x){run+=x.pct||0;pts.push({label:(x.live?'This month so far':fmtM(x.d)),step:x.pct||0,cum:run,stepName:'Month'})});
+  else win.forEach(function(x){run+=x.pct||0;pts.push({label:(x.live?'This month so far':fmtM(x.d))+(x.cash?' (in cash)':''),step:x.pct||0,cum:run,stepName:'Month'})});
   var n=win.reduce(function(a,x){return a+(x.n||0)},0),R=win.reduce(function(a,x){return a+(x.pct||0)},0),w=win.reduce(function(a,x){return a+(x.wins||0)},0);
   var done=win.filter(function(x){return !x.live}),upM=done.filter(function(x){return x.pct>0}).length,best=null,worst=null;
-  done.forEach(function(x){if(best==null||x.pct>best.pct)best=x;if(worst==null||x.pct<worst.pct)worst=x});
+  done.filter(function(x){return !x.cash}).forEach(function(x){if(best==null||x.pct>best.pct)best=x;if(worst==null||x.pct<worst.pct)worst=x});
   var cell=function(k,v){return '<div><div class="k">'+k+'</div><div class="v">'+v+'</div></div>'};
   $('#mStats').innerHTML='<div class="hero"><div class="k">With '+stakeLabel()+' in each holding, '+(isNow?'this month so far':MTF?'last '+win.length+' months':'all '+win.length+' months')+'</div><div class="v"><span class="'+signCls(R)+'">'+gbp(n?R:null,1)+'</span><small>'+(n?'from '+gbp(100*n)+' invested':'')+'</small></div></div>'+
     cell('Holdings',n)+cell('Win rate',n?Math.round(w/n*100)+'%':'&ndash;')+
     cell('Avg per holding',n?'<span class="'+signCls(R)+'">'+gbp(R/n,1)+'</span>':'&ndash;')+
-    (isNow?cell('Up / down',(win[0]?win[0].wins:0)+' / '+(win[0]?win[0].n-win[0].wins:0)):cell('Profitable months',done.length?upM+' of '+done.length:'&ndash;'))+
+    (isNow?cell('Up / down',(win[0]&&!win[0].cash?win[0].wins+' / '+(win[0].n-win[0].wins):'In cash')):cell('Profitable months',done.length?upM+' of '+(done.length-done.filter(function(x){return x.cash}).length)+(done.some(function(x){return x.cash})?' <small>'+done.filter(function(x){return x.cash}).length+' in cash</small>':''):'&ndash;'))+
     (isNow?'':cell('Best month',best?'<span class="'+signCls(best.pct)+'">'+gbp(best.pct,1)+'</span> <small>'+fmtM(best.d)+'</small>':'&ndash;')+cell('Worst month',worst?'<span class="'+signCls(worst.pct)+'">'+gbp(worst.pct,1)+'</span> <small>'+fmtM(worst.d)+'</small>':'&ndash;'));
   pchart(pts,'m');
-  $('#mPerfSub').textContent=isNow?'This month so far, holding by holding, with the same amount in each of the 10.':'Running total, month by month, with the same amount in each of the 10 holdings every month.';
+  $('#mPerfSub').textContent=isNow?'This month so far, holding by holding, with the same amount in each of the 5.':'Running total, month by month, with the same amount in each of the 5 holdings every month (£0 in months spent in cash).';
   var first=all[0];
   $('#mNote').innerHTML='Each month&rsquo;s holdings are rebuilt from past prices with the same rule'+(first?', back to '+fmtM(first.d):'')+'. Past results, not a prediction; before fees and currency conversion. A month here is one calendar month; holdings change at the last trading day&rsquo;s close.';
 }
