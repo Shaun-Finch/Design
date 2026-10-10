@@ -1,0 +1,493 @@
+{
+ "weekEnding": "2026-10-09",
+ "published": "2026-10-10T14:44Z",
+ "writer": "template",
+ "strip": "Weekly round-up · week ending Friday 9 October",
+ "clock": "SAT 10 OCT · 14:44 UTC",
+ "ticker": [
+  {
+   "t": "S&P 500",
+   "pct": 1.2
+  },
+  {
+   "t": "NASDAQ",
+   "pct": 0.2
+  },
+  {
+   "t": "Dow Jones",
+   "pct": 0.9
+  },
+  {
+   "t": "FTSE 100",
+   "pct": 0.9
+  },
+  {
+   "t": "Bitcoin",
+   "pct": -2.2
+  },
+  {
+   "t": "SHOP",
+   "pct": 12.9
+  },
+  {
+   "t": "PLTR",
+   "pct": 10.8
+  },
+  {
+   "t": "INTU",
+   "pct": 8.2
+  },
+  {
+   "t": "ARM",
+   "pct": -13.4
+  },
+  {
+   "t": "INTC",
+   "pct": -12.3
+  },
+  {
+   "t": "DE",
+   "pct": -9.6
+  }
+ ],
+ "facts": {
+  "weekEnding": "2026-10-09",
+  "indices": [
+   {
+    "name": "S&P 500",
+    "sym": "^GSPC",
+    "pct": 1.2,
+    "last": 7811.54
+   },
+   {
+    "name": "Nasdaq 100",
+    "sym": "^NDX",
+    "pct": 0.2,
+    "last": 30883.15
+   },
+   {
+    "name": "Dow Jones",
+    "sym": "^DJI",
+    "pct": 0.9,
+    "last": 51654.95
+   },
+   {
+    "name": "FTSE 100",
+    "sym": "^FTSE",
+    "pct": 0.9,
+    "last": 10552.1
+   },
+   {
+    "name": "Bitcoin",
+    "sym": "BTC-USD",
+    "pct": -2.2,
+    "last": 82941.15
+   }
+  ],
+  "risers": [
+   {
+    "t": "SHOP",
+    "pct": 12.9,
+    "name": "Shopify"
+   },
+   {
+    "t": "PLTR",
+    "pct": 10.8,
+    "name": "Palantir"
+   },
+   {
+    "t": "INTU",
+    "pct": 8.2,
+    "name": "Intuit"
+   }
+  ],
+  "fallers": [
+   {
+    "t": "ARM",
+    "pct": -13.4,
+    "name": "Arm Holdings"
+   },
+   {
+    "t": "INTC",
+    "pct": -12.3,
+    "name": "Intel"
+   },
+   {
+    "t": "DE",
+    "pct": -9.6,
+    "name": "Deere"
+   }
+  ],
+  "headlines": [
+   {
+    "t": "SHOP",
+    "name": "Shopify",
+    "pct": 12.9,
+    "title": "1 Stat That Makes Shopify Hard to Ignore Right Now",
+    "src": "Yahoo Finance"
+   },
+   {
+    "t": "ARM",
+    "name": "Arm Holdings",
+    "pct": -13.4,
+    "title": "Qualcomm Waits on a Jury: Arm Has a $443 Million Customer on the Line",
+    "src": "Yahoo Finance"
+   }
+  ],
+  "momentum": {
+   "holdings": [
+    "MU",
+    "DELL",
+    "AMD",
+    "INTC",
+    "MRVL"
+   ],
+   "invested": true,
+   "names": [
+    "Micron Technology",
+    "Dell",
+    "Advanced Micro Devices",
+    "Intel",
+    "Marvell Technology"
+   ],
+   "nextSwap": "2026-10-30",
+   "leaving": [],
+   "joining": []
+  },
+  "crypto": {
+   "holdings": [
+    "ZEC",
+    "UNI",
+    "NEAR",
+    "ARB",
+    "LINK"
+   ],
+   "invested": true,
+   "names": [
+    "Zcash",
+    "Uniswap",
+    "NEAR Protocol",
+    "Arbitrum",
+    "Chainlink"
+   ],
+   "btcVs200dayPct": 15.0,
+   "nextSwap": "2026-10-31"
+  },
+  "earningsNextWeek": [
+   {
+    "t": "JPM",
+    "name": "JP Morgan Chase & Co.",
+    "date": "2026-10-13"
+   },
+   {
+    "t": "JNJ",
+    "name": "Johnson & Johnson",
+    "date": "2026-10-13"
+   },
+   {
+    "t": "UNH",
+    "name": "UnitedHealth Group Incorporated",
+    "date": "2026-10-13"
+   },
+   {
+    "t": "ASML",
+    "name": "ASML Holding N.V. - New York Re",
+    "date": "2026-10-14"
+   },
+   {
+    "t": "BAC",
+    "name": "Bank of America Corporation",
+    "date": "2026-10-14"
+   },
+   {
+    "t": "MS",
+    "name": "Morgan Stanley",
+    "date": "2026-10-14"
+   }
+  ],
+  "predictionMarkets": [
+   {
+    "title": "What price will Bitcoin hit in October?",
+    "odds": [
+     {
+      "label": "↑ 87,500",
+      "q": "Will Bitcoin reach $87,500 in October?",
+      "yes": 47.5,
+      "outcome": "Yes"
+     },
+     {
+      "label": "↓ 77,500",
+      "q": "Will Bitcoin dip to $77,500 in October?",
+      "yes": 39.5,
+      "outcome": "Yes"
+     }
+    ]
+   },
+   {
+    "title": "What price will Bitcoin hit October 5-11?",
+    "odds": [
+     {
+      "label": "↓ 82,000",
+      "q": "Will Bitcoin dip to $82,000 October 5-11?",
+      "yes": 37.0,
+      "outcome": "Yes"
+     },
+     {
+      "label": "↑ 84,000",
+      "q": "Will Bitcoin reach $84,000 October 5-11?",
+      "yes": 28.5,
+      "outcome": "Yes"
+     }
+    ]
+   }
+  ],
+  "nextWeek": {
+   "from": "2026-10-12",
+   "to": "2026-10-16"
+  }
+ },
+ "segments": [
+  {
+   "id": "intro",
+   "title": "Weekly round-up",
+   "tag": "WEEKLY",
+   "bar": "Your two-minute market round-up",
+   "text": "Hello, I'm Nova, the Ventryx AI presenter. This is your weekly market round-up for the week ending Friday 9 October.",
+   "graphic": {
+    "type": "intro",
+    "big": "Weekly round-up",
+    "sub": "Week ending Friday 9 October"
+   },
+   "start": 0.0,
+   "end": 8.425
+  },
+  {
+   "id": "markets",
+   "title": "Markets this week",
+   "tag": "WEEKLY",
+   "bar": "Stocks higher on the week",
+   "text": "Here's how the markets closed the week. The S&P 500 finished up 1.2 per cent. The tech-heavy Nasdaq 100 was up 0.2 per cent, and here in London the FTSE 100 ended up 0.9 per cent. Bitcoin was down 2.2 per cent over seven days.",
+   "graphic": {
+    "type": "indices",
+    "rows": [
+     {
+      "name": "S&P 500",
+      "sym": "^GSPC",
+      "pct": 1.2,
+      "last": 7811.54
+     },
+     {
+      "name": "Nasdaq 100",
+      "sym": "^NDX",
+      "pct": 0.2,
+      "last": 30883.15
+     },
+     {
+      "name": "Dow Jones",
+      "sym": "^DJI",
+      "pct": 0.9,
+      "last": 51654.95
+     },
+     {
+      "name": "FTSE 100",
+      "sym": "^FTSE",
+      "pct": 0.9,
+      "last": 10552.1
+     },
+     {
+      "name": "Bitcoin",
+      "sym": "BTC-USD",
+      "pct": -2.2,
+      "last": 82941.15
+     }
+    ]
+   },
+   "start": 8.875,
+   "end": 26.275
+  },
+  {
+   "id": "movers",
+   "title": "Biggest movers",
+   "tag": "STOCKS",
+   "bar": "Shopify leads, Arm Holdings lags",
+   "text": "Among the hundred big US stocks we track, the top riser was Shopify, up 12.9 per cent, followed by Palantir and Intuit. At the other end, Arm Holdings fell 13.4 per cent, with Intel and Deere also lower.",
+   "graphic": {
+    "type": "movers",
+    "up": [
+     {
+      "t": "SHOP",
+      "pct": 12.9,
+      "name": "Shopify"
+     },
+     {
+      "t": "PLTR",
+      "pct": 10.8,
+      "name": "Palantir"
+     },
+     {
+      "t": "INTU",
+      "pct": 8.2,
+      "name": "Intuit"
+     }
+    ],
+    "down": [
+     {
+      "t": "ARM",
+      "pct": -13.4,
+      "name": "Arm Holdings"
+     },
+     {
+      "t": "INTC",
+      "pct": -12.3,
+      "name": "Intel"
+     },
+     {
+      "t": "DE",
+      "pct": -9.6,
+      "name": "Deere"
+     }
+    ]
+   },
+   "start": 26.725,
+   "end": 41.025
+  },
+  {
+   "id": "news_SHOP",
+   "title": "In the headlines",
+   "tag": "NEWS",
+   "bar": "Shopify up 12.9%",
+   "text": "In the news on Shopify, Yahoo Finance ran the headline: 1 Stat That Makes Shopify Hard to Ignore Right Now.",
+   "graphic": {
+    "type": "headline",
+    "t": "SHOP",
+    "pct": 12.9,
+    "title": "1 Stat That Makes Shopify Hard to Ignore Right Now",
+    "src": "Yahoo Finance"
+   },
+   "start": 41.475,
+   "end": 48.475
+  },
+  {
+   "id": "news_ARM",
+   "title": "In the headlines",
+   "tag": "NEWS",
+   "bar": "Arm Holdings down 13.4%",
+   "text": "In the news on Arm Holdings, Yahoo Finance ran the headline: Qualcomm Waits on a Jury: Arm Has a $443 Million Customer on the Line.",
+   "graphic": {
+    "type": "headline",
+    "t": "ARM",
+    "pct": -13.4,
+    "title": "Qualcomm Waits on a Jury: Arm Has a $443 Million Customer on the Line",
+    "src": "Yahoo Finance"
+   },
+   "start": 48.925,
+   "end": 58.575
+  },
+  {
+   "id": "momentum",
+   "title": "Momentum top 5",
+   "tag": "VENTRYX",
+   "bar": "The monthly top 5",
+   "text": "On the Ventryx momentum list, this month's five are Micron Technology, Dell, Advanced Micro Devices, Intel and Marvell Technology. All five are holding their places for now. The next swap is on Friday 30 October.",
+   "graphic": {
+    "type": "picks",
+    "lead": "This month's holdings",
+    "items": [
+     {
+      "t": "MU"
+     },
+     {
+      "t": "DELL"
+     },
+     {
+      "t": "AMD"
+     },
+     {
+      "t": "INTC"
+     },
+     {
+      "t": "MRVL"
+     }
+    ],
+    "note": "Next swap: Fri 30 Oct"
+   },
+   "start": 59.025,
+   "end": 72.65
+  },
+  {
+   "id": "crypto",
+   "title": "Crypto top 5",
+   "tag": "CRYPTO",
+   "bar": "Experimental: high risk",
+   "text": "In crypto, our experimental top five are Zcash, Uniswap, NEAR Protocol, Arbitrum and Chainlink, with Bitcoin 15 per cent above its two-hundred-day average.",
+   "graphic": {
+    "type": "picks",
+    "lead": "Experimental crypto holdings",
+    "items": [
+     {
+      "t": "ZEC"
+     },
+     {
+      "t": "UNI"
+     },
+     {
+      "t": "NEAR"
+     },
+     {
+      "t": "ARB"
+     },
+     {
+      "t": "LINK"
+     }
+    ],
+    "note": "High risk: you could lose all the money you put in."
+   },
+   "start": 73.1,
+   "end": 83.725
+  },
+  {
+   "id": "outlook",
+   "title": "Next week",
+   "tag": "OUTLOOK",
+   "bar": "The week ahead: 12-16 October",
+   "text": "Looking ahead to the week of Monday 12 October. Results are due from JPMorgan Chase, Johnson & Johnson and UnitedHealth on Tuesday; ASML Holding, Bank of America and Morgan Stanley on Wednesday. And on the prediction market Polymarket, the question \"Will Bitcoin reach $87,500 in October?\" is trading at about 48 per cent yes. ",
+   "graphic": {
+    "type": "outlook",
+    "rows": [
+     {
+      "k": "Tue",
+      "v": "JPMorgan Chase, Johnson & Johnson, UnitedHealth"
+     },
+     {
+      "k": "Wed",
+      "v": "ASML Holding, Bank of America, Morgan Stanley"
+     },
+     {
+      "k": "Odds",
+      "v": "Will Bitcoin reach $87,500 in October? 48% yes"
+     },
+     {
+      "k": "Swap",
+      "v": "Momentum swap: Fri 30 Oct"
+     }
+    ]
+   },
+   "start": 84.175,
+   "end": 106.025
+  },
+  {
+   "id": "outro",
+   "title": "That's the week",
+   "tag": "WEEKLY",
+   "bar": "Not financial advice",
+   "text": "That's your round-up. Remember, this is research, not financial advice. I'm Nova. See you next Sunday.",
+   "graphic": {
+    "type": "outro",
+    "big": "See you Sunday",
+    "sub": "Ventryx Weekly · not financial advice"
+   },
+   "start": 106.475,
+   "end": 112.725
+  }
+ ]
+}
