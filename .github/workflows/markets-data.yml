@@ -11,6 +11,9 @@ on:
     - cron: "*/15 13-20 * * 1-5"
     - cron: "42,52 19,20 * * 1-5"
     - cron: "40 21 * * 1-5"
+    # crypto trades every day: refresh at weekends too, and just after each month-end close (00:00 UTC)
+    - cron: "25 */6 * * 0,6"
+    - cron: "20 0 1 * *"
   workflow_dispatch:
     inputs:
       refresh_fundamentals:
