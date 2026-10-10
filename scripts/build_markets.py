@@ -407,6 +407,168 @@ def momentum_list(daily, fund, spy=None):
             "rows": rows, "history": hist}
 
 
+# ---------------------------------------------------------------- crypto
+# Crypto momentum (experimental): at each month end hold the 5 coins with the biggest 90-day rise,
+# in cash while Bitcoin is below its 200-day average. "top5_monthly_90d_btcfilter" in
+# scripts/backtest_crypto.py: positive vs the average coin in both halves of ~8 years, but it did
+# NOT pass the luck check, so the page labels it experimental.
+CRYPTO_TOP, CRYPTO_LOOKBACK, CRYPTO_MIN_VOL = 5, 90, 20e6
+COINS = {  # Yahoo symbol: (ticker shown, name, meme coin?)
+    "BTC-USD": ("BTC", "Bitcoin", 0), "ETH-USD": ("ETH", "Ethereum", 0), "BNB-USD": ("BNB", "BNB", 0),
+    "SOL-USD": ("SOL", "Solana", 0), "XRP-USD": ("XRP", "XRP", 0), "ADA-USD": ("ADA", "Cardano", 0),
+    "TRX-USD": ("TRX", "TRON", 0), "AVAX-USD": ("AVAX", "Avalanche", 0), "DOT-USD": ("DOT", "Polkadot", 0),
+    "LINK-USD": ("LINK", "Chainlink", 0), "BCH-USD": ("BCH", "Bitcoin Cash", 0), "LTC-USD": ("LTC", "Litecoin", 0),
+    "XLM-USD": ("XLM", "Stellar", 0), "ATOM-USD": ("ATOM", "Cosmos", 0), "ETC-USD": ("ETC", "Ethereum Classic", 0),
+    "FIL-USD": ("FIL", "Filecoin", 0), "ICP-USD": ("ICP", "Internet Computer", 0), "HBAR-USD": ("HBAR", "Hedera", 0),
+    "NEAR-USD": ("NEAR", "NEAR Protocol", 0), "VET-USD": ("VET", "VeChain", 0), "ALGO-USD": ("ALGO", "Algorand", 0),
+    "AAVE-USD": ("AAVE", "Aave", 0), "XMR-USD": ("XMR", "Monero", 0), "TON11419-USD": ("TON", "Toncoin", 0),
+    "SUI20947-USD": ("SUI", "Sui", 0), "APT21794-USD": ("APT", "Aptos", 0), "ARB11841-USD": ("ARB", "Arbitrum", 0),
+    "OP-USD": ("OP", "Optimism", 0), "INJ-USD": ("INJ", "Injective", 0), "UNI7083-USD": ("UNI", "Uniswap", 0),
+    "POL28321-USD": ("POL", "Polygon", 0), "MATIC-USD": ("MATIC", "Polygon (old)", 0),
+    "DOGE-USD": ("DOGE", "Dogecoin", 1), "SHIB-USD": ("SHIB", "Shiba Inu", 1), "PEPE24478-USD": ("PEPE", "Pepe", 1),
+    "WIF-USD": ("WIF", "dogwifhat", 1), "BONK-USD": ("BONK", "Bonk", 1), "FLOKI-USD": ("FLOKI", "Floki", 1),
+    "LUNA1-USD": ("LUNC", "Terra Classic", 0), "FTT-USD": ("FTT", "FTX Token", 0), "EOS-USD": ("EOS", "EOS", 0),
+    "BSV-USD": ("BSV", "Bitcoin SV", 0), "XEM-USD": ("XEM", "NEM", 0), "NEO-USD": ("NEO", "NEO", 0),
+    "WAVES-USD": ("WAVES", "Waves", 0), "ZEC-USD": ("ZEC", "Zcash", 0), "DASH-USD": ("DASH", "Dash", 0),
+    "XTZ-USD": ("XTZ", "Tezos", 0), "IOTA-USD": ("IOTA", "IOTA", 0),
+}
+
+
+def fetch_crypto():
+    import yfinance as yf
+    syms = list(COINS)
+    df = yf.download(syms, period="3y", interval="1d", group_by="ticker", auto_adjust=True, threads=True, progress=False)
+    close, dvol = {}, {}
+    for t in syms:
+        try:
+            d = df[t].dropna(subset=["Close"])
+        except KeyError:
+            continue
+        if len(d) > 120:
+            close[t], dvol[t] = d["Close"], d["Close"] * d["Volume"]
+    c = pd.DataFrame(close).sort_index()
+    return c, pd.DataFrame(dvol).reindex(c.index)
+
+
+def _crypto_month_ends(idx):
+    s = pd.Series(idx, index=idx)
+    return list(s.groupby([idx.year, idx.month]).max())
+
+
+def _crypto_pick(close, dvol, i):
+    """(scores, eligible) at row i: coins with a full lookback window and real trading volume."""
+    lb = CRYPTO_LOOKBACK
+    if i < max(lb, 30) + 1:
+        return None
+    win = close.iloc[i - lb: i + 1]
+    elig = [t for t in close.columns if win[t].notna().all() and float(dvol[t].iloc[i - 29: i + 1].mean()) >= CRYPTO_MIN_VOL]
+    if len(elig) < CRYPTO_TOP + 3:
+        return None
+    return (close.iloc[i][elig] / close.iloc[i - lb][elig] - 1).dropna()
+
+
+def _btc_ok(close, i):
+    b = close["BTC-USD"].iloc[: i + 1].dropna()
+    return len(b) >= 200 and float(b.iloc[-1]) > float(b.tail(200).mean())
+
+
+def crypto_list(close, dvol):
+    if close is None or "BTC-USD" not in close or len(close) < 260:
+        return None
+    idx, last = close.index, close.index[-1]
+    ends = _crypto_month_ends(idx)
+    formed = [e for e in ends if e < last][-1]
+    fi, li = idx.get_loc(formed), len(idx) - 1
+    sc_then, sc_now = _crypto_pick(close, dvol, fi), _crypto_pick(close, dvol, li)
+    if sc_then is None:
+        return None
+    invested, ok_now = _btc_ok(close, fi), _btc_ok(close, li)
+    order = list(sc_then.sort_values(ascending=False).index)
+    now_rank = {t: r + 1 for r, t in enumerate(sc_now.sort_values(ascending=False).index)} if sc_now is not None else {}
+    shown = order[:2 * CRYPTO_TOP]
+    shown += [t for t, nr in sorted(now_rank.items(), key=lambda kv: kv[1]) if nr <= CRYPTO_TOP and t not in shown and t in sc_then]
+    rows = []
+    for t in shown:
+        r = order.index(t)
+        tk, name, meme = COINS.get(t, (t.split("-")[0], t, 0))
+        c = close[t].dropna()
+        entry, price, nr = float(close.at[formed, t]), float(c.iloc[-1]), now_rank.get(t)
+        rows.append({
+            "t": tk, "sym": t, "name": name, "exch": "Meme coin" if meme else "Crypto", "meme": bool(meme),
+            "mcap": fnum(float(dvol[t].iloc[-30:].mean()), 0),  # average daily trading in the last 30 days, in $
+            "rank": r + 1, "hold": invested and r < CRYPTO_TOP, "mom": fnum(sc_then[t] * 100, 1),
+            "entry": fnum(entry, 8 if entry < 0.01 else 4 if entry < 1 else 2), "price": fnum(price, 8 if price < 0.01 else 4 if price < 1 else 2),
+            "pct": fnum((price / entry - 1) * 100, 2), "chg": fnum((price / float(c.iloc[-2]) - 1) * 100), "rankNow": nr,
+            "next": _next_state(invested and r < CRYPTO_TOP, bool(ok_now and nr and nr <= CRYPTO_TOP)),
+            "vol": fnum(float(c.pct_change().tail(365).std() * math.sqrt(365) * 100), 1),
+            "spark": spark(c.tail(365).iloc[::7], 52),
+        })
+    hist = []
+    for a, b in zip(ends[:-1], ends[1:]):
+        if b > formed:
+            break
+        ia = idx.get_loc(a)
+        sc = _crypto_pick(close, dvol, ia)
+        if sc is None:
+            continue
+        if not _btc_ok(close, ia):
+            hist.append({"d": str(b.date()), "start": str(a.date()), "m": b.strftime("%Y-%m"), "n": 0, "pct": 0.0, "wins": 0, "cash": True, "picks": []})
+            continue
+        picks = list(sc.sort_values(ascending=False).index[:CRYPTO_TOP])
+        rets = [(float(close.at[b, t]) / float(close.at[a, t]) - 1) * 100 if np.isfinite(close.at[b, t]) else -100.0 for t in picks]
+        hist.append({"d": str(b.date()), "start": str(a.date()), "picks": [COINS.get(t, (t,))[0] for t in picks], "m": b.strftime("%Y-%m"),
+                     "n": len(rets), "pct": fnum(sum(rets), 3), "wins": sum(1 for x in rets if x > 0),
+                     "best": fnum(max(rets), 2) if rets else None, "worst": fnum(min(rets), 2) if rets else None})
+    btc = close["BTC-USD"].dropna()
+    return {"formed": str(formed.date()), "asOf": str(last.date()), "nextRebalance": str((last + pd.offsets.MonthEnd(0)).date()),
+            "top": CRYPTO_TOP, "invested": invested, "marketOkNow": ok_now,
+            "spyVs200": fnum((float(btc.iloc[-1]) / float(btc.tail(200).mean()) - 1) * 100, 1),
+            "rows": rows, "history": hist}
+
+
+def polymarket_crypto(n=6):
+    """The busiest live crypto prediction markets on Polymarket, for context only (never used to pick coins)."""
+    url = ("https://gamma-api.polymarket.com/events?active=true&closed=false&limit=30"
+           "&order=volume24hr&ascending=false&tag_slug=crypto")
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Ventryx)", "Accept": "application/json"})
+    with urllib.request.urlopen(req, timeout=25) as r:
+        events = json.loads(r.read())
+    now = datetime.now(timezone.utc)
+    out = []
+    for ev in events:
+        try:
+            end = datetime.fromisoformat(str(ev.get("endDate", "")).replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if end <= now:
+            continue
+        items = []
+        for m in ev.get("markets") or []:
+            if m.get("closed"):
+                continue
+            try:
+                outs, prices = json.loads(m.get("outcomes") or "[]"), [float(x) for x in json.loads(m.get("outcomePrices") or "[]")]
+            except (ValueError, TypeError):
+                continue
+            if len(outs) != 2 or len(prices) != 2:
+                continue
+            yes = prices[0] if str(outs[0]).lower() in ("yes", "up") else None
+            if yes is None or not 0.04 <= yes <= 0.96:
+                continue  # settled-looking prices say little
+            label = (m.get("groupItemTitle") or m.get("question") or "").strip()
+            items.append({"label": _txt(label)[:80], "q": _txt(m.get("question") or "")[:160], "yes": round(yes * 100, 1),
+                          "outcome": str(outs[0])})
+        if not items:
+            continue
+        items.sort(key=lambda x: abs(x["yes"] - 50))
+        out.append({"title": _txt(ev.get("title") or "")[:120], "slug": str(ev.get("slug") or ""), "end": end.strftime("%Y-%m-%dT%H:%MZ"),
+                    "vol24": fnum(float(ev.get("volume24hr") or 0), 0), "vol": fnum(float(ev.get("volume") or 0), 0),
+                    "items": items[:3]})
+        if len(out) >= n:
+            break
+    return out
+
+
 # ---------------------------------------------------------------- data fetch
 def fetch_prices(intra_period="5d"):
     import yfinance as yf
@@ -607,6 +769,16 @@ def main():
     except Exception as e:  # a new section must never block the scan
         print(f"momentum failed: {e}", file=sys.stderr)
         mom = None
+    try:
+        cry = crypto_list(*fetch_crypto())
+    except Exception as e:
+        print(f"crypto failed: {e}", file=sys.stderr)
+        cry = None
+    try:
+        poly = polymarket_crypto()
+    except Exception as e:
+        print(f"polymarket failed: {e}", file=sys.stderr)
+        poly = None
     for x in lng:
         x["news"] = news_for(x["t"])
         x["an"] = analysts_for(x["t"])
@@ -622,6 +794,8 @@ def main():
         "day": day, "long": lng,
         "history": [{"d": k, **v} for k, v in hist.items()],
         "momentum": mom,
+        "crypto": cry,
+        "polymarket": poly,
     }
     with open(os.path.join(out_dir, "markets.json"), "w") as fh:
         json.dump(doc, fh, separators=(",", ":"))
