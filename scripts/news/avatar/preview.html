@@ -1,0 +1,24 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#0a1440}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script></head>
+<body><script type="module">
+// Preview a GLB avatar as a head-and-shoulders news anchor shot. ?m=file.glb
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+const W=800,H=800,r=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
+r.setSize(W,H);r.outputColorSpace=THREE.SRGBColorSpace;r.toneMapping=THREE.ACESFilmicToneMapping;document.body.appendChild(r.domElement);
+const sc=new THREE.Scene();sc.background=new THREE.Color(0x0a1440);
+sc.environment=new THREE.PMREMGenerator(r).fromScene(new RoomEnvironment(),0.04).texture;
+const key=new THREE.DirectionalLight(0xffffff,2.2);key.position.set(1.5,2.5,3);sc.add(key);
+const rim=new THREE.DirectionalLight(0xff4fa3,1.6);rim.position.set(-3,2,-2);sc.add(rim);
+const fill=new THREE.DirectionalLight(0x19e3ff,0.6);fill.position.set(-2,1,2);sc.add(fill);
+const cam=new THREE.PerspectiveCamera(28,W/H,0.01,100);
+const m=new URLSearchParams(location.search).get('m');
+new GLTFLoader().load(m,g=>{const o=g.scene;sc.add(o);
+  let head=null;o.traverse(n=>{if(n.isBone&&/head$/i.test(n.name)&&!head)head=n});
+  const box=new THREE.Box3().setFromObject(o),size=box.getSize(new THREE.Vector3());
+  const hp=head?head.getWorldPosition(new THREE.Vector3()):new THREE.Vector3(0,box.max.y-size.y*0.07,0);
+  cam.position.set(hp.x,hp.y-size.y*0.02,hp.z+size.y*0.42);cam.lookAt(hp.x,hp.y-size.y*0.05,hp.z);
+  r.render(sc,cam);window.READY=JSON.stringify({height:size.y,head:head&&head.name});
+},undefined,e=>{window.READY='ERR '+e.message});
+</script></body></html>
