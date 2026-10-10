@@ -1,0 +1,42 @@
+name: Check book links
+
+# Confirms every "Free books" link on ventryx.html still opens (read pages and PDFs).
+on:
+  pull_request:
+    paths: ["ventryx.html"]
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check links
+        run: |
+          python3 - <<'PY'
+          import json, re, sys, urllib.request
+          html = open("ventryx.html", encoding="utf-8").read()
+          books = json.loads(re.search(r'<script type="application/json" id="booksData">(.*?)</script>', html, re.S).group(1).replace("<\\/", "</"))
+          bad = 0
+          for b in books:
+              for kind in ("read", "pdf"):
+                  url = b.get(kind)
+                  if not url:
+                      continue
+                  try:
+                      req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (link check for shaun-finch.github.io)"})
+                      with urllib.request.urlopen(req, timeout=30) as r:
+                          body = r.read(200000)
+                          ctype = r.headers.get("Content-Type", "")
+                          title = re.search(rb"<title[^>]*>(.*?)</title>", body, re.S | re.I)
+                          title = title.group(1).decode("utf-8", "replace").strip()[:90] if title else ctype
+                          print(f"OK   {r.status} {kind:4} {b['t'][:40]:40} | {title} | {r.geturl()}")
+                  except Exception as e:
+                      bad += 1
+                      print(f"FAIL     {kind:4} {b['t'][:40]:40} | {e} | {url}")
+          print(f"{bad} broken link(s)")
+          sys.exit(1 if bad else 0)
+          PY

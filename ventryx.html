@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0E0E10">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <style>
 :root{
   --bg:#0E0E10;--side:#121214;--card:#17171A;--card2:#1E1E22;--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.045);
@@ -205,6 +205,35 @@ tfoot td:nth-child(2){background:var(--card2)}
 .pnote{margin:10px 0 0;font-size:.74rem;color:var(--dim)}
 .tf button{white-space:nowrap}
 @media (max-width:560px){.perfh .seg{margin-left:0;width:100%;display:flex}.tf button{flex:1;padding:5px 2px}}
+/* free books */
+.shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(168px,100%),1fr));gap:22px 18px;padding:4px 18px 22px}
+.bk{display:flex;flex-direction:column;gap:9px;text-decoration:none;color:var(--ink);min-width:0}
+.cover{position:relative;aspect-ratio:2/3;padding:9% 9% 8%;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;box-shadow:0 14px 30px -14px rgba(0,0,0,.9),inset 3px 0 0 rgba(255,255,255,.06),inset 6px 0 8px -6px rgba(0,0,0,.6);transition:transform .2s ease,box-shadow .2s ease}
+.bk:hover .cover,.bk:focus-visible .cover{transform:translateY(-4px);box-shadow:0 22px 36px -16px rgba(0,0,0,.95),0 0 0 1px rgba(255,138,61,.55)}
+.cover::before{content:"";position:absolute;inset:5.5%;border:1px solid currentColor;opacity:.45;pointer-events:none}
+.cover .cy{font:400 .62rem/1 "Inter",sans-serif;letter-spacing:.22em;text-transform:uppercase;opacity:.75;text-align:center}
+.cover .ct{font-family:"Libre Baskerville",Georgia,serif;font-weight:700;font-size:clamp(.82rem,1.15vw,1rem);line-height:1.22;text-align:center;letter-spacing:-.005em;text-wrap:balance}
+.cover .cs{display:block;font-weight:400;font-style:italic;font-size:.72em;margin-top:6px;opacity:.85}
+.cover .orn{display:block;width:34%;height:1px;margin:10px auto;background:currentColor;opacity:.6}
+.cover .ca{font-family:"Libre Baskerville",Georgia,serif;font-style:italic;font-size:.72rem;text-align:center;opacity:.9}
+.cover.green{background:linear-gradient(160deg,#1f3a2c,#12251b);color:#E3C67B}
+.cover.oxblood{background:linear-gradient(160deg,#5a1d1d,#3a1010);color:#F1DDB5}
+.cover.navy{background:linear-gradient(160deg,#1b2a4a,#0f1830);color:#D9C38A}
+.cover.paper{background:linear-gradient(160deg,#EDE3CC,#D9CBA9);color:#2b2316}
+.cover.modern{background:linear-gradient(160deg,#FF8A3D,#E8471A);color:#140b06}
+.cover.modern .ct,.cover.gov .ct,.cover.modern2 .ct{font-family:"Inter",sans-serif;font-weight:700;letter-spacing:-.02em;text-align:left}
+.cover.modern .ca,.cover.gov .ca,.cover.modern2 .ca{font-family:"Inter",sans-serif;font-style:normal;text-align:left}
+.cover.modern .cy,.cover.gov .cy,.cover.modern2 .cy{text-align:left}
+.cover.modern .orn,.cover.gov .orn,.cover.modern2 .orn{margin:10px 0}
+.cover.gov{background:linear-gradient(160deg,#0f3b5c,#0a2438);color:#EAF2F8}
+.cover.modern2{background:linear-gradient(160deg,#2a2550,#17142e);color:#C9C2FF}
+.bk .bt2{font-weight:600;font-size:.84rem;line-height:1.3}
+.bk .ba{font-size:.74rem;color:var(--mute);margin-top:-5px}
+.bk .bw{font-size:.74rem;color:var(--mute);line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.bmeta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.68rem;color:var(--dim)}
+.bmeta .read{color:var(--or2);font-weight:600;text-decoration:none}
+.bpdf{font-size:.7rem;color:var(--body);border:1px solid var(--line);padding:2px 7px;text-decoration:none}
+.bpdf:hover{border-color:var(--or2);color:var(--ink)}
 /* auto-trader */
 .bstat{display:inline-flex;align-items:center;gap:7px;font-size:.78rem;font-weight:600;padding:5px 10px;border:1px solid var(--line);color:var(--mute);margin-left:auto}
 .bstat::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
@@ -256,6 +285,7 @@ tfoot td:nth-child(2){background:var(--card2)}
       <a href="#day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v3M5.6 5.6l2.1 2.1M3 12h3M18.4 5.6l-2.1 2.1M21 12h-3"/><path d="M5 18h14M8 21h8"/><path d="M8 15a4 4 0 0 1 8 0"/></svg>Opening bell</a>
       <a href="#bot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="8" width="16" height="12"/><path d="M12 8V4M9 13v2M15 13v2M2 13v3M22 13v3"/></svg>Auto-trader</a>
       <a href="#long"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Long term</a>
+      <a href="#books"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6v15H4zM10 5h4v15h-4zM15 6l4-1 3 14-4 1z"/></svg>Free books</a>
       <a href="#how"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>How it works</a>
       <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>Portfolio</a>
     </nav>
@@ -323,6 +353,12 @@ tfoot td:nth-child(2){background:var(--card2)}
       <div class="scroll"><table id="tLong"><thead><tr>
         <th class="rank" data-k="i">#</th><th class="l" data-k="t">Company</th><th class="l" data-k="news">Research</th><th class="l" data-k="sector">Sector</th><th data-k="price">Price</th><th data-k="exit">Exit value</th><th data-k="upside">Upside</th><th class="l" data-k="recMean">Analysts</th><th data-k="mcap">Market value</th><th data-k="profit">Profit (12m)</th><th data-k="margin">Margin</th><th data-k="pe">P/E</th><th data-k="growth">Rev. growth</th><th data-k="pos52">52-wk range</th><th data-k="vol">Risk</th><th data-k="div">Dividend</th><th data-k="score">Score</th><th data-k="spark">1 year</th><th class="l" data-k="where">Where to trade</th>
       </tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <section class="sec card tablecard" id="books" aria-labelledby="booksH">
+      <div class="sh"><div><h2 id="booksH">Free books &middot; investing and trading</h2><p>Classics you can read free and legally: public-domain books from Project Gutenberg and the Internet Archive, plus guides their authors give away. Click a book to start reading; it opens on the original site.</p></div></div>
+      <div class="shelf" id="shelf"></div>
+      <script type="application/json" id="booksData">[{"t": "Reminiscences of a Stock Operator", "a": "Edwin Lefèvre", "y": "1923", "src": "Project Gutenberg", "lic": "Public domain", "read": "https://www.gutenberg.org/cache/epub/60979/pg60979-images.html", "why": "The story of trader Jesse Livermore: cutting losses, riding trends and the psychology of speculation. Still the trader's classic.", "c": "green"}, {"t": "Extraordinary Popular Delusions and the Madness of Crowds", "a": "Charles Mackay", "y": "1841", "src": "Project Gutenberg", "lic": "Public domain", "read": "https://www.gutenberg.org/cache/epub/24518/pg24518-images.html", "why": "Tulip mania, the South Sea Bubble and more: how crowds talk themselves into bubbles, again and again.", "c": "oxblood"}, {"t": "The Psychology of the Stock Market", "a": "G. C. Selden", "y": "1912", "src": "Project Gutenberg", "lic": "Public domain", "read": "https://www.gutenberg.org/cache/epub/75570/pg75570-images.html", "why": "A short, early explanation of how fear, greed and crowd opinion move prices in the short run.", "c": "navy"}, {"t": "Fifty Years in Wall Street", "a": "Henry Clews", "y": "1908", "src": "Project Gutenberg", "lic": "Public domain", "read": "https://www.gutenberg.org/ebooks/70377.html.images", "why": "Panics, corners and manipulators, told by a banker who lived through them.", "c": "paper"}, {"t": "The Stock Market Barometer", "a": "William Peter Hamilton", "y": "1922", "src": "Internet Archive", "lic": "Public domain", "read": "https://archive.org/details/stockmarketbarom00hami", "why": "The classic statement of Dow Theory, the root of modern trend-following.", "c": "green"}, {"t": "The ABC of Stock Speculation", "a": "S. A. Nelson", "y": "1903", "src": "Internet Archive", "lic": "Public domain", "read": "https://archive.org/details/abcofstockspecul00nelsiala", "why": "The first book to set out Charles Dow's ideas, as a plain primer on how speculation works.", "c": "oxblood"}, {"t": "The Wealth of Nations", "a": "Adam Smith", "y": "1776", "src": "Project Gutenberg", "lic": "Public domain", "read": "https://www.gutenberg.org/ebooks/3300.html.images", "why": "The founding book of economics: markets, prices, capital and why trade makes us richer.", "c": "gov"}, {"t": "The Art of Money Getting", "a": "P. T. Barnum", "y": "1880", "src": "Project Gutenberg", "lic": "Public domain", "read": "https://www.gutenberg.org/cache/epub/8581/pg8581-images.html", "why": "Short, timeless rules on earning, saving and avoiding debt from the great showman.", "c": "paper"}, {"t": "The Way to Wealth", "a": "Benjamin Franklin", "y": "1758", "src": "Project Gutenberg", "lic": "Public domain", "read": "https://www.gutenberg.org/cache/epub/43855/pg43855-images.html", "why": "A 20-minute read on thrift and avoiding debt: the habits that come before any investing.", "c": "green"}, {"t": "If You Can", "sub": "How Millennials Can Get Rich Slowly", "a": "William J. Bernstein", "y": "2014", "src": "Free from the author", "lic": "Free from the author", "read": "https://efficientfrontier.com/ef/0adhoc/2books.htm", "pdf": "https://efficientfrontier.com/ef/0adhoc/ifyoucan.pdf", "why": "A 16-page plan for beginners: save steadily, buy low-cost index funds and don't let your own behaviour wreck it.", "c": "modern"}, {"t": "The Theory of Stock Exchange Speculation", "a": "Arthur Crump", "y": "1874", "src": "Project Gutenberg", "lic": "Public domain", "read": "https://www.gutenberg.org/cache/epub/59518/pg59518-images.html", "why": "A Victorian guide to speculation whose warnings about overtrading, tips and leverage still read as if written today.", "c": "navy"}, {"t": "How the Economic Machine Works", "a": "Ray Dalio", "y": "Free paper", "src": "Free from the author", "lic": "Free from the author", "read": "https://economicprinciples.org/how-the-economic-machine-works", "why": "Credit, debt cycles and recessions explained simply, with a famous 30-minute video version.", "c": "modern2"}]</script>
     </section>
 
     <section class="sec" id="how" aria-labelledby="howH">
@@ -631,6 +667,16 @@ function loadBot(){
   return fetch(BOT_URL+'?m='+Math.floor(Date.now()/60000),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(function(b){BOT=b;renderBot()}).catch(function(){if(!BOT)renderBot()});
 }
 headers();load();loadBot();
+(function(){ // free books shelf
+  var B=[];try{B=JSON.parse($('#booksData').textContent)}catch(e){}
+  $('#shelf').innerHTML=B.map(function(b){
+    var u=safeUrl(b.read);
+    return '<div class="bkw"><a class="bk" href="'+u+'" target="_blank" rel="noopener" aria-label="Read '+esc(b.t)+' by '+esc(b.a)+' (opens '+esc(b.src)+')">'+
+      '<span class="cover '+esc(b.c)+'"><span class="cy">'+esc(b.y)+'</span><span class="ct">'+esc(b.t)+(b.sub?'<span class="cs">'+esc(b.sub)+'</span>':'')+'<span class="orn"></span></span><span class="ca">'+esc(b.a)+'</span></span>'+
+      '<span class="bt2">'+esc(b.t)+'</span><span class="ba">'+esc(b.a)+' &middot; '+esc(b.y)+'</span><span class="bw">'+esc(b.why)+'</span></a>'+
+      '<div class="bmeta" style="margin-top:8px"><a class="read" href="'+u+'" target="_blank" rel="noopener" tabindex="-1">Read free &rarr;</a>'+(b.pdf?'<a class="bpdf" href="'+safeUrl(b.pdf)+'" target="_blank" rel="noopener">PDF</a>':'')+'<span>'+esc(b.src)+(b.lic!==b.src?' &middot; '+esc(b.lic):'')+'</span></div></div>';
+  }).join('');
+})();
 try{var sr=localStorage.getItem('vx.stake');if(sr)$('#riskAmt').value=sr;var stf=localStorage.getItem('vx.tf');if(stf!=null)TF=+stf}catch(e){}
 $$('.tf button').forEach(function(b){b.setAttribute('aria-pressed',+b.getAttribute('data-tf')===TF)});
 $('#plH').innerHTML=stakeLabel()+' in';
