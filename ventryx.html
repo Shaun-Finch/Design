@@ -296,7 +296,7 @@ tfoot td:nth-child(2){background:var(--card2)}
       <div class="perf" id="perf" aria-labelledby="perfH">
         <div class="perfh">
           <div><h3 id="perfH">Overall profit</h3><p id="perfSub">What you would have made putting the same amount into every trade that triggered.</p></div>
-          <div class="seg tf" role="group" aria-label="Time frame"><button aria-pressed="false" data-tf="1">Today</button><button aria-pressed="true" data-tf="5">1 week</button><button aria-pressed="false" data-tf="21">1 month</button><button aria-pressed="false" data-tf="63">3 months</button><button aria-pressed="false" data-tf="0">All</button></div>
+          <div class="seg tf" role="group" aria-label="Time frame"><button aria-pressed="false" data-tf="1" title="The latest trading day">Today</button><button aria-pressed="true" data-tf="5" title="The last 5 trading days">1 week</button><button aria-pressed="false" data-tf="21" title="The last 21 trading days">1 month</button><button aria-pressed="false" data-tf="63" title="The last 63 trading days">3 months</button><button aria-pressed="false" data-tf="0" title="Every trading day tracked">All</button></div>
           <label class="riskin">Amount per trade <span>&pound;<input id="riskAmt" type="number" min="1" max="1000000" step="1" value="10" inputmode="numeric"></span></label>
         </div>
         <div class="pgrid">
@@ -478,7 +478,7 @@ function perf(){
   var upDays=win.filter(function(x){return (x.pct||0)>0}).length,best=null,worst=null;
   win.forEach(function(x){if(best==null||x.pct>best.pct)best=x;if(worst==null||x.pct<worst.pct)worst=x});
   var cell=function(k,v){return '<div><div class="k">'+k+'</div><div class="v">'+v+'</div></div>'};
-  $('#pStats').innerHTML='<div class="hero"><div class="k">With '+stakeLabel()+' in every trade, '+(isToday?(today&&today.live?'today so far':'last session'):TF?'last '+win.length+' session'+(win.length===1?'':'s'):'all '+win.length+' sessions')+'</div><div class="v"><span class="'+signCls(R)+'">'+gbp(n?R:null,1)+'</span><small>'+(n?'from '+gbp(100*n)+' traded':'')+'</small></div></div>'+
+  $('#pStats').innerHTML='<div class="hero"><div class="k">With '+stakeLabel()+' in every trade, '+(isToday?(today&&today.live?'today so far':'last trading day'):TF?'last '+win.length+' trading day'+(win.length===1?'':'s'):'all '+win.length+' trading days')+'</div><div class="v"><span class="'+signCls(R)+'">'+gbp(n?R:null,1)+'</span><small>'+(n?'from '+gbp(100*n)+' traded':'')+'</small></div></div>'+
     cell('Trades',n)+cell('Win rate',n?Math.round(w/n*100)+'%':'&ndash;')+
     cell('Avg per trade',n?'<span class="'+signCls(R)+'">'+gbp(R/n,1)+'</span>':'&ndash;')+
     (isToday?cell('Targets / stops',today?(today.targets||0)+' / '+(today.stops||0):'&ndash;'):cell('Profitable days',win.length?upDays+' of '+win.length:'&ndash;'))+
@@ -486,7 +486,7 @@ function perf(){
   pchart(pts);
   var first=all[0];
   $('#perfSub').textContent=isToday?'What you would have made putting the same amount into every trade that triggered, trade by trade.':'What you would have made putting the same amount into every trade that triggered, day by day.';
-  $('#pNote').innerHTML='Past results from the scanner, not a prediction. Before fees, spreads and currency conversion, which on small amounts can cost more than the profit itself. '+(first?'Tracking since '+fmtD(first.d)+'; the first weeks were rebuilt from Yahoo&rsquo;s 5-minute prices using the same rules. ':'')+'Real-money results are in the Auto-trader panel.';
+  $('#pNote').innerHTML='A trading day is one US market session, 14:30&ndash;21:00 UK time; 1 week = 5 trading days, 1 month = 21, 3 months = 63. Past results from the scanner, not a prediction. Before fees, spreads and currency conversion, which on small amounts can cost more than the profit itself. '+(first?'Tracking since '+fmtD(first.d)+'; the first weeks were rebuilt from Yahoo&rsquo;s 5-minute prices using the same rules. ':'')+'Real-money results are in the Auto-trader panel.';
 }
 function pchart(pts){
   var svg=$('#pChart'),tip=$('#pTip'),ax=$('#pAxis');
@@ -561,11 +561,11 @@ function summary(){
   var br=(lng[0]&&lng[0].spark)||[];line($('#mB'),br,'#A79BFF');
   var t=new Date(d.generated),h=new Date().getHours();
   $('#hello').textContent=h<12?'Good morning':h<18?'Good afternoon':'Good evening';
-  $('#sub').innerHTML='Here&rsquo;s the US market across '+d.scanned+' stocks &middot; updated '+ago(d.generated)+(sc.session?' &middot; session '+esc(sc.session):'');
+  $('#sub').innerHTML='Here&rsquo;s the US market across '+d.scanned+' stocks &middot; updated '+ago(d.generated)+(sc.session?' &middot; trading day '+esc(sc.session):'');
   $('#sideN').textContent=d.scanned+' stocks scanned';
   $('#datePill span').textContent=t.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+' · '+t.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
   var m=$('#mkt');m.classList.toggle('open',d.market==='open');m.querySelector('span').textContent=d.market==='open'?'US market open':'US market closed';
-  $('#score').innerHTML='<span>Session <b>'+esc(sc.session||'–')+'</b></span><span>Triggered <b>'+(sc.triggered||0)+'</b></span><span class="up">Targets hit <b class="up">'+(sc.targets||0)+'</b></span><span>Stopped <b class="dn">'+(sc.stops||0)+'</b></span><span>In trade / closed <b>'+(sc.open||0)+'</b></span><span>Watching <b>'+(sc.watching||0)+'</b></span><span>Net, if every setup were taken at 1R risk <b class="'+((tr||0)>=0?'up':'dn')+'">'+(tr==null?'–':(tr>0?'+':'')+Number(tr).toFixed(1)+'R')+'</b></span>';
+  $('#score').innerHTML='<span>Trading day <b>'+esc(sc.session||'–')+'</b></span><span>Triggered <b>'+(sc.triggered||0)+'</b></span><span class="up">Targets hit <b class="up">'+(sc.targets||0)+'</b></span><span>Stopped <b class="dn">'+(sc.stops||0)+'</b></span><span>In trade / closed <b>'+(sc.open||0)+'</b></span><span>Watching <b>'+(sc.watching||0)+'</b></span><span>Net, if every setup were taken at 1R risk <b class="'+((tr||0)>=0?'up':'dn')+'">'+(tr==null?'–':(tr>0?'+':'')+Number(tr).toFixed(1)+'R')+'</b></span>';
   if(d.source)$('#src').textContent='Market data and articles: '+d.source+'.';
 }
 function load(){
