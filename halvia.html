@@ -28,6 +28,8 @@
   --orange:#C25400;
   --accent:#3B33D6;
   --accent-deep:#2B24B0;
+  --spark:#3B33D6;
+  --spark-bg:#fff;
   --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
   --gutter:clamp(1rem,3.4vw,2.25rem);
   --r:8px;
@@ -323,6 +325,84 @@ input[type="range"]{width:100%;accent-color:var(--violet)}
 .foot .wrap{display:flex;flex-direction:column;gap:.5rem}
 .foot p{margin:0;max-width:90ch;line-height:1.7}
 
+
+/* ---------- case studies: vivid glass theme ---------- */
+#cases{
+  --ink:#F4F6FF;--mute:rgba(226,232,255,.8);--dim:rgba(206,214,255,.62);
+  --line:rgba(255,255,255,.14);--line2:rgba(255,255,255,.24);
+  --panel:rgba(255,255,255,.06);--panel2:rgba(255,255,255,.11);
+  --violet:#B4BDFF;--link:#D2D8FF;--pink:#FF86BE;--amber:#FFC56E;--green:#62E6A6;--red:#FF8585;--orange:#FFA463;
+  --glass:rgba(8,14,92,.52);--glass-deep:rgba(4,8,60,.5);
+  --spark:#FFFFFF;--spark-bg:#1532E8;
+  position:relative;color:var(--ink);border-top:0;
+  margin:clamp(1rem,2vw,1.5rem) clamp(.4rem,1.4vw,1.25rem);border-radius:clamp(16px,2vw,26px);overflow:clip;isolation:isolate;
+  background:
+    radial-gradient(46rem 28rem at -6% 108%,rgba(255,96,80,.7),transparent 62%),
+    radial-gradient(34rem 22rem at 6% 96%,rgba(214,48,160,.45),transparent 60%),
+    radial-gradient(48rem 30rem at 104% -6%,rgba(2,6,70,.95),transparent 62%),
+    radial-gradient(40rem 26rem at 70% 40%,rgba(40,80,255,.55),transparent 70%),
+    linear-gradient(135deg,#2A1FD6 0%,#1238FF 46%,#0A22C9 78%,#06137E 100%);
+}
+#cases > .wrap{position:relative;z-index:1}
+#cases #casesH{font-weight:400;font-size:clamp(1.8rem,4vw,3rem);letter-spacing:-.035em;max-width:16ch}
+#cases .label.v{color:#C9D0FF}
+#cases .floaters{position:absolute;top:0;right:0;width:min(46rem,60%);height:24rem;pointer-events:none;z-index:0;perspective:900px}
+#cases .ft{position:absolute;display:inline-flex;align-items:center;gap:.55rem;padding:1rem 1.4rem;border-radius:16px;font-size:1.15rem;font-weight:500;color:#fff;letter-spacing:.02em;
+  background:linear-gradient(160deg,rgba(255,255,255,.42),rgba(150,170,255,.18));border:1px solid rgba(255,255,255,.45);
+  box-shadow:0 30px 50px -20px rgba(0,6,80,.7),inset 0 1px 0 rgba(255,255,255,.6),inset 0 -8px 16px rgba(30,50,200,.25);
+  transform:rotateX(52deg) rotateZ(-32deg);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:drift 7s ease-in-out infinite}
+#cases .ft i{font-style:normal;display:inline-grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:8px;font-size:.9rem;background:linear-gradient(135deg,#FF6FB0,#FF8A3D);box-shadow:0 0 18px rgba(255,120,160,.8)}
+#cases .f1{top:5rem;right:21rem;animation-delay:-1s}
+#cases .f2{top:9.5rem;right:10rem;animation-delay:-3s}
+#cases .f3{top:4.2rem;right:3rem;animation-delay:-5s;opacity:.85}
+#cases .f4{top:14rem;right:18rem;animation-delay:-2s;opacity:.9}
+#cases .f4 i{background:linear-gradient(135deg,#3BE38F,#18B3FF);box-shadow:0 0 18px rgba(60,230,160,.7)}
+@keyframes drift{50%{translate:0 -10px}}
+@media (max-width:60rem){#cases .floaters{display:none}}
+
+#cases .card{background:linear-gradient(180deg,rgba(14,22,120,.6),var(--glass));border:1px solid rgba(255,255,255,.16);border-radius:18px;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 24px 60px -28px rgba(0,4,60,.85),inset 0 1px 0 rgba(255,255,255,.14)}
+#cases .card.tint{background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.05))}
+#cases .phead{border-bottom-color:var(--line)}
+#cases .cs{border-top-color:rgba(255,255,255,.25)}
+#cases .cs b{color:#C9D0FF}
+#cases .tab:hover{background:rgba(255,255,255,.08)}
+#cases .tab[aria-selected="true"]{background:rgba(255,255,255,.14);box-shadow:inset 3px 0 0 #fff,0 10px 30px -14px rgba(0,4,60,.7)}
+#cases .tab[aria-selected="true"] .ic{color:#fff}
+#cases .more{border-top-color:var(--line)}
+#cases .btn{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.26);color:var(--ink)}
+#cases .btn:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.4)}
+#cases .btn.accent,#cases .btn.on{background:#fff;border-color:#fff;color:#1027C9}
+#cases .btn.accent:hover{background:#E4E9FF;border-color:#E4E9FF;color:#0B1BA0}
+#cases .btn.ghost{background:transparent;border-color:transparent;color:var(--mute)}
+#cases .btn.ghost:hover{color:#fff}
+#cases .seg{border-color:rgba(255,255,255,.26)}
+#cases .seg button{color:var(--mute)}
+#cases .seg button[aria-pressed="true"]{background:#fff;color:#1027C9}
+#cases textarea,#cases select,#cases input[type="text"],#cases input[type="number"]{background:var(--glass-deep);border-color:rgba(255,255,255,.22);color:var(--ink)}
+#cases textarea:focus,#cases select:focus{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.18)}
+#cases select option{color:#16181B;background:#fff}
+#cases input[type="range"]{accent-color:#fff}
+#cases label.chk input{accent-color:#fff}
+#cases .ob .pts{background:rgba(255,255,255,.12);color:var(--mute)}
+#cases .draft,#cases .doc,#cases .letter,#cases .sb,#cases .code,#cases .flags li{background:var(--glass-deep);border-color:rgba(255,255,255,.16)}
+#cases .sb.ok,#cases .code.acc{background:rgba(98,230,166,.14);border-color:rgba(98,230,166,.55)}
+#cases .code.neg{background:rgba(255,255,255,.04)}
+#cases .sb h4 i{background:#fff;color:#1027C9}
+#cases .flags li{border-left-color:var(--amber)}
+#cases .flags li.hi{border-left-color:var(--red)}
+#cases .flags li.lo{border-left-color:var(--dim)}
+#cases .doc mark{background:rgba(180,189,255,.2);border-bottom-color:var(--violet)}
+#cases .doc mark.hot{background:rgba(255,197,110,.38);border-bottom-color:var(--amber)}
+#cases .episode{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.25)}
+#cases .tbl th{border-bottom-color:var(--line)}
+#cases .tbl td{border-bottom-color:rgba(255,255,255,.08)}
+#cases .tbl tbody tr:hover td{background:rgba(255,255,255,.06)}
+#cases .tbl tr.sel td{background:rgba(255,255,255,.13)}
+#cases .sms{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2)}
+#cases .meds td,#cases .meds th{border-bottom-color:var(--line)}
+#cases .age .tr .tgt{background:rgba(98,230,166,.18);border-color:rgba(98,230,166,.7)}
+#cases .letter abbr{border-bottom-color:var(--pink)}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
@@ -436,6 +516,12 @@ input[type="range"]{width:100%;accent-color:var(--violet)}
   </section>
 
   <section class="sec" id="cases" aria-labelledby="casesH">
+    <div class="floaters" aria-hidden="true">
+      <span class="ft f1"><i>&#9829;</i>NEWS2 &middot; 5</span>
+      <span class="ft f2">SBAR</span>
+      <span class="ft f3">ICD-10</span>
+      <span class="ft f4"><i>&#10003;</i>Approved</span>
+    </div>
     <div class="wrap">
       <p class="label v">Case studies &middot; interactive</p>
       <h2 id="casesH">Five places AI can help, today</h2>
@@ -851,9 +937,9 @@ function spark(h){
   var x=function(i){return px+i*(W-px-14)/(n-1)},y=function(v){return H-py-v*(H-2*py)/max};
   var s='';
   [[5,'#FFD9B3'],[7,'#F7C1C1']].forEach(function(t){s+='<line x1="'+px+'" x2="'+(W-8)+'" y1="'+y(t[0])+'" y2="'+y(t[0])+'" stroke="'+t[1]+'" stroke-width="1.5" stroke-dasharray="4 3"/><text x="'+(px-6)+'" y="'+(y(t[0])+3)+'" text-anchor="end">'+t[0]+'</text>'});
-  s+='<polyline fill="none" stroke="#3B33D6" stroke-width="2" points="'+h.map(function(v,i){return x(i)+','+y(v)}).join(' ')+'"/>';
+  s+='<polyline fill="none" style="stroke:var(--spark)" stroke-width="2" points="'+h.map(function(v,i){return x(i)+','+y(v)}).join(' ')+'"/>';
   var lab=['-20h','-16h','-12h','-8h','-4h','now'];
-  h.forEach(function(v,i){var last=i===n-1;s+='<circle cx="'+x(i)+'" cy="'+y(v)+'" r="'+(last?5:3.2)+'" fill="'+(last?'#3B33D6':'#fff')+'" stroke="#3B33D6" stroke-width="1.6"/><text x="'+x(i)+'" y="'+(y(v)-9)+'" text-anchor="middle" style="fill:#16181B">'+v+'</text><text x="'+x(i)+'" y="'+(H-1)+'" text-anchor="middle">'+lab[i]+'</text>'});
+  h.forEach(function(v,i){var last=i===n-1;s+='<circle cx="'+x(i)+'" cy="'+y(v)+'" r="'+(last?5:3.2)+'" style="fill:'+(last?'var(--spark)':'var(--spark-bg)')+';stroke:var(--spark)" stroke-width="1.6"/><text x="'+x(i)+'" y="'+(y(v)-9)+'" text-anchor="middle" style="fill:var(--ink)">'+v+'</text><text x="'+x(i)+'" y="'+(H-1)+'" text-anchor="middle">'+lab[i]+'</text>'});
   $('#spark').innerHTML=s;
 }
 loadPreset('drift');
