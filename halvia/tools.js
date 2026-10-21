@@ -62,7 +62,7 @@ var PATIENTS=[
    start:{rr:18,spo2:95,o2:'Air',sbp:128,hr:88,acvpu:'Alert',temp:37.4}},
   {id:'b2',bed:'Bed 2',who:'D.O. · 46 M',why:'Community-acquired pneumonia, day 4',pmh:'asthma',allergy:'None known',flags:[],traj:'improving',ago:70,
    start:{rr:23,spo2:93,o2:'Oxygen',sbp:112,hr:104,acvpu:'Alert',temp:38.4}},
-  {id:'b3',bed:'Bed 3',who:'A.P. · 78 M',why:'Pneumonia; COPD, AF on apixaban',pmh:'COPD, type 2 diabetes on insulin, AF on apixaban',allergy:'Penicillin? (to confirm)',flags:['Allergy query','Falls risk'],traj:'deteriorating',ago:45,notes:NOTE_B3,
+  {id:'b3',bed:'Bed 3',who:'A.P. · 78 M',why:'Community-acquired pneumonia, day 2',pmh:'COPD, type 2 diabetes on insulin, AF on apixaban',allergy:'Penicillin? (to confirm)',flags:['Allergy query','Falls risk'],traj:'deteriorating',ago:45,notes:NOTE_B3,
    start:{rr:18,spo2:96,o2:'Air',sbp:132,hr:84,acvpu:'Alert',temp:37.3}},
   {id:'b4',bed:'Bed 4',who:'P.S. · 59 F',why:'Diabetic foot infection, IV antibiotics',pmh:'type 2 diabetes, peripheral neuropathy',allergy:'None known',flags:[],traj:'stable',ago:130,
    start:{rr:16,spo2:97,o2:'Air',sbp:142,hr:86,acvpu:'Alert',temp:37.4}},
