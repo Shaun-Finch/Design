@@ -114,6 +114,15 @@ button,input,select,textarea{font:inherit;color:inherit}
 .sec{padding-block:clamp(2.5rem,5vw,4rem);border-top:1px solid var(--line)}
 .sec h2{font-weight:500;font-size:clamp(1.5rem,3.2vw,2.2rem);letter-spacing:-.025em;margin:0 0 .6rem;line-height:1.15}
 .sec .intro{color:var(--mute);margin:0 0 2rem;max-width:64ch;font-size:.88rem}
+.feature{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:1.5rem 2rem;align-items:start}
+@media (max-width:56rem){.feature{grid-template-columns:minmax(0,1fr)}}
+.vid{margin:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff;box-shadow:0 12px 40px -20px rgba(22,24,27,.25)}
+.vid video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#fff}
+.fmeta dl{margin:0 0 1.2rem;font-size:.8rem}
+.fmeta dl div{display:grid;grid-template-columns:6rem minmax(0,1fr);gap:.8rem;padding:.55rem 0;border-bottom:1px solid var(--line)}
+.fmeta dl div:first-child{border-top:1px solid var(--line)}
+.fmeta dt{color:var(--dim)}
+.fmeta dd{margin:0}
 .offer{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(17rem,100%),1fr));gap:1rem}
 .offer > div{border:1px solid var(--line);border-radius:var(--r);padding:1.25rem 1.3rem;background:var(--panel)}
 .offer .n{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--pink)}
@@ -373,6 +382,31 @@ input[type="range"]{width:100%;accent-color:var(--violet)}
     </div>
   </section>
 
+  <section class="sec" id="chks" aria-labelledby="chksH">
+    <div class="wrap">
+      <p class="label p">Shipped work &middot; CHKS</p>
+      <h2 id="chksH">Explaining AI clinical coding to the people who use it</h2>
+      <p class="intro">A product explainer I made for CHKS's AI clinical coding system, used across the NHS. It walks coding teams through how episodes move from not coded to fully coded, with local rules applied and coders kept in control. It's the same territory as the coding case study below.</p>
+      <div class="feature">
+        <figure class="vid">
+          <video controls playsinline preload="metadata" poster="work/chks-clinical-coding.jpg" aria-label="CHKS AI Clinical Coding explainer video">
+            <source src="work/chks-clinical-coding.mp4" type="video/mp4">
+          </video>
+        </figure>
+        <div class="fmeta">
+          <dl>
+            <div><dt>Client</dt><dd>CHKS</dd></div>
+            <div><dt>Product</dt><dd>AI clinical coding</dd></div>
+            <div><dt>Audience</dt><dd>NHS clinical coding teams</dd></div>
+            <div><dt>My role</dt><dd>Motion design and animation</dd></div>
+            <div><dt>Length</dt><dd>1:12</dd></div>
+          </dl>
+          <a class="btn" href="#code" data-open="code">Try the coding case study &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="sec" aria-labelledby="offerH">
     <div class="wrap">
       <p class="label p">What I do</p>
@@ -516,7 +550,7 @@ input[type="range"]{width:100%;accent-color:var(--violet)}
                 <h2>Help coders get from discharge summary to codes</h2>
                 <p>Clinical coding turns each hospital stay into standard codes that drive funding, research and planning. In England that means ICD-10 for diagnoses and OPCS-4 for procedures. This assistant suggests ICD-10 codes, shows the exact sentence behind each one, and spots conditions that were ruled out, so they aren't coded by mistake.</p>
               </div>
-              <aside class="basis"><b>Who it helps</b><span>Clinical coders and coding auditors</span><b>Final call</b><span>Accredited clinical coder</span><b>My background</b><span>Product explainer for the CHKS clinical coding system</span></aside>
+              <aside class="basis"><b>Who it helps</b><span>Clinical coders and coding auditors</span><b>Final call</b><span>Accredited clinical coder</span><b>My background</b><span><a href="#chks">Product explainer for the CHKS AI clinical coding system</a></span></aside>
             </div>
             <div class="pgrid">
               <div class="card">
@@ -640,7 +674,7 @@ input[type="range"]{width:100%;accent-color:var(--violet)}
       <h2 id="expH">Health, science and screens</h2>
       <p class="intro">I've spent my career making complex things clear on screen, and now focus on clinical and scientific products.</p>
       <div class="exp">
-        <div><span class="when">Virtual Spaces &middot; 2025 to now</span><h3>Product explainer for the CHKS clinical coding system (NHS)</h3><p>Explaining a clinical coding product used across the NHS to the people who use it, plus interactive UI built with Framer and Claude Code.</p></div>
+        <div><span class="when">Virtual Spaces &middot; 2025 to now</span><h3>Product explainer for the CHKS clinical coding system (NHS)</h3><p>Explaining a clinical coding product used across the NHS to the people who use it, plus interactive UI built with Framer and Claude Code. <a href="#chks">Watch it &uarr;</a></p></div>
         <div><span class="when">Science &amp; health</span><h3>Scientific data visualisation</h3><p>Clearer scientific data visualisations, and medical and scientific explainer video.</p></div>
         <div><span class="when">Broadcast &amp; brand</span><h3>BBC, Paramount, Universal, LIV Golf</h3><p>Motion and digital design for broadcast and entertainment, including EastEnders and iPlayer at the BBC.</p></div>
       </div>
