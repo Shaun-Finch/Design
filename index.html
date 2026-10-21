@@ -225,6 +225,9 @@ figure.piece.blankslot .frame{background:#000;border:1px solid rgba(255,255,255,
 figure.piece.wide .frame.hframe{background:#fff}
 .hframe .hlogo{position:absolute;right:1rem;bottom:1rem;width:37px;height:32px;pointer-events:none}
 #work{padding-top:clamp(1.25rem,3vw,2rem)}
+.hero.tight{padding-block:clamp(2.5rem,6vw,4.5rem) clamp(.5rem,2vw,1rem)}
+.hero.tight h1.display{font-size:clamp(2.2rem,5.6vw,4.6rem);max-width:20ch;line-height:1}
+.hero.tight .lede{margin-top:clamp(.9rem,2vw,1.3rem);font-size:clamp(1rem,1.5vw,1.2rem)}
 @keyframes xblink{50%{opacity:0}}
 </style>
 </head>
@@ -242,6 +245,13 @@ figure.piece.wide .frame.hframe{background:#fff}
 </header>
 
 <main id="main">
+
+  <section class="hero tight">
+    <div class="wrap">
+      <h1 class="display">I design and build AI tools people can trust</h1>
+      <p class="lede">UX, UI, motion and code. Manchester, UK.</p>
+    </div>
+  </section>
 
   <section class="section" id="work" aria-label="Selected work">
     <div class="wrap">
