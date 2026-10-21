@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halvia — AI systems for healthcare</title>
+<meta name="description" content="Halvia: Shaun Finch's healthcare practice. Design, code and set-up of AI systems that give clinicians time back and help patients understand their care, shown through five interactive case studies built on synthetic patients.">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#FFFFFF;
+  --panel:#F7F7F9;
+  --panel2:#F0F0F3;
+  --line:#E3E3E8;
+  --line2:#D2D2D9;
+  --ink:#16181B;
+  --mute:#555960;
+  --dim:#73777F;
+  --violet:#3B33D6;
+  --link:#3B33D6;
+  --pink:#C2306E;
+  --amber:#9A5B00;
+  --green:#14794A;
+  --red:#C02626;
+  --orange:#C25400;
+  --accent:#3B33D6;
+  --accent-deep:#2B24B0;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --gutter:clamp(1rem,3.4vw,2.25rem);
+  --r:8px;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);
+  background-image:radial-gradient(60rem 30rem at 75% -8%,rgba(59,51,214,.06),transparent 70%),radial-gradient(40rem 24rem at 5% 0%,rgba(31,198,90,.05),transparent 70%);
+  background-repeat:no-repeat;
+  color:var(--ink);font-family:var(--mono);font-size:.94rem;line-height:1.65;overflow-x:hidden;
+}
+a{color:var(--link);text-underline-offset:3px;text-decoration-thickness:1px}
+a:hover{color:var(--ink)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+.wrap{width:min(78rem,100%);margin-inline:auto;padding-inline:var(--gutter)}
+.skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:#fff;padding:.7rem 1rem;z-index:60}
+.skip:focus{left:.5rem;top:.5rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pc{display:block;color:var(--ink)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;gap:1.1rem;padding-block:.8rem;flex-wrap:wrap}
+.mark{display:flex;align-items:center;gap:.65rem;font-weight:500;font-size:1.05rem;color:var(--ink);letter-spacing:.02em;text-decoration:none}
+.mark .chev{color:var(--pink)}
+.mark svg{width:38px;height:32px;flex:none}
+.ver{color:var(--dim);font-size:.75rem}
+.barright{margin-left:auto;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.back{color:var(--mute);text-decoration:none;font-size:.82rem}
+.back:hover{color:var(--ink)}
+.tagline{font-size:.7rem;letter-spacing:.18em;color:var(--green);text-transform:uppercase}
+.dot{width:.42rem;height:.42rem;border-radius:50%;background:var(--green);flex:none;display:inline-block}
+@media (max-width:40rem){.bar{position:static}.back,.tagline{display:none}}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:.45rem;border-radius:6px;border:1px solid var(--line2);background:#fff;padding:.55rem 1rem;font-weight:500;font-size:.82rem;letter-spacing:.03em;cursor:pointer;text-decoration:none;color:var(--ink);white-space:nowrap}
+.btn:hover{border-color:#b9b9c2;background:var(--panel)}
+.btn.accent{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.accent:hover{background:var(--accent-deep);border-color:var(--accent-deep);color:#fff}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--mute)}
+.btn.ghost:hover{color:var(--ink)}
+.btn.sm{padding:.38rem .75rem;font-size:.74rem}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.btn.on{background:var(--ink);border-color:var(--ink);color:#fff}
+
+/* ---------- hero ---------- */
+.hero .wrap{padding-block:clamp(2.75rem,7vw,5.5rem) clamp(1.5rem,3vw,2.5rem)}
+.label{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin:0 0 1.1rem}
+.label.p{color:var(--pink)} .label.v{color:var(--violet)}
+.hero h1{font-weight:500;font-size:clamp(2rem,4.6vw,3.6rem);line-height:1.08;letter-spacing:-.035em;margin:0;max-width:17ch}
+.hero h1 em{font-style:normal;color:var(--violet)}
+.lede{color:var(--mute);font-size:clamp(.95rem,1.4vw,1.06rem);max-width:60ch;margin:1.4rem 0 0;line-height:1.8}
+.lede b{color:var(--ink);font-weight:500}
+.actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.8rem}
+.trust{margin:1.6rem 0 0;font-size:.76rem;color:var(--mute);display:flex;flex-wrap:wrap;gap:.45rem .9rem;align-items:center}
+.trust span{display:inline-flex;align-items:center;gap:.4rem}
+.herogrid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:2rem clamp(2rem,5vw,4.5rem);align-items:center}
+.herogrid > .ecg,.herogrid > .facts{grid-column:1/-1}
+@media (max-width:60rem){.herogrid{grid-template-columns:minmax(0,1fr)}}
+.board{border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 12px 40px -18px rgba(22,24,27,.22),0 1px 2px rgba(22,24,27,.04);overflow:hidden;font-size:.78rem}
+.bhead{display:flex;align-items:center;gap:.55rem;padding:.8rem 1rem;border-bottom:1px solid var(--line);background:var(--panel);font-size:.72rem;color:var(--mute);letter-spacing:.04em}
+.bhead .chip{margin-left:auto}
+.brow{display:grid;grid-template-columns:3.6rem minmax(0,1fr) auto;gap:.7rem;align-items:center;padding:.72rem 1rem;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.brow:hover{background:#F6F5FF;color:var(--ink)}
+.brow .bk{color:var(--dim);font-size:.72rem}
+.bfoot{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:.75rem 1rem;font-size:.7rem;color:var(--dim)}
+.bfoot span:first-child{color:var(--violet)}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(20,121,74,.12)}}
+.ecg{display:block;width:100%;height:70px;margin-top:clamp(1.75rem,4vw,2.75rem)}
+.ecg path{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.ecg .trace{stroke:var(--violet);stroke-dasharray:1500;stroke-dashoffset:1500;animation:trace 4.2s linear infinite}
+.ecg .base{stroke:var(--line)}
+@keyframes trace{to{stroke-dashoffset:0}}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(14rem,100%),1fr));gap:1rem 2rem;margin-top:1.25rem}
+.fact{border-top:1px solid var(--line);padding-top:.8rem}
+.fact b{display:block;font-weight:500;font-size:1.5rem;letter-spacing:-.02em}
+.fact span{font-size:.76rem;color:var(--mute)}
+
+/* ---------- sections ---------- */
+.sec{padding-block:clamp(2.5rem,5vw,4rem);border-top:1px solid var(--line)}
+.sec h2{font-weight:500;font-size:clamp(1.5rem,3.2vw,2.2rem);letter-spacing:-.025em;margin:0 0 .6rem;line-height:1.15}
+.sec .intro{color:var(--mute);margin:0 0 2rem;max-width:64ch;font-size:.88rem}
+.offer{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(17rem,100%),1fr));gap:1rem}
+.offer > div{border:1px solid var(--line);border-radius:var(--r);padding:1.25rem 1.3rem;background:var(--panel)}
+.offer .n{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--pink)}
+.offer h3{font-weight:500;font-size:1.15rem;margin:.45rem 0 .5rem;letter-spacing:-.01em}
+.offer p{margin:0 0 .8rem;font-size:.8rem;color:var(--mute);line-height:1.75}
+.offer ul{margin:0;padding:0;list-style:none;font-size:.76rem;display:flex;flex-direction:column;gap:.3rem}
+.offer li::before{content:"+ ";color:var(--green)}
+
+/* ---------- console ---------- */
+.console{display:grid;grid-template-columns:15.5rem minmax(0,1fr);gap:2rem}
+.console > div{min-width:0}
+.railhead{font-size:.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:.2em;margin:0 0 .9rem}
+.rail{display:flex;flex-direction:column;gap:.15rem;position:sticky;top:5rem}
+.tab{all:unset;box-sizing:border-box;display:grid;grid-template-columns:1.6rem 1fr;align-items:baseline;gap:.5rem;padding:.6rem .7rem;border-radius:6px;cursor:pointer;min-width:0;color:var(--mute)}
+.tab:hover{background:var(--panel);color:var(--ink)}
+.tab:focus-visible{outline:2px solid var(--violet);outline-offset:1px}
+.tab[aria-selected="true"]{background:var(--panel2);color:var(--ink);box-shadow:inset 2px 0 0 var(--violet)}
+.tab .ic{font-size:.7rem;color:var(--dim)}
+.tab[aria-selected="true"] .ic{color:var(--violet)}
+.tab .nm{font-size:.86rem;line-height:1.3;min-width:0}
+.tab .nm small{display:block;color:var(--dim);font-size:.72rem;margin-top:.15rem}
+.more{padding:.9rem .7rem 0;font-size:.74rem;color:var(--dim);line-height:1.6;margin-top:1rem;border-top:1px solid var(--line)}
+.more b{display:block;color:var(--mute);font-weight:400;letter-spacing:.2em;text-transform:uppercase;font-size:.66rem;margin-bottom:.4rem}
+@media (max-width:60rem){
+  .console{grid-template-columns:minmax(0,1fr);gap:1.2rem}
+  .rail{flex-direction:row;overflow-x:auto;padding-bottom:.4rem;scrollbar-width:thin;position:static}
+  .tab{flex:0 0 12.5rem}
+  .more{display:none}
+}
+
+.panel{min-width:0}
+.panel[hidden]{display:none}
+.phead{padding:.2rem 0 1.4rem;margin-bottom:1.2rem;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem 2rem;align-items:start}
+.phead .uri{font-size:.72rem;color:var(--dim);margin:0 0 .5rem}
+.phead h2{margin:0;font-weight:500;font-size:clamp(1.35rem,2.6vw,1.85rem);letter-spacing:-.02em;line-height:1.2}
+.phead p{margin:.6rem 0 0;color:var(--mute);max-width:62ch;font-size:.86rem;line-height:1.75}
+.basis{font-size:.74rem;color:var(--mute);border-left:1px solid var(--line);padding:.1rem 0 .1rem 1rem;max-width:17rem;line-height:1.65}
+.basis b{display:block;color:var(--green);font-weight:400;text-transform:uppercase;letter-spacing:.2em;font-size:.64rem;margin:0 0 .3rem}
+.basis b + span{display:block;margin-bottom:.7rem}
+@media (max-width:52rem){.phead{grid-template-columns:1fr}.basis{max-width:none}}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(21rem,100%),1fr));gap:1rem}
+.card{border:1px solid var(--line);background:#fff;border-radius:var(--r);padding:1.15rem 1.2rem;min-width:0;box-shadow:0 1px 2px rgba(22,24,27,.03)}
+.card.span{grid-column:1/-1}
+.card.tint{background:var(--panel)}
+.card h3{font-size:.68rem;text-transform:uppercase;letter-spacing:.2em;margin:0 0 .95rem;color:var(--green);font-weight:400;display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+.card h3.p{color:var(--pink)} .card h3.v{color:var(--violet)} .card h3.a{color:var(--amber)}
+.card h3 .r{margin-left:auto;text-transform:none;letter-spacing:0;color:var(--dim);font-size:.72rem}
+.note{font-size:.74rem;color:var(--dim);margin:.8rem 0 0;line-height:1.65}
+textarea,input[type="text"],input[type="number"],select{background:#fff;border:1px solid var(--line2);border-radius:6px;color:var(--ink);padding:.55rem .7rem;width:100%;font-size:.82rem}
+textarea{line-height:1.65;resize:vertical;min-height:11rem;font-size:.78rem}
+textarea:focus,input:focus,select:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(59,51,214,.12)}
+.row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:.8rem}
+.chip{display:inline-block;font-size:.66rem;line-height:1.4;padding:.05rem .4rem;white-space:nowrap;border-radius:4px;border:1px solid currentColor;letter-spacing:.04em}
+.chip.g{color:var(--green)} .chip.a{color:var(--amber)} .chip.r{color:var(--red)} .chip.v{color:var(--violet)} .chip.m{color:var(--dim)} .chip.o{color:var(--orange)}
+label.chk{display:flex;gap:.55rem;align-items:flex-start;font-size:.76rem;color:var(--mute);cursor:pointer;line-height:1.55}
+label.chk input{margin-top:.25rem;accent-color:var(--violet)}
+
+/* case study strip */
+.cs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem 1.5rem;margin-top:1.4rem;padding-top:1.2rem;border-top:1px dashed var(--line2)}
+.cs b{display:block;font-weight:400;font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--violet);margin-bottom:.35rem}
+.cs p{margin:0;font-size:.78rem;color:var(--mute);line-height:1.7}
+@media (max-width:48rem){.cs{grid-template-columns:1fr}}
+
+/* NEWS2 */
+.obs{display:grid;gap:.75rem}
+.ob{display:grid;grid-template-columns:8.2rem minmax(0,1fr) 3.6rem 1.6rem;gap:.6rem;align-items:center;font-size:.78rem}
+.ob label{color:var(--mute)}
+.ob output{text-align:right;font-weight:500}
+.ob .pts{display:inline-grid;place-items:center;width:1.5rem;height:1.5rem;border-radius:4px;font-size:.72rem;background:var(--panel2);color:var(--dim)}
+.pts.s1{background:#FFF3C4;color:#6B4E00}
+.pts.s2{background:#FFD9B3;color:#7A3300}
+.pts.s3{background:#F7C1C1;color:#8A1414}
+.ob select{padding:.35rem .5rem;font-size:.76rem}
+input[type="range"]{width:100%;accent-color:var(--violet)}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:6px;overflow:hidden}
+.seg button{all:unset;cursor:pointer;padding:.3rem .7rem;font-size:.74rem;color:var(--mute)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.seg button:focus-visible{outline:2px solid var(--violet);outline-offset:-2px}
+@media (max-width:30rem){.ob{grid-template-columns:minmax(0,1fr) 3.4rem 1.6rem}.ob label{grid-column:1/-1;margin-bottom:-.4rem}}
+.score{display:flex;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+.score .big{font-size:4rem;line-height:.9;font-weight:500;letter-spacing:-.04em}
+.band{display:inline-block;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;padding:.25rem .55rem;border-radius:4px;margin-bottom:.4rem}
+.band.b0{background:#DDF3E6;color:#0D5A35}
+.band.b1{background:#FFF3C4;color:#6B4E00}
+.band.b2{background:#FFD9B3;color:#7A3300}
+.band.b3{background:#F7C1C1;color:#8A1414}
+.resp{font-size:.82rem;margin:.9rem 0 0;line-height:1.7}
+.resp small{display:block;color:var(--dim);font-size:.72rem;margin-top:.35rem}
+.spark{width:100%;height:110px;display:block;margin:.2rem 0 .4rem}
+.spark text{font-family:var(--mono);font-size:10px;fill:var(--dim)}
+.draft{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:.75rem .85rem;font-size:.76rem;line-height:1.7;white-space:pre-wrap;min-height:6rem}
+.draft:focus{outline:none;border-color:var(--violet)}
+.sent{font-size:.74rem;color:var(--green);margin-top:.6rem;min-height:1.2em}
+
+/* SBAR */
+.sbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+@media (max-width:40rem){.sbar{grid-template-columns:1fr}}
+.sb{border:1px solid var(--line);border-radius:6px;padding:.7rem .8rem;background:#fff;display:flex;flex-direction:column;min-width:0}
+.sb.ok{border-color:rgba(20,121,74,.45);background:#F6FBF8}
+.sb h4{margin:0 0 .4rem;font-weight:500;font-size:.78rem;display:flex;align-items:center;gap:.5rem}
+.sb h4 i{font-style:normal;display:inline-grid;place-items:center;width:1.35rem;height:1.35rem;border-radius:4px;background:var(--ink);color:#fff;font-size:.7rem}
+.sb ul{margin:0 0 .6rem;padding-left:1.1rem;font-size:.76rem;line-height:1.6;flex:1}
+.sb ul:focus{outline:none;box-shadow:0 0 0 2px rgba(59,51,214,.25);border-radius:4px}
+.sb ul:empty::before{content:"Nothing found in the notes";color:var(--dim)}
+.flags{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.5rem}
+.flags li{border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:6px;padding:.55rem .7rem;font-size:.76rem;line-height:1.6;background:#fff}
+.flags li.hi{border-left-color:var(--red)}
+.flags li.lo{border-left-color:var(--dim)}
+.flags li b{font-weight:500}
+.flags li q{display:block;color:var(--dim);font-size:.7rem;quotes:none;margin-top:.15rem}
+
+/* coding */
+.doc{font-size:.8rem;line-height:1.9;border:1px solid var(--line);border-radius:6px;padding:.8rem .9rem;background:#fff;max-height:22rem;overflow:auto}
+.doc mark{background:rgba(59,51,214,.1);color:inherit;border-bottom:2px solid var(--violet);padding:0 .1rem;border-radius:2px;cursor:pointer}
+.doc mark.neg{background:rgba(115,119,127,.12);border-bottom-color:var(--dim);text-decoration:line-through;text-decoration-color:rgba(115,119,127,.6)}
+.doc mark.hot{background:rgba(255,213,0,.45);border-bottom-color:var(--amber)}
+.codes{display:flex;flex-direction:column;gap:.5rem}
+.code{display:grid;grid-template-columns:4.2rem minmax(0,1fr) auto;gap:.2rem .8rem;align-items:center;border:1px solid var(--line);border-radius:6px;padding:.6rem .7rem;background:#fff;font-size:.78rem}
+.code .c{font-weight:500;color:var(--violet)}
+.code .d{min-width:0}
+.code .d small{display:block;color:var(--dim);font-size:.7rem}
+.code .acts{display:flex;gap:.3rem}
+.code.acc{border-color:rgba(20,121,74,.5);background:#F6FBF8}
+.code.rej{opacity:.45}
+.code.neg{background:var(--panel)}
+.code.neg .c{color:var(--dim);text-decoration:line-through}
+@media (max-width:30rem){.code{grid-template-columns:4rem minmax(0,1fr)}.code .acts{grid-column:1/-1}}
+.episode{font-size:.8rem;border:1px dashed var(--line2);border-radius:6px;padding:.7rem .85rem;margin-top:.8rem;background:var(--panel)}
+.episode b{font-weight:500}
+
+/* DNA */
+.scroll{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:.76rem;min-width:38rem}
+.tbl th{text-align:left;font-size:.62rem;font-weight:400;color:var(--dim);text-transform:uppercase;letter-spacing:.14em;padding:.4rem .45rem;border-bottom:1px solid var(--line)}
+.tbl td{padding:.5rem .45rem;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr.sel td{background:#F4F3FF}
+.tbl tbody tr{cursor:pointer}
+.tbl tbody tr:hover td{background:var(--panel)}
+.riskbar{display:flex;align-items:center;gap:.5rem;min-width:7rem}
+.riskbar i{display:block;height:5px;flex:1;background:var(--panel2);border-radius:3px;overflow:hidden;position:relative}
+.riskbar i::after{content:"";position:absolute;inset:0;width:var(--w);background:var(--c);border-radius:3px}
+.why{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.35rem;font-size:.76rem}
+.why li{display:grid;grid-template-columns:minmax(0,1fr) 6.5rem 3rem;gap:.6rem;align-items:center}
+.why .bar2{height:6px;position:relative;background:var(--panel2);border-radius:3px}
+.why .bar2 span{position:absolute;top:0;bottom:0;border-radius:3px}
+.why .v{text-align:right;color:var(--mute)}
+.kpi{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:.9rem}
+.kpi div{font-size:.72rem;color:var(--mute)}
+.kpi b{display:block;font-size:1.5rem;font-weight:500;color:var(--ink);letter-spacing:-.02em}
+.sms{border:1px solid var(--line);border-radius:14px 14px 14px 4px;background:var(--panel2);padding:.65rem .8rem;font-size:.76rem;line-height:1.6;max-width:26rem;margin-top:.7rem}
+.log{list-style:none;margin:.7rem 0 0;padding:0;font-size:.72rem;color:var(--mute);display:flex;flex-direction:column;gap:.2rem;max-height:7rem;overflow:auto}
+.log li::before{content:"› ";color:var(--green)}
+
+/* plain english */
+.cols2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+@media (max-width:52rem){.cols2{grid-template-columns:1fr}}
+.letter{font-size:.82rem;line-height:1.85;border:1px solid var(--line);border-radius:6px;padding:.9rem 1rem;background:#fff;min-height:12rem}
+.letter h4{font-weight:500;font-size:.86rem;margin:.9rem 0 .25rem}
+.letter h4:first-child{margin-top:0}
+.letter p{margin:0 0 .4rem}
+.letter abbr{text-decoration:none;border-bottom:1px dotted var(--pink);cursor:help}
+.letter.lg{font-size:.98rem}
+.letter.xl{font-size:1.14rem}
+.meds{width:100%;border-collapse:collapse;font-size:.78rem;margin-top:.3rem}
+.meds td,.meds th{border-bottom:1px solid var(--line);padding:.35rem .3rem;text-align:left}
+.meds th{font-weight:400;color:var(--dim);font-size:.66rem;text-transform:uppercase;letter-spacing:.12em}
+.age{display:grid;gap:.5rem;font-size:.74rem}
+.age .ln{display:grid;grid-template-columns:6.5rem minmax(0,1fr) 4.5rem;gap:.6rem;align-items:center}
+.age .tr{position:relative;height:10px;background:var(--panel2);border-radius:5px}
+.age .tr .tgt{position:absolute;top:-3px;bottom:-3px;border-radius:3px;background:rgba(20,121,74,.14);border:1px dashed rgba(20,121,74,.6)}
+.age .tr .pin{position:absolute;top:-3px;width:4px;height:16px;border-radius:2px;transform:translateX(-50%)}
+.age b{font-weight:500;text-align:right}
+
+/* experience, process, principles */
+.exp{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16rem,100%),1fr));gap:1rem}
+.exp > div{border-top:2px solid var(--ink);padding-top:.9rem}
+.exp .when{font-size:.68rem;color:var(--dim);letter-spacing:.06em}
+.exp h3{font-weight:500;font-size:.98rem;margin:.35rem 0 .45rem;line-height:1.4}
+.exp p{margin:0;font-size:.78rem;color:var(--mute);line-height:1.7}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;counter-reset:s}
+@media (max-width:52rem){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:30rem){.steps{grid-template-columns:1fr}}
+.steps li{counter-increment:s;border:1px solid var(--line);border-radius:var(--r);padding:1rem 1.05rem;background:#fff}
+.steps li::before{content:"0" counter(s);font-size:.66rem;letter-spacing:.2em;color:var(--pink)}
+.steps b{display:block;font-weight:500;margin:.35rem 0 .35rem}
+.steps p{margin:0;font-size:.76rem;color:var(--mute);line-height:1.7}
+.steps small{display:block;margin-top:.6rem;font-size:.68rem;color:var(--dim)}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(15rem,100%),1fr));gap:1.5rem 2rem}
+.rule{border-top:1px solid var(--line);padding-top:1rem}
+.rule .n{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--violet)}
+.rule b{display:block;font-size:.92rem;font-weight:500;margin:.5rem 0 .4rem}
+.rule p{margin:0;font-size:.78rem;color:var(--mute);line-height:1.7}
+.contact{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:2rem;align-items:center}
+@media (max-width:52rem){.contact{grid-template-columns:1fr}}
+.contact .box{border:1px solid var(--line);border-radius:var(--r);padding:1.2rem 1.3rem;background:var(--panel);font-size:.82rem;display:flex;flex-direction:column;gap:.55rem}
+.contact .box a{word-break:break-all}
+.foot{border-top:1px solid var(--line);padding-block:1.6rem 2.2rem;font-size:.72rem;color:var(--dim);background:var(--panel)}
+.foot .wrap{display:flex;flex-direction:column;gap:.5rem}
+.foot p{margin:0;max-width:90ch;line-height:1.7}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .ecg .trace{stroke-dashoffset:0}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="mark" href="#main" aria-label="Halvia home"><svg class="pc" viewBox="0 0 38 32" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M6 0h6v2h-6zM26 0h6v2h-6zM2 2h4v2h-4zM12 2h4v2h-4zM22 2h4v2h-4zM32 2h4v2h-4zM0 4h2v2h-2zM16 4h2v2h-2zM20 4h2v2h-2zM36 4h2v2h-2zM0 6h2v2h-2zM18 6h2v2h-2zM36 6h2v2h-2zM0 8h2v2h-2zM36 8h2v2h-2zM0 10h2v2h-2zM36 10h2v2h-2zM0 12h2v2h-2zM36 12h2v2h-2zM4 16h2v2h-2zM32 16h2v2h-2zM6 18h2v2h-2zM30 18h2v2h-2zM8 20h2v2h-2zM28 20h2v2h-2zM10 22h2v2h-2zM26 22h2v2h-2zM12 24h2v2h-2zM24 24h2v2h-2zM14 26h2v2h-2zM22 26h2v2h-2zM16 28h2v2h-2zM20 28h2v2h-2zM18 30h2v2h-2z"/><path fill="#4038FF" d="M14 6h2v2h-2zM12 8h2v2h-2zM16 8h2v2h-2zM12 10h2v2h-2zM16 10h2v2h-2zM12 12h2v2h-2zM16 12h2v2h-2zM16 14h2v2h-2zM16 16h2v2h-2zM16 18h2v2h-2z"/><path fill="#FF2BE0" d="M0 14h12v2h-12z"/><path fill="#1FC65A" d="M22 14h16v2h-16zM20 16h2v2h-2zM20 18h2v2h-2zM18 20h2v2h-2z"/></svg><span><span class="chev">&#10095;</span> halvia</span><span class="ver">v0.1</span></a>
+    <div class="barright">
+      <span class="tagline"><span class="dot"></span> AI systems for healthcare</span>
+      <a class="back" href="index.html">&larr; Portfolio</a>
+      <a class="btn sm accent" href="#contact">Work with me</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="wrap herogrid">
+      <div>
+      <p class="label">Halvia &middot; design, code and set-up for health teams</p>
+      <h1>AI that gives care teams <em>time back</em>, and helps patients understand their care.</h1>
+      <p class="lede">I'm <b>Shaun Finch</b>, a UI/UX and motion designer in Manchester working on <b>AI in health and science</b>. I design, build and set up AI tools around how doctors, nurses, coders and patients actually work, with a person always making the final call. The five case studies below are working prototypes: open one, change the numbers, and see how it behaves.</p>
+      <div class="actions">
+        <a class="btn accent" href="#cases">Try the case studies &darr;</a>
+        <a class="btn" href="#contact">Talk about a project</a>
+      </div>
+      <p class="trust">
+        <span><span class="dot"></span> Runs in your browser: nothing you type is sent anywhere</span>
+        <span class="chip m">synthetic patients only</span>
+        <span class="chip v">clinician stays in charge</span>
+      </p>
+      </div>
+      <aside class="board" aria-label="Example ward board, synthetic patients">
+        <div class="bhead"><span class="dot pulse"></span>Ward 6 &middot; today<span class="chip m">synthetic</span></div>
+        <a class="brow" href="#news" data-open="news"><span class="bk">Bed 7</span><span>NEWS2 5 and rising</span><span class="chip r">escalate</span></a>
+        <a class="brow" href="#sbar" data-open="sbar"><span class="bk">Bed 9</span><span>Allergy query on co-amoxiclav</span><span class="chip r">handover</span></a>
+        <a class="brow" href="#code" data-open="code"><span class="bk">Coding</span><span>7 codes suggested, 2 ruled out</span><span class="chip a">review</span></a>
+        <a class="brow" href="#dna" data-open="dna"><span class="bk">Clinic</span><span>1.7 appointments likely missed</span><span class="chip a">offer help</span></a>
+        <a class="brow" href="#plain" data-open="plain"><span class="bk">Letter</span><span>Reading age <span id="bAge">16 &rarr; 10</span></span><span class="chip g">ready</span></a>
+        <div class="bfoot"><span>5 suggestions</span><span>waiting for a person to approve</span></div>
+      </aside>
+      <svg class="ecg herofull" viewBox="0 0 1200 70" preserveAspectRatio="none" aria-hidden="true">
+        <path class="base" d="M0 40H1200"/>
+        <path class="trace" d="M0 40H170l12-6 12 6h18l8 10 14-44 14 52 10-18h26l20-8 20 8H470l12-6 12 6h18l8 10 14-44 14 52 10-18h26l20-8 20 8H770l12-6 12 6h18l8 10 14-44 14 52 10-18h26l20-8 20 8H1200"/>
+      </svg>
+      <div class="facts">
+        <div class="fact"><b>5</b><span>working case studies, each built around one job on a ward, in an office or at home</span></div>
+        <div class="fact"><b>0</b><span>bytes of patient data leave this page. Every demo uses made-up patients</span></div>
+        <div class="fact"><b>1</b><span>person approves every output. The AI drafts, flags and explains; staff decide</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="offerH">
+    <div class="wrap">
+      <p class="label p">What I do</p>
+      <h2 id="offerH">Design, build, set up</h2>
+      <p class="intro">Most AI projects in health don't fail on the model. They fail because the tool doesn't fit a twelve-hour shift, nobody trusts the output, or patients can't read what it says. That gap is where I work.</p>
+      <div class="offer">
+        <div>
+          <span class="n">01 &middot; Design</span>
+          <h3>Interfaces staff trust at 3am</h3>
+          <p>UI/UX for AI systems built around doctor and nurse ease of use: clear screens, explainable flags, and designs tested with the people who'll use them.</p>
+          <ul><li>Clinical workflow mapping</li><li>Prototypes in Figma and Framer</li><li>Explainer video and motion</li><li>Accessible, plain-English patient content</li></ul>
+        </div>
+        <div>
+          <span class="n">02 &middot; Build</span>
+          <h3>Working prototypes in code</h3>
+          <p>Front-ends and tools that actually run, like the ones on this page, so a ward or team can try the idea before anyone signs a contract.</p>
+          <ul><li>Web apps and dashboards</li><li>LLM features with guardrails</li><li>Healthcare data visualisation</li><li>Built with Claude Code and VS Code</li></ul>
+        </div>
+        <div>
+          <span class="n">03 &middot; Set up</span>
+          <h3>Systems that stay safe in use</h3>
+          <p>Connecting AI into existing workflows, and checking it keeps working: rubric-based evaluation of model outputs, audit trails and handover documentation.</p>
+          <ul><li>LLM output evaluation and scoring</li><li>Pilot design and success measures</li><li>Clinical safety and IG considered from day one</li><li>Training material for staff</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="cases" aria-labelledby="casesH">
+    <div class="wrap">
+      <p class="label v">Case studies &middot; interactive</p>
+      <h2 id="casesH">Five places AI can help, today</h2>
+      <p class="intro">Each case study is a small, working concept of one job in a hospital or clinic. Pick one, play with it, and read the problem, what I'd build and what we'd measure underneath.</p>
+      <div class="console">
+        <div>
+          <p class="railhead">Case studies</p>
+          <div class="rail" role="tablist" aria-label="Case studies" aria-orientation="vertical">
+            <button class="tab" role="tab" id="t-news" aria-controls="p-news" aria-selected="true"><span class="ic">01</span><span class="nm">Early warning<small>Ward nurses</small></span></button>
+            <button class="tab" role="tab" id="t-sbar" aria-controls="p-sbar" aria-selected="false" tabindex="-1"><span class="ic">02</span><span class="nm">Shift handover<small>Nurses and doctors</small></span></button>
+            <button class="tab" role="tab" id="t-code" aria-controls="p-code" aria-selected="false" tabindex="-1"><span class="ic">03</span><span class="nm">Clinical coding<small>Coding teams</small></span></button>
+            <button class="tab" role="tab" id="t-dna" aria-controls="p-dna" aria-selected="false" tabindex="-1"><span class="ic">04</span><span class="nm">Missed appointments<small>Outpatients</small></span></button>
+            <button class="tab" role="tab" id="t-plain" aria-controls="p-plain" aria-selected="false" tabindex="-1"><span class="ic">05</span><span class="nm">Plain-English letters<small>Patients</small></span></button>
+          </div>
+          <div class="more"><b>About these demos</b>Concept prototypes with made-up patients and simple, visible rules, so you can see exactly why each output appears. A real project swaps in validated models and your systems.</div>
+        </div>
+
+        <div>
+          <!-- 01 NEWS2 -->
+          <section class="panel" id="p-news" role="tabpanel" aria-labelledby="t-news">
+            <div class="phead">
+              <div>
+                <p class="uri">halvia://ward/early-warning</p>
+                <h2>Spot the patient who is quietly getting worse</h2>
+                <p>NEWS2 is the early warning score used across UK hospitals. Scoring it is simple; noticing the <b>trend</b> across a busy shift, and escalating clearly, is the hard part. This concept scores observations live, watches the trend and drafts the escalation message for the nurse to check and send.</p>
+              </div>
+              <aside class="basis"><b>Who it helps</b><span>Ward nurses, outreach and medical teams</span><b>Final call</b><span>Registered nurse</span></aside>
+            </div>
+            <div class="row" style="margin:0 0 1rem">
+              <span style="font-size:.74rem;color:var(--dim)">Load a patient:</span>
+              <button class="btn sm" data-preset="stable">Bed 4 &middot; stable</button>
+              <button class="btn sm" data-preset="drift">Bed 7 &middot; drifting</button>
+              <button class="btn sm" data-preset="worse">Bed 12 &middot; deteriorating</button>
+            </div>
+            <div class="pgrid">
+              <div class="card">
+                <h3>Observations <span class="r">SpO&#8322; scale 1</span></h3>
+                <div class="obs" id="obs"></div>
+              </div>
+              <div class="card tint">
+                <h3 class="v">NEWS2 score</h3>
+                <div class="score"><span class="big" id="nTotal">0</span><span class="band b0" id="nBand">Low</span></div>
+                <p class="resp" id="nResp"></p>
+              </div>
+              <div class="card span">
+                <h3 class="p">AI layer &middot; trend and escalation draft <span class="r">observations every 4 hours</span></h3>
+                <div class="pgrid">
+                  <div>
+                    <svg class="spark" id="spark" viewBox="0 0 360 110" role="img" aria-label="NEWS2 score trend"></svg>
+                    <p style="font-size:.8rem;margin:0" id="trendTxt"></p>
+                  </div>
+                  <div>
+                    <div class="draft" id="draft" contenteditable="true" spellcheck="false" aria-label="Escalation message draft, editable"></div>
+                    <label class="chk" style="margin-top:.7rem"><input type="checkbox" id="draftOk"> I've checked the patient and this message</label>
+                    <div class="row"><button class="btn sm accent" id="sendBtn" disabled>Send to outreach team</button><span class="note" style="margin:0">Simulated: nothing is sent</span></div>
+                    <div class="sent" id="sentMsg" role="status"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="cs">
+              <div><b>The problem</b><p>Deterioration is often visible in the observations hours before a crisis, but it's spread across charts and shift changes. Escalation calls can be rushed or unclear.</p></div>
+              <div><b>What I'd build</b><p>A bedside view that scores as obs are entered, highlights rising trends across shifts, and drafts an SBAR-style escalation the nurse edits and sends from the same screen.</p></div>
+              <div><b>What we'd measure</b><p>Time from a trigger score to review, missed escalations, nurse-rated clarity of calls, and alert fatigue (alerts per shift that staff felt were useful).</p></div>
+            </div>
+          </section>
+
+          <!-- 02 SBAR -->
+          <section class="panel" id="p-sbar" role="tabpanel" aria-labelledby="t-sbar" hidden>
+            <div class="phead">
+              <div>
+                <p class="uri">halvia://ward/handover</p>
+                <h2>Turn rushed notes into a safe handover</h2>
+                <p>Shift handover is where details get lost. Paste free-text notes and the assistant sorts them into SBAR (Situation, Background, Assessment, Recommendation), pulls out the to-do list, and raises safety flags, including a medicine and allergy clash hidden in the first example.</p>
+              </div>
+              <aside class="basis"><b>Who it helps</b><span>Nurses and junior doctors at shift change</span><b>Final call</b><span>Handing-over clinician approves each section</span></aside>
+            </div>
+            <div class="row" style="margin:0 0 1rem">
+              <span style="font-size:.74rem;color:var(--dim)">Example notes:</span>
+              <button class="btn sm" data-note="0">Bed 9 &middot; pneumonia</button>
+              <button class="btn sm" data-note="1">Bay 2 &middot; post-op hip</button>
+            </div>
+            <div class="pgrid">
+              <div class="card">
+                <h3>Free-text notes <span class="r">edit me</span></h3>
+                <label class="sr" for="noteIn">Handover notes</label>
+                <textarea id="noteIn" spellcheck="false"></textarea>
+                <div class="row"><button class="btn accent sm" id="sbarGo">Structure into SBAR</button></div>
+              </div>
+              <div class="card tint">
+                <h3 class="p">Safety flags <span class="r" id="flagCount"></span></h3>
+                <ul class="flags" id="flags"></ul>
+              </div>
+              <div class="card span">
+                <h3 class="v">SBAR handover <span class="r">click any section to edit, then approve it</span></h3>
+                <div class="sbar" id="sbar"></div>
+                <div class="row"><button class="btn sm accent" id="handBtn" disabled>Sign off handover</button><span class="sent" id="handMsg" role="status" style="margin:0"></span></div>
+              </div>
+            </div>
+            <div class="cs">
+              <div><b>The problem</b><p>Handovers vary by person and by how tired they are. Important items (an allergy query, a near-miss fall, a pending blood test) can sit in a paragraph and get missed.</p></div>
+              <div><b>What I'd build</b><p>A handover tool that structures notes into SBAR, cross-checks medicines against allergies, and makes the outgoing nurse approve each section, with a record of what was handed over.</p></div>
+              <div><b>What we'd measure</b><p>Handover time, items missed in audit, incidents linked to handover, and whether incoming staff feel they have what they need.</p></div>
+            </div>
+          </section>
+
+          <!-- 03 Coding -->
+          <section class="panel" id="p-code" role="tabpanel" aria-labelledby="t-code" hidden>
+            <div class="phead">
+              <div>
+                <p class="uri">halvia://records/clinical-coding</p>
+                <h2>Help coders get from discharge summary to codes</h2>
+                <p>Clinical coding turns each hospital stay into standard codes that drive funding, research and planning. In England that means ICD-10 for diagnoses and OPCS-4 for procedures. This assistant suggests ICD-10 codes, shows the exact sentence behind each one, and spots conditions that were ruled out, so they aren't coded by mistake.</p>
+              </div>
+              <aside class="basis"><b>Who it helps</b><span>Clinical coders and coding auditors</span><b>Final call</b><span>Accredited clinical coder</span><b>My background</b><span>Product explainer for the CHKS clinical coding system</span></aside>
+            </div>
+            <div class="pgrid">
+              <div class="card">
+                <h3>Discharge summary <span class="r">synthetic</span></h3>
+                <label class="sr" for="dsIn">Discharge summary text</label>
+                <textarea id="dsIn" spellcheck="false"></textarea>
+                <div class="row"><button class="btn accent sm" id="codeGo">Suggest codes</button><button class="btn sm ghost" id="codeReset">Reset example</button></div>
+              </div>
+              <div class="card tint">
+                <h3 class="v">Evidence view <span class="r">tap a highlight</span></h3>
+                <div class="doc" id="docView" aria-live="polite"></div>
+                <p class="note">Highlighted: a suggested code. Struck through: mentioned but negated ("no evidence of", "ruled out"), so not coded.</p>
+              </div>
+              <div class="card span">
+                <h3>Suggested ICD-10 codes <span class="r" id="codeCount"></span></h3>
+                <div class="codes" id="codes"></div>
+                <div class="episode" id="episode"></div>
+                <p class="note">Code titles follow the WHO ICD-10. This demo knows about twenty common diagnoses; a real tool would use the full classification, the national coding standards and your trust's local rules.</p>
+              </div>
+            </div>
+            <div class="cs">
+              <div><b>The problem</b><p>Coders read long, unstructured notes under time pressure. Missed or wrong codes affect funding and the data the NHS uses to plan, and backlogs build quickly.</p></div>
+              <div><b>What I'd build</b><p>A suggestion panel inside the coder's existing system: evidence for every code, negation and uncertainty spotted, and one-click accept or reject that feeds an audit trail.</p></div>
+              <div><b>What we'd measure</b><p>Episodes coded per hour, audit accuracy, depth of coding (co-morbidities captured), and how often coders override suggestions, and why.</p></div>
+            </div>
+          </section>
+
+          <!-- 04 DNA -->
+          <section class="panel" id="p-dna" role="tabpanel" aria-labelledby="t-dna" hidden>
+            <div class="phead">
+              <div>
+                <p class="uri">halvia://outpatients/missed-appointments</p>
+                <h2>Fewer empty clinic slots, without penalising patients</h2>
+                <p>Missed appointments ("DNAs", for "did not attend") waste clinic time and delay care. This concept estimates who might struggle to attend, explains why in plain terms, and suggests <b>help</b>: a reminder, a video slot, or a nearer date. It's never used to overbook or move anyone down a list.</p>
+              </div>
+              <aside class="basis"><b>Who it helps</b><span>Outpatient booking teams and patients</span><b>Final call</b><span>Booking team, with patient choice</span></aside>
+            </div>
+            <div class="kpi">
+              <div><b id="kExp">0</b>expected missed appointments</div>
+              <div><b id="kSaved">0</b>prevented by actions taken</div>
+              <div><b id="kAct">0</b>patients offered help</div>
+            </div>
+            <div class="pgrid">
+              <div class="card span">
+                <h3>Tuesday clinic &middot; synthetic list <span class="r">tap a row to see why</span></h3>
+                <div class="scroll">
+                  <table class="tbl" id="dnaTbl">
+                    <thead><tr><th scope="col">Time</th><th scope="col">Patient</th><th scope="col">Clinic</th><th scope="col">Booked</th><th scope="col">Reminder</th><th scope="col">Risk of missing</th></tr></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="card">
+                <h3 class="v">Why this estimate <span class="r" id="dnaWho"></span></h3>
+                <ul class="why" id="why"></ul>
+                <p class="note">Illustrative weights, not a trained model. A real model is trained on local data, checked for bias across groups, and never uses protected characteristics.</p>
+              </div>
+              <div class="card tint">
+                <h3 class="p">Offer help</h3>
+                <div class="row" style="margin-top:0">
+                  <button class="btn sm" id="aSms">Send text reminder</button>
+                  <button class="btn sm" id="aVideo">Offer video appointment</button>
+                  <button class="btn sm" id="aSooner">Offer an earlier date</button>
+                </div>
+                <div class="sms" id="smsPrev"></div>
+                <ul class="log" id="dnaLog" aria-live="polite"></ul>
+              </div>
+            </div>
+            <div class="cs">
+              <div><b>The problem</b><p>Every empty slot is time a patient on the waiting list could have used. Blanket reminders help, but the people most likely to miss often need a different kind of help.</p></div>
+              <div><b>What I'd build</b><p>A daily list for booking teams showing who may need support and why, with reminder, video and rebooking actions built in, and freed slots offered back to the waiting list.</p></div>
+              <div><b>What we'd measure</b><p>DNA rate by clinic and by patient group (to check it's fair), slots refilled, patient-reported ease of rebooking, and staff time per list.</p></div>
+            </div>
+          </section>
+
+          <!-- 05 Plain English -->
+          <section class="panel" id="p-plain" role="tabpanel" aria-labelledby="t-plain" hidden>
+            <div class="phead">
+              <div>
+                <p class="uri">halvia://patients/plain-english</p>
+                <h2>Clinic letters patients can actually read</h2>
+                <p>Clinic letters are usually written for other clinicians. This concept rewrites one for the patient: jargon explained, medicines in a table, and next steps up front. It measures the reading age before and after, and can read the letter aloud.</p>
+              </div>
+              <aside class="basis"><b>Who it helps</b><span>Patients, carers and the clinicians writing letters</span><b>Final call</b><span>The clinician signs off the patient version</span></aside>
+            </div>
+            <div class="cols2">
+              <div class="card">
+                <h3>Clinician's letter <span class="r">edit me</span></h3>
+                <label class="sr" for="ltrIn">Clinic letter text</label>
+                <textarea id="ltrIn" spellcheck="false" style="min-height:15rem"></textarea>
+                <div class="row"><button class="btn accent sm" id="plainGo">Write the patient version</button><button class="btn sm ghost" id="plainReset">Reset example</button></div>
+              </div>
+              <div class="card tint">
+                <h3 class="v">Patient version
+                  <span class="r" style="display:flex;gap:.35rem;align-items:center">
+                    <span class="seg" role="group" aria-label="Text size"><button type="button" data-size="" aria-pressed="true">A</button><button type="button" data-size="lg" aria-pressed="false">A+</button><button type="button" data-size="xl" aria-pressed="false">A++</button></span>
+                    <button class="btn sm" id="speak" type="button">&#9654; Read aloud</button>
+                  </span>
+                </h3>
+                <div class="letter" id="ltrOut" aria-live="polite"></div>
+              </div>
+              <div class="card" style="grid-column:1/-1">
+                <h3 class="p">Reading age <span class="r">Flesch&ndash;Kincaid estimate &middot; shaded band is the 9 to 11 target</span></h3>
+                <div class="age" id="age"></div>
+              </div>
+            </div>
+            <div class="cs">
+              <div><b>The problem</b><p>Many adults struggle with health information written at a high reading level. Patients leave clinic unsure what was found or what to do next, and call the hospital to ask.</p></div>
+              <div><b>What I'd build</b><p>A letter assistant inside the clinician's workflow that drafts a patient version alongside the GP letter, with a glossary, medicines table, reading-age check and translation and audio options.</p></div>
+              <div><b>What we'd measure</b><p>Reading age of letters sent, patient understanding (short follow-up survey), follow-up calls to the clinic, and the extra clinician time per letter.</p></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="expH">
+    <div class="wrap">
+      <p class="label">Where this comes from</p>
+      <h2 id="expH">Health, science and screens</h2>
+      <p class="intro">I've spent my career making complex things clear on screen, and now focus on clinical and scientific products.</p>
+      <div class="exp">
+        <div><span class="when">Virtual Spaces &middot; 2025 to now</span><h3>Product explainer for the CHKS clinical coding system (NHS)</h3><p>Explaining a clinical coding product used across the NHS to the people who use it, plus interactive UI built with Framer and Claude Code.</p></div>
+        <div><span class="when">Mercor &middot; 2026 to now</span><h3>AI evaluation with STEM experts</h3><p>Scoring and improving AI model outputs against expert rubrics, working alongside science and health subject-matter experts.</p></div>
+        <div><span class="when">Science &amp; health</span><h3>Scientific data visualisation</h3><p>Improving scientific data visualisations alongside STEM experts, and medical and scientific explainer video.</p></div>
+        <div><span class="when">Broadcast &amp; brand</span><h3>BBC, Paramount, Universal, LIV Golf</h3><p>Motion and digital design for broadcast and entertainment, including EastEnders and iPlayer at the BBC.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="howH">
+    <div class="wrap">
+      <p class="label p">How a project runs</p>
+      <h2 id="howH">Small, safe steps</h2>
+      <p class="intro">Start with one job and one team, prove it helps, then grow it. Each step ends with something you can see and decide on.</p>
+      <ol class="steps">
+        <li><b>Discover</b><p>Shadow the team, map the workflow and agree the one problem worth solving first.</p><small>1 to 2 weeks &middot; workflow map, success measures</small></li>
+        <li><b>Prototype</b><p>A clickable or working prototype like the ones above, tested with staff on synthetic data.</p><small>2 to 4 weeks &middot; prototype, feedback</small></li>
+        <li><b>Pilot</b><p>A small, supervised pilot with your clinical safety officer and IG team, measured against the agreed outcomes.</p><small>Agreed with you &middot; safety case input, evaluation</small></li>
+        <li><b>Scale</b><p>Hand over designs, code, training and an evaluation plan, so the tool keeps working after launch.</p><small>Ongoing &middot; docs, training, monitoring</small></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="ruleH">
+    <div class="wrap">
+      <p class="label v">Principles</p>
+      <h2 id="ruleH">How I build AI for care</h2>
+      <p class="intro">Six rules every Halvia project follows, written for clinical safety officers and IG teams as much as for designers.</p>
+      <div class="rules">
+        <div class="rule"><span class="n">01</span><b>A person makes the call</b><p>AI drafts, flags and suggests. A named member of staff approves anything that affects care, and the interface makes that step obvious.</p></div>
+        <div class="rule"><span class="n">02</span><b>Show the why</b><p>Every flag links to the sentence, number or rule behind it. If staff can't see why, they can't trust it or challenge it.</p></div>
+        <div class="rule"><span class="n">03</span><b>Privacy first</b><p>Least data, for the shortest time, in the right place. Designed with UK GDPR, data protection impact assessments and the NHS Data Security and Protection Toolkit in mind.</p></div>
+        <div class="rule"><span class="n">04</span><b>Safety is designed in</b><p>Hazards logged from the first sketch, so your clinical safety officer can work to DCB0129 and DCB0160, and the DTAC assessment has what it needs.</p></div>
+        <div class="rule"><span class="n">05</span><b>Accessible to everyone</b><p>Plain English, reading-age checks, WCAG 2.2 AA contrast and keyboard support, and layouts that work on a ward PC and a phone.</p></div>
+        <div class="rule"><span class="n">06</span><b>Measure, then trust</b><p>Model outputs are scored against clinician-written rubrics before and after launch, and checked for fairness across patient groups.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="contact" aria-labelledby="contactH">
+    <div class="wrap contact">
+      <div>
+        <p class="label">Work with me</p>
+        <h2 id="contactH">Got a workflow that's eating your team's time?</h2>
+        <p class="intro" style="margin-bottom:1.2rem">I work with NHS trusts, health-tech companies and research teams on design, prototypes and AI set-up. Tell me about the problem and I'll come back with a short plan and what a first prototype could look like.</p>
+        <div class="actions" style="margin-top:0">
+          <a class="btn accent" href="mailto:shaundavidfinch@gmail.com?subject=Halvia%20%E2%80%94%20healthcare%20AI%20project">Email Shaun</a>
+          <a class="btn" href="https://www.linkedin.com/in/shaun-finch" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+      <div class="box">
+        <span style="font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)">Shaun Finch &middot; Manchester, UK</span>
+        <span>Motion &amp; UI/UX Designer &middot; AI in Health &amp; Science &middot; AI Evaluation</span>
+        <a href="mailto:shaundavidfinch@gmail.com">shaundavidfinch@gmail.com</a>
+        <a href="https://www.linkedin.com/in/shaun-finch" rel="noopener">linkedin.com/in/shaun-finch</a>
+        <a href="index.html">Full portfolio &rarr;</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p><b style="color:var(--ink);font-weight:500">Important:</b> Halvia case studies are concept prototypes made to show design and engineering approach. They use made-up patients and simple illustrative rules, have not been clinically validated, are not medical devices and must not be used for real patient care. NEWS2 thresholds follow the Royal College of Physicians' published chart (2017). Halvia is an independent practice and is not affiliated with or endorsed by the NHS or any NHS organisation.</p>
+    <p>Nothing you type on this page leaves your browser. &copy; Shaun Finch</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+/* ---------- tabs ---------- */
+var tabs=$$('.tab');
+function show(t,focus){
+  tabs.forEach(function(x){var on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;$('#'+x.getAttribute('aria-controls')).hidden=!on});
+  if(focus)t.focus();
+  try{history.replaceState(null,'','#'+t.id.slice(2))}catch(e){}
+}
+tabs.forEach(function(t,i){
+  t.addEventListener('click',function(){show(t)});
+  t.addEventListener('keydown',function(e){
+    var k=e.key,n=null;
+    if(k==='ArrowDown'||k==='ArrowRight')n=tabs[(i+1)%tabs.length];
+    else if(k==='ArrowUp'||k==='ArrowLeft')n=tabs[(i-1+tabs.length)%tabs.length];
+    else if(k==='Home')n=tabs[0];else if(k==='End')n=tabs[tabs.length-1];
+    if(n){e.preventDefault();show(n,true)}
+  });
+});
+$$('[data-open]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();show($('#t-'+a.dataset.open));$('#cases').scrollIntoView()})});
+var h=location.hash.slice(1);
+if(h&&$('#t-'+h)){show($('#t-'+h));setTimeout(function(){$('#cases').scrollIntoView()},0)}
+
+/* ---------- 01 NEWS2 ---------- */
+// Royal College of Physicians NEWS2 chart, SpO2 scale 1
+var OBS=[
+  {k:'rr',label:'Respiration rate',unit:'/min',min:4,max:40,step:1,score:function(v){return v<=8?3:v<=11?1:v<=20?0:v<=24?2:3}},
+  {k:'spo2',label:'SpO₂',unit:'%',min:80,max:100,step:1,score:function(v){return v<=91?3:v<=93?2:v<=95?1:0}},
+  {k:'o2',label:'Air or oxygen?',type:'seg',opts:['Air','Oxygen'],score:function(v){return v==='Oxygen'?2:0}},
+  {k:'sbp',label:'Systolic BP',unit:'mmHg',min:60,max:240,step:1,score:function(v){return v<=90?3:v<=100?2:v<=110?1:v<=219?0:3}},
+  {k:'hr',label:'Pulse',unit:'/min',min:30,max:180,step:1,score:function(v){return v<=40?3:v<=50?1:v<=90?0:v<=110?1:v<=130?2:3}},
+  {k:'acvpu',label:'Consciousness',type:'sel',opts:['Alert','New confusion','Voice','Pain','Unresponsive'],score:function(v){return v==='Alert'?0:3}},
+  {k:'temp',label:'Temperature',unit:'°C',min:34,max:41,step:0.1,score:function(v){return v<=35?3:v<=36?1:v<=38?0:v<=39?1:2}}
+];
+var PRESETS={
+  stable:{name:'Bed 4',v:{rr:16,spo2:97,o2:'Air',sbp:128,hr:74,acvpu:'Alert',temp:36.8},hist:[1,0,1,0,1]},
+  drift:{name:'Bed 7',v:{rr:22,spo2:95,o2:'Air',sbp:108,hr:96,acvpu:'Alert',temp:37.9},hist:[0,1,1,2,3]},
+  worse:{name:'Bed 12',v:{rr:26,spo2:92,o2:'Oxygen',sbp:96,hr:118,acvpu:'New confusion',temp:38.6},hist:[1,2,4,5,7]}
+};
+var cur={preset:'drift',v:{}};
+var obsEl=$('#obs');
+OBS.forEach(function(o){
+  var d=document.createElement('div');d.className='ob';
+  var id='ob-'+o.k,ctl;
+  if(o.type==='seg'){
+    ctl='<span class="seg" role="group" aria-label="'+o.label+'">'+o.opts.map(function(x){return '<button type="button" data-k="'+o.k+'" data-v="'+x+'" aria-pressed="false">'+x+'</button>'}).join('')+'</span>';
+    d.innerHTML='<label>'+o.label+'</label>'+ctl+'<output></output><span class="pts" aria-label="points"></span>';
+  }else if(o.type==='sel'){
+    ctl='<select id="'+id+'" data-k="'+o.k+'">'+o.opts.map(function(x){return '<option>'+x+'</option>'}).join('')+'</select>';
+    d.innerHTML='<label for="'+id+'">'+o.label+'</label>'+ctl+'<output></output><span class="pts" aria-label="points"></span>';
+  }else{
+    ctl='<input type="range" id="'+id+'" data-k="'+o.k+'" min="'+o.min+'" max="'+o.max+'" step="'+o.step+'">';
+    d.innerHTML='<label for="'+id+'">'+o.label+'</label>'+ctl+'<output for="'+id+'"></output><span class="pts" aria-label="points"></span>';
+  }
+  o.el=d;obsEl.appendChild(d);
+});
+obsEl.addEventListener('input',function(e){var k=e.target.dataset.k;if(!k)return;var o=OBS.find(function(x){return x.k===k});cur.v[k]=o.type==='sel'?e.target.value:+e.target.value;newsRender()});
+obsEl.addEventListener('click',function(e){var b=e.target.closest('button[data-k]');if(!b)return;cur.v[b.dataset.k]=b.dataset.v;newsRender()});
+function loadPreset(p){cur.preset=p;cur.v=Object.assign({},PRESETS[p].v);$$('[data-preset]').forEach(function(b){b.classList.toggle('on',b.dataset.preset===p)});
+  OBS.forEach(function(o){var v=cur.v[o.k];if(o.type==='sel')$('select',o.el).value=v;else if(!o.type)$('input',o.el).value=v});
+  $('#draftOk').checked=false;$('#sentMsg').textContent='';delete $('#draft').dataset.edited;newsRender(true)}
+$$('[data-preset]').forEach(function(b){b.addEventListener('click',function(){loadPreset(b.dataset.preset)})});
+function newsRender(resetDraft){
+  var total=0,three=false,parts=[];
+  OBS.forEach(function(o){
+    var v=cur.v[o.k],s=o.score(v);total+=s;if(s===3)three=true;parts.push({o:o,v:v,s:s});
+    $('output',o.el).textContent=o.type?'':(o.step<1?v.toFixed(1):v)+(o.unit==='%'?'%':'');
+    var p=$('.pts',o.el);p.textContent=s;p.className='pts'+(s?' s'+s:'');p.setAttribute('aria-label',s+' points');
+    if(o.type==='seg')$$('button',o.el).forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===v)});
+  });
+  var band,cls,resp;
+  if(total>=7){band='High';cls='b3';resp='<b>Emergency response.</b> Urgent assessment by a team with critical-care skills, usually with transfer to a higher level of care. Continuous monitoring of vital signs.'}
+  else if(total>=5){band='Medium';cls='b2';resp='<b>Urgent response.</b> The registered nurse informs the medical team immediately and asks for an urgent assessment by a clinician with competence in acute illness. Observations at least every hour.'}
+  else if(three){band='Low-medium';cls='b2';resp='<b>Urgent ward-based response.</b> A score of 3 in one parameter: the nurse informs the medical team for an urgent review. Observations at least every hour.'}
+  else if(total>=1){band='Low';cls='b1';resp='<b>Ward-based response.</b> The registered nurse assesses the patient and decides whether to increase monitoring or escalate. Observations at least every 4 to 6 hours.'}
+  else{band='Low';cls='b0';resp='<b>Continue routine care.</b> Observations at least every 12 hours.'}
+  $('#nTotal').textContent=total;var b=$('#nBand');b.textContent=band;b.className='band '+cls;
+  $('#nResp').innerHTML=resp+'<small>From the RCP NEWS2 clinical response chart. Local escalation policy always applies.</small>';
+  var P=PRESETS[cur.preset],hist=P.hist.concat([total]);
+  spark(hist);
+  var d=total-P.hist[0],last=total-P.hist[P.hist.length-1],txt;
+  if(d>=3)txt='<span class="chip r">rising</span> Up '+d+' points in 20 hours. Each score on its own may not have triggered a call, but the trend is clear. Suggest escalating now rather than waiting for the next set of obs.';
+  else if(d>=1)txt='<span class="chip a">creeping up</span> Up '+d+' point'+(d>1?'s':'')+' since this time yesterday. Worth a closer look on the next round.';
+  else if(d<0)txt='<span class="chip g">improving</span> Down '+(-d)+' point'+(d<-1?'s':'')+' in 20 hours.';
+  else txt='<span class="chip g">steady</span> No upward trend across the last five sets of observations.';
+  if(last>=2&&d<3)txt+=' Jumped '+last+' since the last set.';
+  $('#trendTxt').innerHTML=txt;
+  if(resetDraft||!$('#draft').dataset.edited)$('#draft').textContent=draft(P,parts,total,band,d);
+  $('#sendBtn').disabled=!$('#draftOk').checked||total===0;
+}
+function draft(P,parts,total,band,d){
+  var abn=parts.filter(function(p){return p.s>0}).map(function(p){var o=p.o;return o.type?(o.k==='o2'?'on supplemental oxygen':p.v.toLowerCase()):o.label.replace('₂','2')+' '+(o.step<1?p.v.toFixed(1):p.v)+(o.unit==='%'?'%':o.unit==='mmHg'?'':o.unit==='°C'?'C':'')});
+  if(!total)return 'No escalation needed. NEWS2 0, observations within normal range. Continue routine monitoring.';
+  return 'S: '+P.name+', NEWS2 '+total+' ('+band.toLowerCase()+')'+(d>=3?', up '+d+' points in 20 hours':'')+'.\n'+
+    'B: [admitting problem and relevant history].\n'+
+    'A: '+(abn.length?abn.join(', '):'observations otherwise normal')+'. I am '+(total>=5?'concerned':'monitoring')+'.\n'+
+    'R: Please '+(total>=7?'attend now for an emergency review':total>=5?'review urgently within the hour':'review on your next round')+'. I will repeat observations '+(total>=5?'hourly':'every 4 hours')+'.';
+}
+$('#draft').addEventListener('input',function(){this.dataset.edited='1'});
+$('#draftOk').addEventListener('change',function(){$('#sendBtn').disabled=!this.checked||$('#nTotal').textContent==='0'});
+$('#sendBtn').addEventListener('click',function(){var t=new Date();$('#sentMsg').textContent='✓ Logged as sent at '+String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0')+' (simulated). The message and the nurse who approved it are kept in the audit trail.';this.disabled=true;$('#draftOk').checked=false;delete $('#draft').dataset.edited});
+function spark(h){
+  var W=360,H=110,px=30,py=14,max=Math.max(8,Math.max.apply(null,h)+1),n=h.length;
+  var x=function(i){return px+i*(W-px-14)/(n-1)},y=function(v){return H-py-v*(H-2*py)/max};
+  var s='';
+  [[5,'#FFD9B3'],[7,'#F7C1C1']].forEach(function(t){s+='<line x1="'+px+'" x2="'+(W-8)+'" y1="'+y(t[0])+'" y2="'+y(t[0])+'" stroke="'+t[1]+'" stroke-width="1.5" stroke-dasharray="4 3"/><text x="'+(px-6)+'" y="'+(y(t[0])+3)+'" text-anchor="end">'+t[0]+'</text>'});
+  s+='<polyline fill="none" stroke="#3B33D6" stroke-width="2" points="'+h.map(function(v,i){return x(i)+','+y(v)}).join(' ')+'"/>';
+  var lab=['-20h','-16h','-12h','-8h','-4h','now'];
+  h.forEach(function(v,i){var last=i===n-1;s+='<circle cx="'+x(i)+'" cy="'+y(v)+'" r="'+(last?5:3.2)+'" fill="'+(last?'#3B33D6':'#fff')+'" stroke="#3B33D6" stroke-width="1.6"/><text x="'+x(i)+'" y="'+(y(v)-9)+'" text-anchor="middle" style="fill:#16181B">'+v+'</text><text x="'+x(i)+'" y="'+(H-1)+'" text-anchor="middle">'+lab[i]+'</text>'});
+  $('#spark').innerHTML=s;
+}
+loadPreset('drift');
+
+/* ---------- 02 SBAR ---------- */
+var NOTES=[
+"Mr A, 78, bed 9. Admitted yesterday with community acquired pneumonia, on IV co-amoxiclav. PMH COPD, type 2 diabetes on insulin, AF on apixaban. Allergic to penicillin? Family say he had a rash in 2019, pharmacy to confirm. Obs this afternoon RR 22, sats 93% on 2L, BP 118/70, HR 96, temp 37.9, NEWS 5. A bit more confused tonight than this morning. Eating poorly, blood sugars 14-16. Mobilising with frame, had a near-miss fall at 15:00. Plan: chase CRP and U&Es from this morning, repeat obs hourly, medical review if NEWS rises, update falls assessment.",
+"Mrs B, 64, bay 2 bed 3. Day 2 after elective right total hip replacement. PMH hypertension, hypothyroidism. No known drug allergies. Obs stable, NEWS 1. Pain controlled with regular paracetamol and PRN oramorph, last dose 18:00. Wound clean and dry. Physio got her up with a frame today. Catheter out at 12:00, not passed urine since. On enoxaparin for VTE prophylaxis. Plan: bladder scan at 20:00, encourage fluids, possible discharge tomorrow if OT happy."
+];
+var FLAGS=[
+  {sev:'hi',test:function(t){return /allerg\w*\s+to\s+penicillin|penicillin\s+allerg/i.test(t)&&/co-amoxiclav|amoxicillin|flucloxacillin|piperacillin|tazocin|benzylpenicillin/i.test(t)},
+   msg:'Possible penicillin allergy while prescribed a penicillin-based antibiotic. Check with the prescriber and pharmacy before the next dose.',src:/[^.]*(penicillin|co-amoxiclav)[^.]*\.?/i},
+  {sev:'hi',test:function(t){return /(more|new(ly)?|increas\w*)\s+confus|confus\w*\s+(tonight|today|than)/i.test(t)},msg:'New or worsening confusion: possible delirium. Consider a 4AT screen and look for a cause.',src:/[^.]*confus[^.]*\.?/i},
+  {sev:'md',test:function(t){var m=t.match(/NEWS2?\s*(?:score\s*)?(\d+)/i);return m&&+m[1]>=5},msg:'NEWS2 of 5 or more: urgent response threshold. Confirm the medical team is aware.',src:/[^.]*NEWS2?\s*\d+[^.]*\.?/i},
+  {sev:'md',test:function(t){return /fall|fell/i.test(t)},msg:'Fall or near-miss fall this shift. Update the falls assessment and consider bed rails, alarms and footwear.',src:/[^.]*(fall|fell)[^.]*\.?/i},
+  {sev:'md',test:function(t){return /apixaban|rivaroxaban|edoxaban|dabigatran|warfarin|enoxaparin|dalteparin|heparin/i.test(t)},msg:'On an anticoagulant. Bleeding risk after any fall or before procedures; check doses against kidney function.',src:/[^.]*(apixaban|rivaroxaban|edoxaban|dabigatran|warfarin|enoxaparin|dalteparin|heparin)[^.]*\.?/i},
+  {sev:'md',test:function(t){return /insulin/i.test(t)&&/(sugars?|glucose|BMs?|CBGs?)\s*\d{2}/i.test(t)},msg:'High blood glucose on insulin. Check the insulin plan and monitoring frequency, especially while eating poorly.',src:/[^.]*(sugars?|glucose|BMs?|CBGs?)\s*\d[^.]*\.?/i},
+  {sev:'md',test:function(t){return /not\s+passed\s+urine|retention|no\s+urine\s+output/i.test(t)},msg:'Hasn’t passed urine since the catheter came out. Make sure the bladder scan happens on time.',src:/[^.]*(not passed urine|retention|no urine)[^.]*\.?/i},
+  {sev:'lo',test:function(t){return /allerg\w*[^.]*\?|pharmacy to confirm/i.test(t)},msg:'Allergy status unconfirmed. Make sure it’s resolved and recorded before handover ends.',src:/[^.]*allerg[^.]*\?[^.]*\.?|[^.]*pharmacy to confirm[^.]*\.?/i},
+  {sev:'lo',test:function(t){return /chase|pending|awaiting/i.test(t)},msg:'Results to chase. Added to the recommendations list so they aren’t lost.',src:/[^.]*(chase|pending|awaiting)[^.]*\.?/i},
+  {sev:'lo',test:function(t){return /oramorph|morphine|oxycodone|fentanyl/i.test(t)},msg:'Controlled drug given as needed. Hand over the time of the last dose.',src:/[^.]*(oramorph|morphine|oxycodone|fentanyl)[^.]*\.?/i}
+];
+var noteIn=$('#noteIn');
+function splitSent(t){return t.replace(/\s+/g,' ').trim().split(/(?<=[.!?])\s+(?=[A-Z])/).filter(Boolean)}
+function sbarRun(){
+  var t=noteIn.value,s=splitSent(t),S=[],B=[],A=[],R=[];
+  s.forEach(function(x,i){
+    if(/^(plan|to do|todo|actions?)\s*[:\-]/i.test(x)){x.replace(/^[^:\-]+[:\-]\s*/,'').split(/,\s*|;\s*|\s+and\s+(?=[a-z])/).forEach(function(y){y=y.replace(/\.$/,'').trim();if(y)R.push(y.charAt(0).toUpperCase()+y.slice(1))});return}
+    if(/^(please|needs|chase|repeat|for\s)/i.test(x)){R.push(x);return}
+    if(i===0||/admitted|presented|day\s+\d+\s+(after|post)|post[- ]op/i.test(x)){S.push(x);return}
+    if(/PMH|history|background|known|allerg|NKDA|family say|^on\s/i.test(x)){B.push(x);return}
+    A.push(x);
+  });
+  var sec=[['S','Situation',S],['B','Background',B],['A','Assessment',A],['R','Recommendation',R]];
+  $('#sbar').innerHTML=sec.map(function(z){return '<div class="sb" data-s="'+z[0]+'"><h4><i>'+z[0]+'</i>'+z[1]+'</h4><ul contenteditable="true" spellcheck="false" aria-label="'+z[1]+', editable">'+z[2].map(function(y){return '<li>'+esc(y)+'</li>'}).join('')+'</ul><label class="chk"><input type="checkbox"> Approve '+z[1].toLowerCase()+'</label></div>'}).join('');
+  var f=FLAGS.filter(function(x){return x.test(t)});
+  var order={hi:0,md:1,lo:2};f.sort(function(a,b){return order[a.sev]-order[b.sev]});
+  $('#flags').innerHTML=f.length?f.map(function(x){var m=t.match(x.src);return '<li class="'+x.sev+'"><span class="chip '+(x.sev==='hi'?'r':x.sev==='md'?'a':'m')+'">'+(x.sev==='hi'?'high':x.sev==='md'?'check':'note')+'</span> <b>'+esc(x.msg)+'</b>'+(m?'<q>From notes: “'+esc(m[0].trim())+'”</q>':'')+'</li>'}).join(''):'<li class="lo">No flags found. That doesn’t mean there are no risks: check the notes yourself.</li>';
+  $('#flagCount').textContent=f.length+' found';
+  $('#handMsg').textContent='';handCheck();
+}
+function handCheck(){var c=$$('#sbar input[type=checkbox]');$$('#sbar .sb').forEach(function(sb){sb.classList.toggle('ok',$('input',sb).checked)});$('#handBtn').disabled=!(c.length&&c.every(function(x){return x.checked}))}
+$('#sbar').addEventListener('change',handCheck);
+$('#sbar').addEventListener('input',function(e){var sb=e.target.closest('.sb');if(sb&&e.target.matches('ul')){$('input',sb).checked=false;handCheck()}});
+$('#handBtn').addEventListener('click',function(){var t=new Date();$('#handMsg').textContent='✓ Handover signed off at '+String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0')+' (simulated)';this.disabled=true});
+$('#sbarGo').addEventListener('click',sbarRun);
+$$('[data-note]').forEach(function(b){b.addEventListener('click',function(){noteIn.value=NOTES[+b.dataset.note];$$('[data-note]').forEach(function(x){x.classList.toggle('on',x===b)});sbarRun()})});
+noteIn.value=NOTES[0];$('[data-note="0"]').classList.add('on');sbarRun();
+
+/* ---------- 03 Clinical coding ---------- */
+var DS="81-year-old woman admitted via ED with 3 days of increasing breathlessness and productive cough. Chest X-ray showed right lower lobe consolidation consistent with community-acquired pneumonia. Background of COPD, hypertension and type 2 diabetes (diet controlled). On admission she was in fast atrial fibrillation, rate controlled with bisoprolol. Creatinine rose from 88 to 162 on day 2: acute kidney injury, likely pre-renal, improved with IV fluids. Sodium 128 on admission (hyponatraemia), corrected by discharge. Troponin negative, no evidence of myocardial infarction. Urine dip positive, but urinary tract infection was ruled out on culture. Treated with antibiotics and discharged home on day 6.";
+// WHO ICD-10 titles. conf: h = named directly, m = inferred from a related phrase
+var ICD=[
+  {c:'J18.9',d:'Pneumonia, unspecified',re:[[/community[- ]acquired pneumonia|pneumonia/i,'h'],[/consolidation/i,'m']],note:'Lobar pattern noted: coder to decide between J18.1 and J18.9.'},
+  {c:'J44.9',d:'Chronic obstructive pulmonary disease, unspecified',re:[[/\bCOPD\b|chronic obstructive pulmonary disease/i,'h']],note:'No exacerbation documented, so not J44.1.'},
+  {c:'J44.1',d:'Chronic obstructive pulmonary disease with acute exacerbation, unspecified',re:[[/exacerbation of (COPD|chronic obstructive)|(COPD|chronic obstructive pulmonary disease) exacerbation|infective exacerbation/i,'h']]},
+  {c:'I10',d:'Essential (primary) hypertension',re:[[/hypertension/i,'h']]},
+  {c:'E11.9',d:'Non-insulin-dependent diabetes mellitus without complications',re:[[/type 2 diabetes|T2DM|\bT2 diabetes/i,'h']]},
+  {c:'E10.9',d:'Insulin-dependent diabetes mellitus without complications',re:[[/type 1 diabetes|T1DM/i,'h']]},
+  {c:'I48.9',d:'Atrial fibrillation and atrial flutter, unspecified',re:[[/atrial fibrillation/i,'h'],[/\bAF\b/,'h']],note:'Type of AF (paroxysmal, persistent, permanent) not stated.'},
+  {c:'N17.9',d:'Acute renal failure, unspecified',re:[[/acute kidney injury|\bAKI\b|acute renal failure/i,'h'],[/creatinine rose/i,'m']]},
+  {c:'E87.1',d:'Hypo-osmolality and hyponatraemia',re:[[/hyponatr(a)?emia/i,'h'],[/sodium 1[0-2]\d\b/i,'m']]},
+  {c:'I21.9',d:'Acute myocardial infarction, unspecified',re:[[/myocardial infarction|\bNSTEMI\b|\bSTEMI\b|heart attack/i,'h']]},
+  {c:'N39.0',d:'Urinary tract infection, site not specified',re:[[/urinary tract infection|\bUTI\b/i,'h']]},
+  {c:'I50.9',d:'Heart failure, unspecified',re:[[/heart failure|\bCCF\b/i,'h']]},
+  {c:'A41.9',d:'Sepsis, unspecified',re:[[/sepsis|septic/i,'h']]},
+  {c:'F05.9',d:'Delirium, unspecified',re:[[/delirium/i,'h'],[/acute confusion/i,'m']]},
+  {c:'J45.9',d:'Asthma, unspecified',re:[[/asthma/i,'h']]},
+  {c:'I63.9',d:'Cerebral infarction, unspecified',re:[[/ischaemic stroke|cerebral infarct/i,'h']]},
+  {c:'I26.9',d:'Pulmonary embolism without mention of acute cor pulmonale',re:[[/pulmonary embol/i,'h'],[/\bPE\b/,'h']]},
+  {c:'D64.9',d:'Anaemia, unspecified',re:[[/an(a)?emia/i,'h']]},
+  {c:'F03',d:'Unspecified dementia',re:[[/dementia/i,'h']]},
+  {c:'E03.9',d:'Hypothyroidism, unspecified',re:[[/hypothyroid/i,'h']]}
+];
+var NEG_BEFORE=/\b(no|not|without|denies|denied|negative for|no evidence of|no signs? of|ruled out|excluded|unlikely)\b[^.,;]{0,40}$/i;
+var NEG_AFTER=/^[^.;]{0,30}\b(ruled out|excluded|unlikely|not confirmed)\b/i;
+var dsIn=$('#dsIn'),codeState={};
+function codeRun(){
+  var t=dsIn.value,hits=[],found={};
+  ICD.forEach(function(x){
+    x.re.forEach(function(r){
+      var g=new RegExp(r[0].source,'gi'),m;
+      while((m=g.exec(t))){
+        var pre=t.slice(Math.max(0,m.index-60),m.index),sentStart=pre.lastIndexOf('.');pre=sentStart>=0?pre.slice(sentStart+1):pre;
+        var post=t.slice(m.index+m[0].length,m.index+m[0].length+40);
+        var neg=NEG_BEFORE.test(pre)||NEG_AFTER.test(post);
+        if(hits.some(function(h){return m.index<h.e&&m.index+m[0].length>h.s}))continue;
+        hits.push({s:m.index,e:m.index+m[0].length,c:x.c,neg:neg});
+        var f=found[x.c]||(found[x.c]={x:x,conf:'m',neg:true,ev:[]});
+        if(r[1]==='h')f.conf='h';
+        if(!neg)f.neg=false;
+        var a=t.lastIndexOf('.',m.index-1)+1,b=t.indexOf('.',m.index);f.ev.push(t.slice(a,b<0?t.length:b+1).trim());
+      }
+    });
+  });
+  hits.sort(function(a,b){return a.s-b.s});
+  var html='',p=0;hits.forEach(function(h){html+=esc(t.slice(p,h.s))+'<mark data-c="'+h.c+'" class="'+(h.neg?'neg':'')+'" tabindex="0">'+esc(t.slice(h.s,h.e))+'</mark>';p=h.e});html+=esc(t.slice(p));
+  $('#docView').innerHTML=html;
+  var list=Object.keys(found).map(function(k){return found[k]});
+  list.sort(function(a,b){return (a.neg-b.neg)||(t.indexOf(a.ev[0])-t.indexOf(b.ev[0]))});
+  codeState={};list.forEach(function(f){codeState[f.x.c]=f.neg?'neg':''});
+  $('#codes').innerHTML=list.length?list.map(function(f){var x=f.x;
+    return '<div class="code'+(f.neg?' neg':'')+'" data-c="'+x.c+'"><span class="c">'+x.c+'</span><span class="d">'+esc(x.d)+'<small>'+(f.neg?'Mentioned but negated: not coded':(f.conf==='h'?'<span class="chip g">named in text</span>':'<span class="chip a">inferred, check</span>')+(x.note?' '+esc(x.note):''))+'</small></span>'+
+    (f.neg?'<span class="acts"><span class="chip m">excluded</span></span>':'<span class="acts"><button class="btn sm" data-a="acc">Accept</button><button class="btn sm ghost" data-a="rej">Reject</button></span>')+'</div>'}).join(''):'<p class="note">No codes found. Try mentioning a diagnosis such as pneumonia, AF or heart failure.</p>';
+  var pos=list.filter(function(f){return !f.neg}).length;
+  $('#codeCount').textContent=pos+' suggested · '+(list.length-pos)+' excluded';
+  episode();
+}
+function episode(){
+  var acc=$$('#codes .code.acc').map(function(e){return e.dataset.c});
+  $('#episode').innerHTML=acc.length?'<b>Coded episode:</b> '+acc.map(function(c,i){return c+(i===0?' (primary)':'')}).join(', ')+'<br><span style="color:var(--dim);font-size:.72rem">The first accepted code is listed as the primary diagnosis; the coder can reorder. Signed off by the coder, not the tool.</span>':'<span style="color:var(--dim)">Accept codes to build the coded episode. The first one you accept becomes the primary diagnosis.</span>';
+}
+$('#codes').addEventListener('click',function(e){var b=e.target.closest('button[data-a]');if(!b)return;var row=b.closest('.code'),a=b.dataset.a;
+  var was=row.classList.contains(a);row.classList.remove('acc','rej');if(!was)row.classList.add(a);
+  if(a==='acc'&&!was){row.parentNode.appendChild(row);var first=$('#codes .code:not(.acc)');var accs=$$('#codes .code.acc');accs.forEach(function(r){row.parentNode.insertBefore(r,first)})}
+  episode()});
+$('#codes').addEventListener('mouseover',function(e){var r=e.target.closest('.code');hot(r&&r.dataset.c)});
+$('#codes').addEventListener('focusin',function(e){var r=e.target.closest('.code');hot(r&&r.dataset.c)});
+function hot(c){$$('#docView mark').forEach(function(m){m.classList.toggle('hot',!!c&&m.dataset.c===c)});if(c){var m=$('#docView mark[data-c="'+c+'"]');if(m){var d=$('#docView');d.scrollTop=m.offsetTop-d.offsetTop-40}}}
+$('#docView').addEventListener('click',function(e){var m=e.target.closest('mark');if(!m)return;hot(m.dataset.c);$$('#codes .code').forEach(function(r){r.style.outline=r.dataset.c===m.dataset.c?'2px solid var(--violet)':''})});
+$('#codeGo').addEventListener('click',codeRun);
+$('#codeReset').addEventListener('click',function(){dsIn.value=DS;codeRun()});
+dsIn.value=DS;codeRun();
+
+/* ---------- 04 Missed appointments ---------- */
+var APPTS=[
+  {t:'08:30',p:'Patient 0412',cl:'Diabetes',lead:61,prev:2,rem:false,first:false,travel:55,early:true},
+  {t:'09:00',p:'Patient 1187',cl:'Diabetes',lead:14,prev:0,rem:true,first:false,travel:15,early:false},
+  {t:'09:20',p:'Patient 0930',cl:'Respiratory',lead:84,prev:1,rem:false,first:true,travel:40,early:false},
+  {t:'09:40',p:'Patient 2205',cl:'Respiratory',lead:21,prev:0,rem:true,first:true,travel:10,early:false},
+  {t:'10:00',p:'Patient 1764',cl:'Cardiology',lead:35,prev:0,rem:false,first:false,travel:25,early:false},
+  {t:'10:20',p:'Patient 0058',cl:'Cardiology',lead:98,prev:3,rem:false,first:false,travel:70,early:false},
+  {t:'10:40',p:'Patient 3321',cl:'Fracture',lead:7,prev:0,rem:true,first:true,travel:20,early:false},
+  {t:'11:00',p:'Patient 2649',cl:'Fracture',lead:42,prev:1,rem:false,first:false,travel:35,early:false}
+];
+var W={base:-3.4,prev:0.8,lead:0.01,first:0.45,travel:0.012,early:0.35,rem:-0.75,video:-0.6};
+function factors(a){
+  var f=[['Previous missed appointments ('+a.prev+')',W.prev*a.prev],['Booked '+a.lead+' days ago',W.lead*a.lead],['First appointment',a.first?W.first:0],['Travel time '+(a.video?'(video: none)':'~'+a.travel+' min'),a.video?0:W.travel*a.travel],['Early morning slot',a.early?W.early:0],['Text reminder sent',a.rem?W.rem:0]];
+  if(a.video)f.push(['Video appointment offered',W.video]);
+  return f;
+}
+function risk(a){var z=W.base;factors(a).forEach(function(f){z+=f[1]});return 1/(1+Math.exp(-z))}
+APPTS.forEach(function(a){a.p0=risk(a)});
+var sel=0,dnaLog=[];
+function dnaRender(){
+  var rows=APPTS.map(function(a,i){var r=risk(a),pc=Math.round(r*100),c=r>=.35?'var(--red)':r>=.18?'var(--orange)':'var(--green)';
+    return '<tr data-i="'+i+'" class="'+(i===sel?'sel':'')+'" tabindex="0"><td>'+a.t+'</td><td>'+a.p+(a.video?' <span class="chip v">video</span>':'')+'</td><td>'+a.cl+'</td><td>'+a.lead+' days ago</td><td>'+(a.rem?'<span class="chip g">sent</span>':'<span class="chip m">none</span>')+'</td><td><span class="riskbar"><i style="--w:'+pc+'%;--c:'+c+'"></i>'+pc+'%</span></td></tr>'}).join('');
+  $('#dnaTbl tbody').innerHTML=rows;
+  var exp=0,ex0=0;APPTS.forEach(function(a){exp+=risk(a);ex0+=a.p0});
+  $('#kExp').textContent=exp.toFixed(1);$('#kSaved').textContent=(ex0-exp).toFixed(1);
+  $('#kAct').textContent=APPTS.filter(function(a){return a.helped}).length;
+  var a=APPTS[sel];$('#dnaWho').textContent=a.p+' · '+Math.round(risk(a)*100)+'%';
+  var f=factors(a).filter(function(x){return x[1]!==0}),mx=1.6;
+  $('#why').innerHTML=f.map(function(x){var w=Math.min(50,Math.abs(x[1])/mx*50),pos=x[1]>0;
+    return '<li><span>'+esc(x[0])+'</span><span class="bar2"><span style="'+(pos?'left:50%;':'right:50%;')+'width:'+w+'%;background:'+(pos?'var(--orange)':'var(--green)')+'"></span><span style="position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--line2)"></span></span><span class="v">'+(pos?'+':'−')+Math.abs(x[1]).toFixed(2)+'</span></li>'}).join('')+'<li style="color:var(--dim)"><span>Orange raises the chance of missing, green lowers it</span><span></span><span></span></li>';
+  $('#aSms').disabled=a.rem;$('#aVideo').disabled=!!a.video||a.cl==='Fracture';$('#aSooner').disabled=a.lead<=14;
+  $('#aVideo').title=a.cl==='Fracture'?'Fracture clinic usually needs an in-person visit':'';
+  $('#smsPrev').innerHTML='<b style="font-weight:500">Text preview</b><br>Hello, this is a reminder of your '+a.cl.toLowerCase()+' appointment on Tuesday at '+a.t+'. Reply 1 to confirm, 2 if you need to change it, or 3 for a video appointment if that would be easier. You can also call us to rearrange.';
+  $('#dnaLog').innerHTML=dnaLog.map(function(l){return '<li>'+esc(l)+'</li>'}).join('');
+}
+$('#dnaTbl tbody').addEventListener('click',function(e){var r=e.target.closest('tr');if(r){sel=+r.dataset.i;dnaRender()}});
+$('#dnaTbl tbody').addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){var r=e.target.closest('tr');if(r){e.preventDefault();sel=+r.dataset.i;dnaRender();var n=$('#dnaTbl tbody tr[data-i="'+sel+'"]');if(n)n.focus()}}});
+function act(fn,msg){var a=APPTS[sel],b=risk(a);fn(a);a.helped=true;dnaLog.unshift(a.p+': '+msg+' ('+Math.round(b*100)+'% → '+Math.round(risk(a)*100)+'%)');dnaRender()}
+$('#aSms').addEventListener('click',function(){act(function(a){a.rem=true},'reminder text sent')});
+$('#aVideo').addEventListener('click',function(){act(function(a){a.video=true;a.early=false},'video appointment offered and accepted')});
+$('#aSooner').addEventListener('click',function(){act(function(a){a.lead=7;a.rem=true},'moved to a date next week, with a reminder')});
+sel=5;dnaRender();
+
+/* ---------- 05 Plain English ---------- */
+var LTR="Dear Dr Patel,\n\nRe: Mrs C, 67\n\nI reviewed Mrs C in the cardiology clinic today. She has a history of hypertension and paroxysmal AF. She reports intermittent palpitations and exertional dyspnoea but denies syncope. On examination there was mild bilateral pedal oedema. Her ECG showed sinus rhythm. Echocardiogram demonstrated mild LV systolic dysfunction.\n\nPlan: commence ramipril 2.5mg od and furosemide 20mg od, titrate as tolerated. Repeat U&Es in 2 weeks. Review in 3 months, sooner PRN.\n\nYours sincerely,\nDr R. Shah, Consultant Cardiologist";
+var GLOSS=[
+  [/paroxysmal AF|paroxysmal atrial fibrillation/gi,'an uneven heartbeat that comes and goes (AF)','Atrial fibrillation (AF) is an irregular, often fast heartbeat. Paroxysmal means it comes and goes.'],
+  [/intermittent palpitations and exertional dyspnoea/gi,'a fast or fluttering heartbeat now and then. You also get out of breath when you are active','Palpitations: noticing your heartbeat. Dyspnoea: breathlessness.'],
+  [/exertional dyspnoea/gi,'getting out of breath when you are active','Dyspnoea means breathlessness.'],
+  [/dyspnoea/gi,'breathlessness','Shortness of breath.'],
+  [/hypertension/gi,'high blood pressure','Blood pressure that is higher than it should be.'],
+  [/intermittent palpitations/gi,'a fluttering or pounding heartbeat that comes and goes','Palpitations are when you notice your own heartbeat.'],
+  [/palpitations/gi,'a fluttering or pounding heartbeat','Noticing your own heartbeat.'],
+  [/\s*but denies syncope/gi,'. You have not fainted','Syncope means fainting.'],
+  [/syncope/gi,'fainting','Losing consciousness for a short time.'],
+  [/mild bilateral pedal oedema/gi,'some swelling in your feet and ankles','Oedema is swelling caused by fluid.'],
+  [/oedema/gi,'swelling','Swelling caused by fluid.'],
+  [/sinus rhythm/gi,'a normal heart rhythm','The heart’s normal, regular rhythm.'],
+  [/echocardiogram/gi,'a heart scan (echo)','An ultrasound scan of the heart.'],
+  [/mild LV systolic dysfunction/gi,'that your heart pumps a little less well than it should','LV is the left ventricle, the heart’s main pumping chamber.'],
+  [/\bECG\b/g,'heart trace (ECG)','A quick test that records the heart’s electrical activity.'],
+  [/titrate as tolerated/gi,'we may adjust the dose step by step, depending on how you feel','Titrate means adjust the dose gradually.'],
+  [/\bU&Es\b/g,'kidney blood tests (U&Es)','Urea and electrolytes: blood tests that check how your kidneys are working.'],
+  [/\bPRN\b/g,'if you need to','From the Latin “pro re nata”: as needed.'],
+  [/\bcommence\b/gi,'start',''],
+  [/\bod\b/g,'once a day',''],[/\bbd\b/g,'twice a day',''],[/\btds\b/g,'three times a day',''],[/\bqds\b/g,'four times a day',''],[/\bnocte\b/g,'at night','']
+];
+var DOSE={od:'Once a day',bd:'Twice a day',tds:'Three times a day',qds:'Four times a day',nocte:'At night'};
+var MEDUSE={ramipril:'Lowers blood pressure and helps the heart pump',furosemide:'A “water tablet” to reduce swelling and breathlessness',bisoprolol:'Slows and steadies the heartbeat',apixaban:'Thins the blood to lower the risk of stroke',atorvastatin:'Lowers cholesterol'};
+var ltrIn=$('#ltrIn');
+function syl(w){w=w.toLowerCase().replace(/[^a-z]/g,'');if(!w)return 0;if(w.length<=3)return 1;w=w.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/,'').replace(/^y/,'');var m=w.match(/[aeiouy]{1,2}/g);return Math.max(1,m?m.length:1)}
+function readAge(t){
+  t=t.replace(/\b(Dear|Re|Yours)[^\n]*\n?/g,'');
+  var s=t.split(/[.!?\n]+/).filter(function(x){return x.trim().split(/\s+/).length>2}).length||1;
+  var w=t.match(/[A-Za-z][A-Za-z'&-]*/g)||[];if(!w.length)return 0;
+  var sy=w.reduce(function(n,x){return n+syl(x)},0);
+  var g=0.39*(w.length/s)+11.8*(sy/w.length)-15.59;
+  return Math.max(5,Math.min(21,Math.round(g+5)));
+}
+function plain(src){
+  var body=src.replace(/^[\s\S]*?\n\n(?=I |We )/,'').replace(/\n\n(Yours|Kind regards|Best wishes)[\s\S]*$/,'');
+  var parts=body.split(/\n\s*\n/),find=parts[0]||'',plan=(parts.slice(1).join(' ')).replace(/^plan\s*:\s*/i,'');
+  // replace only outside segments already swapped, so a glossary entry never rewrites another's text
+  function outside(t,fn){return t.split(/(\u0001[^\u0003]*\u0003)/).map(function(x){return x.charAt(0)==='\u0001'?x:fn(x)}).join('')}
+  function tr(t){
+    GLOSS.forEach(function(g){t=outside(t,function(x){return x.replace(g[0],function(){return '\u0001'+g[2]+'\u0002'+g[1]+'\u0003'})})});
+    t=outside(t,function(x){return x.replace(/\bMrs C\b|\bMr [A-Z]\b|\bMs [A-Z]\b/g,'you').replace(/\bShe has\b|\bHe has\b/g,'You have').replace(/\bShe reports\b|\bHe reports\b/g,'You told me about').replace(/\bShe\b|\bHe\b/g,'You').replace(/\bher\b|\bhis\b/gi,'your').replace(/\bOn examination there was\b/gi,'I found').replace(/\bdemonstrated\b/gi,'showed').replace(/\bI reviewed you\b/gi,'I saw you').replace(/\bYou have a history of\b/g,'You have')});
+    t=esc(t).replace(/\u0001([^\u0002]*)\u0002([^\u0003]*)\u0003/g,function(_,tip,txt){return tip?'<abbr title="'+tip+'">'+txt+'</abbr>':txt});
+    return t.replace(/(^|[.!?]\s+)((?:<abbr[^>]*>)?)([a-z])/g,function(_,a,b,c){return a+b+c.toUpperCase()});
+  }
+  var meds=[],mre=/\b([a-z]+)\s+(\d+(?:\.\d+)?\s?mg)\s+(od|bd|tds|qds|nocte)\b/gi,m;
+  while((m=mre.exec(src)))meds.push([m[1].charAt(0).toUpperCase()+m[1].slice(1).toLowerCase(),m[2].replace(/\s/,''),DOSE[m[3].toLowerCase()],MEDUSE[m[1].toLowerCase()]||'Ask your pharmacist what this is for']);
+  var steps=plan.split(/\.\s+|\.$/).map(function(x){return x.trim()}).filter(function(x){return x&&!/^(commence|start)\b/i.test(x)});
+  steps=steps.map(function(x){return tr(x).replace(/^Repeat /,'Have ').replace(/^Review in/,'Come back to clinic in').replace(/, sooner /,', or sooner ')});
+  var html='<h4>What we found</h4><p>'+tr(find).replace(/\n/g,' ')+'</p>';
+  if(meds.length)html+='<h4>Your medicines</h4><table class="meds"><thead><tr><th>Medicine</th><th>Dose</th><th>When</th><th>What it’s for</th></tr></thead><tbody>'+meds.map(function(r){return '<tr><td>'+esc(r[0])+' <span class="chip v">new</span></td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td>'+esc(r[3])+'</td></tr>'}).join('')+'</tbody></table>';
+  if(/titrate/i.test(plan))html+='<p style="margin-top:.5rem">We may adjust the doses step by step, depending on how you feel.</p>';
+  if(steps.length)html+='<h4>What happens next</h4><p>'+steps.filter(function(x){return !/adjust the dose/i.test(x)}).map(function(x){return '&rarr; '+x+(/[.!?]$/.test(x)?'':'.')}).join('<br>')+'</p>';
+  html+='<h4>When to get help</h4><p>Call 999 if you have chest pain, faint, or are suddenly very short of breath. If your ankles swell more or you feel dizzy on the new medicines, contact your GP.</p>';
+  return {html:html};
+}
+function plainRun(){
+  var r=plain(ltrIn.value);$('#ltrOut').innerHTML=r.html;
+  var a=readAge(ltrIn.value),b=readAge($('#ltrOut').innerText);
+  $('#bAge').innerHTML=a+' &rarr; '+b;
+  var pos=function(v){return ((v-5)/16*100).toFixed(1)+'%'};
+  $('#age').innerHTML=[['Clinician',a,'var(--red)'],['Patient',b,'var(--green)']].map(function(x){return '<div class="ln"><span>'+x[0]+'</span><span class="tr"><span class="tgt" style="left:'+pos(9)+';width:'+((2/16)*100)+'%"></span><span class="pin" style="left:'+pos(x[1])+';background:'+x[2]+'"></span></span><b>'+(x[1]>=21?'21+':x[1])+' yrs</b></div>'}).join('')+'<div class="ln" style="color:var(--dim)"><span></span><span style="display:flex;justify-content:space-between"><span>5</span><span>13</span><span>21+</span></span><span></span></div>';
+}
+$('#plainGo').addEventListener('click',plainRun);
+$('#plainReset').addEventListener('click',function(){ltrIn.value=LTR;plainRun()});
+$$('.seg [data-size]').forEach(function(b){b.addEventListener('click',function(){$$('.seg [data-size]').forEach(function(x){x.setAttribute('aria-pressed',x===b)});$('#ltrOut').className='letter'+(b.dataset.size?' '+b.dataset.size:'')})});
+var sp=$('#speak');
+if(!('speechSynthesis' in window)){sp.hidden=true}else{
+  sp.addEventListener('click',function(){
+    if(speechSynthesis.speaking){speechSynthesis.cancel();sp.innerHTML='&#9654; Read aloud';return}
+    var u=new SpeechSynthesisUtterance($('#ltrOut').innerText);u.lang='en-GB';u.rate=.95;
+    u.onend=u.onerror=function(){sp.innerHTML='&#9654; Read aloud'};
+    speechSynthesis.speak(u);sp.innerHTML='&#9632; Stop';
+  });
+}
+ltrIn.value=LTR;plainRun();
+})();
+</script>
+</body>
+</html>
