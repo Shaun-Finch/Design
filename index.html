@@ -223,7 +223,7 @@ figure.piece.blankslot .frame{background:#000;border:1px solid rgba(255,255,255,
 @keyframes vxdraw{to{stroke-dashoffset:0}}
 .featured-top{grid-template-columns:minmax(0,1fr)}
 figure.piece.wide .frame.hframe{background:#fff}
-.hthumb .htrace{stroke-dasharray:1100;stroke-dashoffset:1100;animation:vxdraw 4s linear infinite}
+.hframe .hlogo{position:absolute;right:1rem;bottom:1rem;width:38px;height:32px;pointer-events:none}
 #work{padding-top:clamp(1.25rem,3vw,2rem)}
 @keyframes xblink{50%{opacity:0}}
 </style>
@@ -251,16 +251,12 @@ figure.piece.wide .frame.hframe{background:#fff}
             <a class="framelink" href="halvia.html" aria-label="Halvia — open the healthcare AI case studies">
               <svg class="xthumb hthumb" aria-hidden="true" focusable="false" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
                 <rect width="800" height="450" fill="#fff"/>
-                <g transform="translate(0 -50)">
-                  <path d="M0 402H800" stroke="#E3E3E8" stroke-width="2" fill="none"/>
-                  <path class="htrace" d="M0 402H110l9-5 9 5h14l6 8 11-34 11 40 8-14h20l15-6 15 6H370l9-5 9 5h14l6 8 11-34 11 40 8-14h20l15-6 15 6H630l9-5 9 5h14l6 8 11-34 11 40 8-14h20l15-6 15 6H800" stroke="#16181B" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
-                </g>
-                <g transform="translate(339.2 96) scale(3.2)" color="#16181B" shape-rendering="crispEdges"><path fill="currentColor" d="M6 0h6v2h-6zM26 0h6v2h-6zM2 2h4v2h-4zM12 2h4v2h-4zM22 2h4v2h-4zM32 2h4v2h-4zM0 4h2v2h-2zM16 4h2v2h-2zM20 4h2v2h-2zM36 4h2v2h-2zM0 6h2v2h-2zM18 6h2v2h-2zM36 6h2v2h-2zM0 8h2v2h-2zM36 8h2v2h-2zM0 10h2v2h-2zM36 10h2v2h-2zM0 12h2v2h-2zM36 12h2v2h-2zM4 16h2v2h-2zM32 16h2v2h-2zM6 18h2v2h-2zM30 18h2v2h-2zM8 20h2v2h-2zM28 20h2v2h-2zM10 22h2v2h-2zM26 22h2v2h-2zM12 24h2v2h-2zM24 24h2v2h-2zM14 26h2v2h-2zM22 26h2v2h-2zM16 28h2v2h-2zM20 28h2v2h-2zM18 30h2v2h-2z"/><path fill="#4038FF" d="M14 6h2v2h-2zM12 8h2v2h-2zM16 8h2v2h-2zM12 10h2v2h-2zM16 10h2v2h-2zM12 12h2v2h-2zM16 12h2v2h-2zM16 14h2v2h-2zM16 16h2v2h-2zM16 18h2v2h-2z"/><path fill="#FF2BE0" d="M0 14h12v2h-12z"/><path fill="#1FC65A" d="M22 14h16v2h-16zM20 16h2v2h-2zM20 18h2v2h-2zM18 20h2v2h-2z"/></g>
                 <g font-family="'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace" text-anchor="middle">
-                  <text x="400" y="244" font-size="24" fill="#16181B"><tspan fill="#C2306E">&#10095;</tspan> halvia</text>
-                  <text x="400" y="268" font-size="11" fill="#73777F" letter-spacing="1.8">AI SYSTEMS FOR HEALTHCARE</text>
+                  <text x="400" y="232" font-size="76" font-weight="500" fill="#16181B" letter-spacing="-2"><tspan fill="#C2306E">&#10095;</tspan> halvia</text>
+                  <text x="400" y="278" font-size="19" fill="#555960" letter-spacing="3.5">AI SYSTEMS FOR HEALTHCARE</text>
                 </g>
               </svg>
+              <svg class="hlogo" aria-hidden="true" focusable="false" viewBox="0 0 38 32" shape-rendering="crispEdges" color="#16181B" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M6 0h6v2h-6zM26 0h6v2h-6zM2 2h4v2h-4zM12 2h4v2h-4zM22 2h4v2h-4zM32 2h4v2h-4zM0 4h2v2h-2zM16 4h2v2h-2zM20 4h2v2h-2zM36 4h2v2h-2zM0 6h2v2h-2zM18 6h2v2h-2zM36 6h2v2h-2zM0 8h2v2h-2zM36 8h2v2h-2zM0 10h2v2h-2zM36 10h2v2h-2zM0 12h2v2h-2zM36 12h2v2h-2zM4 16h2v2h-2zM32 16h2v2h-2zM6 18h2v2h-2zM30 18h2v2h-2zM8 20h2v2h-2zM28 20h2v2h-2zM10 22h2v2h-2zM26 22h2v2h-2zM12 24h2v2h-2zM24 24h2v2h-2zM14 26h2v2h-2zM22 26h2v2h-2zM16 28h2v2h-2zM20 28h2v2h-2zM18 30h2v2h-2z"/><path fill="#4038FF" d="M14 6h2v2h-2zM12 8h2v2h-2zM16 8h2v2h-2zM12 10h2v2h-2zM16 10h2v2h-2zM12 12h2v2h-2zM16 12h2v2h-2zM16 14h2v2h-2zM16 16h2v2h-2zM16 18h2v2h-2z"/><path fill="#FF2BE0" d="M0 14h12v2h-12z"/><path fill="#1FC65A" d="M22 14h16v2h-16zM20 16h2v2h-2zM20 18h2v2h-2zM18 20h2v2h-2z"/></svg>
               <span class="framecta">Try the case studies</span>
             </a>
             <span class="wipbadge">New &middot; Healthcare</span>
