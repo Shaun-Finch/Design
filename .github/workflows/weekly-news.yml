@@ -2,7 +2,8 @@ name: Weekly news video
 
 # Every Sunday: write the Ventryx Weekly script from the latest data, voice it, render the animated
 # presenter video and publish it to the `news-video` branch, which ventryx.html plays via jsDelivr.
-# Free to run: Kokoro (open-weight text-to-speech) on the CPU, Chromium + ffmpeg for the video.
+# Free to run: Kokoro (open-weight text-to-speech) on the CPU, Chromium + three.js + ffmpeg for the video.
+# The 3D presenter is the Microsoft Rocketbox Business_Female_01 avatar (MIT, scripts/news/avatar/nova).
 # If the ANTHROPIC_API_KEY secret is set, Claude polishes the script (facts and numbers stay fixed).
 on:
   schedule:
@@ -19,7 +20,7 @@ concurrency:
 jobs:
   video:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 100
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -38,7 +39,7 @@ jobs:
         working-directory: scripts/news
         run: |
           npm init -y >/dev/null
-          npm install --silent --no-audit --no-fund playwright@1.48.2
+          npm install --silent --no-audit --no-fund playwright@1.48.2 three@0.169.0
           npx playwright install --with-deps chromium
       - name: Latest Ventryx data
         run: |

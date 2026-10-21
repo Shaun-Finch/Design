@@ -6,6 +6,7 @@
 <!-- Renders one frame of the weekly news video at a time: render.mjs calls setFrame(t) and screenshots.
      Everything here is original artwork: a cyberpunk-styled anchor ("Nova") and newsroom, no game assets. -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Inter:wght@500;600;700&display=swap">
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
 <style>
 html,body{margin:0;width:1280px;height:720px;overflow:hidden;background:#04081a}
 *{box-sizing:border-box}
@@ -54,6 +55,8 @@ svg{display:block}
 <div id="stage">
   <svg id="bg" width="1280" height="720" viewBox="0 0 1280 720"></svg>
   <svg id="anchor" width="1280" height="720" viewBox="0 0 1280 720" style="position:absolute;left:0;top:0"></svg>
+  <canvas id="gl" width="1280" height="720" style="position:absolute;left:0;top:0;width:1280px;height:720px"></canvas>
+  <svg id="desk" width="1280" height="720" viewBox="0 0 1280 720" style="position:absolute;left:0;top:0"><path d="M90 640 L1190 640 L1260 720 L20 720 Z" fill="#0d1238"/><path d="M90 640 L1190 640" stroke="#19e3ff" stroke-width="3" opacity=".8"/></svg>
   <div id="ai">AI PRESENTER &middot; NOVA</div>
   <div id="panel"><div class="ph"><i id="ptag">WEEKLY</i><b id="ptitle"></b></div><div class="pb" id="pbody"></div></div>
   <div id="clock"></div>
@@ -164,13 +167,15 @@ function graphic(g){
 }
 
 var cur=-1;
+function sgm0(t){var s=EP.segments[0];for(var k=0;k<EP.segments.length;k++)if(t>=EP.segments[k].start)s=EP.segments[k];return s}
 window.setFrame=function(t){
   if(!EP)return;
   var fps=EP.fps||25,f=Math.min(EP.mouth.length-1,Math.max(0,Math.round(t*fps)));
   var m=EP.mouth[f]||0;
   var blinkT=(t%4.3),blink=blinkT<.12?Math.sin(blinkT/.12*Math.PI):0;
   var tilt=Math.sin(t*.7)*1.2+Math.sin(t*1.9)*.4, glow=.5+.5*Math.sin(t*2.2);
-  $('#anchor').innerHTML=anchor(m,blink,tilt,glow);
+  if(window.NOVA){window.NOVA.setFrame(t,{mouth:m,visemes:(EP.visemes||[])[f],first:f===0,smile:(sgm0(t).graphic||{}).type==='intro'||(sgm0(t).graphic||{}).type==='outro'?1:0})}
+  else $('#anchor').innerHTML=anchor(m,blink,tilt,glow);
   var i=0;for(var k=0;k<EP.segments.length;k++)if(t>=EP.segments[k].start)i=k;
   var sgm=EP.segments[i];
   if(i!==cur){cur=i;$('#ptitle').textContent=sgm.title;$('#ptag').textContent=sgm.tag||'WEEKLY';$('#pbody').innerHTML=graphic(sgm.graphic);$('#bar').textContent=sgm.bar||sgm.title}
@@ -182,6 +187,12 @@ window.setFrame=function(t){
   [].forEach.call(document.querySelectorAll('.trace'),function(el,n){el.style.strokeDashoffset=(-(t*30+n*7)).toFixed(1)});
   [].forEach.call(document.querySelectorAll('.win'),function(el,n){if(n%9===0)el.setAttribute('opacity',(.35+.35*Math.abs(Math.sin(t*1.3+n))).toFixed(2))});
 };
+</script>
+<script type="module">
+// 3D presenter (falls back to the 2D illustration if WebGL or the model fails)
+const want=!(window.EP&&window.EP.mode==='2d');
+if(want){import('./nova3d.js').then(m=>m.initNova(document.getElementById('gl'),'./avatar/nova')).then(n=>{window.NOVA=n;document.getElementById('anchor').style.visibility='hidden';window.STUDIO_READY='3d'}).catch(e=>{console.error('3D presenter unavailable: '+e.message);document.getElementById('gl').style.display='none';window.STUDIO_READY='2d'})}
+else{document.getElementById('gl').style.display='none';window.STUDIO_READY='2d'}
 </script>
 </body>
 </html>
