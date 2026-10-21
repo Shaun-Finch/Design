@@ -1,0 +1,497 @@
+{
+ "weekEnding": "2026-10-21",
+ "published": "2026-10-21T20:04Z",
+ "writer": "template",
+ "strip": "Weekly round-up · week ending Wednesday 21 October",
+ "clock": "WED 21 OCT · 20:04 UTC",
+ "ticker": [
+  {
+   "t": "S&P 500",
+   "pct": 0.5
+  },
+  {
+   "t": "NASDAQ",
+   "pct": -0.4
+  },
+  {
+   "t": "Dow Jones",
+   "pct": 2.4
+  },
+  {
+   "t": "FTSE 100",
+   "pct": 0.3
+  },
+  {
+   "t": "Bitcoin",
+   "pct": 3.6
+  },
+  {
+   "t": "ACN",
+   "pct": 11.8
+  },
+  {
+   "t": "IBM",
+   "pct": 10.2
+  },
+  {
+   "t": "NOW",
+   "pct": 9.4
+  },
+  {
+   "t": "LRCX",
+   "pct": -9.1
+  },
+  {
+   "t": "KLAC",
+   "pct": -8.6
+  },
+  {
+   "t": "GM",
+   "pct": -8.4
+  }
+ ],
+ "facts": {
+  "weekEnding": "2026-10-21",
+  "indices": [
+   {
+    "name": "S&P 500",
+    "sym": "^GSPC",
+    "pct": 0.5,
+    "last": 7757.21
+   },
+   {
+    "name": "Nasdaq 100",
+    "sym": "^NDX",
+    "pct": -0.4,
+    "last": 29822.52
+   },
+   {
+    "name": "Dow Jones",
+    "sym": "^DJI",
+    "pct": 2.4,
+    "last": 52857.04
+   },
+   {
+    "name": "FTSE 100",
+    "sym": "^FTSE",
+    "pct": 0.3,
+    "last": 10752.88
+   },
+   {
+    "name": "Bitcoin",
+    "sym": "BTC-USD",
+    "pct": 3.6,
+    "last": 84482.77
+   }
+  ],
+  "risers": [
+   {
+    "t": "ACN",
+    "pct": 11.8,
+    "name": "Accenture"
+   },
+   {
+    "t": "IBM",
+    "pct": 10.2,
+    "name": "International Business Machines"
+   },
+   {
+    "t": "NOW",
+    "pct": 9.4,
+    "name": "ServiceNow"
+   }
+  ],
+  "fallers": [
+   {
+    "t": "LRCX",
+    "pct": -9.1,
+    "name": "Lam Research"
+   },
+   {
+    "t": "KLAC",
+    "pct": -8.6,
+    "name": "KLA"
+   },
+   {
+    "t": "GM",
+    "pct": -8.4,
+    "name": "General Motors"
+   }
+  ],
+  "headlines": [
+   {
+    "t": "ACN",
+    "name": "Accenture",
+    "pct": 11.8,
+    "title": "Accenture Stock Gets Downgraded as the Good News May Already Be Priced In",
+    "src": "Yahoo Finance"
+   },
+   {
+    "t": "LRCX",
+    "name": "Lam Research",
+    "pct": -9.1,
+    "title": "The Zacks Analyst Blog Highlights Microsoft, Palantir Technologies, Micron Technology, Lam Research and IonQ",
+    "src": "Yahoo Finance"
+   }
+  ],
+  "momentum": {
+   "holdings": [
+    "MU",
+    "DELL",
+    "AMD",
+    "INTC",
+    "MRVL"
+   ],
+   "invested": true,
+   "names": [
+    "Micron Technology",
+    "Dell",
+    "Advanced Micro Devices",
+    "Intel",
+    "Marvell Technology"
+   ],
+   "nextSwap": "2026-10-30",
+   "leaving": [],
+   "joining": []
+  },
+  "crypto": {
+   "holdings": [
+    "ZEC",
+    "UNI",
+    "NEAR",
+    "ARB",
+    "LINK"
+   ],
+   "invested": true,
+   "names": [
+    "Zcash",
+    "Uniswap",
+    "NEAR Protocol",
+    "Arbitrum",
+    "Chainlink"
+   ],
+   "btcVs200dayPct": 16.3,
+   "nextSwap": "2026-10-31"
+  },
+  "earningsNextWeek": [
+   {
+    "t": "V",
+    "name": "Visa Inc.",
+    "date": "2026-10-27"
+   },
+   {
+    "t": "KO",
+    "name": "Coca-Cola Company (The)",
+    "date": "2026-10-27"
+   },
+   {
+    "t": "GOOGL",
+    "name": "Alphabet Inc.",
+    "date": "2026-10-28"
+   },
+   {
+    "t": "MSFT",
+    "name": "Microsoft Corporation",
+    "date": "2026-10-28"
+   },
+   {
+    "t": "AMZN",
+    "name": "Amazon.com, Inc.",
+    "date": "2026-10-29"
+   },
+   {
+    "t": "LLY",
+    "name": "Eli Lilly and Company",
+    "date": "2026-10-29"
+   }
+  ],
+  "predictionMarkets": [
+   {
+    "title": "What price will Bitcoin hit on October 21?",
+    "odds": [
+     {
+      "label": "↑ 85,000",
+      "q": "Will Bitcoin reach $85,000 on October 21?",
+      "yes": 60.0,
+      "outcome": "Yes"
+     },
+     {
+      "label": "↑ 86,000",
+      "q": "Will Bitcoin reach $86,000 on October 21?",
+      "yes": 9.1,
+      "outcome": "Yes"
+     }
+    ]
+   },
+   {
+    "title": "What price will Bitcoin hit in October?",
+    "odds": [
+     {
+      "label": "↑ 87,500",
+      "q": "Will Bitcoin reach $87,500 in October?",
+      "yes": 52.5,
+      "outcome": "Yes"
+     },
+     {
+      "label": "↓ 82,500",
+      "q": "Will Bitcoin dip to $82,500 in October?",
+      "yes": 64.5,
+      "outcome": "Yes"
+     }
+    ]
+   }
+  ],
+  "nextWeek": {
+   "from": "2026-10-26",
+   "to": "2026-10-30"
+  }
+ },
+ "segments": [
+  {
+   "id": "intro",
+   "title": "Weekly round-up",
+   "tag": "WEEKLY",
+   "bar": "Your two-minute market round-up",
+   "text": "Hello, I'm Nova, the Ventryx AI presenter. This is your weekly market round-up for the week ending Wednesday 21 October.",
+   "graphic": {
+    "type": "intro",
+    "big": "Weekly round-up",
+    "sub": "Week ending Wednesday 21 October"
+   },
+   "start": 0.0,
+   "end": 8.925
+  },
+  {
+   "id": "markets",
+   "title": "Markets this week",
+   "tag": "WEEKLY",
+   "bar": "Stocks higher on the week",
+   "text": "Here's how the markets closed the week. The S&P 500 finished up 0.5 per cent. The tech-heavy Nasdaq 100 was down 0.4 per cent, and here in London the FTSE 100 ended up 0.3 per cent. Bitcoin was up 3.6 per cent over seven days.",
+   "graphic": {
+    "type": "indices",
+    "rows": [
+     {
+      "name": "S&P 500",
+      "sym": "^GSPC",
+      "pct": 0.5,
+      "last": 7757.21
+     },
+     {
+      "name": "Nasdaq 100",
+      "sym": "^NDX",
+      "pct": -0.4,
+      "last": 29822.52
+     },
+     {
+      "name": "Dow Jones",
+      "sym": "^DJI",
+      "pct": 2.4,
+      "last": 52857.04
+     },
+     {
+      "name": "FTSE 100",
+      "sym": "^FTSE",
+      "pct": 0.3,
+      "last": 10752.88
+     },
+     {
+      "name": "Bitcoin",
+      "sym": "BTC-USD",
+      "pct": 3.6,
+      "last": 84482.77
+     }
+    ]
+   },
+   "start": 9.375,
+   "end": 27.225
+  },
+  {
+   "id": "movers",
+   "title": "Biggest movers",
+   "tag": "STOCKS",
+   "bar": "Accenture leads, Lam Research lags",
+   "text": "Among the hundred big US stocks we track, the top riser was Accenture, up 11.8 per cent, followed by International Business Machines and ServiceNow. At the other end, Lam Research fell 9.1 per cent, with KLA and General Motors also lower.",
+   "graphic": {
+    "type": "movers",
+    "up": [
+     {
+      "t": "ACN",
+      "pct": 11.8,
+      "name": "Accenture"
+     },
+     {
+      "t": "IBM",
+      "pct": 10.2,
+      "name": "International Business Machines"
+     },
+     {
+      "t": "NOW",
+      "pct": 9.4,
+      "name": "ServiceNow"
+     }
+    ],
+    "down": [
+     {
+      "t": "LRCX",
+      "pct": -9.1,
+      "name": "Lam Research"
+     },
+     {
+      "t": "KLAC",
+      "pct": -8.6,
+      "name": "KLA"
+     },
+     {
+      "t": "GM",
+      "pct": -8.4,
+      "name": "General Motors"
+     }
+    ]
+   },
+   "start": 27.675,
+   "end": 43.9
+  },
+  {
+   "id": "news_ACN",
+   "title": "In the headlines",
+   "tag": "NEWS",
+   "bar": "Accenture up 11.8%",
+   "text": "In the news on Accenture, Yahoo Finance ran the headline: Accenture Stock Gets Downgraded as the Good News May Already Be Priced In.",
+   "graphic": {
+    "type": "headline",
+    "t": "ACN",
+    "pct": 11.8,
+    "title": "Accenture Stock Gets Downgraded as the Good News May Already Be Priced In",
+    "src": "Yahoo Finance"
+   },
+   "start": 44.35,
+   "end": 52.725
+  },
+  {
+   "id": "news_LRCX",
+   "title": "In the headlines",
+   "tag": "NEWS",
+   "bar": "Lam Research down 9.1%",
+   "text": "In the news on Lam Research, Yahoo Finance ran the headline: The Zacks Analyst Blog Highlights Microsoft, Palantir Technologies, Micron Technology, Lam Research and IonQ.",
+   "graphic": {
+    "type": "headline",
+    "t": "LRCX",
+    "pct": -9.1,
+    "title": "The Zacks Analyst Blog Highlights Microsoft, Palantir Technologies, Micron Technology, Lam Research and IonQ",
+    "src": "Yahoo Finance"
+   },
+   "start": 53.175,
+   "end": 63.75
+  },
+  {
+   "id": "momentum",
+   "title": "Momentum top 5",
+   "tag": "VENTRYX",
+   "bar": "The monthly top 5",
+   "text": "On the Ventryx momentum list, this month's five are Micron Technology, Dell, Advanced Micro Devices, Intel and Marvell Technology. All five are holding their places for now. The next swap is on Friday 30 October.",
+   "graphic": {
+    "type": "picks",
+    "lead": "This month's holdings",
+    "items": [
+     {
+      "t": "MU"
+     },
+     {
+      "t": "DELL"
+     },
+     {
+      "t": "AMD"
+     },
+     {
+      "t": "INTC"
+     },
+     {
+      "t": "MRVL"
+     }
+    ],
+    "note": "Next swap: Fri 30 Oct"
+   },
+   "start": 64.2,
+   "end": 77.825
+  },
+  {
+   "id": "crypto",
+   "title": "Crypto top 5",
+   "tag": "CRYPTO",
+   "bar": "Experimental: high risk",
+   "text": "In crypto, our experimental top five are Zcash, Uniswap, NEAR Protocol, Arbitrum and Chainlink, with Bitcoin 16 per cent above its two-hundred-day average.",
+   "graphic": {
+    "type": "picks",
+    "lead": "Experimental crypto holdings",
+    "items": [
+     {
+      "t": "ZEC"
+     },
+     {
+      "t": "UNI"
+     },
+     {
+      "t": "NEAR"
+     },
+     {
+      "t": "ARB"
+     },
+     {
+      "t": "LINK"
+     }
+    ],
+    "note": "High risk: you could lose all the money you put in."
+   },
+   "start": 78.275,
+   "end": 88.9
+  },
+  {
+   "id": "outlook",
+   "title": "Next week",
+   "tag": "OUTLOOK",
+   "bar": "The week ahead: 26-30 October",
+   "text": "Looking ahead to the week of Monday 26 October. Results are due from Visa and Coca-Cola Company (The) on Tuesday; Alphabet and Microsoft on Wednesday; Amazon.com and Eli Lilly and on Thursday. And on the prediction market Polymarket, the question \"Will Bitcoin reach $85,000 on October 21?\" is trading at about 60 per cent yes. ",
+   "graphic": {
+    "type": "outlook",
+    "rows": [
+     {
+      "k": "Tue",
+      "v": "Visa, Coca-Cola Company (The)"
+     },
+     {
+      "k": "Wed",
+      "v": "Alphabet, Microsoft"
+     },
+     {
+      "k": "Thu",
+      "v": "Amazon.com, Eli Lilly and"
+     },
+     {
+      "k": "Odds",
+      "v": "Will Bitcoin reach $85,000 on October 21? 60% yes"
+     },
+     {
+      "k": "Swap",
+      "v": "Momentum swap: Fri 30 Oct"
+     }
+    ]
+   },
+   "start": 89.35,
+   "end": 110.275
+  },
+  {
+   "id": "outro",
+   "title": "That's the week",
+   "tag": "WEEKLY",
+   "bar": "Not financial advice",
+   "text": "That's your round-up. Remember, this is research, not financial advice. I'm Nova. See you next Sunday.",
+   "graphic": {
+    "type": "outro",
+    "big": "See you Sunday",
+    "sub": "Ventryx Weekly · not financial advice"
+   },
+   "start": 110.725,
+   "end": 116.975
+  }
+ ]
+}
