@@ -140,6 +140,14 @@ h1,h2,h3{font-family:var(--sans);font-weight:300;letter-spacing:-.035em;line-hei
 .story p{margin:0;font-size:.8rem;color:var(--mute);line-height:1.75}
 .story ul{margin:.3rem 0 0;padding-left:1rem;font-size:.78rem;color:var(--mute);line-height:1.7}
 
+.pex{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);gap:2rem clamp(2rem,5vw,5rem);align-items:center;margin-top:clamp(3rem,6vw,5rem);padding:clamp(1.5rem,4vw,3rem);border-radius:28px;background:radial-gradient(30rem 20rem at 20% 50%,rgba(26,60,255,.10),transparent 70%),radial-gradient(24rem 18rem at 10% 100%,rgba(255,90,31,.10),transparent 70%),var(--soft);border:1px solid var(--line)}
+@media (max-width:56rem){.pex{grid-template-columns:minmax(0,1fr)}}
+.phone{justify-self:center;width:min(19rem,78vw);aspect-ratio:9/16;border-radius:38px;padding:9px;background:#0B0D12;box-shadow:0 40px 70px -30px rgba(11,13,18,.55),0 0 0 1px rgba(255,255,255,.08) inset}
+.phone video{display:block;width:100%;height:100%;object-fit:cover;border-radius:30px;background:#0B0D12}
+.pex h2{font-size:clamp(1.9rem,3.6vw,2.8rem);max-width:18ch}
+.pex .intro{margin:1rem 0 1.4rem}
+.note2{font-size:.74rem;color:var(--dim);line-height:1.7;margin:1.2rem 0 0;padding-left:.9rem;border-left:2px solid transparent;border-image:var(--grad) 1}
+.note2 b{color:var(--ink);font-weight:500}
 /* offer */
 .offer{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
 @media (max-width:56rem){.offer{grid-template-columns:minmax(0,1fr)}}
@@ -375,7 +383,7 @@ h1,h2,h3{font-family:var(--sans);font-weight:300;letter-spacing:-.035em;line-hei
       </div>
       <div class="feature">
         <figure class="vid">
-          <video controls playsinline preload="metadata" poster="work/chks-clinical-coding.jpg" aria-label="CHKS AI Clinical Coding explainer video">
+          <video controls playsinline preload="metadata" poster="work/chks-poster.jpg" aria-label="CHKS AI Clinical Coding explainer video">
             <source src="work/chks-clinical-coding.mp4" type="video/mp4">
           </video>
         </figure>
@@ -396,6 +404,26 @@ h1,h2,h3{font-family:var(--sans);font-weight:300;letter-spacing:-.035em;line-hei
         <div><span class="n">02 &middot; Role</span><h3>Motion design</h3><p>Turning the product story into animated sequences: the coding journey, the interface moments and the closing message.</p><!-- TODO Shaun: add any script, storyboard, illustration, voice or edit work you did. --></div>
         <div><span class="n">03 &middot; Process</span><h3>Story first</h3><ul><li>Understand the product and its users</li><li>Script and storyboard</li><li>Illustration and animation</li><li>Review rounds with the client</li></ul><!-- TODO Shaun: confirm these steps. --></div>
         <div><span class="n">04 &middot; Outcome</span><h3>A clear 72 seconds</h3><p>One film covering coding status from not coded to fully coded, local rules, readiness for ICD-11 and the experience behind the product.</p><!-- TODO Shaun: add where it's used, any numbers or a client quote. --></div>
+      </div>
+
+      <div class="pex" id="patient-video">
+        <div class="phone">
+          <video controls playsinline preload="metadata" poster="work/black-eye-explainer.jpg" aria-label="How to look after a black eye: a 31-second patient explainer made with Google Veo 3">
+            <source src="work/black-eye-explainer.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="pex-copy">
+          <p class="eyebrow">Patient explainer &middot; AI video</p>
+          <h2>How to look after a black eye, in 31 seconds</h2>
+          <p class="intro">A short vertical film for patients to watch after a GP or minor injuries visit. It shows what's happening under the skin, the cold compress, pain relief, the warm compress after a couple of days, and the warning signs that mean coming back. Clinicians explain all of this in the room, but patients often forget it by the time they get home.</p>
+          <dl class="facts">
+            <div><dt>Made with</dt><dd>Google Veo 3, edited by me</dd></div>
+            <div><dt>Format</dt><dd>0:31, vertical for phones</dd></div>
+            <div><dt>Shared by</dt><dd>Text message or a QR code on the advice leaflet</dd></div>
+            <div><dt>Goal</dt><dd>Better recall of self-care advice and when to seek help</dd></div>
+          </dl>
+          <p class="note2"><b>AI-generated video.</b> A concept to show how generative video could support patient information. In real use, every script is checked by clinicians against current guidance before a patient sees it.</p>
+        </div>
       </div>
     </div>
   </section>
