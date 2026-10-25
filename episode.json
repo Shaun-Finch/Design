@@ -1,0 +1,491 @@
+{
+ "weekEnding": "2026-10-23",
+ "published": "2026-10-25T13:11Z",
+ "writer": "template",
+ "strip": "Weekly round-up · week ending Friday 23 October",
+ "clock": "SUN 25 OCT · 13:11 UTC",
+ "ticker": [
+  {
+   "t": "S&P 500",
+   "pct": -0.5
+  },
+  {
+   "t": "NASDAQ",
+   "pct": -0.8
+  },
+  {
+   "t": "Dow Jones",
+   "pct": 0.4
+  },
+  {
+   "t": "FTSE 100",
+   "pct": -1.8
+  },
+  {
+   "t": "Bitcoin",
+   "pct": -2.1
+  },
+  {
+   "t": "CRWD",
+   "pct": 13.3
+  },
+  {
+   "t": "NOW",
+   "pct": 12.0
+  },
+  {
+   "t": "PANW",
+   "pct": 11.3
+  },
+  {
+   "t": "LRCX",
+   "pct": -12.8
+  },
+  {
+   "t": "KLAC",
+   "pct": -12.1
+  },
+  {
+   "t": "T",
+   "pct": -10.7
+  }
+ ],
+ "facts": {
+  "weekEnding": "2026-10-23",
+  "indices": [
+   {
+    "name": "S&P 500",
+    "sym": "^GSPC",
+    "pct": -0.5,
+    "last": 7623.68
+   },
+   {
+    "name": "Nasdaq 100",
+    "sym": "^NDX",
+    "pct": -0.8,
+    "last": 28957.53
+   },
+   {
+    "name": "Dow Jones",
+    "sym": "^DJI",
+    "pct": 0.4,
+    "last": 52215.16
+   },
+   {
+    "name": "FTSE 100",
+    "sym": "^FTSE",
+    "pct": -1.8,
+    "last": 10690.4
+   },
+   {
+    "name": "Bitcoin",
+    "sym": "BTC-USD",
+    "pct": -2.1,
+    "last": 80333.93
+   }
+  ],
+  "risers": [
+   {
+    "t": "CRWD",
+    "pct": 13.3,
+    "name": "CrowdStrike"
+   },
+   {
+    "t": "NOW",
+    "pct": 12.0,
+    "name": "ServiceNow"
+   },
+   {
+    "t": "PANW",
+    "pct": 11.3,
+    "name": "Palo Alto Networks"
+   }
+  ],
+  "fallers": [
+   {
+    "t": "LRCX",
+    "pct": -12.8,
+    "name": "Lam Research"
+   },
+   {
+    "t": "KLAC",
+    "pct": -12.1,
+    "name": "KLA"
+   },
+   {
+    "t": "T",
+    "pct": -10.7,
+    "name": "AT&T"
+   }
+  ],
+  "headlines": [
+   {
+    "t": "CRWD",
+    "name": "CrowdStrike",
+    "pct": 13.3,
+    "title": "CrowdStrike’s CEO Says a Wave of Cyber Attacks Are Coming",
+    "src": "Yahoo Finance"
+   },
+   {
+    "t": "LRCX",
+    "name": "Lam Research",
+    "pct": -12.8,
+    "title": "Lam Research (LRCX) Stock Faces Q1 Earnings Quality Questions After Records",
+    "src": "Yahoo Finance"
+   }
+  ],
+  "momentum": {
+   "holdings": [
+    "MU",
+    "DELL",
+    "AMD",
+    "INTC",
+    "MRVL"
+   ],
+   "invested": true,
+   "names": [
+    "Micron Technology",
+    "Dell",
+    "Advanced Micro Devices",
+    "Intel",
+    "Marvell Technology"
+   ],
+   "nextSwap": "2026-10-30",
+   "leaving": [],
+   "joining": []
+  },
+  "crypto": {
+   "holdings": [
+    "ZEC",
+    "UNI",
+    "NEAR",
+    "ARB",
+    "LINK"
+   ],
+   "invested": true,
+   "names": [
+    "Zcash",
+    "Uniswap",
+    "NEAR Protocol",
+    "Arbitrum",
+    "Chainlink"
+   ],
+   "btcVs200dayPct": 10.2,
+   "nextSwap": "2026-10-31"
+  },
+  "earningsNextWeek": [
+   {
+    "t": "V",
+    "name": "Visa Inc.",
+    "date": "2026-10-27"
+   },
+   {
+    "t": "KO",
+    "name": "Coca-Cola Company (The)",
+    "date": "2026-10-27"
+   },
+   {
+    "t": "GOOGL",
+    "name": "Alphabet Inc.",
+    "date": "2026-10-28"
+   },
+   {
+    "t": "MSFT",
+    "name": "Microsoft Corporation",
+    "date": "2026-10-28"
+   },
+   {
+    "t": "AMZN",
+    "name": "Amazon.com, Inc.",
+    "date": "2026-10-29"
+   },
+   {
+    "t": "LLY",
+    "name": "Eli Lilly and Company",
+    "date": "2026-10-29"
+   }
+  ],
+  "predictionMarkets": [
+   {
+    "title": "What price will Bitcoin hit in October?",
+    "odds": [
+     {
+      "label": "↓ 77,500",
+      "q": "Will Bitcoin dip to $77,500 in October?",
+      "yes": 42.5,
+      "outcome": "Yes"
+     },
+     {
+      "label": "↑ 82,500",
+      "q": "Will Bitcoin reach $82,500 in October?",
+      "yes": 58.5,
+      "outcome": "Yes"
+     }
+    ]
+   },
+   {
+    "title": "Bitcoin above ___ on October 25?",
+    "odds": [
+     {
+      "label": "80,000",
+      "q": "Will the price of Bitcoin be above $80,000 on October 25?",
+      "yes": 85.7,
+      "outcome": "Yes"
+     }
+    ]
+   }
+  ],
+  "nextWeek": {
+   "from": "2026-10-26",
+   "to": "2026-10-30"
+  }
+ },
+ "segments": [
+  {
+   "id": "intro",
+   "title": "Weekly round-up",
+   "tag": "WEEKLY",
+   "bar": "Your two-minute market round-up",
+   "text": "Hello, I'm Nova, the Ventryx AI presenter. This is your weekly market round-up for the week ending Friday 23 October.",
+   "graphic": {
+    "type": "intro",
+    "big": "Weekly round-up",
+    "sub": "Week ending Friday 23 October"
+   },
+   "start": 0.0,
+   "end": 8.72
+  },
+  {
+   "id": "markets",
+   "title": "Markets this week",
+   "tag": "WEEKLY",
+   "bar": "Stocks lower on the week",
+   "text": "Here's how the markets closed the week. The S&P 500 finished down 0.5 per cent. The tech-heavy Nasdaq 100 was down 0.8 per cent, and here in London the FTSE 100 ended down 1.8 per cent. Bitcoin was down 2.1 per cent over seven days.",
+   "graphic": {
+    "type": "indices",
+    "rows": [
+     {
+      "name": "S&P 500",
+      "sym": "^GSPC",
+      "pct": -0.5,
+      "last": 7623.68
+     },
+     {
+      "name": "Nasdaq 100",
+      "sym": "^NDX",
+      "pct": -0.8,
+      "last": 28957.53
+     },
+     {
+      "name": "Dow Jones",
+      "sym": "^DJI",
+      "pct": 0.4,
+      "last": 52215.16
+     },
+     {
+      "name": "FTSE 100",
+      "sym": "^FTSE",
+      "pct": -1.8,
+      "last": 10690.4
+     },
+     {
+      "name": "Bitcoin",
+      "sym": "BTC-USD",
+      "pct": -2.1,
+      "last": 80333.93
+     }
+    ]
+   },
+   "start": 9.17,
+   "end": 27.652
+  },
+  {
+   "id": "movers",
+   "title": "Biggest movers",
+   "tag": "STOCKS",
+   "bar": "CrowdStrike leads, Lam Research lags",
+   "text": "Among the hundred big US stocks we track, the top riser was CrowdStrike, up 13.3 per cent, followed by ServiceNow and Palo Alto Networks. At the other end, Lam Research fell 12.8 per cent, with KLA and AT&T also lower.",
+   "graphic": {
+    "type": "movers",
+    "up": [
+     {
+      "t": "CRWD",
+      "pct": 13.3,
+      "name": "CrowdStrike"
+     },
+     {
+      "t": "NOW",
+      "pct": 12.0,
+      "name": "ServiceNow"
+     },
+     {
+      "t": "PANW",
+      "pct": 11.3,
+      "name": "Palo Alto Networks"
+     }
+    ],
+    "down": [
+     {
+      "t": "LRCX",
+      "pct": -12.8,
+      "name": "Lam Research"
+     },
+     {
+      "t": "KLAC",
+      "pct": -12.1,
+      "name": "KLA"
+     },
+     {
+      "t": "T",
+      "pct": -10.7,
+      "name": "AT&T"
+     }
+    ]
+   },
+   "start": 28.102,
+   "end": 44.319
+  },
+  {
+   "id": "news_CRWD",
+   "title": "In the headlines",
+   "tag": "NEWS",
+   "bar": "CrowdStrike up 13.3%",
+   "text": "In the news on CrowdStrike, Yahoo Finance ran the headline: CrowdStrike’s CEO Says a Wave of Cyber Attacks Are Coming.",
+   "graphic": {
+    "type": "headline",
+    "t": "CRWD",
+    "pct": 13.3,
+    "title": "CrowdStrike’s CEO Says a Wave of Cyber Attacks Are Coming",
+    "src": "Yahoo Finance"
+   },
+   "start": 44.769,
+   "end": 52.247
+  },
+  {
+   "id": "news_LRCX",
+   "title": "In the headlines",
+   "tag": "NEWS",
+   "bar": "Lam Research down 12.8%",
+   "text": "In the news on Lam Research, Yahoo Finance ran the headline: Lam Research (LRCX) Stock Faces Q1 Earnings Quality Questions After Records.",
+   "graphic": {
+    "type": "headline",
+    "t": "LRCX",
+    "pct": -12.8,
+    "title": "Lam Research (LRCX) Stock Faces Q1 Earnings Quality Questions After Records",
+    "src": "Yahoo Finance"
+   },
+   "start": 52.697,
+   "end": 61.835
+  },
+  {
+   "id": "momentum",
+   "title": "Momentum top 5",
+   "tag": "VENTRYX",
+   "bar": "The monthly top 5",
+   "text": "On the Ventryx momentum list, this month's five are Micron Technology, Dell, Advanced Micro Devices, Intel and Marvell Technology. All five are holding their places for now. The next swap is on Friday 30 October.",
+   "graphic": {
+    "type": "picks",
+    "lead": "This month's holdings",
+    "items": [
+     {
+      "t": "MU"
+     },
+     {
+      "t": "DELL"
+     },
+     {
+      "t": "AMD"
+     },
+     {
+      "t": "INTC"
+     },
+     {
+      "t": "MRVL"
+     }
+    ],
+    "note": "Next swap: Fri 30 Oct"
+   },
+   "start": 62.285,
+   "end": 76.335
+  },
+  {
+   "id": "crypto",
+   "title": "Crypto top 5",
+   "tag": "CRYPTO",
+   "bar": "Experimental: high risk",
+   "text": "In crypto, our experimental top five are Zcash, Uniswap, NEAR Protocol, Arbitrum and Chainlink, with Bitcoin 10 per cent above its two-hundred-day average.",
+   "graphic": {
+    "type": "picks",
+    "lead": "Experimental crypto holdings",
+    "items": [
+     {
+      "t": "ZEC"
+     },
+     {
+      "t": "UNI"
+     },
+     {
+      "t": "NEAR"
+     },
+     {
+      "t": "ARB"
+     },
+     {
+      "t": "LINK"
+     }
+    ],
+    "note": "High risk: you could lose all the money you put in."
+   },
+   "start": 76.785,
+   "end": 87.195
+  },
+  {
+   "id": "outlook",
+   "title": "Next week",
+   "tag": "OUTLOOK",
+   "bar": "The week ahead: 26-30 October",
+   "text": "Looking ahead to the week of Monday 26 October. Results are due from Visa and Coca-Cola Company (The) on Tuesday; Alphabet and Microsoft on Wednesday; Amazon.com and Eli Lilly and on Thursday. And on the prediction market Polymarket, the question \"Will Bitcoin dip to $77,500 in October?\" is trading at about 42 per cent yes. ",
+   "graphic": {
+    "type": "outlook",
+    "rows": [
+     {
+      "k": "Tue",
+      "v": "Visa, Coca-Cola Company (The)"
+     },
+     {
+      "k": "Wed",
+      "v": "Alphabet, Microsoft"
+     },
+     {
+      "k": "Thu",
+      "v": "Amazon.com, Eli Lilly and"
+     },
+     {
+      "k": "Odds",
+      "v": "Will Bitcoin dip to $77,500 in October? 42% yes"
+     },
+     {
+      "k": "Swap",
+      "v": "Momentum swap: Fri 30 Oct"
+     }
+    ]
+   },
+   "start": 87.645,
+   "end": 111.816
+  },
+  {
+   "id": "outro",
+   "title": "That's the week",
+   "tag": "WEEKLY",
+   "bar": "Not financial advice",
+   "text": "That's your round-up. Remember, this is research, not financial advice. I'm Nova. See you next Sunday.",
+   "graphic": {
+    "type": "outro",
+    "big": "See you Sunday",
+    "sub": "Ventryx Weekly · not financial advice"
+   },
+   "start": 112.266,
+   "end": 119.642
+  }
+ ]
+}
