@@ -1,11 +1,13 @@
-"""Build the 30s voiceover + music track for the nosebleed explainer.
+"""Build a 30s voiceover + music track for a 4-clip (4 x 8s) Veo explainer.
 
 Voice: Kokoro (open-source TTS, Apache-2.0). Music: a soft synth pad generated here,
 so there is nothing to license.
 
-Usage: python3 make_audio.py <kokoro-v1.0.onnx> <voices-v1.0.bin> [voice]
-Outputs land in ./audio/
+Usage: python3 make_audio.py <project-dir> <kokoro-v1.0.onnx> <voices-v1.0.bin> [voice]
+Reads <project-dir>/lines.json (4 voiceover lines, one per clip) and writes
+<project-dir>/audio/. Model files: github.com/thewh1teagle/kokoro-onnx releases.
 """
+import json
 import sys
 from pathlib import Path
 
@@ -15,21 +17,13 @@ from kokoro_onnx import Kokoro
 
 SR = 24000
 LENGTH = 30.0
-OUT = Path(__file__).parent / "audio"
-
-# (start time in seconds, line). Each clip is 8s; lines start just after each cut.
-LINES = [
-    (0.4, "Got a nosebleed? Don't tilt your head back. The blood just runs down your throat."),
-    (8.4, "Most nosebleeds start at the front of the nose, where tiny blood vessels sit right under the surface."),
-    (16.4, "Lean forward, pinch the soft part of your nose, and hold for ten to fifteen minutes. A cold pack helps too."),
-    (24.3, "Still bleeding after fifteen minutes, or after a knock to the head? Get medical help. Otherwise... you've got this."),
-]
+STARTS = [0.4, 8.4, 16.4, 24.3]  # each clip is 8s; lines start just after each cut
 SLOT = [7.4, 7.4, 7.4, 5.5]  # max seconds each line may run
 
 
-def voiceover(kokoro, voice):
+def voiceover(kokoro, voice, lines):
     track = np.zeros(int(SR * LENGTH), dtype=np.float32)
-    for (start, text), slot in zip(LINES, SLOT):
+    for start, text, slot in zip(STARTS, lines, SLOT):
         speed = 1.0
         while True:
             audio, sr = kokoro.create(text, voice=voice, speed=speed, lang="en-gb")
@@ -103,12 +97,15 @@ def duck(music_track, vo, depth=0.45):
 
 
 def main():
-    model, voices = sys.argv[1], sys.argv[2]
-    voice = sys.argv[3] if len(sys.argv) > 3 else "bf_emma"
-    OUT.mkdir(exist_ok=True)
+    project, model, voices = Path(sys.argv[1]), sys.argv[2], sys.argv[3]
+    voice = sys.argv[4] if len(sys.argv) > 4 else "bf_emma"
+    lines = json.loads((project / "lines.json").read_text())
+    assert len(lines) == 4, "need exactly 4 lines, one per 8s clip"
+    out = project / "audio"
+    out.mkdir(exist_ok=True)
     kokoro = Kokoro(model, voices)
 
-    vo = voiceover(kokoro, voice)
+    vo = voiceover(kokoro, voice, lines)
     vo *= 0.9 / np.abs(vo).max()
     bed = music() + whoosh(7.6)
     mix = vo + duck(bed, vo) * 1.0
@@ -117,10 +114,10 @@ def main():
     mix[-fade:] *= np.linspace(1, 0, fade)
     mix *= 0.89 / np.abs(mix).max()
 
-    sf.write(OUT / f"voiceover-only_{voice}.wav", vo, SR)
-    sf.write(OUT / "music-only.wav", bed / np.abs(bed).max() * 0.7, SR)
-    sf.write(OUT / f"full-mix_{voice}.wav", mix, SR)
-    print("written to", OUT)
+    sf.write(out / f"voiceover-only_{voice}.wav", vo, SR)
+    sf.write(out / "music-only.wav", bed / np.abs(bed).max() * 0.7, SR)
+    sf.write(out / f"full-mix_{voice}.wav", mix, SR)
+    print("written to", out)
 
 
 if __name__ == "__main__":
