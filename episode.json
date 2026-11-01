@@ -1,0 +1,472 @@
+{
+ "weekEnding": "2026-10-30",
+ "published": "2026-11-01T15:01Z",
+ "writer": "template",
+ "strip": "Weekly round-up · week ending Friday 30 October",
+ "clock": "SUN 01 NOV · 15:01 UTC",
+ "ticker": [
+  {
+   "t": "S&P 500",
+   "pct": -0.6
+  },
+  {
+   "t": "NASDAQ",
+   "pct": -2.0
+  },
+  {
+   "t": "Dow Jones",
+   "pct": -0.9
+  },
+  {
+   "t": "FTSE 100",
+   "pct": 0.4
+  },
+  {
+   "t": "Bitcoin",
+   "pct": -2.6
+  },
+  {
+   "t": "GM",
+   "pct": 15.1
+  },
+  {
+   "t": "LLY",
+   "pct": 11.3
+  },
+  {
+   "t": "KLAC",
+   "pct": 8.4
+  },
+  {
+   "t": "NOW",
+   "pct": -33.9
+  },
+  {
+   "t": "INTC",
+   "pct": -24.4
+  },
+  {
+   "t": "MRVL",
+   "pct": -14.1
+  }
+ ],
+ "facts": {
+  "weekEnding": "2026-10-30",
+  "indices": [
+   {
+    "name": "S&P 500",
+    "sym": "^GSPC",
+    "pct": -0.6,
+    "last": 7580.07
+   },
+   {
+    "name": "Nasdaq 100",
+    "sym": "^NDX",
+    "pct": -2.0,
+    "last": 28384.85
+   },
+   {
+    "name": "Dow Jones",
+    "sym": "^DJI",
+    "pct": -0.9,
+    "last": 51770.31
+   },
+   {
+    "name": "FTSE 100",
+    "sym": "^FTSE",
+    "pct": 0.4,
+    "last": 10729.8
+   },
+   {
+    "name": "Bitcoin",
+    "sym": "BTC-USD",
+    "pct": -2.6,
+    "last": 77924.68
+   }
+  ],
+  "risers": [
+   {
+    "t": "GM",
+    "pct": 15.1,
+    "name": "General Motors"
+   },
+   {
+    "t": "LLY",
+    "pct": 11.3,
+    "name": "Eli Lilly and"
+   },
+   {
+    "t": "KLAC",
+    "pct": 8.4,
+    "name": "KLA"
+   }
+  ],
+  "fallers": [
+   {
+    "t": "NOW",
+    "pct": -33.9,
+    "name": "ServiceNow"
+   },
+   {
+    "t": "INTC",
+    "pct": -24.4,
+    "name": "Intel"
+   },
+   {
+    "t": "MRVL",
+    "pct": -14.1,
+    "name": "Marvell Technology"
+   }
+  ],
+  "headlines": [
+   {
+    "t": "GM",
+    "name": "General Motors",
+    "pct": 15.1,
+    "title": "Ford, General Motors stocks had this in common for week ending Oct. 30",
+    "src": "Yahoo Finance"
+   },
+   {
+    "t": "NOW",
+    "name": "ServiceNow",
+    "pct": -33.9,
+    "title": "Why the 27% Crash in ServiceNow's Stock Looks Like a Golden Opportunity",
+    "src": "Yahoo Finance"
+   }
+  ],
+  "momentum": {
+   "holdings": [
+    "MU",
+    "DELL",
+    "AMD",
+    "INTC",
+    "MRVL"
+   ],
+   "invested": true,
+   "names": [
+    "Micron Technology",
+    "Dell",
+    "Advanced Micro Devices",
+    "Intel",
+    "Marvell Technology"
+   ],
+   "nextSwap": "2026-11-30",
+   "leaving": [],
+   "joining": []
+  },
+  "crypto": {
+   "holdings": [
+    "NEAR",
+    "ZEC",
+    "ARB",
+    "UNI",
+    "XMR"
+   ],
+   "invested": true,
+   "names": [
+    "NEAR Protocol",
+    "Zcash",
+    "Arbitrum",
+    "Uniswap",
+    "Monero"
+   ],
+   "btcVs200dayPct": 6.4,
+   "nextSwap": "2026-11-30"
+  },
+  "earningsNextWeek": [
+   {
+    "t": "AAPL",
+    "name": "Apple Inc.",
+    "date": "2026-11-02"
+   },
+   {
+    "t": "PLTR",
+    "name": "Palantir Technologies Inc.",
+    "date": "2026-11-02"
+   },
+   {
+    "t": "AMD",
+    "name": "Advanced Micro Devices, Inc.",
+    "date": "2026-11-03"
+   }
+  ],
+  "predictionMarkets": [
+   {
+    "title": "Bitcoin above ___ on November 1?",
+    "odds": [
+     {
+      "label": "78,000",
+      "q": "Will the price of Bitcoin be above $78,000 on November 1?",
+      "yes": 55.4,
+      "outcome": "Yes"
+     }
+    ]
+   },
+   {
+    "title": "What price will Bitcoin hit October 26-November 1?",
+    "odds": [
+     {
+      "label": "↓ 76,000",
+      "q": "Will Bitcoin dip to $76,000 October 26-November 1?",
+      "yes": 6.6,
+      "outcome": "Yes"
+     },
+     {
+      "label": "↑ 80,000",
+      "q": "Will Bitcoin reach $80,000 October 26-November 1?",
+      "yes": 5.0,
+      "outcome": "Yes"
+     }
+    ]
+   }
+  ],
+  "nextWeek": {
+   "from": "2026-11-02",
+   "to": "2026-11-06"
+  }
+ },
+ "segments": [
+  {
+   "id": "intro",
+   "title": "Weekly round-up",
+   "tag": "WEEKLY",
+   "bar": "Your two-minute market round-up",
+   "text": "Hello, I'm Nova, the Ventryx AI presenter. This is your weekly market round-up for the week ending Friday 30 October.",
+   "graphic": {
+    "type": "intro",
+    "big": "Weekly round-up",
+    "sub": "Week ending Friday 30 October"
+   },
+   "start": 0.0,
+   "end": 8.55
+  },
+  {
+   "id": "markets",
+   "title": "Markets this week",
+   "tag": "WEEKLY",
+   "bar": "Stocks lower on the week",
+   "text": "Here's how the markets closed the week. The S&P 500 finished down 0.6 per cent. The tech-heavy Nasdaq 100 was down 2.0 per cent, and here in London the FTSE 100 ended up 0.4 per cent. Bitcoin was down 2.6 per cent over seven days.",
+   "graphic": {
+    "type": "indices",
+    "rows": [
+     {
+      "name": "S&P 500",
+      "sym": "^GSPC",
+      "pct": -0.6,
+      "last": 7580.07
+     },
+     {
+      "name": "Nasdaq 100",
+      "sym": "^NDX",
+      "pct": -2.0,
+      "last": 28384.85
+     },
+     {
+      "name": "Dow Jones",
+      "sym": "^DJI",
+      "pct": -0.9,
+      "last": 51770.31
+     },
+     {
+      "name": "FTSE 100",
+      "sym": "^FTSE",
+      "pct": 0.4,
+      "last": 10729.8
+     },
+     {
+      "name": "Bitcoin",
+      "sym": "BTC-USD",
+      "pct": -2.6,
+      "last": 77924.68
+     }
+    ]
+   },
+   "start": 9.0,
+   "end": 26.375
+  },
+  {
+   "id": "movers",
+   "title": "Biggest movers",
+   "tag": "STOCKS",
+   "bar": "General Motors leads, ServiceNow lags",
+   "text": "Among the hundred big US stocks we track, the top riser was General Motors, up 15.1 per cent, followed by Eli Lilly and and KLA. At the other end, ServiceNow fell 33.9 per cent, with Intel and Marvell Technology also lower.",
+   "graphic": {
+    "type": "movers",
+    "up": [
+     {
+      "t": "GM",
+      "pct": 15.1,
+      "name": "General Motors"
+     },
+     {
+      "t": "LLY",
+      "pct": 11.3,
+      "name": "Eli Lilly and"
+     },
+     {
+      "t": "KLAC",
+      "pct": 8.4,
+      "name": "KLA"
+     }
+    ],
+    "down": [
+     {
+      "t": "NOW",
+      "pct": -33.9,
+      "name": "ServiceNow"
+     },
+     {
+      "t": "INTC",
+      "pct": -24.4,
+      "name": "Intel"
+     },
+     {
+      "t": "MRVL",
+      "pct": -14.1,
+      "name": "Marvell Technology"
+     }
+    ]
+   },
+   "start": 26.825,
+   "end": 42.95
+  },
+  {
+   "id": "news_GM",
+   "title": "In the headlines",
+   "tag": "NEWS",
+   "bar": "General Motors up 15.1%",
+   "text": "In the news on General Motors, Yahoo Finance ran the headline: Ford, General Motors stocks had this in common for week ending Oct. 30.",
+   "graphic": {
+    "type": "headline",
+    "t": "GM",
+    "pct": 15.1,
+    "title": "Ford, General Motors stocks had this in common for week ending Oct. 30",
+    "src": "Yahoo Finance"
+   },
+   "start": 43.4,
+   "end": 52.375
+  },
+  {
+   "id": "news_NOW",
+   "title": "In the headlines",
+   "tag": "NEWS",
+   "bar": "ServiceNow down 33.9%",
+   "text": "In the news on ServiceNow, Yahoo Finance ran the headline: Why the 27% Crash in ServiceNow's Stock Looks Like a Golden Opportunity.",
+   "graphic": {
+    "type": "headline",
+    "t": "NOW",
+    "pct": -33.9,
+    "title": "Why the 27% Crash in ServiceNow's Stock Looks Like a Golden Opportunity",
+    "src": "Yahoo Finance"
+   },
+   "start": 52.825,
+   "end": 61.975
+  },
+  {
+   "id": "momentum",
+   "title": "Momentum top 5",
+   "tag": "VENTRYX",
+   "bar": "The monthly top 5",
+   "text": "On the Ventryx momentum list, this month's five are Micron Technology, Dell, Advanced Micro Devices, Intel and Marvell Technology. All five are holding their places for now. The next swap is on Monday 30 November.",
+   "graphic": {
+    "type": "picks",
+    "lead": "This month's holdings",
+    "items": [
+     {
+      "t": "MU"
+     },
+     {
+      "t": "DELL"
+     },
+     {
+      "t": "AMD"
+     },
+     {
+      "t": "INTC"
+     },
+     {
+      "t": "MRVL"
+     }
+    ],
+    "note": "Next swap: Mon 30 Nov"
+   },
+   "start": 62.425,
+   "end": 75.975
+  },
+  {
+   "id": "crypto",
+   "title": "Crypto top 5",
+   "tag": "CRYPTO",
+   "bar": "Experimental: high risk",
+   "text": "In crypto, our experimental top five are NEAR Protocol, Zcash, Arbitrum, Uniswap and Monero, with Bitcoin 6 per cent above its two-hundred-day average.",
+   "graphic": {
+    "type": "picks",
+    "lead": "Experimental crypto holdings",
+    "items": [
+     {
+      "t": "NEAR"
+     },
+     {
+      "t": "ZEC"
+     },
+     {
+      "t": "ARB"
+     },
+     {
+      "t": "UNI"
+     },
+     {
+      "t": "XMR"
+     }
+    ],
+    "note": "High risk: you could lose all the money you put in."
+   },
+   "start": 76.425,
+   "end": 87.175
+  },
+  {
+   "id": "outlook",
+   "title": "Next week",
+   "tag": "OUTLOOK",
+   "bar": "The week ahead: 2-6 November",
+   "text": "Looking ahead to the week of Monday 2 November. Results are due from Apple and Palantir on Monday; Advanced Micro Devices on Tuesday. And on the prediction market Polymarket, the question \"Will the price of Bitcoin be above $78,000 on November 1?\" is trading at about 55 per cent yes. ",
+   "graphic": {
+    "type": "outlook",
+    "rows": [
+     {
+      "k": "Mon",
+      "v": "Apple, Palantir"
+     },
+     {
+      "k": "Tue",
+      "v": "Advanced Micro Devices"
+     },
+     {
+      "k": "Odds",
+      "v": "Will the price of Bitcoin be above $78,000 on November 1? 55% yes"
+     },
+     {
+      "k": "Swap",
+      "v": "Momentum swap: Mon 30 Nov"
+     }
+    ]
+   },
+   "start": 87.625,
+   "end": 106.075
+  },
+  {
+   "id": "outro",
+   "title": "That's the week",
+   "tag": "WEEKLY",
+   "bar": "Not financial advice",
+   "text": "That's your round-up. Remember, this is research, not financial advice. I'm Nova. See you next Sunday.",
+   "graphic": {
+    "type": "outro",
+    "big": "See you Sunday",
+    "sub": "Ventryx Weekly · not financial advice"
+   },
+   "start": 106.525,
+   "end": 112.775
+  }
+ ]
+}
