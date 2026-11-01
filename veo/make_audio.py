@@ -24,6 +24,7 @@ SLOT = [7.4, 7.4, 7.4, 5.5]  # max seconds each line may run
 def voiceover(kokoro, voice, lines):
     track = np.zeros(int(SR * LENGTH), dtype=np.float32)
     for start, text, slot in zip(STARTS, lines, SLOT):
+        slot = min(slot, LENGTH - start - 0.3)
         speed = 1.0
         while True:
             audio, sr = kokoro.create(text, voice=voice, speed=speed, lang="en-gb")
@@ -99,18 +100,30 @@ def duck(music_track, vo, depth=0.45):
 def main():
     project, model, voices = Path(sys.argv[1]), sys.argv[2], sys.argv[3]
     voice = sys.argv[4] if len(sys.argv) > 4 else "bf_emma"
-    lines = json.loads((project / "lines.json").read_text())
-    assert len(lines) == 4, "need exactly 4 lines, one per 8s clip"
+    spec = json.loads((project / "lines.json").read_text())
+    # Either a plain list of 4 lines (4 x 8s clips), or
+    # {"lines": [...], "clip_lengths": [...]} to fit clips of other lengths.
+    global STARTS, SLOT, LENGTH
+    if isinstance(spec, dict):
+        lines, lengths = spec["lines"], spec["clip_lengths"]
+        cuts = np.concatenate([[0], np.cumsum(lengths)])
+        STARTS = [float(c) + 0.1 for c in cuts[:-1]]
+        SLOT = [float(l) - 0.3 for l in lengths]
+        LENGTH = float(cuts[-1]) + spec.get("tail", 0.0)
+        SLOT[-1] += spec.get("tail", 0.0)  # last line may run into the held end frame
+    else:
+        lines = spec
+    assert len(lines) == len(STARTS), "need one line per clip"
     out = project / "audio"
     out.mkdir(exist_ok=True)
     kokoro = Kokoro(model, voices)
 
     vo = voiceover(kokoro, voice, lines)
     vo *= 0.9 / np.abs(vo).max()
-    bed = music() + whoosh(7.6)
+    bed = music() + whoosh(STARTS[1] - 0.7)
     mix = vo + duck(bed, vo) * 1.0
 
-    fade = int(SR * 1.2)
+    fade = int(SR * 0.8)
     mix[-fade:] *= np.linspace(1, 0, fade)
     mix *= 0.89 / np.abs(mix).max()
 
