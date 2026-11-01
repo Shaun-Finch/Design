@@ -1,5 +1,8 @@
 # Stroke (FAST) explainer: Veo 3 prompts (30s, 9:16)
 
+> **The current, more detailed prompts are in the prompt sheet:**
+> https://claude.ai/artifact/TupXC3pDmUxCW5J8AewDKP. The prompts below are the earlier short versions.
+
 **Idea:** "How to spot a stroke in seconds." Stroke is a genuine, common emergency.
 Knowing the FAST signs (Face, Arms, Speech, Time) is what gets people help in time, so
 this is something viewers can actually use and share. The signs show on the face,
