@@ -5,11 +5,8 @@ Static portfolio for Shaun Finch. One page, no build step, no dependencies.
 ```
 index.html                 Design and motion work (CSS inlined)
 branding.html              Branding — static image galleries (CSS inlined)
-xovern.html                Xovern — AI security dashboard (work in progress)
-ventryx.html               Ventryx — opening-bell breakout and long-term scanner (work in progress)
-scripts/build_markets.py   Builds Ventryx's markets.json (run by a GitHub Action)
-data/sanctions.json        Sanctions data for Xovern, refreshed daily by a GitHub Action
-scripts/build_sanctions.py Builds data/sanctions.json from the UK and OFAC lists
+agents.html                AI agents — how agent swarms, memory and overnight loops are set up
+ventryx.html, xovern.html  Redirects: both projects moved to Shaun-Finch/personal-projects
 work/                      Videos and poster images
 branding/                  Branding stills
 Shaun_Finch_CV_2026.pdf
@@ -86,22 +83,8 @@ If a piece has to stay high quality, host it on Vimeo or YouTube and swap the
 Plain HTML — open the file and change the words. Pieces are `<figure class="piece">`
 blocks; delete one and the grid closes up on its own.
 
-## Xovern sanctions data
+## Personal projects
 
-`.github/workflows/sanctions-data.yml` runs every day at 06:17 UTC (and on demand
-from the Actions tab). It downloads the official UK Sanctions List (FCDO) and the
-OFAC SDN list, writes `data/sanctions.json` and commits it if anything changed.
-If a download or parse fails, the job fails and the previous file stays in place.
-
-## Ventryx market data
-
-`.github/workflows/markets-data.yml` runs `scripts/build_markets.py` every 15
-minutes on weekdays during US market hours, plus once after the close. It
-writes `markets.json` (and a daily `fundamentals.json` cache) to the
-`market-data` branch, which `ventryx.html` reads from raw.githubusercontent.com,
-so frequent refreshes never add commits to `main`. Data and articles come
-from Yahoo Finance via yfinance and may be delayed.
-
-Day trading uses an opening-range breakout: the first 15 minutes set the
-range, the first side to break it sets the trade (stop at the range midpoint,
-target at 2R), and each setup is tracked through the session on paper.
+Ventryx (market scanner) and Xovern (AI security dashboard) moved to their own repo,
+`Shaun-Finch/personal-projects`, in November 2026, along with their scripts, data and
+scheduled jobs. `ventryx.html` and `xovern.html` here only redirect to the new pages.
