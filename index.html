@@ -229,12 +229,45 @@ figure.piece.blankslot .frame{background:#000;border:1px solid rgba(255,255,255,
 @keyframes vxdraw{to{stroke-dashoffset:0}}
 .featured-top{grid-template-columns:minmax(0,1fr)}
 figure.piece.wide .frame.hframe{background:#141316}
-.hframe .hlogo{position:absolute;right:1rem;bottom:1rem;width:37px;height:32px;pointer-events:none}
+.hframe .hlogo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:74px;height:64px;pointer-events:none}
 #work{padding-top:clamp(1.25rem,3vw,2rem)}
 .hero.tight{padding-block:clamp(2.5rem,6vw,4.5rem) clamp(.5rem,2vw,1rem)}
 .hero.tight h1.display{font-size:clamp(2.2rem,5.6vw,4.6rem);max-width:20ch;line-height:1}
 .hero.tight .lede{margin-top:clamp(.9rem,2vw,1.3rem);font-size:clamp(1rem,1.5vw,1.2rem)}
 @keyframes xblink{50%{opacity:0}}
+/* AI agents tile: a swarm of named cursors building a small website on a 14 s loop.
+   The resting state is the finished site, which is what people who turn off motion see. */
+.agswarm .ags-cur,.agswarm .ags-sel,.agswarm .ags-type,.agswarm .ags-hero,.agswarm .ags-handles,.agswarm .ags-card,.agswarm .ags-ok,.agswarm .ags-pal,.agswarm .ags-h2,.agswarm .ags-btn{animation:14s ease-in-out infinite}
+.agswarm .ags-hero,.agswarm .ags-type,.agswarm .ags-sel{transform-box:fill-box;transform-origin:0 0}
+.agswarm .ags-orbit{transform-box:view-box;transform-origin:605px 214px;animation:agorbit 6s linear infinite}
+.agswarm .ags-live{animation:xblink 1.6s steps(1) infinite}
+.agswarm .ags-sel,.agswarm .ags-handles,.agswarm .ags-ok,.agswarm .ags-pal{opacity:0}
+.agswarm .ags-layout{transform:translate(742px,334px);animation-name:agLayout}
+.agswarm .ags-colour{transform:translate(232px,212px);animation-name:agColour}
+.agswarm .ags-copy{transform:translate(240px,294px);animation-name:agCopy}
+.agswarm .ags-review{transform:translate(214px,350px);animation-name:agReview}
+.agswarm .ags-sel{animation-name:agSel}.agswarm .ags-type{animation-name:agType}.agswarm .ags-hero{animation-name:agHero}
+.agswarm .ags-handles{animation-name:agHandles}.agswarm .ags-ok{animation-name:agOk}.agswarm .ags-pal{animation-name:agPal}
+.agswarm .ags-h2{animation-name:agH2}.agswarm .ags-btn{animation-name:agBtn}
+.agswarm .ags-c1{animation-name:agC1}.agswarm .ags-c2{animation-name:agC2}.agswarm .ags-c3{animation-name:agC3}
+@keyframes agorbit{to{transform:rotate(360deg)}}
+@keyframes agLayout{0%,100%{transform:translate(760px,72px)}10%,12%{transform:translate(692px,290px)}28%,34%{transform:translate(740px,332px)}44%{transform:translate(160px,398px)}52%{transform:translate(380px,398px)}60%,70%{transform:translate(620px,398px)}85%{transform:translate(700px,200px)}}
+@keyframes agColour{0%,100%{transform:translate(420px,424px)}12%,22%{transform:translate(150px,338px)}30%,44%{transform:translate(232px,212px)}56%{transform:translate(340px,70px)}70%{transform:translate(560px,150px)}85%{transform:translate(500px,424px)}}
+@keyframes agCopy{0%,100%{transform:translate(36px,120px)}6%{transform:translate(52px,120px)}14%,18%{transform:translate(350px,240px)}26%,40%{transform:translate(240px,294px)}55%{transform:translate(300px,62px)}70%{transform:translate(110px,64px)}85%{transform:translate(60px,100px)}}
+@keyframes agReview{0%,100%{transform:translate(560px,44px)}15%{transform:translate(640px,66px)}30%{transform:translate(600px,200px)}50%,64%{transform:translate(214px,350px)}78%{transform:translate(380px,250px)}}
+@keyframes agSel{0%,5%{opacity:0;transform:scale(.05)}6%{opacity:1;transform:scale(.05)}14%{opacity:1;transform:scale(1)}22%{opacity:1;transform:scale(1)}26%,100%{opacity:0;transform:scale(1)}}
+@keyframes agType{0%,18%{transform:scaleX(.12)}26%,88%{transform:scaleX(1)}96%,100%{transform:scaleX(.12)}}
+@keyframes agHero{0%,12%{transform:scale(.82)}28%,88%{transform:scale(1)}96%,100%{transform:scale(.82)}}
+@keyframes agHandles{0%,8%{opacity:0}10%,30%{opacity:1}34%,100%{opacity:0}}
+@keyframes agPal{0%,12%{opacity:0}14%,20%{opacity:1}23%,100%{opacity:0}}
+@keyframes agBtn{0%,16%{fill:#ECECEE}19%,88%{fill:#F0562A}94%,100%{fill:#ECECEE}}
+@keyframes agH2{0%,38%{fill:#ECECEE}42%,88%{fill:#A29DFF}94%,100%{fill:#ECECEE}}
+@keyframes agOk{0%,54%{opacity:0}57%,66%{opacity:1}70%,100%{opacity:0}}
+@keyframes agC1{0%,44%{opacity:0;transform:translateY(12px)}48%,88%{opacity:1;transform:none}93%,100%{opacity:0;transform:translateY(12px)}}
+@keyframes agC2{0%,51%{opacity:0;transform:translateY(12px)}55%,88%{opacity:1;transform:none}93%,100%{opacity:0;transform:translateY(12px)}}
+@keyframes agC3{0%,58%{opacity:0;transform:translateY(12px)}62%,88%{opacity:1;transform:none}93%,100%{opacity:0;transform:translateY(12px)}}
+@media (prefers-reduced-motion:reduce){.agswarm *{animation:none!important}}
+
 </style>
 </head>
 <body>
@@ -268,10 +301,6 @@ figure.piece.wide .frame.hframe{background:#141316}
               <svg class="xthumb hthumb" aria-hidden="true" focusable="false" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
                 <defs><radialGradient id="hglow" cx="50%" cy="50%" r="65%"><stop offset="0" stop-color="#1f1d24"/><stop offset="1" stop-color="#141316"/></radialGradient></defs>
                 <rect width="800" height="450" fill="url(#hglow)"/>
-                <g font-family="'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace" text-anchor="middle">
-                  <text x="400" y="230" font-size="52" font-weight="500" fill="#ECE8E1" letter-spacing="-1.5"><tspan fill="#D4848A">&#10095;</tspan> halvia</text>
-                  <text x="400" y="262" font-size="14" fill="#8d8a86" letter-spacing="3">AI SYSTEMS FOR HEALTHCARE</text>
-                </g>
               </svg>
               <svg class="hlogo" aria-hidden="true" focusable="false" viewBox="0 0 37 32" shape-rendering="crispEdges" color="#ECE8E1" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M5 0h10v1h-10zM23 0h10v1h-10zM3 2h4v1h-4zM15 2h2v1h-2zM21 2h2v1h-2zM33 2h2v1h-2zM1 4h5v1h-5zM16 4h2v1h-2zM20 4h2v1h-2zM35 4h2v1h-2zM1 6h9v1h-9zM35 6h2v1h-2zM1 8h9v1h-9zM35 8h2v1h-2zM1 10h9v1h-9zM35 10h2v1h-2zM2 12h9v1h-9zM34 12h2v1h-2zM3 14h9v1h-9zM33 14h2v1h-2zM5 16h8v1h-8zM31 16h2v1h-2zM7 18h7v1h-7zM29 18h2v1h-2zM9 20h6v1h-6zM27 20h2v1h-2zM11 22h5v1h-5zM25 22h2v1h-2zM13 24h3v1h-3zM23 24h2v1h-2zM17 26h6v1h-6zM16 27h2v1h-2zM19 28h4v1h-4zM25 28h2v1h-2zM29 28h2v1h-2zM18 29h2v1h-2zM21 30h2v1h-2zM25 30h2v1h-2zM20 31h2v1h-2z"/><path fill="#4038FF" d="M18 10h1v1h-1zM17 11h1v1h-1zM19 11h1v1h-1zM17 12h1v1h-1zM19 12h1v1h-1zM17 13h1v1h-1zM19 13h1v1h-1zM19 14h1v1h-1zM19 15h1v1h-1zM19 16h1v1h-1zM16 24h2v1h-2z"/><path fill="#FF2BE0" d="M13 14h4v1h-4z"/><path fill="#2BF05A" d="M23 14h5v1h-5zM22 15h1v1h-1zM21 16h1v1h-1zM20 17h1v1h-1zM20 24h2v1h-2z"/><path fill="#FF3A3A" d="M18 24h2v1h-2z"/></svg>
               <span class="framecta">Try the tools</span>
@@ -338,21 +367,43 @@ figure.piece.wide .frame.hframe{background:#141316}
         <figure class="piece wide hpiece">
           <div class="frame hframe">
             <a class="framelink" href="agents.html" aria-label="AI agents — read how I set up agent swarms, memory and overnight loops">
-              <svg class="xthumb" aria-hidden="true" focusable="false" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-                <defs><radialGradient id="agglow" cx="50%" cy="50%" r="65%"><stop offset="0" stop-color="#1f1d24"/><stop offset="1" stop-color="#141316"/></radialGradient></defs>
-                <rect width="800" height="450" fill="url(#agglow)"/>
-                <ellipse cx="400" cy="226" rx="300" ry="168" fill="none" stroke="#3a3740" stroke-width="1.5" stroke-dasharray="2 6"/>
-                <g fill="#1f1d24" stroke="#4a4652" stroke-width="1.5">
-                  <rect x="91" y="143" width="74" height="24"/><rect x="250" y="62" width="46" height="24"/><rect x="500" y="62" width="53" height="24"/><rect x="645" y="143" width="53" height="24"/><rect x="645" y="285" width="53" height="24"/><rect x="497" y="366" width="60" height="24"/><rect x="250" y="366" width="46" height="24"/><rect x="98" y="285" width="60" height="24"/>
+              <svg class="xthumb agswarm" aria-hidden="true" focusable="false" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" style="background:#0E0E10" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace">
+                <defs>
+                  <pattern id="agdots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#1d1d22"/></pattern>
+                  <linearGradient id="agring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0562A"/><stop offset="1" stop-color="#A29DFF"/></linearGradient>
+                </defs>
+                <rect width="800" height="450" fill="#0E0E10"/><rect width="800" height="450" fill="url(#agdots)"/>
+                <rect width="800" height="30" fill="#161618"/>
+                <circle cx="16" cy="15" r="4" fill="#2A2A2E"/><circle cx="30" cy="15" r="4" fill="#2A2A2E"/><circle cx="44" cy="15" r="4" fill="#2A2A2E"/>
+                <rect x="300" y="8" width="200" height="14" fill="#1E1E22"/><text x="400" y="18.5" font-size="9" fill="#A3A3AA" text-anchor="middle">agents-at-work.dev</text>
+                <rect x="664" y="8" width="122" height="14" fill="#1E1E22"/><circle class="ags-live" cx="675" cy="15" r="3" fill="#3CE38A"/><text x="684" y="18.5" font-size="9" fill="#ECECEE">4 agents live</text>
+                <rect x="60" y="54" width="18" height="18" fill="#F0562A"/>
+                <rect x="520" y="60" width="38" height="6" fill="#3A3A40"/><rect x="570" y="60" width="38" height="6" fill="#3A3A40"/><rect x="620" y="60" width="38" height="6" fill="#3A3A40"/>
+                <rect x="684" y="52" width="58" height="22" fill="none" stroke="#ECECEE"/>
+                <g font-family="Figtree,system-ui,-apple-system,'Segoe UI',sans-serif" font-weight="800" font-size="58" letter-spacing="-2.5">
+                  <text x="58" y="168" fill="#ECECEE">Built by</text>
+                  <text class="ags-h2" x="58" y="228" fill="#A29DFF">agents.</text>
                 </g>
-                <g font-family="'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace" font-size="10" fill="#8d8a86" text-anchor="middle">
-                  <text x="128" y="159">research</text><text x="273" y="78">plan</text><text x="527" y="78">draft</text><text x="672" y="159">check</text><text x="672" y="301">tools</text><text x="527" y="382">review</text><text x="273" y="382">loop</text><text x="128" y="301">memory</text>
+                <rect class="ags-sel" x="50" y="118" width="300" height="124" fill="rgba(60,227,138,.06)" stroke="#3CE38A" stroke-width="1.5" stroke-dasharray="5 4"/>
+                <rect x="60" y="258" width="300" height="7" fill="#3A3A40"/><rect x="60" y="274" width="268" height="7" fill="#3A3A40"/><rect class="ags-type" x="60" y="290" width="180" height="7" fill="#3A3A40"/>
+                <rect class="ags-btn" x="60" y="318" width="138" height="40" fill="#F0562A"/><text x="129" y="342" font-size="11" font-weight="600" fill="#0E0E10" text-anchor="middle">Start a project</text>
+                <rect x="210" y="318" width="110" height="40" fill="none" stroke="#3A3A40"/><text x="265" y="342" font-size="11" fill="#ECECEE" text-anchor="middle">Read more</text>
+                <g class="ags-pal"><rect x="150" y="364" width="74" height="24" fill="#1E1E22" stroke="#2A2A2E"/><rect x="156" y="370" width="12" height="12" fill="#ECECEE"/><rect x="174" y="370" width="12" height="12" fill="#F0562A"/><rect x="192" y="370" width="12" height="12" fill="#A29DFF"/><rect x="210" y="370" width="8" height="12" fill="#3CE38A"/></g>
+                <g class="ags-hero">
+                  <rect x="470" y="96" width="270" height="236" fill="#161618" stroke="#2A2A2E"/>
+                  <circle cx="605" cy="214" r="62" fill="none" stroke="url(#agring)" stroke-width="10"/>
+                  <circle cx="605" cy="214" r="34" fill="none" stroke="#2A2A2E" stroke-width="2" stroke-dasharray="3 5"/>
+                  <g class="ags-orbit"><circle cx="605" cy="146" r="7" fill="#F0562A"/><circle cx="605" cy="282" r="5" fill="#A29DFF"/></g>
+                  <g class="ags-handles"><rect x="470" y="96" width="270" height="236" fill="none" stroke="#4D8DFF" stroke-width="1.5"/><rect x="466" y="92" width="8" height="8" fill="#4D8DFF"/><rect x="736" y="92" width="8" height="8" fill="#4D8DFF"/><rect x="466" y="328" width="8" height="8" fill="#4D8DFF"/><rect x="736" y="328" width="8" height="8" fill="#4D8DFF"/></g>
                 </g>
-                <g class="vxdot" fill="#F0562A"><circle cx="273" cy="62" r="3"/><circle cx="672" cy="143" r="3"/><circle cx="273" cy="366" r="3"/></g>
-                <g font-family="'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace" text-anchor="middle">
-                  <text x="400" y="232" font-size="52" font-weight="500" fill="#ECE8E1" letter-spacing="-1.5"><tspan fill="#D4848A">&#10095;</tspan> ai agents</text>
-                  <text x="400" y="264" font-size="14" fill="#8d8a86" letter-spacing="3">SWARMS &#183; MEMORY &#183; OVERNIGHT LOOPS</text>
-                </g>
+                <g class="ags-card ags-c1"><rect x="60" y="384" width="200" height="46" fill="#161618" stroke="#2A2A2E"/><rect x="72" y="396" width="20" height="20" fill="#F0562A"/><rect x="102" y="398" width="120" height="6" fill="#3A3A40"/><rect x="102" y="410" width="80" height="6" fill="#2A2A2E"/></g>
+                <g class="ags-card ags-c2"><rect x="280" y="384" width="200" height="46" fill="#161618" stroke="#2A2A2E"/><rect x="292" y="396" width="20" height="20" fill="#A29DFF"/><rect x="322" y="398" width="120" height="6" fill="#3A3A40"/><rect x="322" y="410" width="80" height="6" fill="#2A2A2E"/></g>
+                <g class="ags-card ags-c3"><rect x="500" y="384" width="240" height="46" fill="#161618" stroke="#2A2A2E"/><rect x="512" y="396" width="20" height="20" fill="#3CE38A"/><rect x="542" y="398" width="140" height="6" fill="#3A3A40"/><rect x="542" y="410" width="90" height="6" fill="#2A2A2E"/></g>
+                <g class="ags-ok"><rect x="230" y="296" width="96" height="20" fill="#FFC145"/><text x="238" y="310" font-size="10" font-weight="600" fill="#0E0E10">&#10003; looks good</text></g>
+                <g class="ags-cur ags-layout"><path d="M0 0L0 17L4.5 13L7.5 20L10.5 18.6L7.6 12L13 12Z" fill="#4D8DFF" stroke="#0E0E10" stroke-width="1"/><rect x="12" y="16" width="52" height="16" fill="#4D8DFF"/><text x="18" y="27.5" font-size="10" font-weight="600" fill="#0E0E10">layout</text></g>
+                <g class="ags-cur ags-colour"><path d="M0 0L0 17L4.5 13L7.5 20L10.5 18.6L7.6 12L13 12Z" fill="#FF5FA8" stroke="#0E0E10" stroke-width="1"/><rect x="12" y="16" width="52" height="16" fill="#FF5FA8"/><text x="18" y="27.5" font-size="10" font-weight="600" fill="#0E0E10">colour</text></g>
+                <g class="ags-cur ags-copy"><path d="M0 0L0 17L4.5 13L7.5 20L10.5 18.6L7.6 12L13 12Z" fill="#3CE38A" stroke="#0E0E10" stroke-width="1"/><rect x="12" y="16" width="40" height="16" fill="#3CE38A"/><text x="18" y="27.5" font-size="10" font-weight="600" fill="#0E0E10">copy</text></g>
+                <g class="ags-cur ags-review"><path d="M0 0L0 17L4.5 13L7.5 20L10.5 18.6L7.6 12L13 12Z" fill="#FFC145" stroke="#0E0E10" stroke-width="1"/><rect x="12" y="16" width="52" height="16" fill="#FFC145"/><text x="18" y="27.5" font-size="10" font-weight="600" fill="#0E0E10">review</text></g>
               </svg>
               <span class="framecta">Read the guide</span>
             </a>
