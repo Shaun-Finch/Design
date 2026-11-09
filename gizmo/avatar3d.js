@@ -330,15 +330,6 @@ export function createAvatar(el, opts = {}) {
   });
   // jeans: waistband and seat, straight legs over the hip wheels and boot tops, rolled hems
   hips.add(mesh(superBlob(.64, .19, .17, .4, 3.4, 64, 40), C.denim, [0, .32, 0]));
-  {
-    // tan leather belt round the waistband, covering the join under the sweatshirt hem, with a brass buckle and a belt loop each side
-    const belt = band(.665, .3, .3, .425, 3.4, -.055, .055, C.leather); belt.position.y = .27; hips.add(belt);
-    const bz = .425 + .012;
-    hips.add(mesh(new RoundedBoxGeometry(.15, .13, .025, 3, .012), C.brass, [0, .27, bz]));
-    hips.add(mesh(new RoundedBoxGeometry(.09, .07, .03, 3, .01), C.leather, [0, .27, bz + .004]));
-    hips.add(mesh(new RoundedBoxGeometry(.012, .085, .035, 1, .004), C.brass, [-.02, .27, bz + .008]));
-    for (const sx of [-1, 1]) hips.add(mesh(new RoundedBoxGeometry(.035, .14, .02, 2, .008), C.denim, [sx * .36, .27, .425 * Math.pow(1 - Math.pow(.36 / .665, 3.4), 1 / 3.4) + .02]));
-  }
   legs.forEach(leg => {
     leg.add(mesh(new THREE.CylinderGeometry(.25, .245, .42, 40, 1, true), C.denim, [0, .04, 0]));
     leg.add(mesh(new THREE.CylinderGeometry(.25, .25, .02, 40), C.denim, [0, .25, 0]));
