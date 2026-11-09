@@ -1,0 +1,176 @@
+[
+ {
+  "id": "laminate_floor_02",
+  "type": "texture",
+  "source": "https://polyhaven.com/a/laminate_floor_02",
+  "license": "CC0"
+ },
+ {
+  "id": "rubber_tiles",
+  "type": "texture",
+  "source": "https://polyhaven.com/a/rubber_tiles",
+  "license": "CC0"
+ },
+ {
+  "id": "blue_floor_tiles_01",
+  "type": "texture",
+  "source": "https://polyhaven.com/a/blue_floor_tiles_01",
+  "license": "CC0"
+ },
+ {
+  "id": "anti_skid_tiles",
+  "type": "texture",
+  "source": "https://polyhaven.com/a/anti_skid_tiles",
+  "license": "CC0"
+ },
+ {
+  "id": "beige_wall_001",
+  "type": "texture",
+  "source": "https://polyhaven.com/a/beige_wall_001",
+  "license": "CC0"
+ },
+ {
+  "id": "japanese_cedar_planks",
+  "type": "texture",
+  "source": "https://polyhaven.com/a/japanese_cedar_planks",
+  "license": "CC0"
+ },
+ {
+  "id": "fabric_leather_02",
+  "type": "texture",
+  "source": "https://polyhaven.com/a/fabric_leather_02",
+  "license": "CC0"
+ },
+ {
+  "id": "rough_linen",
+  "type": "texture",
+  "source": "https://polyhaven.com/a/rough_linen",
+  "license": "CC0"
+ },
+ {
+  "id": "smoked_walnut_veneer",
+  "type": "texture",
+  "source": "https://polyhaven.com/a/smoked_walnut_veneer",
+  "license": "CC0"
+ },
+ {
+  "id": "terrazzo_tiles",
+  "type": "texture",
+  "source": "https://polyhaven.com/a/terrazzo_tiles",
+  "license": "CC0"
+ },
+ {
+  "id": "long_white_tiles",
+  "type": "texture",
+  "source": "https://polyhaven.com/a/long_white_tiles",
+  "license": "CC0"
+ },
+ {
+  "id": "herringbone_parquet",
+  "type": "texture",
+  "source": "https://polyhaven.com/a/herringbone_parquet",
+  "license": "CC0"
+ },
+ {
+  "id": "concrete_slab_wall",
+  "type": "texture",
+  "source": "https://polyhaven.com/a/concrete_slab_wall",
+  "license": "CC0"
+ },
+ {
+  "id": "terry_cloth",
+  "type": "texture",
+  "source": "https://polyhaven.com/a/terry_cloth",
+  "license": "CC0"
+ },
+ {
+  "id": "ballawley_park",
+  "type": "panorama (from HDRI)",
+  "source": "https://polyhaven.com/a/ballawley_park",
+  "license": "CC0"
+ },
+ {
+  "id": "potted_plant_02",
+  "type": "model",
+  "source": "https://polyhaven.com/a/potted_plant_02",
+  "license": "CC0"
+ },
+ {
+  "id": "potted_plant_04",
+  "type": "model",
+  "source": "https://polyhaven.com/a/potted_plant_04",
+  "license": "CC0"
+ },
+ {
+  "id": "pachira_aquatica_01",
+  "type": "model",
+  "source": "https://polyhaven.com/a/pachira_aquatica_01",
+  "license": "CC0"
+ },
+ {
+  "id": "modern_arm_chair_01",
+  "type": "model",
+  "source": "https://polyhaven.com/a/modern_arm_chair_01",
+  "license": "CC0"
+ },
+ {
+  "id": "sofa_02",
+  "type": "model",
+  "source": "https://polyhaven.com/a/sofa_02",
+  "license": "CC0"
+ },
+ {
+  "id": "modern_coffee_table_01",
+  "type": "model",
+  "source": "https://polyhaven.com/a/modern_coffee_table_01",
+  "license": "CC0"
+ },
+ {
+  "id": "modern_ceiling_lamp_01",
+  "type": "model",
+  "source": "https://polyhaven.com/a/modern_ceiling_lamp_01",
+  "license": "CC0"
+ },
+ {
+  "id": "modular_airduct_circular_01",
+  "type": "model",
+  "source": "https://polyhaven.com/a/modular_airduct_circular_01",
+  "license": "CC0"
+ },
+ {
+  "id": "WetFloorSign_01",
+  "type": "model",
+  "source": "https://polyhaven.com/a/WetFloorSign_01",
+  "license": "CC0"
+ },
+ {
+  "id": "lifebuoy",
+  "type": "model",
+  "source": "https://polyhaven.com/a/lifebuoy",
+  "license": "CC0"
+ },
+ {
+  "id": "wall_clock",
+  "type": "model",
+  "source": "https://polyhaven.com/a/wall_clock",
+  "license": "CC0"
+ },
+ {
+  "id": "korean_fire_extinguisher_01",
+  "type": "model",
+  "source": "https://polyhaven.com/a/korean_fire_extinguisher_01",
+  "license": "CC0"
+ },
+ {
+  "id": "bananas",
+  "type": "model",
+  "source": "https://polyhaven.com/a/bananas",
+  "license": "CC0"
+ },
+ {
+  "id": "Grass004",
+  "type": "texture",
+  "source": "https://ambientcg.com/view?id=Grass004",
+  "license": "CC0"
+ }
+]
