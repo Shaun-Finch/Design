@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Health club 3D tour — Shaun Finch</title>
+<meta name="description" content="A 3D walk-through of a health club concept: walk the floor and click the weights, cardio machines, vending machines, pool and spa for their specs. Designed and built by Shaun Finch.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shaun Finch">
+<meta property="og:title" content="Health club 3D tour">
+<meta property="og:description" content="Walk through a 3D health club and click anything to see its specs: weights, cardio machines, nutrition in the vending machines, pool and spa.">
+<meta property="og:url" content="https://shaun-finch.github.io/Design/health-club.html">
+<meta property="og:image" content="https://shaun-finch.github.io/Design/og/health-club.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#F4F8F6">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2312B886'/%3E%3Cpath d='M7 16h3l2-5 3 10 3-8 2 3h5' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap">
+<script type="importmap">{"imports":{"three":"./gizmo/lib/three.module.min.js"}}</script>
+<style>
+:root{--ink:#11201b;--body:#3b4a45;--mute:#5d6b66;--line:rgba(17,32,27,.1);--bg:#F4F8F6;--card:rgba(255,255,255,.86);--mint:#12B886;--mint-d:#0b8f68;--mint2:rgba(18,184,134,.12);--coral:#FF7A6B;--lav:#8E7CFF;--r:18px;--shadow:0 10px 40px rgba(20,60,45,.14)}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+[hidden]{display:none!important}
+#stage{position:fixed;inset:0;touch-action:none}
+#stage canvas{display:block;width:100%;height:100%;outline:none}
+#stage.hover{cursor:pointer}
+.glass{background:var(--card);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border:1px solid rgba(255,255,255,.7);box-shadow:var(--shadow);border-radius:var(--r)}
+/* title card */
+.intro{position:fixed;left:16px;top:16px;max-width:340px;padding:16px 18px;z-index:5}
+.intro .tag{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mint-d);background:var(--mint2);border-radius:999px;padding:3px 10px}
+.intro h1{font-size:1.5rem;letter-spacing:-.03em;line-height:1.1;margin:.5rem 0 .3rem}
+.intro p{margin:0;font-size:.9rem;line-height:1.45;color:var(--body)}
+.intro small{display:block;margin-top:.6rem;font-size:.74rem;color:var(--mute)}
+.intro .x{position:absolute;right:10px;top:10px;border:0;background:none;font-size:1.2rem;color:var(--mute);width:28px;height:28px;border-radius:8px;display:none}
+.topr{position:fixed;right:16px;top:16px;display:flex;gap:8px;z-index:9}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;font-weight:700;font-size:.86rem;text-decoration:none;color:var(--ink);border:1px solid rgba(255,255,255,.7)}
+.pill.solid{background:var(--ink);color:#fff;border-color:var(--ink)}
+/* stops */
+.stops{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:6px;padding:6px;z-index:5;max-width:calc(100vw - 32px);overflow-x:auto;scrollbar-width:none}
+.stops::-webkit-scrollbar{display:none}
+.stops button{flex:none;border:0;background:none;padding:9px 14px;border-radius:999px;font-weight:700;font-size:.86rem;color:var(--body);white-space:nowrap;display:flex;align-items:center;gap:7px}
+.stops button i{width:9px;height:9px;border-radius:50%;background:var(--c,#12B886);flex:none}
+.stops button:hover{background:rgba(17,32,27,.06)}
+.stops button[aria-current="true"]{background:var(--ink);color:#fff}
+/* map */
+.map{position:fixed;left:16px;bottom:16px;padding:10px;z-index:5}
+.map canvas{display:block;width:220px;height:140px;border-radius:10px;cursor:pointer}
+.map b{display:block;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin:0 0 6px 2px}
+/* help + dpad */
+.help{position:fixed;right:16px;bottom:16px;padding:12px 14px;font-size:.8rem;color:var(--body);z-index:5;line-height:1.6}
+.help kbd{display:inline-block;min-width:22px;text-align:center;font:600 .72rem/1.6 ui-monospace,Menlo,monospace;background:#fff;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:0 5px;margin-right:2px}
+.dpad{position:fixed;right:16px;bottom:84px;display:none;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,48px);gap:6px;z-index:5}
+.dpad button{border-radius:14px;border:1px solid rgba(255,255,255,.7);font-size:1.1rem;font-weight:800;display:grid;place-items:center;user-select:none;-webkit-user-select:none;touch-action:none}
+.dpad .up{grid-column:2}.dpad .lt{grid-column:1;grid-row:2}.dpad .dn{grid-column:2;grid-row:2}.dpad .rt{grid-column:3;grid-row:2}
+/* panel */
+.panel{position:fixed;right:16px;top:72px;bottom:84px;width:min(380px,calc(100vw - 32px));z-index:6;display:flex;flex-direction:column;overflow:hidden;transform:translateX(calc(100% + 24px));transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.panel.on{transform:none}
+.panel .hd{padding:18px 18px 12px;border-bottom:1px solid var(--line);position:relative}
+.panel .zone{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--zc,#0b8f68)}
+.panel h2{margin:.25rem 0 .3rem;font-size:1.35rem;letter-spacing:-.02em;line-height:1.15;padding-right:30px}
+.panel .hd p{margin:0;font-size:.9rem;color:var(--body);line-height:1.45}
+.panel .close{position:absolute;right:12px;top:12px;width:32px;height:32px;border-radius:10px;border:0;background:rgba(17,32,27,.06);font-size:1.1rem}
+.panel .bd{padding:14px 18px 18px;overflow:auto;flex:1}
+.specs{margin:0;display:grid;grid-template-columns:auto 1fr;gap:0}
+.specs dt,.specs dd{padding:9px 0;border-bottom:1px solid var(--line);font-size:.88rem}
+.specs dt{color:var(--mute);padding-right:14px}
+.specs dd{margin:0;font-weight:600;text-align:right}
+.prods{display:flex;flex-direction:column;gap:8px}
+.prod{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}
+.prod > button{width:100%;display:flex;align-items:center;gap:12px;padding:10px 12px;border:0;background:none;text-align:left}
+.prod .sw{width:34px;height:34px;border-radius:10px;flex:none}
+.prod .nm{flex:1;min-width:0}.prod .nm b{display:block;font-size:.92rem}.prod .nm small{color:var(--mute);font-size:.78rem}
+.prod .pr{font-weight:800;font-size:.9rem}
+.prod .nut{padding:0 12px 12px}
+.nutgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.nutgrid div{background:var(--bg);border-radius:10px;padding:8px 6px;text-align:center}
+.nutgrid b{display:block;font-size:1rem}.nutgrid small{font-size:.68rem;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.nut p{margin:.5rem 0 0;font-size:.78rem;color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0}
+.chips span{font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--mint2);color:var(--mint-d)}
+.fine{margin:14px 0 0;font-size:.74rem;color:var(--mute)}
+/* list view */
+.listv{position:fixed;inset:0;z-index:8;background:rgba(244,248,246,.97);overflow:auto;padding:72px 16px 40px}
+.listv .in{max-width:860px;margin:0 auto}
+.listv h2{font-size:1.6rem;letter-spacing:-.03em;margin:0 0 .3rem}
+.listv h3{margin:1.6rem 0 .5rem;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase}
+.listv .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.listv .grid button{border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;text-align:left}
+.listv .grid b{display:block}.listv .grid small{color:var(--mute)}
+/* loading + toast */
+.load{position:fixed;inset:0;z-index:9;display:grid;place-items:center;background:var(--bg);transition:opacity .5s}
+.load.off{opacity:0;pointer-events:none}
+.load div{text-align:center;color:var(--body);font-weight:600}
+.load i{display:block;width:44px;height:44px;margin:0 auto 14px;border-radius:50%;border:4px solid var(--mint2);border-top-color:var(--mint);animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.hint{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:5;padding:8px 14px;font-size:.84rem;font-weight:600;color:var(--body);transition:opacity .4s;pointer-events:none}
+.hint.off{opacity:0}
+.noGL{position:fixed;inset:0;display:grid;place-items:center;padding:24px;text-align:center;z-index:7}
+body.panel-open .help,body.panel-open .dpad{display:none!important}
+@media (max-width:900px){
+  .help{display:none}
+  .map canvas{width:150px;height:96px}
+  .intro{max-width:calc(100vw - 140px);padding:12px 14px}
+  .intro h1{font-size:1.15rem}
+  .intro p{font-size:.8rem}
+  .intro .x{display:block}
+  .hint{top:auto;bottom:150px}
+  .panel{top:auto;bottom:76px;height:58vh;right:8px;width:calc(100vw - 16px);transform:translateY(calc(100% + 100px))}
+  .panel.on{transform:none}
+  .stops{bottom:10px}
+  .map{bottom:70px;left:10px;padding:8px}
+}
+@media (pointer:coarse){.dpad{display:grid}}
+@media (max-width:900px) and (pointer:coarse){.dpad{bottom:70px;right:10px;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(2,44px)}}
+@media (prefers-reduced-motion:reduce){.panel{transition:none}.load i{animation:none}}
+</style>
+</head>
+<body>
+<div id="stage" role="region" aria-label="3D health club. Use the tour stops or the list view to explore with a keyboard or screen reader."></div>
+
+<div class="intro glass" id="intro">
+  <span class="tag">3D tour &middot; concept</span>
+  <h1>Health club tour</h1>
+  <p>Walk the floor and click anything with a <b style="color:var(--mint-d)">+</b> to see its specs: weights, cardio machines, what&rsquo;s in the vending machines, the pool and the spa.</p>
+  <small>A fictional club. Specs, nutrition and prices are illustrative.</small>
+  <button class="x" type="button" id="introX" aria-label="Hide intro">&times;</button>
+</div>
+<div class="topr">
+  <button class="pill glass" type="button" id="listBtn">List view</button>
+  <a class="pill solid" href="index.html">&larr; Portfolio</a>
+</div>
+<div class="hint glass" id="hint">Drag to look around &middot; click the floor to walk</div>
+
+<nav class="stops glass" id="stops" aria-label="Tour stops"></nav>
+<div class="map glass" role="group" aria-label="Map"><b>Map</b><canvas id="map" width="440" height="280" aria-label="Map of the club. Click to walk there."></canvas></div>
+<div class="help glass" id="help"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows to walk<br>Drag to look &middot; click the floor to walk there<br>Click a <b style="color:var(--mint-d)">+</b> for specs</div>
+<div class="dpad" id="dpad" aria-hidden="true">
+  <button class="up glass" data-k="f">&uarr;</button><button class="lt glass" data-k="l">&#8634;</button><button class="dn glass" data-k="b">&darr;</button><button class="rt glass" data-k="r">&#8635;</button>
+</div>
+
+<aside class="panel glass" id="panel" aria-live="polite" aria-labelledby="pTitle">
+  <div class="hd"><div class="zone" id="pZone"></div><h2 id="pTitle"></h2><p id="pDesc"></p><button class="close" type="button" id="pClose" aria-label="Close">&times;</button></div>
+  <div class="bd" id="pBody"></div>
+</aside>
+
+<section class="listv" id="listv" hidden aria-labelledby="lvH">
+  <div class="in">
+    <h2 id="lvH">Everything in the club</h2>
+    <p style="color:var(--body);margin:0">Pick anything to see its specs. A fictional club: specs, nutrition and prices are illustrative.</p>
+    <div id="lvBody"></div>
+    <p style="margin-top:2rem"><button class="pill solid" type="button" id="lvClose">Back to the 3D tour</button></p>
+  </div>
+</section>
+
+<div class="load" id="load"><div><i></i>Building the club&hellip;</div></div>
+<script type="module" src="health/tour.js"></script>
+</body>
+</html>
