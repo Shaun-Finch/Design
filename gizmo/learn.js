@@ -220,9 +220,7 @@ function top0() { scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); }
 // ---------- setup ----------
 function renderSetup() {
   main.innerHTML = `
-    <p class="eyebrow">Learning helper</p>
-    <h1>Turn your papers into a learning guide</h1>
-    <p class="lede">Tell Gizmo what you&rsquo;re studying and add your papers. It builds a guide of short modules, each with key points, key terms and a quiz, then a final test with a pass mark.</p>
+    <h1>Create your quiz</h1>
     <div class="step"><b>1</b><h2>What are you studying?</h2></div>
     <label class="field"><span class="sr">Subject or area of study</span><input id="subj" type="text" maxlength="80" placeholder="e.g. Sleep and memory, Cardiac physiology, UX research methods" value="${esc(draft.subject)}"></label>
     <div class="step"><b>2</b><h2>Add your papers</h2></div>
