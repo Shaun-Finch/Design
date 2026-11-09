@@ -300,20 +300,12 @@ export function createAvatar(el, opts = {}) {
     return mesh(g, mat);
   }
 
-  const SA = .64, SBT = .56, SBB = .66, SC = .55, SN = 3.2, HEM = -.5;            // sweatshirt: boxier and longer than the body egg
+  const SA = .64, SBT = .56, SBB = .8, SC = .55, SN = 3.2, HEM = -.58;            // sweatshirt: boxier and longer than the body egg
   const sweatZ = (x, y) => SC * Math.pow(Math.max(0, 1 - Math.pow(Math.abs(x / SA), SN) - Math.pow(Math.abs(y / (y > 0 ? SBT : SBB)), SN)), 1 / SN);
   const sweat = band(SA, SBT, SBB, SC, SN, HEM + .06, 1, C.sweat); torso.add(mesh(superBlob(SA * .995, SBT, SBT, SC * .995, SN, 96, 64), C.sweat, [0, TY + .001, 0], [1, 1, 1]).translateY(0)); sweat.position.y = TY; torso.add(sweat);
   const hemRib = band(SA * 1.012, SBT, SBB * 1.01, SC * 1.014, SN, HEM, HEM + .075, C.rib); hemRib.position.y = TY; torso.add(hemRib);
-  const tail = band(SA * .985, SBT, SBB * 1.08, SC * .985, SN, HEM - .07, HEM + .02, C.shirt); tail.position.y = TY; torso.add(tail);   // shirt-tail under the hem
-  // crew neck: ribbed collar round the neck, with the shirt collar points showing in front
+  // crew neck: ribbed collar round the neck
   torso.add(mesh(new THREE.TorusGeometry(.215, .042, 14, 48), C.rib, [0, TY + SBT - .015, 0]).rotateX(PI / 2));
-  for (const sx of [-1, 1]) {
-    const y = .5, x = sx * .085, z = sweatZ(x, y) + .02;
-    const pt = new THREE.Shape(); pt.moveTo(0, 0); pt.lineTo(sx * .13, -.02); pt.lineTo(sx * .035, -.13); pt.closePath();
-    const cp = mesh(new THREE.ExtrudeGeometry(pt, { depth: .012, bevelEnabled: false }), C.shirt, [x - sx * .02, TY + y + .02, z - .01]);
-    cp.rotation.x = -.55; torso.add(cp);
-  }
-  torso.add(mesh(new THREE.CylinderGeometry(.205, .205, .05, 40, 1, true), C.shirt, [0, TY + SBT + .025, 0]));      // shirt collar band round the neck
   // chest patch: a cream circle with a navy G
   {
     const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
@@ -338,6 +330,15 @@ export function createAvatar(el, opts = {}) {
   });
   // jeans: waistband and seat, straight legs over the hip wheels and boot tops, rolled hems
   hips.add(mesh(superBlob(.64, .19, .17, .4, 3.4, 64, 40), C.denim, [0, .32, 0]));
+  {
+    // tan leather belt round the waistband, covering the join under the sweatshirt hem, with a brass buckle and a belt loop each side
+    const belt = band(.665, .3, .3, .425, 3.4, -.055, .055, C.leather); belt.position.y = .27; hips.add(belt);
+    const bz = .425 + .012;
+    hips.add(mesh(new RoundedBoxGeometry(.15, .13, .025, 3, .012), C.brass, [0, .27, bz]));
+    hips.add(mesh(new RoundedBoxGeometry(.09, .07, .03, 3, .01), C.leather, [0, .27, bz + .004]));
+    hips.add(mesh(new RoundedBoxGeometry(.012, .085, .035, 1, .004), C.brass, [-.02, .27, bz + .008]));
+    for (const sx of [-1, 1]) hips.add(mesh(new RoundedBoxGeometry(.035, .14, .02, 2, .008), C.denim, [sx * .36, .27, .425 * Math.pow(1 - Math.pow(.36 / .665, 3.4), 1 / 3.4) + .02]));
+  }
   legs.forEach(leg => {
     leg.add(mesh(new THREE.CylinderGeometry(.25, .245, .42, 40, 1, true), C.denim, [0, .04, 0]));
     leg.add(mesh(new THREE.CylinderGeometry(.25, .25, .02, 40), C.denim, [0, .25, 0]));
@@ -349,28 +350,41 @@ export function createAvatar(el, opts = {}) {
   });
   // backpack: tan canvas body, front pocket with leather flap straps and brass buckles, top handle, leather straps over the shoulders
   {
-    const bp = new THREE.Group(); bp.position.set(0, TY + .02, -SC - .17); torso.add(bp);
-    bp.add(mesh(new RoundedBoxGeometry(.66, .78, .3, 5, .1), C.canvas));
-    bp.add(mesh(new RoundedBoxGeometry(.5, .34, .12, 4, .05), C.canvas, [0, -.17, -.18]));
-    bp.add(mesh(new RoundedBoxGeometry(.52, .1, .14, 3, .04), C.leather, [0, -.36, -.06]));                   // leather base
-    bp.add(mesh(new RoundedBoxGeometry(.5, .12, .02, 3, .008), C.canvas, [0, .0, -.245]));                    // pocket flap
+    const bp = new THREE.Group(); bp.position.set(0, TY + .08, -SC - .26); torso.add(bp);
+    bp.add(mesh(new RoundedBoxGeometry(1.42, 1.08, .44, 6, .16), C.canvas));                                 // wide enough to show either side of Gizmo
+    bp.add(mesh(new RoundedBoxGeometry(1.0, .44, .16, 4, .07), C.canvas, [0, -.24, -.27]));                   // front pocket
+    bp.add(mesh(new RoundedBoxGeometry(1.44, .12, .46, 3, .05), C.leather, [0, -.5, 0]));                     // leather base
+    bp.add(mesh(new RoundedBoxGeometry(1.0, .16, .03, 3, .012), C.canvas, [0, .0, -.355]));                   // pocket flap
     for (const sx of [-1, 1]) {
-      bp.add(mesh(new RoundedBoxGeometry(.05, .2, .012, 2, .005), C.leather, [sx * .14, -.08, -.252]));
-      bp.add(mesh(new RoundedBoxGeometry(.065, .045, .015, 2, .006), C.brass, [sx * .14, -.12, -.258]));
+      bp.add(mesh(new RoundedBoxGeometry(.07, .28, .016, 2, .006), C.leather, [sx * .3, -.1, -.365]));
+      bp.add(mesh(new RoundedBoxGeometry(.09, .06, .02, 2, .008), C.brass, [sx * .3, -.16, -.372]));
+      bp.add(mesh(new RoundedBoxGeometry(.05, .62, .4, 2, .02), C.leather, [sx * .72, -.08, 0]));              // side gussets
     }
-    const handle = mesh(new THREE.TorusGeometry(.09, .022, 10, 24, PI), C.leather, [0, .39, 0]); bp.add(handle);
+    bp.add(mesh(new THREE.TorusGeometry(.13, .028, 10, 24, PI), C.leather, [0, .54, 0]));                     // top handle
     // shoulder straps: flat leather ribbons from the top of the pack, over the shoulders, down the chest
-    const ribbon = (pts, w, mat) => {
-      const curve = new THREE.CatmullRomCurve3(pts.map(p => new THREE.Vector3(...p))), N = 60, pos = [], idx = [];
-      for (let i = 0; i <= N; i++) { const p = curve.getPoint(i / N); pos.push(p.x - w / 2, p.y, p.z, p.x + w / 2, p.y, p.z); if (i < N) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); } }
+    const strap = (pts, w, t, mat) => {
+      // flat leather strap: thickness points away from the body centre, width lies across the surface
+      const curve = new THREE.CatmullRomCurve3(pts.map(p => new THREE.Vector3(...p)), false, 'centripetal'), N = 120, pos = [], idx = [];
+      const tan = new THREE.Vector3(), out = new THREE.Vector3(), wd = new THREE.Vector3();
+      for (let i = 0; i <= N; i++) {
+        const p = curve.getPoint(i / N); curve.getTangent(i / N, tan);
+        out.set(p.x, p.y - .05, p.z).normalize(); wd.crossVectors(tan, out).normalize(); out.crossVectors(wd, tan).normalize();
+        for (const [a, b] of [[-w / 2, -t / 2], [w / 2, -t / 2], [w / 2, t / 2], [-w / 2, t / 2]]) pos.push(p.x + wd.x * a + out.x * b, p.y + wd.y * a + out.y * b, p.z + wd.z * a + out.z * b);
+        if (i < N) { const a = i * 4, b = a + 4; for (let k = 0; k < 4; k++) { const k2 = (k + 1) % 4; idx.push(a + k, b + k, a + k2, a + k2, b + k, b + k2); } }
+      }
       const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
       return mesh(g, mat);
     };
+    const GAP = .045;   // straps ride this far off the sweatshirt surface
     for (const sx of [-1, 1]) {
-      const x = sx * .3, top = SBT - .02;
-      const pts = [[x, .32, -SC - .06], [x, top - .02, -.3], [x, top + .03, 0], [x, top - .06, .3], [x, .3, sweatZ(x, .3) + .025], [x, .05, sweatZ(x, .05) + .025], [x, -.2, sweatZ(x, -.2) + .025]];
-      const st = ribbon(pts, .085, C.leather); st.position.y = TY; torso.add(st);
-      torso.add(mesh(new RoundedBoxGeometry(.11, .06, .025, 2, .008), C.brass, [x, TY + .12, sweatZ(x, .12) + .04]));
+      const x = sx * .3, over = SBT + GAP + .02;
+      const front = y => [x, y, sweatZ(x, y) + GAP];
+      const back = y => [x, y, -sweatZ(x, y) - GAP];
+      const pts = [[x, .46, -SC - .12], back(.46), [x, over, -.18], [x, over, .1], front(.46), front(.3), front(.12), front(-.04),
+        [sx * .44, -.17, sweatZ(.44, -.17) + GAP], [sx * .6, -.24, sweatZ(.6, -.24) + GAP + .02], [sx * (SA + GAP + .02), -.27, 0],
+        [sx * .6, -.3, -sweatZ(.6, -.3) - GAP - .02], [sx * .5, -.36, -SC - .14]];
+      const st = strap(pts, .1, .022, C.leather); st.position.y = TY; torso.add(st);
+      torso.add(mesh(new RoundedBoxGeometry(.12, .065, .03, 2, .01), C.brass, [x, TY + .1, sweatZ(x, .1) + GAP + .015]));
     }
   }
 
