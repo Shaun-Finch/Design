@@ -267,6 +267,113 @@ export function createAvatar(el, opts = {}) {
     arms.push(arm);
   }
 
+  // ----- outfit: navy crew-neck sweatshirt over a light-blue oxford shirt, mid-wash jeans with rolled hems, tan canvas backpack -----
+  const fabricTex = (draw, rep) => { const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'); draw(g); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep[0], rep[1]); return t; };
+  const knit = fabricTex(g => { g.fillStyle = '#7a7a7a'; g.fillRect(0, 0, 128, 128); for (let x = 0; x < 128; x += 4) { g.fillStyle = (x / 4) % 2 ? '#a0a0a0' : '#5c5c5c'; g.fillRect(x, 0, 2, 128); } }, [14, 8]);
+  const twill = fabricTex(g => { g.fillStyle = '#7a7a7a'; g.fillRect(0, 0, 128, 128); g.strokeStyle = '#b0b0b0'; g.lineWidth = 2; for (let i = -128; i < 256; i += 6) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i + 128, 128); g.stroke(); } }, [4, 4]);
+  const C = {
+    sweat: new THREE.MeshStandardMaterial({ color: 0x1e2c4c, roughness: .93, bumpMap: knit, bumpScale: .5, side: THREE.DoubleSide }),
+    rib: new THREE.MeshStandardMaterial({ color: 0x18233d, roughness: .95, bumpMap: knit, bumpScale: 1.2, side: THREE.DoubleSide }),
+    shirt: new THREE.MeshStandardMaterial({ color: 0xb9d2f0, roughness: .78, side: THREE.DoubleSide }),
+    denim: new THREE.MeshStandardMaterial({ color: 0x46679a, roughness: .9, bumpMap: twill, bumpScale: .7, side: THREE.DoubleSide }),
+    denimLight: new THREE.MeshStandardMaterial({ color: 0x7593c2, roughness: .92, bumpMap: twill, bumpScale: .7 }),
+    canvas: new THREE.MeshStandardMaterial({ color: 0xc9a46a, roughness: .88, bumpMap: twill, bumpScale: .35 }),
+    leather: new THREE.MeshStandardMaterial({ color: 0x6a4024, roughness: .5, side: THREE.DoubleSide }),
+    brass: new THREE.MeshStandardMaterial({ color: 0xd2a94e, roughness: .28, metalness: 1 }),
+  };
+  // a band of a super-ellipsoid shell, kept between two heights (an open tube of fabric)
+  function band(a, bt, bb, c, n, yMin, yMax, mat) {
+    // parametric strip of the super-ellipsoid between two heights: clean, straight edges top and bottom
+    const ROWS = 40, COLS = 128, pos = [], idx = [];
+    const yTop = Math.min(yMax, bt * .999), yBot = Math.max(yMin, -bb * .999);
+    for (let r = 0; r <= ROWS; r++) {
+      const y = yBot + (yTop - yBot) * r / ROWS, bh = y > 0 ? bt : bb;
+      const k = Math.pow(Math.max(0, 1 - Math.pow(Math.abs(y / bh), n)), 1 / n);
+      for (let q = 0; q <= COLS; q++) {
+        const t = q / COLS * PI * 2, ct = Math.cos(t), st = Math.sin(t);
+        pos.push(a * k * Math.sign(ct) * Math.pow(Math.abs(ct), 2 / n), y, c * k * Math.sign(st) * Math.pow(Math.abs(st), 2 / n));
+        if (r < ROWS && q < COLS) { const i = r * (COLS + 1) + q, j = i + COLS + 1; idx.push(i, i + 1, j, i + 1, j + 1, j); }
+      }
+    }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
+    const uv = []; for (let r = 0; r <= ROWS; r++) for (let q = 0; q <= COLS; q++) uv.push(q / COLS, r / ROWS); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    return mesh(g, mat);
+  }
+
+  const SA = .64, SBT = .56, SBB = .66, SC = .55, SN = 3.2, HEM = -.5;            // sweatshirt: boxier and longer than the body egg
+  const sweatZ = (x, y) => SC * Math.pow(Math.max(0, 1 - Math.pow(Math.abs(x / SA), SN) - Math.pow(Math.abs(y / (y > 0 ? SBT : SBB)), SN)), 1 / SN);
+  const sweat = band(SA, SBT, SBB, SC, SN, HEM + .06, 1, C.sweat); torso.add(mesh(superBlob(SA * .995, SBT, SBT, SC * .995, SN, 96, 64), C.sweat, [0, TY + .001, 0], [1, 1, 1]).translateY(0)); sweat.position.y = TY; torso.add(sweat);
+  const hemRib = band(SA * 1.012, SBT, SBB * 1.01, SC * 1.014, SN, HEM, HEM + .075, C.rib); hemRib.position.y = TY; torso.add(hemRib);
+  const tail = band(SA * .985, SBT, SBB * 1.08, SC * .985, SN, HEM - .07, HEM + .02, C.shirt); tail.position.y = TY; torso.add(tail);   // shirt-tail under the hem
+  // crew neck: ribbed collar round the neck, with the shirt collar points showing in front
+  torso.add(mesh(new THREE.TorusGeometry(.215, .042, 14, 48), C.rib, [0, TY + SBT - .015, 0]).rotateX(PI / 2));
+  for (const sx of [-1, 1]) {
+    const y = .5, x = sx * .085, z = sweatZ(x, y) + .02;
+    const pt = new THREE.Shape(); pt.moveTo(0, 0); pt.lineTo(sx * .13, -.02); pt.lineTo(sx * .035, -.13); pt.closePath();
+    const cp = mesh(new THREE.ExtrudeGeometry(pt, { depth: .012, bevelEnabled: false }), C.shirt, [x - sx * .02, TY + y + .02, z - .01]);
+    cp.rotation.x = -.55; torso.add(cp);
+  }
+  torso.add(mesh(new THREE.CylinderGeometry(.205, .205, .05, 40, 1, true), C.shirt, [0, TY + SBT + .025, 0]));      // shirt collar band round the neck
+  // chest patch: a cream circle with a navy G
+  {
+    const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
+    g.fillStyle = '#efe6d2'; g.beginPath(); g.arc(64, 64, 62, 0, 7); g.fill(); g.strokeStyle = '#b08d57'; g.lineWidth = 6; g.beginPath(); g.arc(64, 64, 55, 0, 7); g.stroke();
+    g.fillStyle = '#1e2c4c'; g.font = '700 84px Georgia, "Times New Roman", serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('G', 64, 70);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+    const x = .2, y = .22, z = sweatZ(x, y) + .006;
+    const nrm = new THREE.Vector3(Math.pow(Math.abs(x / SA), SN - 1) / SA, Math.pow(Math.abs(y / SBT), SN - 1) / SBT, Math.pow(z / SC, SN - 1) / SC).normalize();
+    const patch = new THREE.Mesh(new THREE.CircleGeometry(.075, 40), new THREE.MeshStandardMaterial({ map: t, roughness: .8, transparent: true }));
+    patch.position.set(x, TY + y, z); patch.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), nrm); torso.add(patch);
+  }
+  for (const sx of [-1, 1]) { const sh = mesh(new THREE.CylinderGeometry(.31, .31, .22, 40), C.sweat, [sx * .53, TY + .08, 0]); sh.rotation.z = PI / 2; torso.add(sh); }   // cover the shoulder sockets
+  // sleeves: sweatshirt down to a ribbed cuff, with the shirt cuff peeking out at the wrist
+  arms.forEach(arm => {
+    const upperG = arm.children[1], fore = arm.userData.fore;
+    arm.add(mesh(new THREE.SphereGeometry(.205, 32, 24), C.sweat));                                       // sleeve cap over the shoulder ball
+    upperG.add(mesh(new THREE.CylinderGeometry(.19, .175, .4, 36, 1, true), C.sweat, [0, -.2, 0]));
+    fore.add(mesh(new THREE.SphereGeometry(.17, 28, 20), C.sweat));                                      // elbow
+    fore.add(mesh(new THREE.CylinderGeometry(.19, .185, .26, 36, 1, true), C.sweat, [0, -.14, 0]));
+    fore.add(mesh(new THREE.CylinderGeometry(.188, .182, .065, 36, 1, true), C.rib, [0, -.3, 0]));
+    fore.add(mesh(new THREE.CylinderGeometry(.176, .174, .05, 36, 1, true), C.shirt, [0, -.355, 0]));
+  });
+  // jeans: waistband and seat, straight legs over the hip wheels and boot tops, rolled hems
+  hips.add(mesh(superBlob(.64, .19, .17, .4, 3.4, 64, 40), C.denim, [0, .32, 0]));
+  legs.forEach(leg => {
+    leg.add(mesh(new THREE.CylinderGeometry(.25, .245, .42, 40, 1, true), C.denim, [0, .04, 0]));
+    leg.add(mesh(new THREE.CylinderGeometry(.25, .25, .02, 40), C.denim, [0, .25, 0]));
+    const knee = leg.userData.knee;
+    knee.add(mesh(new THREE.SphereGeometry(.245, 32, 20), C.denim, [0, 0, 0]));
+    knee.add(mesh(new THREE.CylinderGeometry(.245, .255, .3, 40, 1, true), C.denim, [0, -.15, 0]));
+    knee.add(mesh(new THREE.CylinderGeometry(.265, .265, .075, 40, 1, true), C.denimLight, [0, -.32, 0]));   // rolled hem
+    knee.add(mesh(new THREE.TorusGeometry(.262, .02, 8, 40), C.denimLight, [0, -.357, 0]).rotateX(PI / 2));
+  });
+  // backpack: tan canvas body, front pocket with leather flap straps and brass buckles, top handle, leather straps over the shoulders
+  {
+    const bp = new THREE.Group(); bp.position.set(0, TY + .02, -SC - .17); torso.add(bp);
+    bp.add(mesh(new RoundedBoxGeometry(.66, .78, .3, 5, .1), C.canvas));
+    bp.add(mesh(new RoundedBoxGeometry(.5, .34, .12, 4, .05), C.canvas, [0, -.17, -.18]));
+    bp.add(mesh(new RoundedBoxGeometry(.52, .1, .14, 3, .04), C.leather, [0, -.36, -.06]));                   // leather base
+    bp.add(mesh(new RoundedBoxGeometry(.5, .12, .02, 3, .008), C.canvas, [0, .0, -.245]));                    // pocket flap
+    for (const sx of [-1, 1]) {
+      bp.add(mesh(new RoundedBoxGeometry(.05, .2, .012, 2, .005), C.leather, [sx * .14, -.08, -.252]));
+      bp.add(mesh(new RoundedBoxGeometry(.065, .045, .015, 2, .006), C.brass, [sx * .14, -.12, -.258]));
+    }
+    const handle = mesh(new THREE.TorusGeometry(.09, .022, 10, 24, PI), C.leather, [0, .39, 0]); bp.add(handle);
+    // shoulder straps: flat leather ribbons from the top of the pack, over the shoulders, down the chest
+    const ribbon = (pts, w, mat) => {
+      const curve = new THREE.CatmullRomCurve3(pts.map(p => new THREE.Vector3(...p))), N = 60, pos = [], idx = [];
+      for (let i = 0; i <= N; i++) { const p = curve.getPoint(i / N); pos.push(p.x - w / 2, p.y, p.z, p.x + w / 2, p.y, p.z); if (i < N) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); } }
+      const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
+      return mesh(g, mat);
+    };
+    for (const sx of [-1, 1]) {
+      const x = sx * .3, top = SBT - .02;
+      const pts = [[x, .32, -SC - .06], [x, top - .02, -.3], [x, top + .03, 0], [x, top - .06, .3], [x, .3, sweatZ(x, .3) + .025], [x, .05, sweatZ(x, .05) + .025], [x, -.2, sweatZ(x, -.2) + .025]];
+      const st = ribbon(pts, .085, C.leather); st.position.y = TY; torso.add(st);
+      torso.add(mesh(new RoundedBoxGeometry(.11, .06, .025, 2, .008), C.brass, [x, TY + .12, sweatZ(x, .12) + .04]));
+    }
+  }
+
   // ----- head: big round white shell, black glass visor with a cyan rim light, seam over the top -----
   const head = new THREE.Group(); head.position.y = TY + TBT + .05; torso.add(head);
   const skull = new THREE.Group(); skull.position.y = .8; head.add(skull);
