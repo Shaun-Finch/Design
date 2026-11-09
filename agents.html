@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI agents — Shaun Finch</title>
-<meta name="description" content="How Shaun Finch sets up AI agents: agent swarms, chatbots linked to the apps a team already uses, conversations split by task, LLM memory and models that iterate overnight.">
+<title>Case study: Claude and GitHub improving my website — Shaun Finch</title>
+<meta name="description" content="Case study: how Shaun Finch uses Claude Code and GitHub to keep improving his own website, with changes on branches, automatic checks and pull requests he reviews.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Shaun Finch">
-<meta property="og:title" content="AI agents — Shaun Finch">
-<meta property="og:description" content="Agent swarms, chatbots that act in your apps, conversations split by task, memory that persists, and models that keep improving the work overnight.">
+<meta property="og:title" content="Case study: How I use Claude and GitHub to keep improving my own website">
+<meta property="og:description" content="Claude Code works on branches in my GitHub repos, checks its own work and opens pull requests. I review and merge.">
 <meta property="og:url" content="https://shaun-finch.github.io/Design/agents.html">
 <meta property="og:image" content="https://shaun-finch.github.io/Design/og/agents.jpg">
 <meta property="og:image:width" content="1200">
@@ -247,6 +247,15 @@ figure.piece.blankslot .frame{background:#000;border:1px solid rgba(255,255,255,
 .closing p{color:var(--mute);max-width:56ch;margin:0}
 @media (prefers-reduced-motion:no-preference){.pulse{animation:agpulse 2.4s ease-in-out infinite}.pulse.d2{animation-delay:.8s}.pulse.d3{animation-delay:1.6s}}
 @keyframes agpulse{50%{opacity:.35}}
+
+.wrap.narrow > *{max-width:46rem}
+.topic code{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.88em;background:var(--surface);padding:.1rem .35rem;border-radius:6px}
+.topic a{color:var(--ink);text-underline-offset:3px}
+.steps{margin:1rem 0 0;padding-left:1.3rem;display:grid;gap:.5rem;color:var(--mute);max-width:46ch}
+.steps li::marker{color:var(--accent);font-family:"JetBrains Mono",ui-monospace,monospace}
+.todo{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.85rem;color:var(--accent)!important;margin-top:1.2rem!important}
+.diagram{border-radius:14px}
+.closing h2{max-width:24ch}
 </style>
 </head>
 <body>
@@ -257,6 +266,7 @@ figure.piece.blankslot .frame{background:#000;border:1px solid rgba(255,255,255,
     <a class="brand" href="index.html" aria-label="Shaun Finch — home"><img class="bot" src="data:image/jpeg;base64,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" alt="Shaun Finch" width="128" height="128"></a>
     <nav class="nav" aria-label="Main">
       <a href="index.html">Design</a>
+      <a href="cv/Shaun_Finch_CV_2026_UX_AI_Workflows.pdf">CV</a>
       <a class="cta" href="mailto:shaundavidfinch@gmail.com?subject=Work%20enquiry">Get in touch</a>
     </nav>
   </div>
@@ -267,192 +277,136 @@ figure.piece.blankslot .frame{background:#000;border:1px solid rgba(255,255,255,
   <section class="pagehead">
     <div class="wrap">
       <a class="backlink" href="index.html#work">&larr; Back to the portfolio</a>
-      <h1>AI agents</h1>
-      <p>How I set up AI agents that share out the work, act inside the apps a team already uses, remember what matters and keep improving a piece of work overnight. A brief guide, in plain English.</p>
+      <h1>Case study: How I use Claude and GitHub to keep improving my own website</h1>
+      <p>This portfolio and halvia.cloud are kept up to date with Claude Code working in my GitHub repositories. Here&rsquo;s the setup, the loop it runs, and where I stay in charge.</p>
       <nav class="toc" aria-label="On this page">
-        <a href="#swarms">01 Agent swarms</a>
-        <a href="#apps">02 Chatbots in your apps</a>
-        <a href="#segments">03 One conversation per task</a>
-        <a href="#memory">04 LLM memory</a>
-        <a href="#overnight">05 Overnight loops</a>
+        <a href="#problem">The problem</a><a href="#setup">The setup</a><a href="#loop">The loop</a><a href="#human">Human in the loop</a><a href="#produced">What it&rsquo;s produced</a><a href="#learned">What I learned</a><a href="#teams">For other teams</a>
       </nav>
     </div>
   </section>
 
-  <section class="topic" id="swarms" aria-labelledby="swarmsH">
+  <section class="topic" id="problem" aria-labelledby="problemH">
+    <div class="wrap narrow">
+      <p class="num">01 &middot; The problem</p>
+      <h2 id="problemH">A site that keeps improving, without my evenings</h2>
+      <p>A portfolio and a product site are never finished. There&rsquo;s always a tile that&rsquo;s out of date, a link that&rsquo;s broken or a section that needs cutting back. Doing all of that by hand would take most of my evenings, and the small fixes would keep slipping.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="setup" aria-labelledby="setupH">
+    <div class="wrap narrow">
+      <p class="num">02 &middot; The setup</p>
+      <h2 id="setupH">Claude Code, connected to my GitHub repos</h2>
+      <ul class="how">
+        <li><b>Connected:</b> Claude Code works directly in the GitHub repositories for this portfolio and for halvia.cloud.</li>
+        <li><b>On a branch:</b> work happens on a branch, never on the live site.</li>
+        <li><b>Back as a pull request:</b> changes come back to me as a pull request with a summary of what changed and why.</li>
+        <li><b>A rules file:</b> a project rules file, <code>CLAUDE.md</code>, tells Claude the house style, what it must not touch, and how to check its work before handing it back.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="topic" id="loop" aria-labelledby="loopH">
     <div class="wrap in">
       <div>
-        <p class="num">01 &middot; Agent swarms</p>
-        <h2 id="swarmsH">Several small agents, one job each</h2>
-        <p>Instead of asking one AI to do everything, a <b>lead agent</b> breaks the task into steps and hands each one to a <b>specialist</b>: one researches, one drafts, one checks. Their work comes back to the lead, which combines it and passes it on for a person to approve.</p>
-        <p>Small, focused agents are easier to test, cheaper to run and simpler to fix. If one gets something wrong, the checker catches it before it reaches anyone.</p>
-        <ul class="how">
-          <li>Each agent gets only the tools and data its job needs</li>
-          <li>A step limit and a budget stop runaway work</li>
-          <li>A checker agent reviews the output against clear rules</li>
-          <li>A person signs off anything that leaves the system</li>
-        </ul>
+        <p class="num">03 &middot; The loop</p>
+        <h2 id="loopH">Goal in, pull request out</h2>
+        <ol class="steps">
+          <li>I give a goal, such as &ldquo;make every project tile consistent&rdquo;.</li>
+          <li>Claude makes the changes on a branch.</li>
+          <li>It runs checks: broken links, layout on mobile and desktop, and accessibility.</li>
+          <li>It fixes anything the checks find, and checks again.</li>
+          <li>It opens a pull request with a summary.</li>
+          <li>I review it, then merge or send it back.</li>
+        </ol>
       </div>
       <figure class="diagram">
-        <svg viewBox="0 0 520 300" role="img" aria-labelledby="d1t" font-family="JetBrains Mono, ui-monospace, monospace">
-          <title id="d1t">A lead agent sends a task to three specialist agents: research, draft and check. Their results return to the lead, then go to a person for approval.</title>
-          <g stroke="#3A3A40" stroke-width="1.5" fill="none">
-            <path d="M260 74V110M260 110H90V140M260 110V140M260 110H430V140"/>
-            <path d="M90 186V214H260M260 186V214M430 186V214H260M260 214V236"/>
+        <svg viewBox="0 0 620 300" role="img" aria-labelledby="loopT" font-family="JetBrains Mono, ui-monospace, monospace">
+          <title id="loopT">The loop: I give a goal, Claude makes changes on a branch, runs checks, fixes issues, opens a pull request with a summary, and I review and merge. Then the next goal starts.</title>
+          <defs><marker id="la" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#6A6A74"/></marker></defs>
+          <g font-size="12" text-anchor="middle">
+            <rect x="20" y="30" width="170" height="70" rx="12" fill="#1E1E22" stroke="#F0562A" stroke-width="1.5"/><text x="105" y="58" fill="#A3A3AA" font-size="10">01 &#183; me</text><text x="105" y="78" fill="#ECECEE">I give a goal</text>
+            <rect x="225" y="30" width="170" height="70" rx="12" fill="#1E1E22" stroke="#3A3A40"/><text x="310" y="58" fill="#A3A3AA" font-size="10">02 &#183; Claude</text><text x="310" y="78" fill="#ECECEE">Changes on a branch</text>
+            <rect x="430" y="30" width="170" height="70" rx="12" fill="#1E1E22" stroke="#3A3A40"/><text x="515" y="58" fill="#A3A3AA" font-size="10">03 &#183; Claude</text><text x="515" y="78" fill="#ECECEE">Runs checks</text>
+            <rect x="430" y="190" width="170" height="70" rx="12" fill="#1E1E22" stroke="#3A3A40"/><text x="515" y="218" fill="#A3A3AA" font-size="10">04 &#183; Claude</text><text x="515" y="238" fill="#ECECEE">Fixes what fails</text>
+            <rect x="225" y="190" width="170" height="70" rx="12" fill="#1E1E22" stroke="#3A3A40"/><text x="310" y="218" fill="#A3A3AA" font-size="10">05 &#183; Claude</text><text x="310" y="238" fill="#ECECEE">Opens a pull request</text>
+            <rect x="20" y="190" width="170" height="70" rx="12" fill="#1E1E22" stroke="#3CE38A" stroke-width="1.5"/><text x="105" y="218" fill="#A3A3AA" font-size="10">06 &#183; me</text><text x="105" y="238" fill="#ECECEE">Review and merge</text>
           </g>
-          <rect x="190" y="30" width="140" height="44" fill="#1E1E22" stroke="#F0562A" stroke-width="1.5"/>
-          <text x="260" y="57" text-anchor="middle" fill="#ECECEE" font-size="14">lead agent</text>
-          <g font-size="13" text-anchor="middle">
-            <rect x="30" y="140" width="120" height="46" fill="#1E1E22" stroke="#3A3A40"/><text x="90" y="168" fill="#ECECEE">research</text>
-            <rect x="200" y="140" width="120" height="46" fill="#1E1E22" stroke="#3A3A40"/><text x="260" y="168" fill="#ECECEE">draft</text>
-            <rect x="370" y="140" width="120" height="46" fill="#1E1E22" stroke="#3A3A40"/><text x="430" y="168" fill="#ECECEE">check</text>
-          </g>
-          <circle class="pulse" cx="90" cy="140" r="4" fill="#F0562A"/><circle class="pulse d2" cx="260" cy="140" r="4" fill="#F0562A"/><circle class="pulse d3" cx="430" cy="140" r="4" fill="#F0562A"/>
-          <rect x="190" y="236" width="140" height="44" fill="#F0562A"/>
-          <text x="260" y="263" text-anchor="middle" fill="#0E0E10" font-size="14" font-weight="500">you approve</text>
+          <g stroke="#6A6A74" stroke-width="1.5" fill="none" marker-end="url(#la)"><path d="M190 65H221"/><path d="M395 65H426"/><path d="M515 100V186"/><path d="M430 225H399"/><path d="M225 225H194"/><path d="M105 190V104"/></g>
+          <text x="515" y="150" fill="#A3A3AA" font-size="10" text-anchor="middle" transform="rotate(90 515 150)" dy="-8">links &#183; layout &#183; a11y</text>
+          <text x="310" y="150" fill="#6A6A74" font-size="10" text-anchor="middle">next goal &#183; repeat</text>
         </svg>
-        <figcaption>One lead, three specialists, one person signing off.</figcaption>
+        <figcaption>Nothing goes live until step 06.</figcaption>
       </figure>
     </div>
   </section>
 
-  <section class="topic" id="apps" aria-labelledby="appsH">
-    <div class="wrap in">
-      <div>
-        <p class="num">02 &middot; Chatbots in your apps</p>
-        <h2 id="appsH">Chatbots that can actually do things</h2>
-        <p>A chatbot on its own can only talk. Linked to the apps a team already uses, such as the calendar, inbox, documents, Slack or a database, it can look things up and take actions. The model chooses a <b>tool</b>, the app carries out the action, and the result comes back into the chat.</p>
-        <p>I connect them through each app's API, using tool calling and MCP servers (a standard way to plug tools into AI models), so the same tools work with different models.</p>
-        <ul class="how">
-          <li>Read-only access first; anything that writes or sends asks for confirmation</li>
-          <li>Each tool has a narrow, clearly described job</li>
-          <li>Every call is logged, so you can see what the bot did and why</li>
-        </ul>
-      </div>
-      <figure class="diagram">
-        <svg viewBox="0 0 520 300" role="img" aria-labelledby="d2t" font-family="JetBrains Mono, ui-monospace, monospace">
-          <title id="d2t">A chat assistant connects through a tools layer to the calendar, inbox, documents and database. Actions that change something need confirmation.</title>
-          <rect x="24" y="110" width="150" height="80" fill="#1E1E22" stroke="#F0562A" stroke-width="1.5"/>
-          <text x="99" y="146" text-anchor="middle" fill="#ECECEE" font-size="14">chat</text>
-          <text x="99" y="166" text-anchor="middle" fill="#A3A3AA" font-size="11">assistant</text>
-          <rect x="214" y="70" width="40" height="160" fill="#1E1E22" stroke="#3A3A40"/>
-          <text x="234" y="150" text-anchor="middle" fill="#A3A3AA" font-size="11" transform="rotate(-90 234 150)">tools / MCP</text>
-          <g stroke="#3A3A40" stroke-width="1.5" fill="none"><path d="M174 150H214M254 70H300M254 130H300M254 190H300M254 250H300M254 70V250"/></g>
-          <g font-size="13">
-            <rect x="300" y="50" width="196" height="40" fill="#1E1E22" stroke="#3A3A40"/><text x="316" y="75" fill="#ECECEE">calendar</text><text x="480" y="75" text-anchor="end" fill="#A3A3AA" font-size="11">read</text>
-            <rect x="300" y="110" width="196" height="40" fill="#1E1E22" stroke="#3A3A40"/><text x="316" y="135" fill="#ECECEE">inbox</text><text x="480" y="135" text-anchor="end" fill="#F0562A" font-size="11">send: confirm</text>
-            <rect x="300" y="170" width="196" height="40" fill="#1E1E22" stroke="#3A3A40"/><text x="316" y="195" fill="#ECECEE">documents</text><text x="480" y="195" text-anchor="end" fill="#A3A3AA" font-size="11">read</text>
-            <rect x="300" y="230" width="196" height="40" fill="#1E1E22" stroke="#3A3A40"/><text x="316" y="255" fill="#ECECEE">database</text><text x="480" y="255" text-anchor="end" fill="#F0562A" font-size="11">write: confirm</text>
-          </g>
-        </svg>
-        <figcaption>Reading is automatic; changing anything needs a yes.</figcaption>
-      </figure>
+  <section class="topic" id="human" aria-labelledby="humanH">
+    <div class="wrap narrow">
+      <p class="num">04 &middot; Human in the loop</p>
+      <h2 id="humanH">I stay in charge of what goes live</h2>
+      <ul class="how">
+        <li>Nothing goes live without my review. The sites only change when I merge.</li>
+        <li>The rules file lists what Claude must leave alone, such as the portfolio address on my CV.</li>
+        <li>Every change is visible in the GitHub history, so anything can be traced or rolled back.</li>
+      </ul>
     </div>
   </section>
 
-  <section class="topic" id="segments" aria-labelledby="segH">
-    <div class="wrap in">
-      <div>
-        <p class="num">03 &middot; One conversation per task</p>
-        <h2 id="segH">Split the work, not just the chat</h2>
-        <p>One endless chat gets slower, more expensive and more confused as it grows. I split work into <b>separate conversations, one per task</b>, such as invoices, bug triage or the weekly report. Each has its own instructions, tools and context.</p>
-        <p>A small <b>router</b> reads each new request and sends it to the right conversation. Every thread stays short and on topic, so answers are sharper and easier to check.</p>
-        <ul class="how">
-          <li>Each task has its own instructions and examples</li>
-          <li>Long threads are summarised so the important parts stay</li>
-          <li>Threads can hand work to each other with a short note</li>
-        </ul>
-      </div>
-      <figure class="diagram">
-        <svg viewBox="0 0 520 300" role="img" aria-labelledby="d3t" font-family="JetBrains Mono, ui-monospace, monospace">
-          <title id="d3t">New requests go to a router, which sends each one to its own conversation: invoices, bug triage or weekly report.</title>
-          <rect x="24" y="126" width="120" height="48" fill="#1E1E22" stroke="#3A3A40"/>
-          <text x="84" y="155" text-anchor="middle" fill="#ECECEE" font-size="13">new request</text>
-          <path d="M144 150H184" stroke="#3A3A40" stroke-width="1.5"/>
-          <rect x="184" y="120" width="96" height="60" fill="#1E1E22" stroke="#F0562A" stroke-width="1.5"/>
-          <text x="232" y="155" text-anchor="middle" fill="#ECECEE" font-size="14">router</text>
-          <g stroke="#3A3A40" stroke-width="1.5" fill="none"><path d="M280 150H310M310 66V234M310 66H330M310 150H330M310 234H330"/></g>
-          <g font-size="13">
-            <rect x="330" y="40" width="166" height="52" fill="#1E1E22" stroke="#3A3A40"/><text x="346" y="62" fill="#ECECEE">invoices</text><text x="346" y="80" fill="#A3A3AA" font-size="11">own rules + tools</text>
-            <rect x="330" y="124" width="166" height="52" fill="#1E1E22" stroke="#3A3A40"/><text x="346" y="146" fill="#ECECEE">bug triage</text><text x="346" y="164" fill="#A3A3AA" font-size="11">own rules + tools</text>
-            <rect x="330" y="208" width="166" height="52" fill="#1E1E22" stroke="#3A3A40"/><text x="346" y="230" fill="#ECECEE">weekly report</text><text x="346" y="248" fill="#A3A3AA" font-size="11">own rules + tools</text>
-          </g>
-        </svg>
-        <figcaption>Short, focused threads beat one long one.</figcaption>
-      </figure>
+  <section class="topic" id="produced" aria-labelledby="producedH">
+    <div class="wrap narrow">
+      <p class="num">05 &middot; What it&rsquo;s produced</p>
+      <h2 id="producedH">Real changes on this site and Halvia</h2>
+      <ul class="how">
+        <li><b>Halvia simplified:</b> six sections removed, boxes squared, and the tools cut from seven to five admin tools, with a work log of everything checked. <a href="https://halvia.cloud/">halvia.cloud</a></li>
+        <li><b>Halvia Ward rebuilt</b> around the five tools, on the same blue as the main site. <a href="https://halvia.cloud/ward/">Try it</a></li>
+        <li><b>Side projects moved out:</b> two personal projects moved to their own repository with their data and scheduled jobs, and the old links redirected.</li>
+        <li><b>This portfolio:</b> consistent project tiles, a CV link, and this case study.</li>
+      </ul>
+      <p class="todo">[TODO: add before/after screenshots and real numbers]</p>
     </div>
   </section>
 
-  <section class="topic" id="memory" aria-labelledby="memH">
-    <div class="wrap in">
-      <div>
-        <p class="num">04 &middot; LLM memory</p>
-        <h2 id="memH">Remembering what matters</h2>
-        <p>Language models don't remember anything between chats on their own, so memory has to be designed. I use three layers. <b>Working memory</b> is the current conversation, summarised when it gets long. <b>Long-term memory</b> is facts, preferences and decisions saved to a store and pulled back in only when relevant. <b>Project memory</b> is a short file of rules and context the agent reads at the start of every session.</p>
-        <ul class="how">
-          <li>Only useful, non-sensitive facts are kept</li>
-          <li>People can see, correct and delete what's remembered</li>
-          <li>Saved memories link back to where they came from</li>
-        </ul>
-      </div>
-      <figure class="diagram">
-        <svg viewBox="0 0 520 300" role="img" aria-labelledby="d4t" font-family="JetBrains Mono, ui-monospace, monospace">
-          <title id="d4t">Three layers of memory feed the model: working memory from the current chat, long-term memory retrieved when relevant, and project memory read at the start.</title>
-          <rect x="350" y="110" width="146" height="80" fill="#1E1E22" stroke="#F0562A" stroke-width="1.5"/>
-          <text x="423" y="155" text-anchor="middle" fill="#ECECEE" font-size="14">model</text>
-          <g stroke="#3A3A40" stroke-width="1.5" fill="none"><path d="M284 64H318V150H350M284 150H350M284 236H318V150"/></g>
-          <g font-size="13">
-            <rect x="24" y="38" width="260" height="52" fill="#1E1E22" stroke="#3A3A40"/><text x="40" y="60" fill="#ECECEE">working memory</text><text x="40" y="78" fill="#A3A3AA" font-size="11">this chat, summarised as it grows</text>
-            <rect x="24" y="124" width="260" height="52" fill="#1E1E22" stroke="#3A3A40"/><text x="40" y="146" fill="#ECECEE">long-term memory</text><text x="40" y="164" fill="#A3A3AA" font-size="11">saved facts, recalled when relevant</text>
-            <rect x="24" y="210" width="260" height="52" fill="#1E1E22" stroke="#3A3A40"/><text x="40" y="232" fill="#ECECEE">project memory</text><text x="40" y="250" fill="#A3A3AA" font-size="11">rules read at every start</text>
-          </g>
-        </svg>
-        <figcaption>Three layers, each with a different lifespan.</figcaption>
-      </figure>
+  <section class="topic" id="learned" aria-labelledby="learnedH">
+    <div class="wrap narrow">
+      <p class="num">06 &middot; What I learned</p>
+      <h2 id="learnedH">What went wrong early, and what fixed it</h2>
+      <ul class="how">
+        <li><b>Scope has to be explicit.</b> Early on, a request to change one thing could pull in neighbouring changes. Now each brief says what&rsquo;s in, and &ldquo;nothing else should change&rdquo; when it matters.</li>
+        <li><b>Exclusions beat assumptions.</b> Listing what not to touch, like the address on my CV, stopped surprises.</li>
+        <li><b>Checklists catch the boring failures.</b> The checks found things I&rsquo;d have missed, like a link to a section that no longer existed.</li>
+        <li><b>Automation needs watching.</b> A scheduled job looked fine but was being skipped at busy times. Moving it off the quarter-hour fixed it.</li>
+        <li><b>AI output needs testing too.</b> When I tested a small model for Halvia bot, it got a dose wrong. Tighter instructions and showing the source&rsquo;s exact words fixed it.</li>
+      </ul>
     </div>
   </section>
 
-  <section class="topic" id="overnight" aria-labelledby="nightH">
-    <div class="wrap in">
-      <div>
-        <p class="num">05 &middot; Overnight loops</p>
-        <h2 id="nightH">Work that improves while you sleep</h2>
-        <p>Some jobs get better with repetition: building a feature, cleaning a dataset, tuning a prompt. A scheduled job starts an agent on a <b>loop</b>: try, test the result, fix what failed, and go again. It stops when every check passes or it reaches its step or budget limit.</p>
-        <p>In the morning there's a summary of what changed and why, and the work waits for review, for example as a pull request. Nothing goes live without a person checking it.</p>
-        <ul class="how">
-          <li>Clear checks decide what "done" means: tests, a scoring rubric or a target</li>
-          <li>Time, step and cost limits for every run</li>
-          <li>Every attempt is logged, so a bad night is easy to roll back</li>
-        </ul>
-      </div>
-      <figure class="diagram">
-        <svg viewBox="0 0 520 300" role="img" aria-labelledby="d5t" font-family="JetBrains Mono, ui-monospace, monospace">
-          <title id="d5t">An overnight loop: try, test, fix, and repeat until the checks pass or a limit is reached, then a morning summary waits for review.</title>
-          <g stroke="#3A3A40" stroke-width="1.5" fill="none"><path d="M180 70H300M352 96V174M300 200H180M128 174V96"/><path d="M404 200H444V236"/></g>
-          <g font-size="14" text-anchor="middle">
-            <rect x="76" y="44" width="104" height="52" fill="#1E1E22" stroke="#3A3A40"/><text x="128" y="75" fill="#ECECEE">try</text>
-            <rect x="300" y="44" width="104" height="52" fill="#1E1E22" stroke="#3A3A40"/><text x="352" y="75" fill="#ECECEE">test</text>
-            <rect x="300" y="174" width="104" height="52" fill="#1E1E22" stroke="#F0562A" stroke-width="1.5"/><text x="352" y="198" fill="#ECECEE">pass?</text><text x="352" y="215" fill="#A3A3AA" font-size="10">or limit hit</text>
-            <rect x="76" y="174" width="104" height="52" fill="#1E1E22" stroke="#3A3A40"/><text x="128" y="205" fill="#ECECEE">fix</text>
-          </g>
-          <text x="240" y="62" text-anchor="middle" fill="#A3A3AA" font-size="11">attempt</text>
-          <text x="240" y="192" text-anchor="middle" fill="#A3A3AA" font-size="11">no: go again</text>
-          <circle class="pulse" cx="240" cy="70" r="4" fill="#F0562A"/>
-          <rect x="384" y="236" width="120" height="44" fill="#F0562A"/>
-          <text x="444" y="263" text-anchor="middle" fill="#0E0E10" font-size="13" font-weight="500">morning review</text>
-          <text x="452" y="226" fill="#A3A3AA" font-size="11">yes</text>
-        </svg>
-        <figcaption>Try, test, fix, repeat; you review in the morning.</figcaption>
-      </figure>
+  <section class="topic" id="teams" aria-labelledby="teamsH">
+    <div class="wrap narrow">
+      <p class="num">07 &middot; For other teams</p>
+      <h2 id="teamsH">The same loop, for your work</h2>
+      <p>The loop works anywhere work lives in files: documentation that needs keeping current, weekly reports, internal tools, and content updates on a website. The goal changes; the branch, the checks, the pull request and the human review stay the same.</p>
+    </div>
+  </section>
+
+  <section class="topic" id="agents" aria-labelledby="agentsH">
+    <div class="wrap narrow">
+      <p class="num">How I think about agents</p>
+      <h2 id="agentsH">Small jobs, clear rules, a person at the end</h2>
+      <ul class="how">
+        <li><b>One job at a time.</b> A focused task with a clear finish line is easier to check than a vague one.</li>
+        <li><b>One thread per task.</b> Separate conversations keep the context short and on topic.</li>
+        <li><b>Memory on purpose.</b> The rules file and pull request summaries carry what matters from one session to the next.</li>
+      </ul>
+      <p style="margin-top:1.2rem">Next, I&rsquo;m exploring scheduled overnight runs that work through a list of small fixes, so pull requests are waiting for review in the morning.</p>
     </div>
   </section>
 
   <section class="closing" aria-labelledby="closeH">
-    <div class="wrap">
-      <h2 id="closeH">Tools I work with</h2>
-      <p>Agents are set up around the systems a team already has, with the least access they need, and a person approving anything that matters.</p>
-      <div class="tools"><span>Claude</span><span>Claude Code</span><span>ChatGPT</span><span>Grok</span><span>MCP servers</span><span>GitHub Actions</span><span>APIs and webhooks</span></div>
-      <div class="actions" style="justify-content:flex-start"><a class="btn accent" href="mailto:shaundavidfinch@gmail.com?subject=AI%20agents">Talk about agents for your team</a><a class="btn quiet" href="index.html#work">Back to the portfolio</a></div>
+    <div class="wrap narrow">
+      <h2 id="closeH">Want this kind of loop for your team? Get in touch.</h2>
+      <div class="tools"><span>Claude Code</span><span>Claude</span><span>GitHub</span><span>GitHub Actions</span><span>GitHub Pages</span></div>
+      <div class="actions" style="justify-content:flex-start"><a class="btn accent" href="mailto:shaundavidfinch@gmail.com?subject=An%20AI%20loop%20for%20my%20team">Get in touch</a></div>
     </div>
   </section>
 
@@ -463,6 +417,7 @@ figure.piece.blankslot .frame{background:#000;border:1px solid rgba(255,255,255,
     <p class="contact" style="margin:0">
       <a href="mailto:shaundavidfinch@gmail.com">shaundavidfinch@gmail.com</a>
       <a href="https://www.linkedin.com/in/shaun-finch">linkedin.com/in/shaun-finch</a>
+      <a href="https://github.com/Shaun-Finch">github.com/Shaun-Finch</a>
     </p>
   </div>
 </footer>
