@@ -267,16 +267,16 @@ export function createAvatar(el, opts = {}) {
     arms.push(arm);
   }
 
-  // ----- outfit: navy crew-neck sweatshirt over a light-blue oxford shirt, mid-wash jeans with rolled hems, tan canvas backpack -----
+  // ----- outfit: black crew-neck sweatshirt over a light-blue oxford shirt, dark grey jeans with rolled hems, tan canvas backpack -----
   const fabricTex = (draw, rep) => { const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'); draw(g); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep[0], rep[1]); return t; };
   const knit = fabricTex(g => { g.fillStyle = '#7a7a7a'; g.fillRect(0, 0, 128, 128); for (let x = 0; x < 128; x += 4) { g.fillStyle = (x / 4) % 2 ? '#a0a0a0' : '#5c5c5c'; g.fillRect(x, 0, 2, 128); } }, [14, 8]);
   const twill = fabricTex(g => { g.fillStyle = '#7a7a7a'; g.fillRect(0, 0, 128, 128); g.strokeStyle = '#b0b0b0'; g.lineWidth = 2; for (let i = -128; i < 256; i += 6) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i + 128, 128); g.stroke(); } }, [4, 4]);
   const C = {
-    sweat: new THREE.MeshStandardMaterial({ color: 0x1e2c4c, roughness: .93, bumpMap: knit, bumpScale: .5, side: THREE.DoubleSide }),
-    rib: new THREE.MeshStandardMaterial({ color: 0x18233d, roughness: .95, bumpMap: knit, bumpScale: 1.2, side: THREE.DoubleSide }),
+    sweat: new THREE.MeshStandardMaterial({ color: 0x1c1d21, roughness: .93, bumpMap: knit, bumpScale: .5, side: THREE.DoubleSide }),
+    rib: new THREE.MeshStandardMaterial({ color: 0x131417, roughness: .95, bumpMap: knit, bumpScale: 1.2, side: THREE.DoubleSide }),
     shirt: new THREE.MeshStandardMaterial({ color: 0xb9d2f0, roughness: .78, side: THREE.DoubleSide }),
-    denim: new THREE.MeshStandardMaterial({ color: 0x46679a, roughness: .9, bumpMap: twill, bumpScale: .7, side: THREE.DoubleSide }),
-    denimLight: new THREE.MeshStandardMaterial({ color: 0x7593c2, roughness: .92, bumpMap: twill, bumpScale: .7 }),
+    denim: new THREE.MeshStandardMaterial({ color: 0x3d4046, roughness: .9, bumpMap: twill, bumpScale: .7, side: THREE.DoubleSide }),
+    denimLight: new THREE.MeshStandardMaterial({ color: 0x5b5f67, roughness: .92, bumpMap: twill, bumpScale: .7 }),
     canvas: new THREE.MeshStandardMaterial({ color: 0xc9a46a, roughness: .88, bumpMap: twill, bumpScale: .35 }),
     leather: new THREE.MeshStandardMaterial({ color: 0x6a4024, roughness: .5, side: THREE.DoubleSide }),
     brass: new THREE.MeshStandardMaterial({ color: 0xd2a94e, roughness: .28, metalness: 1 }),
