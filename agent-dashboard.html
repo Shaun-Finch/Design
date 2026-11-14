@@ -90,6 +90,8 @@ tbody tr:last-child td{border-bottom:0}
   .card .ins{max-width:none;margin:8px 0}
   .card .apps{max-width:none}
   .top .badge{display:none}
+  .top .lg{display:none}
+  .top .in{gap:8px}
 }
 /* drawer: the workflow's conversation */
 .scrim{position:fixed;inset:0;background:rgba(20,21,26,.28);z-index:30;opacity:0;pointer-events:none;transition:opacity .2s}
@@ -131,6 +133,14 @@ dialog::backdrop{background:rgba(20,21,26,.35)}
 .chk input{accent-color:var(--blue)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .dlg .row{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
+.live{display:inline-block;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;font-weight:600;color:#fff;background:#0B6B3C;padding:1px 6px;margin-left:6px;vertical-align:2px}
+.linkbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 16px;border-bottom:1px solid var(--line);font-size:.8rem;color:var(--mute);background:#fff}
+.linkbar a{color:var(--blue);font-weight:700}
+.linkbar .mode{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid var(--line2)}
+.linkbar .mode.on{color:#0B6B3C;border-color:#9FD7B6;background:var(--okbg)}
+.msg.typing .bub{color:var(--mute);font-style:italic}
+.msg.err .bub{background:#FDECEA;border-color:#F3B9AF;color:#7A2213}
+.keynote{font-size:.78rem;color:var(--mute);margin:-4px 0 12px}
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(16px);opacity:0;background:#14151A;color:#fff;padding:9px 14px;font-size:.86rem;font-weight:600;transition:all .25s;pointer-events:none;z-index:50}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
@@ -138,8 +148,9 @@ dialog::backdrop{background:rgba(20,21,26,.35)}
 <body>
 <header class="top"><div class="in">
   <a class="logo" href="agent-dashboard.html"><i aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></i>Agent Ops</a>
-  <span class="badge">Concept &middot; simulated data</span>
+  <span class="badge" id="modeBadge">Concept &middot; simulated data</span>
   <span class="sp"></span>
+  <button class="btn sm" type="button" id="connBtn">Connect<span class="lg"> Claude / ChatGPT</span></button>
   <a class="back" href="index.html">&larr; Portfolio</a>
 </div></header>
 
@@ -159,16 +170,17 @@ dialog::backdrop{background:rgba(20,21,26,.35)}
     <tbody id="rows"></tbody>
   </table></div>
   <div class="cards" id="cards"></div>
-  <p class="note">A concept dashboard with simulated data. It isn&rsquo;t connected to any real accounts: nothing is sent, applied for or posted. Company names in the run logs are fictional.</p>
+  <p class="note">Workflows marked <span class="live">LIVE</span> talk to the real Claude or ChatGPT through your own API key, straight from your browser. The others are demos with simulated runs and fictional company names. The dashboard doesn&rsquo;t sign in to job sites or email for you: nothing is applied for or sent from here, and live runs are only counted when you log them.</p>
 </main>
 
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-labelledby="dTitle" aria-hidden="true" inert>
   <div class="dh"><span class="op" id="dOp"></span><div class="t"><b id="dTitle"></b><small id="dSub"></small></div><button class="x" type="button" id="dClose" aria-label="Close conversation">&times;</button></div>
-  <div class="ctl"><button class="btn sm" type="button" id="dPause"></button><button class="btn sm" type="button" id="dInterrupt">Interrupt run</button><button class="btn sm" type="button" id="dEdit">Edit instruction</button><span class="prog" id="dProg"></span></div>
+  <div class="linkbar" id="linkbar"></div>
+  <div class="ctl"><button class="btn sm" type="button" id="dPause"></button><button class="btn sm" type="button" id="dLog">Log a run</button><button class="btn sm" type="button" id="dInterrupt">Interrupt run</button><button class="btn sm" type="button" id="dEdit">Edit instruction</button><span class="prog" id="dProg"></span></div>
   <div class="thread" id="thread" aria-live="polite" tabindex="0" aria-label="Conversation"></div>
   <form class="compose" id="compose"><label class="sr" for="msgIn">Message</label><textarea id="msgIn" rows="1" placeholder="Message the operator…"></textarea><button class="btn pri" type="submit">Send</button></form>
-  <p class="hint">Try: &ldquo;only remote roles&rdquo;, &ldquo;change to 5 per day&rdquo;, &ldquo;pause&rdquo;, &ldquo;resume&rdquo; or &ldquo;skip agencies&rdquo;.</p>
+  <p class="hint" id="hint"></p>
 </aside>
 
 <dialog id="dlg"><form class="dlg" id="newForm" method="dialog">
@@ -181,6 +193,19 @@ dialog::backdrop{background:rgba(20,21,26,.35)}
   <div class="f"><span>Apps connected</span><div class="chk" id="nApps"></div></div>
   <label class="f">Instruction<textarea id="nIns" maxlength="300" placeholder="e.g. Run this loop and apply for 10 jobs per day in Leeds in UX research" required></textarea></label>
   <div class="row"><button class="btn" type="button" id="nCancel">Cancel</button><button class="btn pri" type="submit">Start workflow</button></div>
+</form></dialog>
+<dialog id="conn"><form class="dlg" id="connForm" method="dialog">
+  <h2>Connect Claude / ChatGPT</h2>
+  <p>Add your own API key and that operator&rsquo;s workflows go live: each conversation is sent to the real model with the workflow&rsquo;s task, apps, instruction and runs, and it can change the plan from what you tell it.</p>
+  <div class="two"><label class="f">Anthropic API key (Claude)<input id="cKeyA" type="password" autocomplete="off" placeholder="sk-ant-…"></label><label class="f">Claude model<select id="cModelA"><option value="claude-sonnet-5-5">Claude Sonnet 5.5</option><option value="claude-opus-5-5">Claude Opus 5.5</option><option value="claude-haiku-5-5">Claude Haiku 5.5</option></select></label></div>
+  <div class="two"><label class="f">OpenAI API key (ChatGPT)<input id="cKeyO" type="password" autocomplete="off" placeholder="sk-…"></label><label class="f">OpenAI model<input id="cModelO" type="text" value="gpt-4o" autocomplete="off"></label></div>
+  <p class="keynote">Keys are saved only in this browser on this device and sent only to Anthropic or OpenAI. Use a key with a low spending limit, and clear it on shared computers. API usage is billed to your account.</p>
+  <div class="row"><button class="btn" type="button" id="cClear">Clear keys</button><button class="btn" type="button" id="cCancel">Cancel</button><button class="btn pri" type="submit">Save</button></div>
+</form></dialog>
+<dialog id="mini"><form class="dlg" id="miniForm" method="dialog">
+  <h2 id="miniT"></h2><p id="miniP"></p>
+  <label class="f"><span id="miniL"></span><input id="miniIn" autocomplete="off"></label>
+  <div class="row"><button class="btn" type="button" id="miniCancel">Cancel</button><button class="btn pri" type="submit">Save</button></div>
 </form></dialog>
 <div class="toast" id="toast" role="status"></div>
 
@@ -217,16 +242,24 @@ try { W = JSON.parse(localStorage.getItem(KEY)); } catch (e) { W = null; }
 if (!Array.isArray(W) || !W.length) W = seed();
 function save() { try { localStorage.setItem(KEY, JSON.stringify(W)); } catch (e) { } }
 var openId = null;
+// ---------- connections: your own API keys, kept in this browser only ----------
+var CK = 'agentops.conn', CONN = {};
+try { CONN = JSON.parse(localStorage.getItem(CK)) || {}; } catch (e) { CONN = {}; }
+var PROV = { 'Claude': 'anthropic', 'ChatGPT': 'openai' };
+var provOf = function (w) { return PROV[w.op]; };
+var isLive = function (w) { var p = provOf(w); return !!(p && CONN[p] && CONN[p].key); };
+function saveConn() { try { localStorage.setItem(CK, JSON.stringify(CONN)); } catch (e) { } }
+var CHAT_HOSTS = /^https:\/\/(claude\.ai|chatgpt\.com|chat\.openai\.com)\//i;
 var opBadge = function (op) { var o = OPS[op] || { c: '#555', k: op[0] }; return '<span class="op"><i style="background:' + o.c + '" aria-hidden="true">' + esc(o.k) + '</i>' + esc(op) + '</span>'; };
 var stBadge = function (s) { return s === 'run' ? '<span class="st run"><i></i>Running</span>' : s === 'ask' ? '<span class="st ask"><i></i>Needs your OK</span>' : '<span class="st pause"><i></i>Paused</span>'; };
 var appChips = function (a) { return '<div class="apps">' + a.map(function (x) { return '<span class="app">' + esc(x) + '</span>'; }).join('') + '</div>'; };
 var runsCell = function (w) { var p = Math.min(100, Math.round(100 * w.runs / w.target)); return '<div class="runs"><b>' + w.runs + '</b> ' + (w.runs >= w.target ? 'today &middot; target met' : '/ ' + w.target + ' today') + '<div class="bar" aria-hidden="true"><i style="width:' + p + '%"></i></div><small>' + w.total.toLocaleString('en-GB') + ' total &middot; last ' + esc(w.last) + '</small></div>'; };
 function render() {
   $('#rows').innerHTML = W.map(function (w) {
-    return '<tr data-id="' + w.id + '"' + (w.id === openId ? ' class="sel"' : '') + ' tabindex="0" aria-label="Open the ' + esc(w.name) + ' conversation"><td class="wf"><b>' + esc(w.name) + '</b><small>' + esc(w.task) + '</small></td><td>' + opBadge(w.op) + '</td><td>' + appChips(w.apps) + '</td><td>' + runsCell(w) + '</td><td><div class="ins">' + esc(w.ins) + '</div></td><td>' + stBadge(w.status) + '</td><td><span class="open">Open &rarr;</span></td></tr>';
+    return '<tr data-id="' + w.id + '"' + (w.id === openId ? ' class="sel"' : '') + ' tabindex="0" aria-label="Open the ' + esc(w.name) + ' conversation"><td class="wf"><b>' + esc(w.name) + (isLive(w) ? '<span class="live">LIVE</span>' : '') + '</b><small>' + esc(w.task) + '</small></td><td>' + opBadge(w.op) + '</td><td>' + appChips(w.apps) + '</td><td>' + runsCell(w) + '</td><td><div class="ins">' + esc(w.ins) + '</div></td><td>' + stBadge(w.status) + '</td><td><span class="open">Open &rarr;</span></td></tr>';
   }).join('');
   $('#cards').innerHTML = W.map(function (w) {
-    return '<button class="card" type="button" data-id="' + w.id + '"><div class="row"><span class="wf"><b>' + esc(w.name) + '</b><small>' + esc(w.task) + '</small></span>' + stBadge(w.status) + '</div><div class="row">' + opBadge(w.op) + runsCell(w) + '</div>' + appChips(w.apps) + '<div class="ins">' + esc(w.ins) + '</div><span class="open">Open conversation &rarr;</span></button>';
+    return '<button class="card" type="button" data-id="' + w.id + '"><div class="row"><span class="wf"><b>' + esc(w.name) + (isLive(w) ? '<span class="live">LIVE</span>' : '') + '</b><small>' + esc(w.task) + '</small></span>' + stBadge(w.status) + '</div><div class="row">' + opBadge(w.op) + runsCell(w) + '</div>' + appChips(w.apps) + '<div class="ins">' + esc(w.ins) + '</div><span class="open">Open conversation &rarr;</span></button>';
   }).join('');
   document.querySelectorAll('[data-id]').forEach(function (el) {
     el.onclick = function () { openWf(el.dataset.id); };
@@ -236,6 +269,8 @@ function render() {
   $('#kRuns').textContent = W.reduce(function (s, w) { return s + w.runs; }, 0);
   $('#kAsk').textContent = W.filter(function (w) { return w.status === 'ask'; }).length;
   $('#kPaused').textContent = W.filter(function (w) { return w.status === 'pause'; }).length;
+  var live = Object.keys(CONN).filter(function (k) { return CONN[k] && CONN[k].key; });
+  $('#modeBadge').textContent = live.length ? 'Live: ' + live.map(function (k) { return k === 'anthropic' ? 'Claude' : 'ChatGPT'; }).join(' + ') : 'Concept · simulated data';
   if (openId) renderDrawer();
 }
 function find(id) { return W.filter(function (w) { return w.id === id; })[0]; }
@@ -253,10 +288,21 @@ function renderDrawer(scroll) {
   $('#dSub').textContent = w.apps.join(', ');
   $('#dPause').textContent = w.status === 'pause' ? 'Resume loop' : 'Pause loop';
   $('#dProg').textContent = w.runs + ' runs today · target ' + w.target;
+  var live = isLive(w), name = w.op;
+  $('#linkbar').innerHTML = '<span class="mode' + (live ? ' on' : '') + '">' + (live ? 'Live · ' + esc(CONN[provOf(w)].model || '') : 'Demo') + '</span>' +
+    (w.link ? '<a href="' + esc(w.link) + '" target="_blank" rel="noopener">Open linked chat in ' + (/claude\.ai/i.test(w.link) ? 'Claude' : 'ChatGPT') + ' &#8599;</a><button class="btn sm" type="button" id="dLink">Change link</button>'
+            : '<button class="btn sm" type="button" id="dLink">Link a Claude or ChatGPT chat</button>') +
+    (!live && provOf(w) ? '<button class="btn sm" type="button" id="dGoLive">Go live with ' + esc(name) + '</button>' : '');
+  $('#dLink').onclick = function () { linkChat(w); };
+  if ($('#dGoLive')) $('#dGoLive').onclick = openConn;
+  $('#dLog').hidden = !live;
+  $('#hint').innerHTML = live ? 'Live: messages go to ' + esc(name) + ' with this workflow&rsquo;s instruction and runs. It can change the target, filters or pause the loop. Use &ldquo;Log a run&rdquo; to record work that&rsquo;s been done.'
+    : 'Demo replies. Try &ldquo;only remote roles&rdquo;, &ldquo;change to 5 per day&rdquo;, &ldquo;pause&rdquo; or &ldquo;resume&rdquo;' + (provOf(w) ? ', or connect your ' + esc(name) + ' API key to talk to the real model.' : '.');
   var th = $('#thread'), atBottom = th.scrollHeight - th.scrollTop - th.clientHeight < 60;
   th.innerHTML = w.thread.map(function (m, i) {
     var who = m.r === 'me' ? 'You' : m.r === 'log' ? 'Run log · ' + (m.time || w.last) : w.op;
     var acts = m.acts && !m.done ? '<div class="acts">' + m.acts.map(function (a, k) { return '<button class="btn sm' + (k === 0 ? ' pri' : '') + '" type="button" data-ask="' + i + '" data-k="' + k + '">' + esc(a) + '</button>'; }).join('') + '</div>' : '';
+    if (m.r === 'err') who = 'Connection';
     return '<div class="msg ' + (m.r === 'op' ? 'ai' : m.r) + '"><div class="who">' + esc(who) + '</div><div class="bub">' + esc(m.t) + acts + '</div></div>';
   }).join('');
   th.querySelectorAll('[data-ask]').forEach(function (b) { b.onclick = function () { answerAsk(w, +b.dataset.ask, +b.dataset.k); }; });
@@ -277,7 +323,95 @@ $('#dEdit').onclick = function () { var w = find(openId); if (!w) return; $('#ms
 $('#compose').onsubmit = function (e) {
   e.preventDefault(); var w = find(openId), t = $('#msgIn').value.trim(); if (!w || !t) return;
   $('#msgIn').value = ''; post(w, 'me', t); render(); renderDrawer(true);
+  if (isLive(w)) { askModel(w); return; }
   setTimeout(function () { post(w, 'op', reply(w, t)); render(); renderDrawer(true); }, reduce ? 0 : 700);
+};
+// ---------- live: send the conversation to Claude or ChatGPT ----------
+function systemFor(w) {
+  return 'You are ' + w.op + ', the AI operator for an agent workflow in a dashboard called Agent Ops.\n' +
+    'Workflow: ' + w.name + '\nTask: ' + w.task + '\nApps connected: ' + w.apps.join(', ') + '\nInstruction: ' + w.ins +
+    '\nRuns today: ' + w.runs + ' (daily target ' + w.target + '). Status: ' + (w.status === 'pause' ? 'paused' : 'running') + '.' +
+    (w.filters.length ? '\nFilters agreed so far: ' + w.filters.join('; ') : '') +
+    '\n\nThe user steers the loop through you here. Reply briefly and practically, as the operator of this loop: confirm changes, ask when something is unclear, and say plainly what you need from them. ' +
+    'You cannot sign in to or act in the connected apps from this dashboard; do not claim you have applied, sent or posted anything. Work that has been done is recorded by the user as run logs.\n' +
+    'When the user changes the plan, end your reply with control tags on their own line so the dashboard updates: [[target:N]] for a new daily target, [[pause]] or [[resume]], [[filter:short text]] for a new rule, [[instruction:full new instruction]] when they replace the instruction. Use tags only for changes the user asked for.';
+}
+function historyFor(w) {
+  var out = [];
+  w.thread.forEach(function (m) {
+    var role = m.r === 'op' ? 'assistant' : (m.r === 'me' || m.r === 'log' || m.r === 'ask') ? 'user' : null;
+    if (!role) return;
+    var text = m.r === 'log' ? '[Run log] ' + m.t : m.r === 'ask' ? '[Approval request shown to the user] ' + m.t : m.t;
+    if (out.length && out[out.length - 1].role === role) out[out.length - 1].content += '\n\n' + text; else out.push({ role: role, content: text });
+  });
+  out = out.slice(-30);
+  while (out.length && out[0].role !== 'user') out.shift();
+  return out;
+}
+function applyTags(w, text) {
+  var changes = [];
+  text = text.replace(/\[\[(target|pause|resume|filter|instruction)(?::([^\]]*))?\]\]/gi, function (m0, k, v) {
+    k = k.toLowerCase(); v = (v || '').trim();
+    if (k === 'target' && +v > 0) { w.target = Math.min(500, Math.round(+v)); changes.push('daily target ' + w.target); }
+    if (k === 'pause') { w.status = 'pause'; changes.push('paused'); }
+    if (k === 'resume') { w.status = 'run'; changes.push('resumed'); }
+    if (k === 'filter' && v) { w.filters.push(v); changes.push('rule: ' + v); }
+    if (k === 'instruction' && v) { w.ins = v; changes.push('new instruction'); }
+    return '';
+  }).trim();
+  return { text: text, changes: changes };
+}
+function askModel(w) {
+  var p = provOf(w), c = CONN[p], typing = { r: 'typing', t: w.op + ' is thinking…' };
+  w.thread.push(typing); renderDrawer(true);
+  var sys = systemFor(w), msgs = historyFor(w), req;
+  if (p === 'anthropic') req = fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'content-type': 'application/json', 'x-api-key': c.key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' }, body: JSON.stringify({ model: c.model || 'claude-sonnet-5-5', max_tokens: 700, system: sys, messages: msgs }) })
+    .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error((d.error && d.error.message) || ('HTTP ' + r.status)); return (d.content || []).filter(function (b) { return b.type === 'text'; }).map(function (b) { return b.text; }).join('\n'); }); });
+  else req = fetch('https://api.openai.com/v1/chat/completions', { method: 'POST', headers: { 'content-type': 'application/json', 'authorization': 'Bearer ' + c.key }, body: JSON.stringify({ model: c.model || 'gpt-4o', messages: [{ role: 'system', content: sys }].concat(msgs) }) })
+    .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error((d.error && d.error.message) || ('HTTP ' + r.status)); return d.choices && d.choices[0] && d.choices[0].message ? d.choices[0].message.content || '' : ''; }); });
+  req.then(function (text) {
+    var i = w.thread.indexOf(typing); if (i >= 0) w.thread.splice(i, 1);
+    var res = applyTags(w, text || ''); post(w, 'op', res.text || '(No reply text.)');
+    if (res.changes.length) post(w, 'log', 'Plan updated by ' + w.op + ': ' + res.changes.join(', '));
+  }).catch(function (err) {
+    var i = w.thread.indexOf(typing); if (i >= 0) w.thread.splice(i, 1);
+    post(w, 'err', 'Couldn’t reach ' + w.op + ': ' + (err && err.message ? err.message : 'network error') + '. Check your API key and model in Connect.');
+  }).then(function () { render(); renderDrawer(true); });
+}
+// ---------- link an existing Claude / ChatGPT conversation ----------
+function mini(title, text, label, value, cb) {
+  $('#miniT').textContent = title; $('#miniP').textContent = text; $('#miniL').textContent = label; $('#miniIn').value = value || '';
+  $('#miniForm').onsubmit = function (e) { e.preventDefault(); if (cb($('#miniIn').value.trim()) !== false) $('#mini').close(); };
+  $('#mini').showModal(); $('#miniIn').focus();
+}
+$('#miniCancel').onclick = function () { $('#mini').close(); };
+function linkChat(w) {
+  mini('Link a chat', 'Paste the link to a Claude or ChatGPT conversation for this workflow. It opens in a new tab from here. Leave it empty to remove the link.', 'Conversation link (claude.ai or chatgpt.com)', w.link, function (v) {
+    if (!v) { delete w.link; save(); render(); return; }
+    if (!CHAT_HOSTS.test(v)) { toast('Use a claude.ai or chatgpt.com link'); return false; }
+    w.link = v; post(w, 'log', 'Linked chat: ' + v); render(); renderDrawer(true);
+  });
+}
+$('#dLog').onclick = function () {
+  var w = find(openId); if (!w) return;
+  mini('Log a run', 'Record work that has actually been done for this workflow. It counts towards today’s runs and ' + w.op + ' sees it in the conversation.', 'What was done?', '', function (v) {
+    if (!v) { toast('Describe what was done'); return false; }
+    w.runs++; w.total++; w.last = now(); post(w, 'log', 'Run ' + w.runs + '/' + w.target + ' · ' + v); render(); renderDrawer(true);
+  });
+};
+function openConn() {
+  $('#cKeyA').value = (CONN.anthropic && CONN.anthropic.key) || ''; $('#cModelA').value = (CONN.anthropic && CONN.anthropic.model) || 'claude-sonnet-5-5';
+  $('#cKeyO').value = (CONN.openai && CONN.openai.key) || ''; $('#cModelO').value = (CONN.openai && CONN.openai.model) || 'gpt-4o';
+  $('#conn').showModal();
+}
+$('#connBtn').onclick = openConn;
+$('#cCancel').onclick = function () { $('#conn').close(); };
+$('#cClear').onclick = function () { CONN = {}; saveConn(); $('#conn').close(); render(); toast('Keys cleared from this browser'); };
+$('#connForm').onsubmit = function (e) {
+  e.preventDefault();
+  var a = $('#cKeyA').value.trim(), o = $('#cKeyO').value.trim();
+  CONN.anthropic = a ? { key: a, model: $('#cModelA').value } : null; CONN.openai = o ? { key: o, model: $('#cModelO').value.trim() || 'gpt-4o' } : null;
+  saveConn(); $('#conn').close(); render(); toast(a || o ? 'Connected. Those workflows are now live' : 'No keys saved');
 };
 $('#msgIn').addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#compose').requestSubmit(); } });
 function reply(w, t) {
@@ -294,7 +428,7 @@ function reply(w, t) {
 }
 // ---------- simulated loop ----------
 function tick() {
-  var w = W.filter(function (x) { return x.status === 'run' && x.runs < x.target; });
+  var w = W.filter(function (x) { return x.status === 'run' && x.runs < x.target && !isLive(x); });
   if (!w.length) return;
   w = w[Math.floor(Math.random() * w.length)];
   w.runs++; w.total++; w.last = now();
@@ -328,7 +462,7 @@ function toast(t) { var el = $('#toast'); el.textContent = t; el.classList.add('
 render();
 // open a workflow from the URL, e.g. agent-dashboard.html#w1
 if (location.hash && find(location.hash.slice(1))) openWf(location.hash.slice(1));
-window.__agentops = { openWf: openWf, tick: tick };
+window.__agentops = { openWf: openWf, tick: tick, conn: function () { return CONN; } };
 })();
 </script>
 </body>
