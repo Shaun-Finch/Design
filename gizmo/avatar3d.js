@@ -1,4 +1,5 @@
 // Gizmo — real-time 3D avatar (three.js). Built from primitives, lit with a studio environment.
+// He sits on a bench reading a book: he turns pages, glances up, and looks up to wave, nod or talk.
 // API: createAvatar(el, {onClick}) -> { setState, move, look, setTalk, isBusy, dispose }
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from './lib/addons/RoundedBoxGeometry.js';
@@ -77,8 +78,8 @@ export function createAvatar(el, opts = {}) {
   S.environmentIntensity = 0.85;
 
   const cam = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
-  const CAM = opts.framing === 'close' ? { y: 2.05, d: 9.3, look: 1.95 } : { y: 2.4, d: 10.6, look: 2.25 };
-  cam.position.set(0, CAM.y, CAM.d);
+  const CAM = opts.framing === 'close' ? { y: 2.05, d: 9.3, look: 1.95 } : { y: 2.25, d: 9.5, look: 1.92 };
+  cam.position.set(Math.sin(opts.camAngle || 0) * CAM.d, CAM.y, Math.cos(opts.camAngle || 0) * CAM.d);
   cam.lookAt(0, CAM.look, 0);
   let camFollow = 0;
 
@@ -460,6 +461,46 @@ export function createAvatar(el, opts = {}) {
   [[0, 0, .09], [.28, .32, .14], [.62, .7, .21]].forEach(([x, y, r]) => think.add(mesh(new THREE.SphereGeometry(r, 24, 16), M.white, [x, y, 0])));
   think.visible = false;
 
+  // ----- bench and book: Gizmo sits on a bench and reads -----
+  const SEAT = .7;                                                     // top of the seat slats; his legs hang over the front edge
+  const READ = { ax: -.42, az: .34, bend: 1.36, leg: -1.05, knee: .3, tilt: .3 };   // seated pose: arms forward holding the book, legs over the edge, head down
+  const bench = new THREE.Group(); S.add(bench);
+  {
+    const wood = new THREE.MeshStandardMaterial({ color: 0xcfa671, roughness: .68 }), wood2 = new THREE.MeshStandardMaterial({ color: 0xbd9259, roughness: .72 });
+    for (let i = 0; i < 4; i++) bench.add(mesh(new RoundedBoxGeometry(3.25, .085, .185, 3, .028), i % 2 ? wood2 : wood, [0, SEAT - .043, -.69 + i * .2]));   // seat slats
+    for (const sx of [-1, 1]) {
+      bench.add(mesh(new RoundedBoxGeometry(.085, .075, .86, 3, .025), M.gun, [sx * 1.3, SEAT - .123, -.39]));                 // rail under the slats
+      for (const z of [-.74, -.04]) {
+        bench.add(mesh(new RoundedBoxGeometry(.085, SEAT - .16, .085, 3, .025), M.gun, [sx * 1.3, (SEAT - .16) / 2, z]));       // legs
+        bench.add(mesh(new RoundedBoxGeometry(.17, .03, .17, 2, .012), M.dark, [sx * 1.3, .015, z]));                          // feet
+      }
+    }
+    bench.add(mesh(new RoundedBoxGeometry(2.6, .05, .05, 2, .02), M.gun, [0, .26, -.39]));                                      // stretcher
+  }
+  // open book in his hands: placed where the hands are in the reading pose, pages tilted up towards his face
+  const book = new THREE.Group(); torso.add(book);
+  let pagePivot = null; const PAGE_OPEN = .3;
+  {
+    arms.forEach((a, i) => { a.rotation.set(READ.ax, 0, (i ? -1 : 1) * (READ.az - .18)); a.userData.fore.rotation.x = -READ.bend; });
+    root.updateMatrixWorld(true);
+    const hp = arms.map(a => torso.worldToLocal(a.userData.hand.localToWorld(new THREE.Vector3(0, -.1, 0))));
+    const mid = hp[0].clone().add(hp[1]).multiplyScalar(.5), halfW = Math.max(.3, Math.abs(hp[0].x - hp[1].x) / 2 - .035), H = .62;
+    const U = new THREE.Vector3(0, .5, .866), N = new THREE.Vector3(0, .866, -.5), X = new THREE.Vector3(-1, 0, 0);   // page-up, page-normal (towards his face), page-right
+    book.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X, U, N));
+    book.position.copy(mid).addScaledVector(U, .09).addScaledVector(N, -.02);
+    const cover = new THREE.MeshStandardMaterial({ color: 0xd4503a, roughness: .55 }), paper = new THREE.MeshStandardMaterial({ color: 0xf6f1e4, roughness: .8 }), label = new THREE.MeshStandardMaterial({ color: 0xf6efe0, roughness: .7 });
+    for (const sd of [-1, 1]) {
+      const half = new THREE.Group(); half.rotation.y = -sd * PAGE_OPEN; book.add(half);
+      half.add(mesh(new RoundedBoxGeometry(halfW, H, .034, 3, .014), cover, [sd * halfW / 2, 0, -.022]));
+      half.add(mesh(new RoundedBoxGeometry(halfW - .035, H - .055, .05, 2, .01), paper, [sd * (halfW / 2 - .008), 0, .02]));
+      if (sd < 0) { half.add(mesh(new RoundedBoxGeometry(halfW * .55, .13, .008, 2, .003), label, [sd * halfW / 2, .1, -.041])); half.add(mesh(new RoundedBoxGeometry(halfW * .34, .028, .008, 2, .003), label, [sd * halfW / 2, -.06, -.041])); }
+    }
+    book.add(mesh(new THREE.CylinderGeometry(.03, .03, H, 16), cover, [0, 0, -.026]));
+    pagePivot = new THREE.Group(); pagePivot.position.z = .05; book.add(pagePivot);
+    pagePivot.add(mesh(new RoundedBoxGeometry(halfW - .05, H - .07, .006, 1, .002), paper, [-(halfW - .05) / 2, 0, 0]));
+    pagePivot.visible = false;
+  }
+
   // collect clickable meshes
   const hitList = [];
   root.traverse(o => { if (o.isMesh) hitList.push(o); });
@@ -469,39 +510,29 @@ export function createAvatar(el, opts = {}) {
   let look = { x: 0, y: 0 }, lookS = { x: 0, y: 0 };
   let blinkT = 0, nextBlink = 2 + Math.random() * 3, wink = -1, dbl = false;
   let current = null; // {name, t0, dur, fn, resolve}
+  let upS = 0;        // smoothed "looking up from the book" amount
   const clock = new THREE.Clock();
   let T = 0; // animation time: advances at most 50ms per frame, so moves always play in full
 
   // ---------- moves: fn(p, P) writes into pose P ----------
+  // Gizmo stays seated with his book. The older jumping and dancing names are kept so existing callers still work,
+  // but they now map to calm reading gestures: turning a page, or looking up from the book with a smile.
+  const pageTurn = { dur: 1.7, fn: (p, P) => { P.page = p; } };
+  const lookUp = { dur: 2.6, fn: (p, P) => { const u = bump(p, 0, 1) ** .35; P.up = Math.max(P.up, u); P.joy = p > .22 && p < .78; P.head.z += Math.sin(p * PI * 2) * .06 * u; P.head.x += (p > .25 && p < .75 ? Math.sin((p - .25) * PI * 4) * .08 : 0); } };
   const MOVES = {
-    hop: { dur: .95, fn: (p, P) => { const j = jump(p, .16, .86); P.y += j * .85; const sq = bump(p, 0, .18) + bump(p, .84, 1); P.sy -= sq * .14; P.sx += sq * .1;
-      P.armL.z += j * 1.6; P.armR.z -= j * 1.6; P.legL.x -= j * .35; P.legR.x -= j * .35; P.joy = true; } },
-    skip: { dur: 2.0, fn: (p, P) => { const out = p < .5, q = out ? p / .5 : (p - .5) / .5; P.x += (out ? q : 1 - q) * .9;
-      P.ry += (out ? 1 : -1) * .55 * bump(q, 0, 1) ** .3; const hops = Math.abs(Math.sin(q * PI * 4)); P.y += hops * .42;
-      const k = Math.sin(q * PI * 4); P.legL.x += k * .55; P.legR.x -= k * .55; P.armL.x -= k * .7; P.armR.x += k * .7; P.joy = true; } },
-    dance: { dur: 3.2, fn: (p, P) => { const t = p * 3.2, b = Math.sin(t * PI * 2 * 1.25); const fin = bump(p, .86, 1);
-      P.ry += b * .38 * (1 - fin); P.x += Math.sin(t * PI * 1.25) * .25 * (1 - fin); P.y += Math.abs(b) * .12 + jump(p, .86, 1) * .5;
-      P.rz += b * .06; P.head.z -= b * .18; P.head.x += Math.abs(Math.cos(t * PI * 2.5)) * .12;
-      P.armL.z += (1.1 + Math.sin(t * PI * 2.5) * .8) * (1 - fin) + fin * 2.2; P.armR.z -= (1.1 + Math.cos(t * PI * 2.5) * .8) * (1 - fin) + fin * 2.2;
-      P.legL.x += Math.max(0, b) * .5; P.legR.x += Math.max(0, -b) * .5; P.joy = true; } },
-    spin: { dur: 1.3, fn: (p, P) => { P.ry += ease.io(p) * PI * 2; P.y += jump(p, .05, .95) * .55; const a = bump(p, 0, 1); P.armL.z += a * 1.3; P.armR.z -= a * 1.3; P.joy = true; } },
-    flip: { dur: 1.5, fn: (p, P) => { const crouch = bump(p, 0, .2), land = bump(p, .82, 1); P.sy -= (crouch + land) * .16; P.sx += (crouch + land) * .1;
-      const air = clamp((p - .18) / .64, 0, 1); P.y += Math.sin(air * PI) * 1.25; P.rx -= ease.io(air) * PI * 2;
-      const tuck = bump(air, 0, 1); P.legL.x -= tuck * 1.0; P.legR.x -= tuck * 1.0; P.armL.z += tuck * 2.3; P.armR.z -= tuck * 2.3; P.joy = true; } },
-    wave: { dur: 1.8, fn: (p, P) => { const up = bump(p, 0, 1) ** .4; P.armR.z -= up * 2.5; P.armR.x -= up * .2; P.foreR = Math.sin(p * PI * 6) * .5 * up;
-      P.head.z += up * .14; P.wink = 0; } },
-    shimmy: { dur: 1.4, fn: (p, P) => { const s = Math.sin(p * PI * 14) * bump(p, 0, 1) ** .3; P.ry += s * .28; P.x += s * .08; P.head.z -= s * .1; P.armL.x += s * .6; P.armR.x -= s * .6; P.joy = true; } },
-    moonwalk: { dur: 2.4, fn: (p, P) => { const q = p < .5 ? ease.io(p / .5) : 1 - ease.io((p - .5) / .5); P.x -= q * .9; P.ry += .5 * bump(p, 0, 1) ** .3;
-      const s = Math.sin(p * PI * 10); P.legL.x += Math.max(0, s) * .3; P.legR.x += Math.max(0, -s) * .3; P.footL = Math.max(0, s) * .14; P.footR = Math.max(0, -s) * .14;
-      P.rz += .04 * bump(p, 0, 1); P.armL.x += s * .3; P.armR.x -= s * .3; P.joy = true; } },
-    nod: { dur: 1.2, fn: (p, P) => { P.head.x += Math.sin(p * PI * 2) * .18 * bump(p, 0, 1); } },
-    tilt: { dur: 1.5, fn: (p, P) => { P.head.z += bump(p, 0, 1) * .28; } },
-    glance: { dur: 1.6, fn: (p, P) => { P.lookX = Math.sin(p * PI * 2) * .9; P.head.y += Math.sin(p * PI * 2) * .25; } },
+    page: pageTurn, lookup: lookUp,
+    hop: lookUp, dance: lookUp, shimmy: lookUp, spin: pageTurn, flip: pageTurn, skip: pageTurn, moonwalk: pageTurn,
+    wave: { dur: 2.2, fn: (p, P) => { const u = bump(p, 0, 1) ** .4; P.up = Math.max(P.up, u); P.armR.z -= u * 2.0; P.armR.x += u * .3; P.bendR = lerp(READ.bend, .55, u);
+      P.foreR = Math.sin(p * PI * 6) * .5 * u; P.head.z += u * .12; P.wink = u > .5 ? 0 : -1; } },
+    nod: { dur: 1.3, fn: (p, P) => { const u = bump(p, 0, 1) ** .4; P.up = Math.max(P.up, u * .85); P.head.x += Math.sin(p * PI * 2) * .16 * u; } },
+    tilt: { dur: 1.6, fn: (p, P) => { const u = bump(p, 0, 1); P.up = Math.max(P.up, u ** .4 * .85); P.head.z += u * .26; } },
+    glance: { dur: 1.8, fn: (p, P) => { const u = bump(p, 0, 1) ** .4; P.up = Math.max(P.up, u * .8); P.lookX = Math.sin(p * PI * 2) * .8; P.head.y += Math.sin(p * PI * 2) * .22; } },
   };
 
   function basePose(t) {
     return { x: 0, y: 0, rx: 0, ry: 0, rz: 0, sx: 1, sy: 1,
-      head: { x: 0, y: 0, z: 0 }, armL: { x: 0, z: 0 }, armR: { x: 0, z: 0 }, legL: { x: 0 }, legR: { x: 0 },
+      head: { x: 0, y: 0, z: 0 }, armL: { x: READ.ax, z: -READ.az }, armR: { x: READ.ax, z: READ.az }, legL: { x: READ.leg }, legR: { x: READ.leg },
+      bendL: READ.bend, bendR: READ.bend, page: 0, up: 0,                 // elbow bends, page turn 0..1, how far he looks up from the book 0..1
       foreR: 0, footL: 0, footR: 0, joy: false, wink: -1, lookX: null, lookY: null };
   }
 
@@ -520,11 +551,11 @@ export function createAvatar(el, opts = {}) {
     const P = basePose(t);
     // idle breathing + sway
     if (!reduce) {
-      P.y += Math.sin(t * 1.7) * .03;
-      P.sy += Math.sin(t * 1.7) * .008;
-      P.armL.z += Math.sin(t * 1.7) * .04; P.armR.z -= Math.sin(t * 1.7 + .4) * .04;
+      P.sy += Math.sin(t * 1.7) * .006;                                                     // breathing
+      P.legL.x += Math.sin(t * 1.35) * .09; P.legR.x += Math.sin(t * 1.35 + PI) * .09;       // feet swing gently off the bench
     }
     // states
+    if (state !== 'idle') P.up = 1;                                                          // talking, listening or thinking: eyes off the book
     if (state === 'listening') { P.head.z += .14; P.head.x -= .05; }
     if (state === 'thinking') { P.head.z -= .1; P.head.x -= .12; P.lookX = .55; P.lookY = .6; }
     if (state === 'speaking' && !reduce) { P.head.x += Math.sin(t * 9) * .035; P.head.z += Math.sin(t * 4.5) * .03; }
@@ -534,6 +565,18 @@ export function createAvatar(el, opts = {}) {
       current.fn(p, P);
       if (p >= 1) { const c = current; current = null; c.resolve(); }
     }
+    // reading by himself: every so often he turns a page, and now and then glances up
+    if (!current && !reduce && state === 'idle') {
+      const c = (t + 2.6) % 7.6; if (c > 5.7) P.page = Math.min(1, (c - 5.7) / 1.7);
+      const g = (t + 5.2) % 13.4; if (g > 10.6 && g < 12.8) P.up = Math.max(P.up, bump((g - 10.6) / 2.2, 0, 1) ** .4 * .9);
+    }
+    upS = lerp(upS, clamp(P.up, 0, 1), 1 - Math.pow(.0008, dt));
+    const rd = 1 - upS;                                                                      // 1 = head down in the book
+    P.head.x += READ.tilt * rd;
+    if (P.lookY == null) P.lookY = lerp(look.y, -.7, rd);
+    if (P.lookX == null && rd > .6 && !reduce) P.lookX = lerp(.26, -.26, (t * .42) % 1) * rd;   // eyes run along the lines
+    if (P.page > 0 && P.page < 1) { const pg = P.page; P.armR.z += bump(pg, .02, .96) * .42; P.armR.x -= bump(pg, 0, .9) * .1; P.bendR += bump(pg, 0, .9) * .24; }
+    if (pagePivot) { const pg = P.page, on = pg > .08 && pg < .97; pagePivot.visible = on; if (on) pagePivot.rotation.y = lerp(PAGE_OPEN, PI - PAGE_OPEN, ease.io(clamp((pg - .1) / .72, 0, 1))); }
     // look smoothing
     const tx = P.lookX != null ? P.lookX : look.x, ty = P.lookY != null ? P.lookY : look.y;
     lookS.x = lerp(lookS.x, tx, 1 - Math.pow(.001, dt)); lookS.y = lerp(lookS.y, ty, 1 - Math.pow(.001, dt));
@@ -551,16 +594,16 @@ export function createAvatar(el, opts = {}) {
     // knees: bend when a leg swings forward, when Gizmo crouches or lands, and to lift the heel
     const crouch = Math.max(0, 1 - P.sy) * 4;
     [[legs[0], P.legL.x, P.footL], [legs[1], P.legR.x, P.footR]].forEach(([lg, lx, lift]) => {
-      const k = .04 + Math.max(0, -lx) * 1.1 + crouch + lift * 3.2;
-      lg.userData.knee.rotation.x = lerp(lg.userData.knee.rotation.x, Math.min(k, 1.9), 1 - Math.pow(.0005, dt));
+      const k = READ.knee + (lx - READ.leg) * -.6 + crouch + lift * 3.2;                     // seated: shins hang down from the knee
+      lg.userData.knee.rotation.x = lerp(lg.userData.knee.rotation.x, clamp(k, 0, 1.9), 1 - Math.pow(.0005, dt));
     });
     // elbows, wrists and fingers: arms bend more as they rise, hands open when happy, fingers flex gently at rest
     arms.forEach((a, i) => {
       const u = a.userData, raise = Math.abs(i ? P.armR.z : P.armL.z), swing = i ? P.armR.x : P.armL.x;
-      const bend = .22 + Math.min(1.4, raise) * .32 + Math.max(0, -swing) * .3 + (reduce ? 0 : Math.sin(t * 1.7 + i) * .03);
+      const bend = (i ? P.bendR : P.bendL) + (reduce ? 0 : Math.sin(t * 1.7 + i) * .012);
       u.fore.rotation.x = lerp(u.fore.rotation.x, -bend, 1 - Math.pow(.002, dt));
       if (i === 0) u.fore.rotation.z = lerp(u.fore.rotation.z, u.sx * .12, .2);
-      const open = P.joy || (i === 1 && P.foreR !== 0);
+      const open = i === 1 && P.foreR !== 0;                                                 // only the waving hand opens; the other keeps hold of the book
       const curl = open ? .12 : .5 + (reduce ? 0 : Math.sin(t * 1.3 + i * 2) * .1);
       u.fingers.forEach((f, k) => {
         const c = lerp(f.rotation.z / -u.sx || 0, curl * (1 + k * .06), 1 - Math.pow(.003, dt));

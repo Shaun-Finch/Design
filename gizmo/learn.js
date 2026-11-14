@@ -24,7 +24,7 @@ const vsw = $('#voiceSw'); vsw.setAttribute('aria-checked', voiceOn);
 vsw.addEventListener('click', () => { voiceOn = !voiceOn; vsw.setAttribute('aria-checked', voiceOn); try { localStorage.setItem('learn.voice', voiceOn ? 'on' : 'off'); } catch (e) { } if (!voiceOn && window.speechSynthesis) speechSynthesis.cancel(); });
 ['pointerdown', 'keydown'].forEach(ev => addEventListener(ev, () => { gestured = true; }, { once: true, capture: true }));
 (async () => {
-  try { const m = await import('./avatar3d.js?v=20261114'); AV = m.createAvatar(bot, { onClick: tap, manual: !!window.__GIZMO_MANUAL }); window.__gizmoAV = AV; } catch (e) { AV = null; }
+  try { const m = await import('./avatar3d.js?v=20261116'); AV = m.createAvatar(bot, { onClick: tap, manual: !!window.__GIZMO_MANUAL }); window.__gizmoAV = AV; } catch (e) { AV = null; }
   if (!AV) { const img = document.createElement('img'); img.className = 'still'; img.src = 'gizmo/gizmo-still.png'; img.alt = ''; bot.appendChild(img); bot.addEventListener('click', tap); }
   else if (!window.__GIZMO_MANUAL) setTimeout(() => move('wave'), 500);
 })();
@@ -33,10 +33,10 @@ document.addEventListener('pointermove', e => {
   if (!AV || reduce) return; const r = bot.getBoundingClientRect(); if (!r.width) return;
   AV.look((e.clientX - (r.left + r.width / 2)) / (innerWidth / 2), -(e.clientY - (r.top + r.height * .3)) / (innerHeight / 2));
 });
-const WORDS = { hop: 'Boing!', dance: 'Nailed it!', spin: 'Wheee!', flip: 'Ta-da!', wave: 'Hey there!', shimmy: 'Shake it!', nod: 'Yes!', tilt: 'Hmm…' };
+const WORDS = { dance: 'Nailed it!', lookup: 'Good book!', page: 'Next page…', wave: 'Hey there!', nod: 'Yes!', tilt: 'Hmm…' };
 function pop(t) { bubble.textContent = t; bubble.classList.add('on'); clearTimeout(pop.t); pop.t = setTimeout(() => bubble.classList.remove('on'), 1400); }
 function move(n, word = true) { if (word && WORDS[n]) pop(WORDS[n]); return AV && !reduce ? AV.move(n) : Promise.resolve(); }
-const SEQ = ['hop', 'dance', 'spin', 'flip', 'wave', 'shimmy']; let si = 0;
+const SEQ = ['wave', 'lookup', 'page', 'glance']; let si = 0;
 function tap() { if (AV && AV.isBusy()) return; move(SEQ[si++ % SEQ.length]); }
 let voice = null;
 function pickVoice() { if (!window.speechSynthesis) return; const vs = speechSynthesis.getVoices(); voice = vs.find(v => /Google UK English Female|Google US English|Samantha|Microsoft (Libby|Sonia|Aria|Jenny)/.test(v.name)) || vs.find(v => /^en[-_]GB/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null; }
