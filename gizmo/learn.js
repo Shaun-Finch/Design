@@ -24,7 +24,7 @@ const vsw = $('#voiceSw'); vsw.setAttribute('aria-checked', voiceOn);
 vsw.addEventListener('click', () => { voiceOn = !voiceOn; vsw.setAttribute('aria-checked', voiceOn); try { localStorage.setItem('learn.voice', voiceOn ? 'on' : 'off'); } catch (e) { } if (!voiceOn && window.speechSynthesis) speechSynthesis.cancel(); });
 ['pointerdown', 'keydown'].forEach(ev => addEventListener(ev, () => { gestured = true; }, { once: true, capture: true }));
 (async () => {
-  try { const m = await import('./avatar3d.js?v=20261116'); AV = m.createAvatar(bot, { onClick: tap, manual: !!window.__GIZMO_MANUAL }); window.__gizmoAV = AV; } catch (e) { AV = null; }
+  try { const m = await import('./avatar3d.js?v=20261117'); AV = m.createAvatar(bot, { onClick: tap, manual: !!window.__GIZMO_MANUAL }); window.__gizmoAV = AV; } catch (e) { AV = null; }
   if (!AV) { const img = document.createElement('img'); img.className = 'still'; img.src = 'gizmo/gizmo-still.png'; img.alt = ''; bot.appendChild(img); bot.addEventListener('click', tap); }
   else if (!window.__GIZMO_MANUAL) setTimeout(() => move('wave'), 500);
 })();

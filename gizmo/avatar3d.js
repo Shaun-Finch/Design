@@ -62,13 +62,19 @@ export function createAvatar(el, opts = {}) {
     R = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
   } catch (e) { return null; }
   if (!R.getContext()) return null;
-  R.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  // Draw at 1.5x the screen's own pixel density (at least 2x, at most 3x) and let the browser scale it down:
+  // this keeps the curve of his head and the fine seam lines crisp instead of jagged.
+  const DPR = Math.max(devicePixelRatio || 1, 1), PR = opts.pixelRatio || Math.min(Math.max(DPR * 1.5, 2), 3);
+  R.setPixelRatio(PR);
   R.outputColorSpace = THREE.SRGBColorSpace;
   R.toneMapping = THREE.ACESFilmicToneMapping;
   R.toneMappingExposure = 1.05;
   R.shadowMap.enabled = true;
   R.shadowMap.type = THREE.PCFSoftShadowMap;
   R.setClearColor(0x000000, 0);
+  // The canvas sits on top of its box without taking part in layout, so its larger drawing size can never stretch the box.
+  if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+  Object.assign(R.domElement.style, { position: 'absolute', left: '0', top: '0', display: 'block' });
   el.appendChild(R.domElement);
   R.domElement.setAttribute('aria-hidden', 'true');
 
@@ -546,7 +552,7 @@ export function createAvatar(el, opts = {}) {
   }
 
   // ---------- frame ----------
-  function frame(dtIn) {
+  function frame(dtIn, skipDraw) {
     const dt = dtIn != null ? dtIn : Math.min(clock.getDelta(), .05); T += dt; const t = T;
     const P = basePose(t);
     // idle breathing + sway
@@ -644,7 +650,7 @@ export function createAvatar(el, opts = {}) {
     think.visible = state === 'thinking';
     if (think.visible) think.children.forEach((c, i) => c.scale.setScalar(.8 + .25 * Math.max(0, Math.sin(t * 5 - i * .8))));
 
-    R.render(S, cam);
+    if (!skipDraw) R.render(S, cam);
   }
 
   // ---------- sizing + loop ----------
@@ -658,13 +664,26 @@ export function createAvatar(el, opts = {}) {
   let visible = true, raf = 0;
   const io = new IntersectionObserver(es => { visible = es[0].isIntersecting; }, { threshold: 0 });
   io.observe(el);
-  // adaptive quality: weak GPUs drop shadows and render at 1x
-  let fN = 0, fT = 0, lowered = false;
+  // adaptive quality: only if frames are really slow, and one step at a time. The first frames are skipped because
+  // they include one-off set-up work, which used to trip this and leave him permanently blurry.
+  // Steps: 1 drop the extra sharpness, 2 drop real shadows, 3 drop below the screen's own density (last resort).
+  let fN = -30, fT = 0, stage = 0;
   function loop() {
     raf = requestAnimationFrame(loop);
     if (!visible || document.hidden) { clock.getDelta(); return; }
     const t0 = performance.now(); frame();
-    if (!lowered && !opts.noAdapt) { fN++; fT += performance.now() - t0; if (fN === 24 && fT / fN > 28) { lowered = true; R.shadowMap.enabled = false; key.castShadow = false; R.setPixelRatio(1); resize(); blob.visible = true; ground.visible = false; } }
+    if (stage < 3 && !opts.noAdapt) {
+      if (fN >= 0) fT += performance.now() - t0;
+      if (++fN === 40) {
+        if (fT / 40 > 30) {
+          stage++;
+          if (stage === 1) { R.setPixelRatio(Math.min(PR, Math.max(DPR, 1.5))); resize(); }
+          else if (stage === 2) { R.shadowMap.enabled = false; key.castShadow = false; blob.visible = true; ground.visible = false; }
+          else { R.setPixelRatio(Math.max(1, Math.min(DPR, 1.25))); resize(); }
+          fN = -12; fT = 0;
+        } else stage = 3;                                                   // fast enough: stop measuring
+      }
+    }
   }
   if (!opts.manual) loop();
 
@@ -685,7 +704,7 @@ export function createAvatar(el, opts = {}) {
     look(nx, ny) { look.x = clamp(nx, -1, 1); look.y = clamp(ny, -1, 1); },
     move, isBusy: () => !!current, _dbg: () => ({ y: root.position.y, t: T, cur: current && current.name }),
     snapshot() { frame(); return R.domElement.toDataURL('image/png'); },
-    step(dt) { frame(dt); },
+    step(dt, skipDraw) { frame(dt, skipDraw); },
     dispose() { cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); R.dispose(); R.domElement.remove(); },
   };
 }
