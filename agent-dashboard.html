@@ -141,6 +141,17 @@ dialog::backdrop{background:rgba(20,21,26,.35)}
 .msg.typing .bub{color:var(--mute);font-style:italic}
 .msg.err .bub{background:#FDECEA;border-color:#F3B9AF;color:#7A2213}
 .keynote{font-size:.78rem;color:var(--mute);margin:-4px 0 12px}
+.empty{padding:36px 20px;text-align:center;color:var(--mute)}
+.empty b{display:block;color:var(--ink);font-size:1.05rem;margin-bottom:4px}
+details.how{border:1px solid var(--line2);background:#F7F8FB;margin:0 0 14px;font-size:.86rem}
+details.how summary{cursor:pointer;padding:10px 12px;font-weight:700}
+details.how ol{margin:0;padding:0 14px 12px 32px;color:var(--ink)}
+details.how li{margin:.35rem 0;line-height:1.45}
+details.how a{color:var(--blue);font-weight:600}
+details.how p{margin:0 12px 12px;color:var(--mute);font-size:.8rem}
+.connline{font-size:.82rem;color:var(--mute);margin:-4px 0 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.connline b{color:var(--ink)}
+.dlg textarea#miniIn{min-height:0}
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(16px);opacity:0;background:#14151A;color:#fff;padding:9px 14px;font-size:.86rem;font-weight:600;transition:all .25s;pointer-events:none;z-index:50}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
@@ -148,7 +159,7 @@ dialog::backdrop{background:rgba(20,21,26,.35)}
 <body>
 <header class="top"><div class="in">
   <a class="logo" href="agent-dashboard.html"><i aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></i>Agent Ops</a>
-  <span class="badge" id="modeBadge">Concept &middot; simulated data</span>
+  <span class="badge" id="modeBadge">Private to this browser</span>
   <span class="sp"></span>
   <button class="btn sm" type="button" id="connBtn">Connect<span class="lg"> Claude / ChatGPT</span></button>
   <a class="back" href="index.html">&larr; Portfolio</a>
@@ -156,13 +167,13 @@ dialog::backdrop{background:rgba(20,21,26,.35)}
 
 <main>
   <div class="head">
-    <div><h1>AI workflows</h1><p class="sub">Set up, watch and steer agent loops. Click any workflow to open its conversation and iterate on it, pause it or interrupt a run.</p></div>
+    <div><h1>AI workflows</h1><p class="sub">Set up and steer your own agent loops with Claude or ChatGPT. Everything you add is saved only in this browser, so nobody else can see it. Click a workflow to open its conversation.</p></div>
     <button class="btn pri" type="button" id="newBtn">+ New workflow</button>
   </div>
   <div class="kpis" aria-label="Summary">
     <div class="kpi"><small>Active workflows</small><b id="kActive">0</b></div>
     <div class="kpi"><small>Runs today</small><b id="kRuns">0</b></div>
-    <div class="kpi"><small>Needs your OK</small><b id="kAsk">0</b></div>
+    <div class="kpi"><small>Runs logged in total</small><b id="kAsk">0</b></div>
     <div class="kpi"><small>Paused</small><b id="kPaused">0</b></div>
   </div>
   <div class="tablewrap"><table aria-label="Workflows">
@@ -170,28 +181,41 @@ dialog::backdrop{background:rgba(20,21,26,.35)}
     <tbody id="rows"></tbody>
   </table></div>
   <div class="cards" id="cards"></div>
-  <p class="note">Workflows marked <span class="live">LIVE</span> talk to the real Claude or ChatGPT through your own API key, straight from your browser. The others are demos with simulated runs and fictional company names. The dashboard doesn&rsquo;t sign in to job sites or email for you: nothing is applied for or sent from here, and live runs are only counted when you log them.</p>
+  <p class="note">Your workflows, conversations and API keys stay in this browser on this device. There&rsquo;s no account and no server, and each visitor starts with a blank dashboard. Conversations go straight from your browser to Anthropic or OpenAI. The dashboard doesn&rsquo;t sign in to job sites or email for you, so nothing is applied for or sent from here. Runs count when you log them. Clearing your browser data removes everything.</p>
 </main>
 
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-labelledby="dTitle" aria-hidden="true" inert>
   <div class="dh"><span class="op" id="dOp"></span><div class="t"><b id="dTitle"></b><small id="dSub"></small></div><button class="x" type="button" id="dClose" aria-label="Close conversation">&times;</button></div>
   <div class="linkbar" id="linkbar"></div>
-  <div class="ctl"><button class="btn sm" type="button" id="dPause"></button><button class="btn sm" type="button" id="dLog">Log a run</button><button class="btn sm" type="button" id="dInterrupt">Interrupt run</button><button class="btn sm" type="button" id="dEdit">Edit instruction</button><span class="prog" id="dProg"></span></div>
+  <div class="ctl"><button class="btn sm" type="button" id="dPause"></button><button class="btn sm" type="button" id="dLog">Log a run</button><button class="btn sm" type="button" id="dEdit">Edit instruction</button><button class="btn sm" type="button" id="dDel">Delete</button><span class="prog" id="dProg"></span></div>
   <div class="thread" id="thread" aria-live="polite" tabindex="0" aria-label="Conversation"></div>
   <form class="compose" id="compose"><label class="sr" for="msgIn">Message</label><textarea id="msgIn" rows="1" placeholder="Message the operator…"></textarea><button class="btn pri" type="submit">Send</button></form>
   <p class="hint" id="hint"></p>
 </aside>
 
 <dialog id="dlg"><form class="dlg" id="newForm" method="dialog">
-  <h2>New workflow</h2><p>Pick an operator, give it a task, connect apps and write the loop instruction.</p>
+  <h2>New workflow</h2><p>Pick an operator, give it a task and write the loop instruction. Its conversation opens straight away.</p>
+  <details class="how" id="howTo"><summary>How to connect your Claude project or chat</summary>
+    <ol>
+      <li>Claude.ai chats and Projects can&rsquo;t be opened by other apps, so this uses the Claude API instead. Get a key at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a> under API keys. API billing is separate from a Claude Pro plan: add a little credit and set a monthly spend limit.</li>
+      <li>Click <b>Connect</b> (top right), paste the key and pick a model. For ChatGPT, use a key from <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com</a>.</li>
+      <li>Open your project on claude.ai (for example, Portfolio). Copy its instructions and any key notes into <b>Project context</b> below. The operator here then works from the same brief.</li>
+      <li>Copy the project or chat address from your browser bar into <b>Linked Claude or ChatGPT page</b>. You get a button to jump back to it.</li>
+      <li>Write the instruction and start. Steer it in the conversation, and use <b>Log a run</b> to record work that&rsquo;s been done.</li>
+    </ol>
+    <p>Keys and workflows are stored only in this browser. Don&rsquo;t connect on a shared computer, and use Clear keys if you do.</p>
+  </details>
+  <div class="connline" id="connLine"></div>
   <div class="two">
     <label class="f">AI operator<select id="nOp"></select></label>
     <label class="f">Runs per day<input id="nRuns" type="number" min="1" max="200" value="10"></label>
   </div>
   <label class="f">Task<input id="nTask" maxlength="60" placeholder="e.g. Emails for job applications" required></label>
   <div class="f"><span>Apps connected</span><div class="chk" id="nApps"></div></div>
-  <label class="f">Instruction<textarea id="nIns" maxlength="300" placeholder="e.g. Run this loop and apply for 10 jobs per day in Leeds in UX research" required></textarea></label>
+  <label class="f">Instruction<textarea id="nIns" maxlength="600" placeholder="e.g. Run this loop and apply for 10 jobs per day in Leeds in UX research" required></textarea></label>
+  <label class="f">Project context (optional)<textarea id="nCtx" maxlength="8000" placeholder="Paste your Claude project instructions or notes, e.g. your CV summary, rates, tone of voice"></textarea></label>
+  <label class="f">Linked Claude or ChatGPT page (optional)<input id="nLink" type="url" placeholder="https://claude.ai/project/…" autocomplete="off"></label>
   <div class="row"><button class="btn" type="button" id="nCancel">Cancel</button><button class="btn pri" type="submit">Start workflow</button></div>
 </form></dialog>
 <dialog id="conn"><form class="dlg" id="connForm" method="dialog">
@@ -204,7 +228,7 @@ dialog::backdrop{background:rgba(20,21,26,.35)}
 </form></dialog>
 <dialog id="mini"><form class="dlg" id="miniForm" method="dialog">
   <h2 id="miniT"></h2><p id="miniP"></p>
-  <label class="f"><span id="miniL"></span><input id="miniIn" autocomplete="off"></label>
+  <label class="f"><span id="miniL"></span><textarea id="miniIn" rows="2" autocomplete="off"></textarea></label>
   <div class="row"><button class="btn" type="button" id="miniCancel">Cancel</button><button class="btn pri" type="submit">Save</button></div>
 </form></dialog>
 <div class="toast" id="toast" role="status"></div>
@@ -214,32 +238,16 @@ dialog::backdrop{background:rgba(20,21,26,.35)}
 'use strict';
 var $ = function (s) { return document.querySelector(s); };
 var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
-var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-var OPS = { 'Claude': { c: '#C96442', k: 'C' }, 'ChatGPT': { c: '#10A37F', k: 'G' }, 'Gemini': { c: '#4A6CF7', k: 'Ge' }, 'Grok': { c: '#2A2B30', k: 'X' } };
-var APPS = ['Google Jobs', 'Indeed', 'LinkedIn', 'Gmail', 'Google Calendar', 'Notion', 'Slack', 'Glassdoor'];
-var COS = ['Northwind Health', 'Brightlane Studio', 'Kestrel Labs', 'Harbour & Co', 'Aster Digital', 'Fernhill Systems', 'Lumen Care', 'Oakridge Media', 'Cobalt Works', 'Meridian Clinics', 'Wren Analytics', 'Tidewater Group'];
-var ROLES = ['Product Designer', 'Senior UX Designer', 'UI Designer', 'Product Designer (Health)', 'UX Researcher', 'Design Systems Designer', 'Motion & UI Designer'];
-var KEY = 'agentops.v1';
+var OPS = { 'Claude': { c: '#C96442', k: 'C' }, 'ChatGPT': { c: '#10A37F', k: 'G' } };
+var APPS = ['Google Jobs', 'Indeed', 'LinkedIn', 'Gmail', 'Google Calendar', 'Notion', 'Slack', 'Glassdoor', 'GitHub', 'Figma'];
+var KEY = 'agentops.v2';
 var now = function () { return new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); };
-function seed() {
-  return [
-    { id: 'w1', name: 'Job applications', task: 'Emails for job applications', op: 'Claude', apps: ['Google Jobs', 'Indeed', 'LinkedIn'], target: 10, runs: 6, total: 148, status: 'run', last: '09:42', kind: 'jobs', filters: [],
-      ins: 'Run this loop and apply for 10 jobs per day in Manchester in product design. Tailor each cover letter to the role and skip anything below £45k.',
-      thread: [{ r: 'me', t: 'Run this loop and apply for 10 jobs per day in Manchester in product design. Tailor each cover letter to the role and skip anything below £45k.' }, { r: 'op', t: 'Got it. I’ll search Google Jobs, Indeed and LinkedIn each morning, shortlist roles in Manchester in product design at £45k+, tailor a cover letter for each and apply until I hit 10 for the day. I’ll ask you before answering anything personal.' }, { r: 'log', t: 'Run 5/10 · Applied: Senior UX Designer at Kestrel Labs (LinkedIn) · cover letter tailored' }, { r: 'log', t: 'Run 6/10 · Applied: Product Designer (Health) at Lumen Care (Indeed) · portfolio link attached' }] },
-    { id: 'w2', name: 'Inbox triage', task: 'Sort recruiter and interview emails', op: 'ChatGPT', apps: ['Gmail', 'Google Calendar'], target: 24, runs: 15, total: 412, status: 'ask', last: '10:05', kind: 'inbox', filters: [],
-      ins: 'Every hour, sort new email. Draft replies to recruiters, flag interview invites and add them to my calendar once I confirm.',
-      thread: [{ r: 'me', t: 'Every hour, sort new email. Draft replies to recruiters, flag interview invites and add them to my calendar once I confirm.' }, { r: 'op', t: 'Understood. I’ll check hourly, label recruiter mail, draft replies for your review and hold calendar changes until you confirm.' }, { r: 'log', t: 'Run 15/24 · 9 emails sorted · 2 recruiter replies drafted' }, { r: 'ask', t: 'Interview invite from Brightlane Studio for Thursday 14:00. Add it to your calendar and accept?', acts: ['Accept and add', 'Suggest another time'] }] },
-    { id: 'w3', name: 'Interview prep', task: 'One-page brief before each interview', op: 'Claude', apps: ['Google Calendar', 'Notion'], target: 3, runs: 1, total: 22, status: 'run', last: '08:30', kind: 'prep', filters: [],
-      ins: 'Before each interview in my calendar, research the company and write a one-page brief in Notion: what they make, recent news, likely questions.',
-      thread: [{ r: 'me', t: 'Before each interview in my calendar, research the company and write a one-page brief in Notion: what they make, recent news, likely questions.' }, { r: 'op', t: 'Will do. I’ll watch your calendar and write each brief the evening before.' }, { r: 'log', t: 'Run 1/3 · Brief written: Meridian Clinics (Notion → Interview prep)' }] },
-    { id: 'w4', name: 'Application follow-ups', task: 'Polite follow-up emails', op: 'ChatGPT', apps: ['Gmail', 'LinkedIn'], target: 5, runs: 2, total: 37, status: 'pause', last: 'Yesterday', kind: 'follow', filters: [],
-      ins: 'Send a short, polite follow-up 7 days after each application that hasn’t had a reply. Never send more than one follow-up per role.',
-      thread: [{ r: 'me', t: 'Send a short, polite follow-up 7 days after each application that hasn’t had a reply. Never send more than one follow-up per role.' }, { r: 'op', t: 'Okay. I’ll check daily and send at most one follow-up per role.' }, { r: 'log', t: 'Run 2/5 · Follow-up sent: Aster Digital (Gmail)' }, { r: 'op', t: 'Paused by you. Say “resume” when you want me to carry on.' }] }
-  ];
-}
+var today = function () { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); };
+try { localStorage.removeItem('agentops.v1'); } catch (e) { } // old sample data from the concept version
 var W;
 try { W = JSON.parse(localStorage.getItem(KEY)); } catch (e) { W = null; }
-if (!Array.isArray(W) || !W.length) W = seed();
+if (!Array.isArray(W)) W = [];
+W.forEach(function (w) { if (w.day !== today()) { w.runs = 0; w.day = today(); } });
 function save() { try { localStorage.setItem(KEY, JSON.stringify(W)); } catch (e) { } }
 var openId = null;
 // ---------- connections: your own API keys, kept in this browser only ----------
@@ -253,24 +261,25 @@ var CHAT_HOSTS = /^https:\/\/(claude\.ai|chatgpt\.com|chat\.openai\.com)\//i;
 var opBadge = function (op) { var o = OPS[op] || { c: '#555', k: op[0] }; return '<span class="op"><i style="background:' + o.c + '" aria-hidden="true">' + esc(o.k) + '</i>' + esc(op) + '</span>'; };
 var stBadge = function (s) { return s === 'run' ? '<span class="st run"><i></i>Running</span>' : s === 'ask' ? '<span class="st ask"><i></i>Needs your OK</span>' : '<span class="st pause"><i></i>Paused</span>'; };
 var appChips = function (a) { return '<div class="apps">' + a.map(function (x) { return '<span class="app">' + esc(x) + '</span>'; }).join('') + '</div>'; };
-var runsCell = function (w) { var p = Math.min(100, Math.round(100 * w.runs / w.target)); return '<div class="runs"><b>' + w.runs + '</b> ' + (w.runs >= w.target ? 'today &middot; target met' : '/ ' + w.target + ' today') + '<div class="bar" aria-hidden="true"><i style="width:' + p + '%"></i></div><small>' + w.total.toLocaleString('en-GB') + ' total &middot; last ' + esc(w.last) + '</small></div>'; };
+var runsCell = function (w) { if (w.day !== today()) { w.runs = 0; w.day = today(); }
+   var p = Math.min(100, Math.round(100 * w.runs / w.target)); return '<div class="runs"><b>' + w.runs + '</b> ' + (w.runs >= w.target ? 'today &middot; target met' : '/ ' + w.target + ' today') + '<div class="bar" aria-hidden="true"><i style="width:' + p + '%"></i></div><small>' + w.total.toLocaleString('en-GB') + ' total &middot; last ' + esc(w.last) + '</small></div>'; };
 function render() {
   $('#rows').innerHTML = W.map(function (w) {
     return '<tr data-id="' + w.id + '"' + (w.id === openId ? ' class="sel"' : '') + ' tabindex="0" aria-label="Open the ' + esc(w.name) + ' conversation"><td class="wf"><b>' + esc(w.name) + (isLive(w) ? '<span class="live">LIVE</span>' : '') + '</b><small>' + esc(w.task) + '</small></td><td>' + opBadge(w.op) + '</td><td>' + appChips(w.apps) + '</td><td>' + runsCell(w) + '</td><td><div class="ins">' + esc(w.ins) + '</div></td><td>' + stBadge(w.status) + '</td><td><span class="open">Open &rarr;</span></td></tr>';
-  }).join('');
+  }).join('') || '<tr><td colspan="7"><div class="empty"><b>No workflows yet</b>Click &ldquo;+ New workflow&rdquo; to add your first one. It&rsquo;s saved only in this browser.</div></td></tr>';
   $('#cards').innerHTML = W.map(function (w) {
     return '<button class="card" type="button" data-id="' + w.id + '"><div class="row"><span class="wf"><b>' + esc(w.name) + (isLive(w) ? '<span class="live">LIVE</span>' : '') + '</b><small>' + esc(w.task) + '</small></span>' + stBadge(w.status) + '</div><div class="row">' + opBadge(w.op) + runsCell(w) + '</div>' + appChips(w.apps) + '<div class="ins">' + esc(w.ins) + '</div><span class="open">Open conversation &rarr;</span></button>';
-  }).join('');
+  }).join('') || '<div class="empty"><b>No workflows yet</b>Tap &ldquo;+ New workflow&rdquo; to add your first one. It&rsquo;s saved only in this browser.</div>';
   document.querySelectorAll('[data-id]').forEach(function (el) {
     el.onclick = function () { openWf(el.dataset.id); };
     el.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openWf(el.dataset.id); } };
   });
   $('#kActive').textContent = W.filter(function (w) { return w.status !== 'pause'; }).length;
   $('#kRuns').textContent = W.reduce(function (s, w) { return s + w.runs; }, 0);
-  $('#kAsk').textContent = W.filter(function (w) { return w.status === 'ask'; }).length;
+  $('#kAsk').textContent = W.reduce(function (s, w) { return s + w.total; }, 0);
   $('#kPaused').textContent = W.filter(function (w) { return w.status === 'pause'; }).length;
   var live = Object.keys(CONN).filter(function (k) { return CONN[k] && CONN[k].key; });
-  $('#modeBadge').textContent = live.length ? 'Live: ' + live.map(function (k) { return k === 'anthropic' ? 'Claude' : 'ChatGPT'; }).join(' + ') : 'Concept · simulated data';
+  $('#modeBadge').textContent = live.length ? 'Live: ' + live.map(function (k) { return k === 'anthropic' ? 'Claude' : 'ChatGPT'; }).join(' + ') + ' · private' : 'Private to this browser';
   if (openId) renderDrawer();
 }
 function find(id) { return W.filter(function (w) { return w.id === id; })[0]; }
@@ -287,44 +296,48 @@ function renderDrawer(scroll) {
   $('#dTitle').textContent = w.name + ' · ' + w.op;
   $('#dSub').textContent = w.apps.join(', ');
   $('#dPause').textContent = w.status === 'pause' ? 'Resume loop' : 'Pause loop';
-  $('#dProg').textContent = w.runs + ' runs today · target ' + w.target;
+  $('#dProg').textContent = w.runs + (w.runs === 1 ? ' run' : ' runs') + ' today · target ' + w.target;
   var live = isLive(w), name = w.op;
-  $('#linkbar').innerHTML = '<span class="mode' + (live ? ' on' : '') + '">' + (live ? 'Live · ' + esc(CONN[provOf(w)].model || '') : 'Demo') + '</span>' +
+  $('#linkbar').innerHTML = '<span class="mode' + (live ? ' on' : '') + '">' + (live ? 'Live · ' + esc(CONN[provOf(w)].model || '') : 'Not connected') + '</span>' +
     (w.link ? '<a href="' + esc(w.link) + '" target="_blank" rel="noopener">Open linked chat in ' + (/claude\.ai/i.test(w.link) ? 'Claude' : 'ChatGPT') + ' &#8599;</a><button class="btn sm" type="button" id="dLink">Change link</button>'
-            : '<button class="btn sm" type="button" id="dLink">Link a Claude or ChatGPT chat</button>') +
-    (!live && provOf(w) ? '<button class="btn sm" type="button" id="dGoLive">Go live with ' + esc(name) + '</button>' : '');
+            : '<button class="btn sm" type="button" id="dLink">Link a Claude or ChatGPT page</button>') +
+    (!live && provOf(w) ? '<button class="btn sm pri" type="button" id="dGoLive">Connect ' + esc(name) + '</button>' : '');
   $('#dLink').onclick = function () { linkChat(w); };
   if ($('#dGoLive')) $('#dGoLive').onclick = openConn;
-  $('#dLog').hidden = !live;
   $('#hint').innerHTML = live ? 'Live: messages go to ' + esc(name) + ' with this workflow&rsquo;s instruction and runs. It can change the target, filters or pause the loop. Use &ldquo;Log a run&rdquo; to record work that&rsquo;s been done.'
-    : 'Demo replies. Try &ldquo;only remote roles&rdquo;, &ldquo;change to 5 per day&rdquo;, &ldquo;pause&rdquo; or &ldquo;resume&rdquo;' + (provOf(w) ? ', or connect your ' + esc(name) + ' API key to talk to the real model.' : '.');
+    : 'Not connected yet. Click &ldquo;Connect ' + esc(name) + '&rdquo; and add your API key to start the conversation.';
   var th = $('#thread'), atBottom = th.scrollHeight - th.scrollTop - th.clientHeight < 60;
   th.innerHTML = w.thread.map(function (m, i) {
     var who = m.r === 'me' ? 'You' : m.r === 'log' ? 'Run log · ' + (m.time || w.last) : w.op;
-    var acts = m.acts && !m.done ? '<div class="acts">' + m.acts.map(function (a, k) { return '<button class="btn sm' + (k === 0 ? ' pri' : '') + '" type="button" data-ask="' + i + '" data-k="' + k + '">' + esc(a) + '</button>'; }).join('') + '</div>' : '';
+    var acts = '';
     if (m.r === 'err') who = 'Connection';
     return '<div class="msg ' + (m.r === 'op' ? 'ai' : m.r) + '"><div class="who">' + esc(who) + '</div><div class="bub">' + esc(m.t) + acts + '</div></div>';
   }).join('');
-  th.querySelectorAll('[data-ask]').forEach(function (b) { b.onclick = function () { answerAsk(w, +b.dataset.ask, +b.dataset.k); }; });
   if (scroll || atBottom) th.scrollTop = th.scrollHeight;
 }
 function post(w, r, t, extra) { var m = { r: r, t: t, time: now() }; if (extra) for (var k in extra) m[k] = extra[k]; w.thread.push(m); if (w.thread.length > 80) w.thread.splice(2, w.thread.length - 80); save(); }
-function answerAsk(w, i, k) {
-  var m = w.thread[i]; m.done = true; post(w, 'me', m.acts[k]);
-  setTimeout(function () { post(w, 'op', k === 0 ? 'Done. Accepted and added to your calendar. Carrying on with the loop.' : 'No problem. I’ve replied asking for another slot and will flag their answer.'); w.status = 'run'; render(); renderDrawer(true); }, reduce ? 0 : 600);
-  render(); renderDrawer(true);
-}
 $('#dClose').onclick = closeWf; $('#scrim').onclick = closeWf;
-addEventListener('keydown', function (e) { if (e.key === 'Escape' && openId && !$('#dlg').open) closeWf(); });
-$('#dPause').onclick = function () { var w = find(openId); if (!w) return; if (w.status === 'pause') { w.status = 'run'; post(w, 'op', 'Resumed. Picking up from run ' + (w.runs + 1) + '.'); } else { w.status = 'pause'; post(w, 'op', 'Paused. I’ll finish nothing else until you resume.'); } render(); renderDrawer(true); };
-$('#dInterrupt').onclick = function () { var w = find(openId); if (!w) return; w.status = 'pause'; post(w, 'log', 'Run ' + (w.runs + 1) + '/' + w.target + ' · interrupted by you before submitting'); post(w, 'op', 'Stopped mid-run, nothing was sent. Tell me what to change, or say “resume”.'); render(); renderDrawer(true); };
-$('#dEdit').onclick = function () { var w = find(openId); if (!w) return; $('#msgIn').value = 'New instruction: ' + w.ins; $('#msgIn').focus(); };
-// ---------- talking to the operator (scripted replies for the demo) ----------
+addEventListener('keydown', function (e) { if (e.key === 'Escape' && openId && !document.querySelector('dialog[open]')) closeWf(); });
+$('#dPause').onclick = function () { var w = find(openId); if (!w) return; if (w.status === 'pause') { w.status = 'run'; post(w, 'log', 'Resumed by you'); } else { w.status = 'pause'; post(w, 'log', 'Paused by you. Hold all work until resumed.'); } render(); renderDrawer(true); };
+$('#dEdit').onclick = function () {
+  var w = find(openId); if (!w) return;
+  mini('Edit instruction', 'The new instruction replaces the old one. ' + w.op + ' sees the change in the conversation.', 'Instruction', w.ins, function (v) {
+    if (!v) { toast('Write an instruction'); return false; }
+    if (v !== w.ins) { w.ins = v; post(w, 'log', 'Instruction changed by you: ' + v); }
+    render(); renderDrawer(true);
+  });
+};
+$('#dDel').onclick = function () {
+  var w = find(openId); if (!w) return;
+  if (!confirm('Delete “' + w.name + '” and its conversation from this browser?')) return;
+  W = W.filter(function (x) { return x.id !== w.id; }); save(); closeWf(); toast('Workflow deleted');
+};
+// ---------- talking to the operator ----------
 $('#compose').onsubmit = function (e) {
   e.preventDefault(); var w = find(openId), t = $('#msgIn').value.trim(); if (!w || !t) return;
   $('#msgIn').value = ''; post(w, 'me', t); render(); renderDrawer(true);
   if (isLive(w)) { askModel(w); return; }
-  setTimeout(function () { post(w, 'op', reply(w, t)); render(); renderDrawer(true); }, reduce ? 0 : 700);
+  post(w, 'err', 'Not connected. Add your ' + (w.op === 'Claude' ? 'Anthropic' : 'OpenAI') + ' API key in Connect, then send again.'); render(); renderDrawer(true);
 };
 // ---------- live: send the conversation to Claude or ChatGPT ----------
 function systemFor(w) {
@@ -332,6 +345,7 @@ function systemFor(w) {
     'Workflow: ' + w.name + '\nTask: ' + w.task + '\nApps connected: ' + w.apps.join(', ') + '\nInstruction: ' + w.ins +
     '\nRuns today: ' + w.runs + ' (daily target ' + w.target + '). Status: ' + (w.status === 'pause' ? 'paused' : 'running') + '.' +
     (w.filters.length ? '\nFilters agreed so far: ' + w.filters.join('; ') : '') +
+    (w.ctx ? '\n\nProject context from the user (their brief, treat as background):\n' + w.ctx : '') +
     '\n\nThe user steers the loop through you here. Reply briefly and practically, as the operator of this loop: confirm changes, ask when something is unclear, and say plainly what you need from them. ' +
     'You cannot sign in to or act in the connected apps from this dashboard; do not claim you have applied, sent or posted anything. Work that has been done is recorded by the user as run logs.\n' +
     'When the user changes the plan, end your reply with control tags on their own line so the dashboard updates: [[target:N]] for a new daily target, [[pause]] or [[resume]], [[filter:short text]] for a new rule, [[instruction:full new instruction]] when they replace the instruction. Use tags only for changes the user asked for.';
@@ -399,70 +413,54 @@ $('#dLog').onclick = function () {
     w.runs++; w.total++; w.last = now(); post(w, 'log', 'Run ' + w.runs + '/' + w.target + ' · ' + v); render(); renderDrawer(true);
   });
 };
-function openConn() {
+var connBack = false;
+function openConn(back) {
+  connBack = back === true;
   $('#cKeyA').value = (CONN.anthropic && CONN.anthropic.key) || ''; $('#cModelA').value = (CONN.anthropic && CONN.anthropic.model) || 'claude-sonnet-5-5';
   $('#cKeyO').value = (CONN.openai && CONN.openai.key) || ''; $('#cModelO').value = (CONN.openai && CONN.openai.model) || 'gpt-4o';
   $('#conn').showModal();
 }
 $('#connBtn').onclick = openConn;
-$('#cCancel').onclick = function () { $('#conn').close(); };
+function connDone() { $('#conn').close(); if (connBack) { connBack = false; connLine(); $('#dlg').showModal(); } }
+$('#cCancel').onclick = connDone;
 $('#cClear').onclick = function () { CONN = {}; saveConn(); $('#conn').close(); render(); toast('Keys cleared from this browser'); };
 $('#connForm').onsubmit = function (e) {
   e.preventDefault();
   var a = $('#cKeyA').value.trim(), o = $('#cKeyO').value.trim();
   CONN.anthropic = a ? { key: a, model: $('#cModelA').value } : null; CONN.openai = o ? { key: o, model: $('#cModelO').value.trim() || 'gpt-4o' } : null;
-  saveConn(); $('#conn').close(); render(); toast(a || o ? 'Connected. Those workflows are now live' : 'No keys saved');
+  saveConn(); render(); connDone(); toast(a || o ? 'Connected. Saved in this browser only' : 'No keys saved');
+  var w = openId && find(openId), last = w && w.thread[w.thread.length - 1];
+  if (w && isLive(w) && last && last.r === 'err') { w.thread.pop(); askModel(w); } // start the waiting conversation
 };
 $('#msgIn').addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#compose').requestSubmit(); } });
-function reply(w, t) {
-  var s = t.toLowerCase(), n = s.match(/(\d+)\s*(per|a|each)?\s*(day|daily)?/);
-  if (/^new instruction:/i.test(t)) { w.ins = t.replace(/^new instruction:\s*/i, ''); var m = w.ins.match(/(\d+)\s+(jobs|emails|runs|briefs)/i); if (m) w.target = Math.max(1, Math.min(200, +m[1])); return 'Instruction updated. From the next run I’ll follow: “' + w.ins + '”'; }
-  if (/\b(pause|stop|hold)\b/.test(s)) { w.status = 'pause'; return 'Paused. Nothing more will run until you say “resume”.'; }
-  if (/\b(resume|continue|carry on|start)\b/.test(s)) { w.status = 'run'; return 'Resuming now, from run ' + (w.runs + 1) + ' of ' + w.target + '.'; }
-  if (n && /(day|daily|per|a day|each day)/.test(s)) { w.target = Math.max(1, Math.min(200, +n[1])); w.ins = w.ins.replace(/\d+ (jobs|emails|runs|briefs) per day/i, w.target + ' $1 per day'); return 'Updated: ' + w.target + ' runs per day. ' + (w.runs >= w.target ? 'That’s already reached for today, so I’ll stop here.' : 'I’ll keep going until I reach it.'); }
-  if (/remote/.test(s)) { w.filters.push('remote only'); return 'Noted: remote roles only from the next run. I’ll skip anything office-based or hybrid.'; }
-  if (/skip|exclude|avoid|no /.test(s)) { w.filters.push(t); return 'Okay, I’ll exclude that from now on. I’ll mention it in the log whenever I skip something because of it.'; }
-  if (/\b(only|in)\b.+/.test(s) && /london|leeds|manchester|bristol|glasgow|birmingham|edinburgh|liverpool|remote/.test(s)) { w.filters.push(t); return 'Got it, I’ll narrow the search to that from the next run.'; }
-  if (/how|status|progress|update/.test(s)) return 'So far today: ' + w.runs + ' runs (target ' + w.target + '), ' + w.total.toLocaleString('en-GB') + ' in total. ' + (w.status === 'pause' ? 'I’m paused at the moment.' : 'I’m running and will post each run here.');
-  return 'Understood. I’ll apply that from the next run and check with you first if anything is unclear.';
-}
-// ---------- simulated loop ----------
-function tick() {
-  var w = W.filter(function (x) { return x.status === 'run' && x.runs < x.target && !isLive(x); });
-  if (!w.length) return;
-  w = w[Math.floor(Math.random() * w.length)];
-  w.runs++; w.total++; w.last = now();
-  var co = COS[Math.floor(Math.random() * COS.length)], app = w.apps[Math.floor(Math.random() * w.apps.length)], tag = 'Run ' + w.runs + '/' + w.target + ' · ';
-  var txt = w.kind === 'jobs' ? 'Applied: ' + ROLES[Math.floor(Math.random() * ROLES.length)] + ' at ' + co + ' (' + app + ') · cover letter tailored' + (w.filters.length ? ' · ' + w.filters[w.filters.length - 1].slice(0, 30) : '')
-    : w.kind === 'inbox' ? (2 + Math.floor(Math.random() * 7)) + ' emails sorted · ' + Math.floor(Math.random() * 3) + ' replies drafted'
-    : w.kind === 'prep' ? 'Brief written: ' + co + ' (Notion → Interview prep)'
-    : w.kind === 'follow' ? 'Follow-up sent: ' + co + ' (' + app + ')'
-    : 'Completed step for “' + w.task + '” via ' + app;
-  post(w, 'log', tag + txt);
-  if (w.kind === 'jobs' && Math.random() < .12) { w.status = 'ask'; post(w, 'ask', co + ' asks for your salary expectation and notice period. Use the answers from your profile (£55k, 1 month)?', { acts: ['Yes, use those', 'Ask me each time'] }); }
-  if (w.runs >= w.target) post(w, 'op', 'Daily target reached (' + w.target + '). I’ll start again tomorrow morning.');
-  render();
-}
-if (!reduce) setInterval(tick, 3500);
 // ---------- new workflow ----------
 Object.keys(OPS).forEach(function (o) { var op = document.createElement('option'); op.textContent = o; $('#nOp').appendChild(op); });
-$('#nApps').innerHTML = APPS.map(function (a, i) { return '<label><input type="checkbox" value="' + esc(a) + '"' + (i < 3 ? ' checked' : '') + '>' + esc(a) + '</label>'; }).join('');
-$('#newBtn').onclick = function () { $('#dlg').showModal(); $('#nTask').focus(); };
+$('#nApps').innerHTML = APPS.map(function (a) { return '<label><input type="checkbox" value="' + esc(a) + '">' + esc(a) + '</label>'; }).join('');
+function connLine() {
+  var op = $('#nOp').value, p = PROV[op], ok = CONN[p] && CONN[p].key;
+  $('#connLine').innerHTML = ok ? '<span>' + esc(op) + ': <b>connected</b> (' + esc(CONN[p].model) + ')</span>' : '<span>' + esc(op) + ': <b>not connected</b></span><button class="btn sm" type="button" id="connNow">Connect ' + esc(op) + '</button>';
+  if ($('#connNow')) $('#connNow').onclick = function () { $('#dlg').close(); openConn(true); };
+}
+$('#nOp').onchange = connLine;
+$('#newBtn').onclick = function () { connLine(); $('#howTo').open = !Object.keys(CONN).some(function (k) { return CONN[k] && CONN[k].key; }); $('#dlg').showModal(); $('#nTask').focus(); };
 $('#nCancel').onclick = function () { $('#dlg').close(); };
 $('#newForm').onsubmit = function (e) {
   e.preventDefault();
   var apps = [].slice.call(document.querySelectorAll('#nApps input:checked')).map(function (x) { return x.value; });
-  if (!apps.length) { toast('Connect at least one app'); return; }
   var task = $('#nTask').value.trim(), ins = $('#nIns').value.trim(), op = $('#nOp').value, target = Math.max(1, Math.min(200, +$('#nRuns').value || 10));
-  var kind = /job|appl/i.test(task + ins) ? 'jobs' : /inbox|email/i.test(task) ? 'inbox' : 'other';
-  var w = { id: 'w' + Date.now(), name: task.split(' ').slice(0, 3).join(' '), task: task, op: op, apps: apps, target: target, runs: 0, total: 0, status: 'run', last: 'Just now', kind: kind, filters: [], ins: ins, thread: [{ r: 'me', t: ins }, { r: 'op', t: 'Starting now. I’ll use ' + apps.join(', ') + ', aim for ' + target + ' runs a day and post each run here. Message me any time to change the plan.' }] };
-  W.unshift(w); save(); $('#dlg').close(); $('#newForm').reset(); render(); openWf(w.id); toast('Workflow started');
+  var link = $('#nLink').value.trim(), ctx = $('#nCtx').value.trim();
+  if (link && !CHAT_HOSTS.test(link)) { toast('Use a claude.ai or chatgpt.com link'); $('#nLink').focus(); return; }
+  var w = { id: 'w' + Date.now(), name: task.split(' ').slice(0, 4).join(' '), task: task, op: op, apps: apps, target: target, runs: 0, total: 0, day: today(), status: 'run', last: '–', filters: [], ins: ins, ctx: ctx, thread: [{ r: 'me', t: ins, time: now() }] };
+  if (link) w.link = link;
+  W.unshift(w); save(); $('#dlg').close(); $('#newForm').reset(); render(); openWf(w.id);
+  if (isLive(w)) askModel(w); else { post(w, 'err', 'Saved. Add your ' + (op === 'Claude' ? 'Anthropic' : 'OpenAI') + ' API key in Connect to start this conversation.'); renderDrawer(true); }
 };
 function toast(t) { var el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(function () { el.classList.remove('on'); }, 2000); }
 render();
 // open a workflow from the URL, e.g. agent-dashboard.html#w1
 if (location.hash && find(location.hash.slice(1))) openWf(location.hash.slice(1));
-window.__agentops = { openWf: openWf, tick: tick, conn: function () { return CONN; } };
+$('#miniIn').addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#miniForm').requestSubmit(); } });
+window.__agentops = { openWf: openWf, conn: function () { return CONN; } };
 })();
 </script>
 </body>
