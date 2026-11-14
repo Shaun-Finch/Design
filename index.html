@@ -184,8 +184,18 @@ figure.piece.wide .piece-body h3{font-size:clamp(1.35rem,2.4vw,1.75rem);letter-s
 @media (max-width:56rem){figure.piece.wide{grid-template-columns:1fr}figure.piece.wide .frame{aspect-ratio:16/9;min-height:0}}
 .mapframe{background:#121316}
 .frame.blank{background:#000}
-.bookembed{margin-bottom:clamp(1.5rem,3vw,2rem);background:#0d0d12;border:1px solid rgba(255,255,255,.07);line-height:0}
-.bookembed iframe{display:block;width:100%;height:clamp(380px,46vw,580px);border:0;background:#0d0d12}
+/* Branding: a strip of campaign graphics. The arrows bring the next one to the centre, slightly larger. */
+.bstrip{--w:clamp(150px,19vw,236px);position:relative;margin-bottom:clamp(1.5rem,3vw,2rem)}
+.bs-view{position:relative;overflow:hidden;height:calc(var(--w)*1.251*1.16 + 28px)}
+.bs-track{list-style:none;margin:0;padding:0}
+.bstrip .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.bs-item{position:absolute;left:50%;top:50%;width:var(--w);margin-left:calc(var(--w)/-2);transform:translate(0,-50%);transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s;cursor:pointer;line-height:0;background:#fff}
+.bs-item img{display:block;width:100%;height:auto}
+.bs-item.on{z-index:2;cursor:default;box-shadow:0 18px 40px -18px rgba(16,16,24,.45)}
+.bs-arrow{position:absolute;top:50%;z-index:3;transform:translateY(-50%);width:2.9rem;height:2.9rem;display:grid;place-items:center;border:1px solid #D8D8E0;background:#fff;color:#2A2A2F;font-size:1.15rem;font-weight:600;cursor:pointer;border-radius:0;box-shadow:0 6px 18px -8px rgba(16,16,24,.35)}
+.bs-arrow:hover{background:#EAF2FF;border-color:#CFE0FB}
+.bs-prev{left:.5rem}.bs-next{right:.5rem}
+@media (prefers-reduced-motion:reduce){.bs-item{transition:none}}
 .mapsvg{position:absolute;inset:0;width:100%;height:100%;display:block}
 .mapsvg .riv{font:600 2.6px Figtree,system-ui,sans-serif;fill:#2f5b7a;letter-spacing:.3px}
 .mapsvg .north text{font:700 3px Figtree,system-ui,sans-serif;fill:#6b6c74}
@@ -522,7 +532,31 @@ figure.piece.motionfull .frame video{position:absolute;inset:0;width:100%;height
         <h2>Branding</h2>
         <p>The Dailies brand book, an interactive flip-through built in code, plus campaign identity for international golf and full brand systems: type, colour, iconography, product and web.</p>
       </div>
-      <div class="bookembed"><iframe id="hibanaBook" src="dailies-brand.html?embed" title="The Dailies brand book, an interactive book. Hover across it, or use the arrows, to turn the pages." loading="lazy"></iframe></div><script>(function(){var f=document.getElementById("hibanaBook");if(!f)return;var st={on:false,play:false};function send(){try{f.contentWindow.postMessage({hibanaView:st},"*")}catch(e){}}window.addEventListener("message",function(e){if(e.source!==f.contentWindow||!e.data)return;if(e.data.hibanaHeight){f.style.height=e.data.hibanaHeight+"px"}if(e.data.hibanaReady)send()});f.addEventListener("load",send);if("IntersectionObserver" in window){new IntersectionObserver(function(en){en.forEach(function(x){var r=x.intersectionRect.height,vh=window.innerHeight||1;st={on:x.isIntersecting,play:st.play||(x.isIntersecting&&(x.intersectionRatio>=.45||r>=vh*.45))};send()})},{threshold:[0,.15,.3,.45,.6,.8,1]}).observe(f)}else{st={on:true,play:true};send()}})();</script>
+      <div class="bstrip" id="bstrip" role="region" aria-roledescription="carousel" aria-label="International Series campaign graphics">
+        <button class="bs-arrow bs-prev" type="button" aria-label="Previous image">&larr;</button>
+        <div class="bs-view">
+          <ul class="bs-track">
+            <li class="bs-item"><img src="branding/is-01.jpg" width="1080" height="1351" loading="lazy" decoding="async" alt="One day to go countdown graphic for International Series Singapore, featuring Nitithorn Thippong"></li>
+            <li class="bs-item"><img src="branding/is-02.jpg" width="1080" height="1351" loading="lazy" decoding="async" alt="Third round leaderboard graphic for International Series Singapore, led by David Puig at twenty under"></li>
+            <li class="bs-item"><img src="branding/is-03.jpg" width="1080" height="1347" loading="lazy" decoding="async" alt="BNI Indonesian Masters announcement featuring Patrick Reed, Sarit Suwannarut, Anirban Lahiri and Naraajie Ramadhanputra"></li>
+            <li class="bs-item"><img src="branding/is-04.jpg" width="1080" height="1347" loading="lazy" decoding="async" alt="BNI Indonesian Masters champion graphic for Gaganjeet Bhullar"></li>
+            <li class="bs-item"><img src="branding/is-05.jpg" width="1080" height="1349" loading="lazy" decoding="async" alt="International Series Macau announcement, presented by Wynn"></li>
+            <li class="bs-item"><img src="branding/is-06.jpg" width="1080" height="1350" loading="lazy" decoding="async" alt="Order of Merit champion graphic for Andy Ogletree, three-time International Series champion"></li>
+            <li class="bs-item"><img src="branding/is-07.jpg" width="1080" height="1350" loading="lazy" decoding="async" alt="LIV Golf Promotions projected position graphic for Gaganjeet Bhullar"></li>
+            <li class="bs-item"><img src="branding/is-08.jpg" width="1080" height="1351" loading="lazy" decoding="async" alt="Congratulations graphic for Scott Vincent re-signing for Iron Heads GC"></li>
+          </ul>
+        </div>
+        <button class="bs-arrow bs-next" type="button" aria-label="Next image">&rarr;</button>
+        <p class="sr" id="bsStatus" aria-live="polite"></p>
+      </div>
+      <script>(function(){var root=document.getElementById("bstrip");if(!root)return;var items=[].slice.call(root.querySelectorAll(".bs-item")),n=items.length,cur=3,off=[],status=document.getElementById("bsStatus");
+function place(first){var w=items[0].offsetWidth,step=w*1.09;items.forEach(function(el,k){var o=((k-cur)%n+n)%n;if(o>n/2-1)o-=n;var jump=first||Math.abs(o-(off[k]===undefined?o:off[k]))>1.5;off[k]=o;el.style.transition=jump?"none":"";el.style.transform="translate("+(o*step)+"px,-50%) scale("+(o===0?1.16:1)+")";el.classList.toggle("on",o===0);el.setAttribute("aria-hidden",Math.abs(o)>3?"true":"false")})}
+function go(d,say){cur=((cur+d)%n+n)%n;place(false);if(say)status.textContent="Image "+(cur+1)+" of "+n+": "+items[cur].querySelector("img").alt}
+root.querySelector(".bs-prev").addEventListener("click",function(){go(-1,true)});root.querySelector(".bs-next").addEventListener("click",function(){go(1,true)});
+items.forEach(function(el,k){el.addEventListener("click",function(){if(off[k])go(off[k],true)})});
+root.addEventListener("keydown",function(e){if(e.key==="ArrowLeft"){e.preventDefault();go(-1,true)}else if(e.key==="ArrowRight"){e.preventDefault();go(1,true)}});
+var x0=null;root.addEventListener("touchstart",function(e){x0=e.touches[0].clientX},{passive:true});root.addEventListener("touchend",function(e){if(x0===null)return;var d=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(d)>40)go(d<0?1:-1,true)},{passive:true});
+place(true);addEventListener("resize",function(){place(true)})})();</script>
       <div class="piece-body brandbody">
         <h3><a class="plainlink" href="branding.html">Dailies brand book and brand systems</a></h3>
         <dl class="spec">
