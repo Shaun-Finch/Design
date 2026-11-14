@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Ops — AI workflow dashboard</title>
+<meta name="description" content="A concept dashboard for running and monitoring AI agent workflows: operator, task, connected apps, runs and instruction, with each workflow's conversation one click away. Designed and built by Shaun Finch.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shaun Finch">
+<meta property="og:title" content="Agent Ops — AI workflow dashboard">
+<meta property="og:description" content="Set up, monitor and steer AI agent loops: operator, task, apps, runs and instruction, with the conversation one click away.">
+<meta property="og:url" content="https://shaun-finch.github.io/Design/agent-dashboard.html">
+<meta property="og:image" content="https://shaun-finch.github.io/Design/work/agent-dashboard.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#F6F7F9;--panel:#FFFFFF;--ink:#14151A;--body:#3D3F47;--mute:#5F6270;--line:#E5E6EB;--line2:#D6D8DF;--blue:#3B5BFF;--violet:#7A5CFF;--ok:#0B6B3C;--okbg:#E5F6EC;--warn:#9A5B05;--warnbg:#FFF3DF;--stop:#50535C;--stopbg:#EFF0F3;--mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;--grad:linear-gradient(120deg,#FFFFFF 0%,#E6ECFF 48%,#EDE3FF 100%)}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .in{max-width:1320px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.08rem;letter-spacing:-.02em;text-decoration:none;color:inherit}
+.logo i{width:26px;height:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.logo i b{background:var(--blue)}.logo i b:nth-child(2n){background:#B8C4FF}.logo i b:nth-child(5){background:var(--violet)}
+.badge{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);border:1px solid var(--line2);padding:3px 8px;white-space:nowrap}
+.top .sp{flex:1}
+.top a.back{font-size:.88rem;color:var(--mute);text-decoration:none;white-space:nowrap}
+.top a.back:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);background:#fff;padding:9px 14px;font-weight:600;font-size:.9rem;border-radius:0;white-space:nowrap}
+.btn:hover{border-color:#B9BCC8}
+.btn.pri{background:var(--grad);border-color:#CFD3EE;color:#111114}
+.btn.pri:hover{border-color:#AEB5E3}
+.btn.sm{padding:6px 10px;font-size:.82rem}
+main{max-width:1320px;margin:0 auto;padding:22px 16px 60px}
+h1{font-size:clamp(1.5rem,3vw,2rem);letter-spacing:-.03em;margin:0;line-height:1.15}
+.sub{color:var(--mute);margin:.35rem 0 0;font-size:.95rem;max-width:70ch}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+/* kpis */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:var(--panel);border:1px solid var(--line);padding:14px 16px}
+.kpi small{display:block;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.kpi b{display:block;font-size:1.7rem;letter-spacing:-.03em;margin-top:4px;font-variant-numeric:tabular-nums}
+@media (max-width:760px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* table */
+.tablewrap{background:var(--panel);border:1px solid var(--line);overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:980px}
+th{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);font-weight:500;text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);background:#FAFAFB;white-space:nowrap}
+td{padding:14px;border-bottom:1px solid var(--line);vertical-align:top;font-size:.9rem}
+tbody tr{cursor:pointer;transition:background .15s}
+tbody tr:hover{background:#F7F8FF}
+tbody tr.sel{background:#F1F3FF;box-shadow:inset 3px 0 0 var(--blue)}
+tbody tr:last-child td{border-bottom:0}
+.wf b{display:block;font-weight:700}
+.wf small{color:var(--mute)}
+.op{display:inline-flex;align-items:center;gap:8px;font-weight:600;white-space:nowrap}
+.op i{width:22px;height:22px;display:grid;place-items:center;color:#fff;font-style:normal;font-size:.7rem;font-weight:800}
+.apps{display:flex;flex-wrap:wrap;gap:5px;max-width:240px}
+.app{font-size:.75rem;font-weight:600;padding:3px 8px;background:#F1F2F5;border:1px solid var(--line);white-space:nowrap}
+.runs{font-variant-numeric:tabular-nums;white-space:nowrap}
+.runs b{font-size:1.05rem}
+.bar{height:4px;background:#ECEDF1;margin-top:6px;width:110px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#7F96FF,var(--blue));transition:width .4s}
+.runs small{display:block;color:var(--mute);font-size:.76rem;margin-top:4px}
+.ins{color:var(--body);max-width:300px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;padding:4px 9px;white-space:nowrap}
+.st i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.st.run{color:var(--ok);background:var(--okbg)}.st.run i{animation:pulse 1.4s ease-in-out infinite}
+.st.ask{color:var(--warn);background:var(--warnbg)}
+.st.pause{color:var(--stop);background:var(--stopbg)}
+@keyframes pulse{50%{opacity:.25}}
+.open{font-size:.8rem;font-weight:700;color:var(--blue);white-space:nowrap}
+.note{font-size:.8rem;color:var(--mute);margin-top:12px}
+/* cards on small screens */
+.cards{display:none}
+@media (max-width:860px){
+  .tablewrap{display:none}
+  .cards{display:flex;flex-direction:column;gap:10px}
+  .card{background:var(--panel);border:1px solid var(--line);padding:14px;text-align:left;width:100%}
+  .card .row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+  .card .ins{max-width:none;margin:8px 0}
+  .card .apps{max-width:none}
+  .top .badge{display:none}
+}
+/* drawer: the workflow's conversation */
+.scrim{position:fixed;inset:0;background:rgba(20,21,26,.28);z-index:30;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100vw);background:#fff;z-index:31;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);box-shadow:-20px 0 60px rgba(20,21,26,.12)}
+.drawer.on{transform:none}
+.dh{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:12px}
+.dh .t{flex:1;min-width:0}
+.dh .t b{display:block;font-size:1.05rem;letter-spacing:-.01em}
+.dh .t small{color:var(--mute);font-size:.82rem}
+.x{border:0;background:#F1F2F5;width:34px;height:34px;font-size:1.1rem;flex:none}
+.ctl{display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--line);background:#FAFAFB;align-items:center}
+.ctl .prog{margin-left:auto;font-family:var(--mono);font-size:.76rem;color:var(--mute)}
+.thread{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:#fff}
+.msg{max-width:88%;font-size:.9rem;line-height:1.5}
+.msg .who{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin-bottom:4px}
+.msg .bub{padding:10px 12px;border:1px solid var(--line);background:#F7F8FA}
+.msg.me{align-self:flex-end}
+.msg.me .bub{background:#EEF1FF;border-color:#D7DDFF}
+.msg.me .who{text-align:right}
+.msg.log .bub{background:#fff;font-family:var(--mono);font-size:.78rem;color:var(--body);border-style:dashed}
+.msg.ask .bub{background:var(--warnbg);border-color:#F2D7A6}
+.msg .acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.compose{border-top:1px solid var(--line);padding:12px 16px;display:flex;gap:8px;background:#fff}
+.compose textarea{flex:1;resize:none;border:1px solid var(--line2);padding:10px 12px;min-height:44px;max-height:140px;border-radius:0}
+.compose textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,91,255,.12)}
+.hint{padding:0 16px 12px;font-size:.74rem;color:var(--mute);background:#fff}
+/* new workflow dialog */
+dialog{border:1px solid var(--line2);padding:0;width:min(560px,calc(100vw - 32px));border-radius:0;box-shadow:0 30px 80px rgba(20,21,26,.25)}
+dialog::backdrop{background:rgba(20,21,26,.35)}
+.dlg{padding:18px}
+.dlg h2{margin:0 0 4px;font-size:1.2rem;letter-spacing:-.02em}
+.dlg p{margin:0 0 14px;color:var(--mute);font-size:.88rem}
+.f{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;font-size:.86rem;font-weight:600}
+.f input,.f select,.f textarea{border:1px solid var(--line2);padding:9px 11px;font-weight:400;border-radius:0;background:#fff}
+.f textarea{min-height:76px;resize:vertical}
+.chk{display:flex;flex-wrap:wrap;gap:6px}
+.chk label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line2);padding:5px 9px;font-weight:500;font-size:.82rem;cursor:pointer}
+.chk input{accent-color:var(--blue)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dlg .row{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(16px);opacity:0;background:#14151A;color:#fff;padding:9px 14px;font-size:.86rem;font-weight:600;transition:all .25s;pointer-events:none;z-index:50}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="logo" href="agent-dashboard.html"><i aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></i>Agent Ops</a>
+  <span class="badge">Concept &middot; simulated data</span>
+  <span class="sp"></span>
+  <a class="back" href="index.html">&larr; Portfolio</a>
+</div></header>
+
+<main>
+  <div class="head">
+    <div><h1>AI workflows</h1><p class="sub">Set up, watch and steer agent loops. Click any workflow to open its conversation and iterate on it, pause it or interrupt a run.</p></div>
+    <button class="btn pri" type="button" id="newBtn">+ New workflow</button>
+  </div>
+  <div class="kpis" aria-label="Summary">
+    <div class="kpi"><small>Active workflows</small><b id="kActive">0</b></div>
+    <div class="kpi"><small>Runs today</small><b id="kRuns">0</b></div>
+    <div class="kpi"><small>Needs your OK</small><b id="kAsk">0</b></div>
+    <div class="kpi"><small>Paused</small><b id="kPaused">0</b></div>
+  </div>
+  <div class="tablewrap"><table aria-label="Workflows">
+    <thead><tr><th>Workflow</th><th>AI operator</th><th>Apps connected</th><th>Runs</th><th>Instruction</th><th>Status</th><th></th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table></div>
+  <div class="cards" id="cards"></div>
+  <p class="note">A concept dashboard with simulated data. It isn&rsquo;t connected to any real accounts: nothing is sent, applied for or posted. Company names in the run logs are fictional.</p>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-labelledby="dTitle" aria-hidden="true" inert>
+  <div class="dh"><span class="op" id="dOp"></span><div class="t"><b id="dTitle"></b><small id="dSub"></small></div><button class="x" type="button" id="dClose" aria-label="Close conversation">&times;</button></div>
+  <div class="ctl"><button class="btn sm" type="button" id="dPause"></button><button class="btn sm" type="button" id="dInterrupt">Interrupt run</button><button class="btn sm" type="button" id="dEdit">Edit instruction</button><span class="prog" id="dProg"></span></div>
+  <div class="thread" id="thread" aria-live="polite" tabindex="0" aria-label="Conversation"></div>
+  <form class="compose" id="compose"><label class="sr" for="msgIn">Message</label><textarea id="msgIn" rows="1" placeholder="Message the operator…"></textarea><button class="btn pri" type="submit">Send</button></form>
+  <p class="hint">Try: &ldquo;only remote roles&rdquo;, &ldquo;change to 5 per day&rdquo;, &ldquo;pause&rdquo;, &ldquo;resume&rdquo; or &ldquo;skip agencies&rdquo;.</p>
+</aside>
+
+<dialog id="dlg"><form class="dlg" id="newForm" method="dialog">
+  <h2>New workflow</h2><p>Pick an operator, give it a task, connect apps and write the loop instruction.</p>
+  <div class="two">
+    <label class="f">AI operator<select id="nOp"></select></label>
+    <label class="f">Runs per day<input id="nRuns" type="number" min="1" max="200" value="10"></label>
+  </div>
+  <label class="f">Task<input id="nTask" maxlength="60" placeholder="e.g. Emails for job applications" required></label>
+  <div class="f"><span>Apps connected</span><div class="chk" id="nApps"></div></div>
+  <label class="f">Instruction<textarea id="nIns" maxlength="300" placeholder="e.g. Run this loop and apply for 10 jobs per day in Leeds in UX research" required></textarea></label>
+  <div class="row"><button class="btn" type="button" id="nCancel">Cancel</button><button class="btn pri" type="submit">Start workflow</button></div>
+</form></dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+'use strict';
+var $ = function (s) { return document.querySelector(s); };
+var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+var OPS = { 'Claude': { c: '#C96442', k: 'C' }, 'ChatGPT': { c: '#10A37F', k: 'G' }, 'Gemini': { c: '#4A6CF7', k: 'Ge' }, 'Grok': { c: '#2A2B30', k: 'X' } };
+var APPS = ['Google Jobs', 'Indeed', 'LinkedIn', 'Gmail', 'Google Calendar', 'Notion', 'Slack', 'Glassdoor'];
+var COS = ['Northwind Health', 'Brightlane Studio', 'Kestrel Labs', 'Harbour & Co', 'Aster Digital', 'Fernhill Systems', 'Lumen Care', 'Oakridge Media', 'Cobalt Works', 'Meridian Clinics', 'Wren Analytics', 'Tidewater Group'];
+var ROLES = ['Product Designer', 'Senior UX Designer', 'UI Designer', 'Product Designer (Health)', 'UX Researcher', 'Design Systems Designer', 'Motion & UI Designer'];
+var KEY = 'agentops.v1';
+var now = function () { return new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); };
+function seed() {
+  return [
+    { id: 'w1', name: 'Job applications', task: 'Emails for job applications', op: 'Claude', apps: ['Google Jobs', 'Indeed', 'LinkedIn'], target: 10, runs: 6, total: 148, status: 'run', last: '09:42', kind: 'jobs', filters: [],
+      ins: 'Run this loop and apply for 10 jobs per day in Manchester in product design. Tailor each cover letter to the role and skip anything below £45k.',
+      thread: [{ r: 'me', t: 'Run this loop and apply for 10 jobs per day in Manchester in product design. Tailor each cover letter to the role and skip anything below £45k.' }, { r: 'op', t: 'Got it. I’ll search Google Jobs, Indeed and LinkedIn each morning, shortlist roles in Manchester in product design at £45k+, tailor a cover letter for each and apply until I hit 10 for the day. I’ll ask you before answering anything personal.' }, { r: 'log', t: 'Run 5/10 · Applied: Senior UX Designer at Kestrel Labs (LinkedIn) · cover letter tailored' }, { r: 'log', t: 'Run 6/10 · Applied: Product Designer (Health) at Lumen Care (Indeed) · portfolio link attached' }] },
+    { id: 'w2', name: 'Inbox triage', task: 'Sort recruiter and interview emails', op: 'ChatGPT', apps: ['Gmail', 'Google Calendar'], target: 24, runs: 15, total: 412, status: 'ask', last: '10:05', kind: 'inbox', filters: [],
+      ins: 'Every hour, sort new email. Draft replies to recruiters, flag interview invites and add them to my calendar once I confirm.',
+      thread: [{ r: 'me', t: 'Every hour, sort new email. Draft replies to recruiters, flag interview invites and add them to my calendar once I confirm.' }, { r: 'op', t: 'Understood. I’ll check hourly, label recruiter mail, draft replies for your review and hold calendar changes until you confirm.' }, { r: 'log', t: 'Run 15/24 · 9 emails sorted · 2 recruiter replies drafted' }, { r: 'ask', t: 'Interview invite from Brightlane Studio for Thursday 14:00. Add it to your calendar and accept?', acts: ['Accept and add', 'Suggest another time'] }] },
+    { id: 'w3', name: 'Interview prep', task: 'One-page brief before each interview', op: 'Claude', apps: ['Google Calendar', 'Notion'], target: 3, runs: 1, total: 22, status: 'run', last: '08:30', kind: 'prep', filters: [],
+      ins: 'Before each interview in my calendar, research the company and write a one-page brief in Notion: what they make, recent news, likely questions.',
+      thread: [{ r: 'me', t: 'Before each interview in my calendar, research the company and write a one-page brief in Notion: what they make, recent news, likely questions.' }, { r: 'op', t: 'Will do. I’ll watch your calendar and write each brief the evening before.' }, { r: 'log', t: 'Run 1/3 · Brief written: Meridian Clinics (Notion → Interview prep)' }] },
+    { id: 'w4', name: 'Application follow-ups', task: 'Polite follow-up emails', op: 'ChatGPT', apps: ['Gmail', 'LinkedIn'], target: 5, runs: 2, total: 37, status: 'pause', last: 'Yesterday', kind: 'follow', filters: [],
+      ins: 'Send a short, polite follow-up 7 days after each application that hasn’t had a reply. Never send more than one follow-up per role.',
+      thread: [{ r: 'me', t: 'Send a short, polite follow-up 7 days after each application that hasn’t had a reply. Never send more than one follow-up per role.' }, { r: 'op', t: 'Okay. I’ll check daily and send at most one follow-up per role.' }, { r: 'log', t: 'Run 2/5 · Follow-up sent: Aster Digital (Gmail)' }, { r: 'op', t: 'Paused by you. Say “resume” when you want me to carry on.' }] }
+  ];
+}
+var W;
+try { W = JSON.parse(localStorage.getItem(KEY)); } catch (e) { W = null; }
+if (!Array.isArray(W) || !W.length) W = seed();
+function save() { try { localStorage.setItem(KEY, JSON.stringify(W)); } catch (e) { } }
+var openId = null;
+var opBadge = function (op) { var o = OPS[op] || { c: '#555', k: op[0] }; return '<span class="op"><i style="background:' + o.c + '" aria-hidden="true">' + esc(o.k) + '</i>' + esc(op) + '</span>'; };
+var stBadge = function (s) { return s === 'run' ? '<span class="st run"><i></i>Running</span>' : s === 'ask' ? '<span class="st ask"><i></i>Needs your OK</span>' : '<span class="st pause"><i></i>Paused</span>'; };
+var appChips = function (a) { return '<div class="apps">' + a.map(function (x) { return '<span class="app">' + esc(x) + '</span>'; }).join('') + '</div>'; };
+var runsCell = function (w) { var p = Math.min(100, Math.round(100 * w.runs / w.target)); return '<div class="runs"><b>' + w.runs + '</b> ' + (w.runs >= w.target ? 'today &middot; target met' : '/ ' + w.target + ' today') + '<div class="bar" aria-hidden="true"><i style="width:' + p + '%"></i></div><small>' + w.total.toLocaleString('en-GB') + ' total &middot; last ' + esc(w.last) + '</small></div>'; };
+function render() {
+  $('#rows').innerHTML = W.map(function (w) {
+    return '<tr data-id="' + w.id + '"' + (w.id === openId ? ' class="sel"' : '') + ' tabindex="0" aria-label="Open the ' + esc(w.name) + ' conversation"><td class="wf"><b>' + esc(w.name) + '</b><small>' + esc(w.task) + '</small></td><td>' + opBadge(w.op) + '</td><td>' + appChips(w.apps) + '</td><td>' + runsCell(w) + '</td><td><div class="ins">' + esc(w.ins) + '</div></td><td>' + stBadge(w.status) + '</td><td><span class="open">Open &rarr;</span></td></tr>';
+  }).join('');
+  $('#cards').innerHTML = W.map(function (w) {
+    return '<button class="card" type="button" data-id="' + w.id + '"><div class="row"><span class="wf"><b>' + esc(w.name) + '</b><small>' + esc(w.task) + '</small></span>' + stBadge(w.status) + '</div><div class="row">' + opBadge(w.op) + runsCell(w) + '</div>' + appChips(w.apps) + '<div class="ins">' + esc(w.ins) + '</div><span class="open">Open conversation &rarr;</span></button>';
+  }).join('');
+  document.querySelectorAll('[data-id]').forEach(function (el) {
+    el.onclick = function () { openWf(el.dataset.id); };
+    el.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openWf(el.dataset.id); } };
+  });
+  $('#kActive').textContent = W.filter(function (w) { return w.status !== 'pause'; }).length;
+  $('#kRuns').textContent = W.reduce(function (s, w) { return s + w.runs; }, 0);
+  $('#kAsk').textContent = W.filter(function (w) { return w.status === 'ask'; }).length;
+  $('#kPaused').textContent = W.filter(function (w) { return w.status === 'pause'; }).length;
+  if (openId) renderDrawer();
+}
+function find(id) { return W.filter(function (w) { return w.id === id; })[0]; }
+// ---------- drawer ----------
+function openWf(id) {
+  openId = id; render();
+  $('#drawer').classList.add('on'); $('#drawer').setAttribute('aria-hidden', 'false'); $('#drawer').inert = false; $('#scrim').classList.add('on');
+  setTimeout(function () { $('#msgIn').focus({ preventScroll: true }); }, 280);
+}
+function closeWf() { openId = null; $('#drawer').classList.remove('on'); $('#drawer').setAttribute('aria-hidden', 'true'); $('#drawer').inert = true; $('#scrim').classList.remove('on'); render(); }
+function renderDrawer(scroll) {
+  var w = find(openId); if (!w) return;
+  $('#dOp').innerHTML = (OPS[w.op] ? '<i style="background:' + OPS[w.op].c + '" aria-hidden="true">' + OPS[w.op].k + '</i>' : '');
+  $('#dTitle').textContent = w.name + ' · ' + w.op;
+  $('#dSub').textContent = w.apps.join(', ');
+  $('#dPause').textContent = w.status === 'pause' ? 'Resume loop' : 'Pause loop';
+  $('#dProg').textContent = w.runs + ' runs today · target ' + w.target;
+  var th = $('#thread'), atBottom = th.scrollHeight - th.scrollTop - th.clientHeight < 60;
+  th.innerHTML = w.thread.map(function (m, i) {
+    var who = m.r === 'me' ? 'You' : m.r === 'log' ? 'Run log · ' + (m.time || w.last) : w.op;
+    var acts = m.acts && !m.done ? '<div class="acts">' + m.acts.map(function (a, k) { return '<button class="btn sm' + (k === 0 ? ' pri' : '') + '" type="button" data-ask="' + i + '" data-k="' + k + '">' + esc(a) + '</button>'; }).join('') + '</div>' : '';
+    return '<div class="msg ' + (m.r === 'op' ? 'ai' : m.r) + '"><div class="who">' + esc(who) + '</div><div class="bub">' + esc(m.t) + acts + '</div></div>';
+  }).join('');
+  th.querySelectorAll('[data-ask]').forEach(function (b) { b.onclick = function () { answerAsk(w, +b.dataset.ask, +b.dataset.k); }; });
+  if (scroll || atBottom) th.scrollTop = th.scrollHeight;
+}
+function post(w, r, t, extra) { var m = { r: r, t: t, time: now() }; if (extra) for (var k in extra) m[k] = extra[k]; w.thread.push(m); if (w.thread.length > 80) w.thread.splice(2, w.thread.length - 80); save(); }
+function answerAsk(w, i, k) {
+  var m = w.thread[i]; m.done = true; post(w, 'me', m.acts[k]);
+  setTimeout(function () { post(w, 'op', k === 0 ? 'Done. Accepted and added to your calendar. Carrying on with the loop.' : 'No problem. I’ve replied asking for another slot and will flag their answer.'); w.status = 'run'; render(); renderDrawer(true); }, reduce ? 0 : 600);
+  render(); renderDrawer(true);
+}
+$('#dClose').onclick = closeWf; $('#scrim').onclick = closeWf;
+addEventListener('keydown', function (e) { if (e.key === 'Escape' && openId && !$('#dlg').open) closeWf(); });
+$('#dPause').onclick = function () { var w = find(openId); if (!w) return; if (w.status === 'pause') { w.status = 'run'; post(w, 'op', 'Resumed. Picking up from run ' + (w.runs + 1) + '.'); } else { w.status = 'pause'; post(w, 'op', 'Paused. I’ll finish nothing else until you resume.'); } render(); renderDrawer(true); };
+$('#dInterrupt').onclick = function () { var w = find(openId); if (!w) return; w.status = 'pause'; post(w, 'log', 'Run ' + (w.runs + 1) + '/' + w.target + ' · interrupted by you before submitting'); post(w, 'op', 'Stopped mid-run, nothing was sent. Tell me what to change, or say “resume”.'); render(); renderDrawer(true); };
+$('#dEdit').onclick = function () { var w = find(openId); if (!w) return; $('#msgIn').value = 'New instruction: ' + w.ins; $('#msgIn').focus(); };
+// ---------- talking to the operator (scripted replies for the demo) ----------
+$('#compose').onsubmit = function (e) {
+  e.preventDefault(); var w = find(openId), t = $('#msgIn').value.trim(); if (!w || !t) return;
+  $('#msgIn').value = ''; post(w, 'me', t); render(); renderDrawer(true);
+  setTimeout(function () { post(w, 'op', reply(w, t)); render(); renderDrawer(true); }, reduce ? 0 : 700);
+};
+$('#msgIn').addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#compose').requestSubmit(); } });
+function reply(w, t) {
+  var s = t.toLowerCase(), n = s.match(/(\d+)\s*(per|a|each)?\s*(day|daily)?/);
+  if (/^new instruction:/i.test(t)) { w.ins = t.replace(/^new instruction:\s*/i, ''); var m = w.ins.match(/(\d+)\s+(jobs|emails|runs|briefs)/i); if (m) w.target = Math.max(1, Math.min(200, +m[1])); return 'Instruction updated. From the next run I’ll follow: “' + w.ins + '”'; }
+  if (/\b(pause|stop|hold)\b/.test(s)) { w.status = 'pause'; return 'Paused. Nothing more will run until you say “resume”.'; }
+  if (/\b(resume|continue|carry on|start)\b/.test(s)) { w.status = 'run'; return 'Resuming now, from run ' + (w.runs + 1) + ' of ' + w.target + '.'; }
+  if (n && /(day|daily|per|a day|each day)/.test(s)) { w.target = Math.max(1, Math.min(200, +n[1])); w.ins = w.ins.replace(/\d+ (jobs|emails|runs|briefs) per day/i, w.target + ' $1 per day'); return 'Updated: ' + w.target + ' runs per day. ' + (w.runs >= w.target ? 'That’s already reached for today, so I’ll stop here.' : 'I’ll keep going until I reach it.'); }
+  if (/remote/.test(s)) { w.filters.push('remote only'); return 'Noted: remote roles only from the next run. I’ll skip anything office-based or hybrid.'; }
+  if (/skip|exclude|avoid|no /.test(s)) { w.filters.push(t); return 'Okay, I’ll exclude that from now on. I’ll mention it in the log whenever I skip something because of it.'; }
+  if (/\b(only|in)\b.+/.test(s) && /london|leeds|manchester|bristol|glasgow|birmingham|edinburgh|liverpool|remote/.test(s)) { w.filters.push(t); return 'Got it, I’ll narrow the search to that from the next run.'; }
+  if (/how|status|progress|update/.test(s)) return 'So far today: ' + w.runs + ' runs (target ' + w.target + '), ' + w.total.toLocaleString('en-GB') + ' in total. ' + (w.status === 'pause' ? 'I’m paused at the moment.' : 'I’m running and will post each run here.');
+  return 'Understood. I’ll apply that from the next run and check with you first if anything is unclear.';
+}
+// ---------- simulated loop ----------
+function tick() {
+  var w = W.filter(function (x) { return x.status === 'run' && x.runs < x.target; });
+  if (!w.length) return;
+  w = w[Math.floor(Math.random() * w.length)];
+  w.runs++; w.total++; w.last = now();
+  var co = COS[Math.floor(Math.random() * COS.length)], app = w.apps[Math.floor(Math.random() * w.apps.length)], tag = 'Run ' + w.runs + '/' + w.target + ' · ';
+  var txt = w.kind === 'jobs' ? 'Applied: ' + ROLES[Math.floor(Math.random() * ROLES.length)] + ' at ' + co + ' (' + app + ') · cover letter tailored' + (w.filters.length ? ' · ' + w.filters[w.filters.length - 1].slice(0, 30) : '')
+    : w.kind === 'inbox' ? (2 + Math.floor(Math.random() * 7)) + ' emails sorted · ' + Math.floor(Math.random() * 3) + ' replies drafted'
+    : w.kind === 'prep' ? 'Brief written: ' + co + ' (Notion → Interview prep)'
+    : w.kind === 'follow' ? 'Follow-up sent: ' + co + ' (' + app + ')'
+    : 'Completed step for “' + w.task + '” via ' + app;
+  post(w, 'log', tag + txt);
+  if (w.kind === 'jobs' && Math.random() < .12) { w.status = 'ask'; post(w, 'ask', co + ' asks for your salary expectation and notice period. Use the answers from your profile (£55k, 1 month)?', { acts: ['Yes, use those', 'Ask me each time'] }); }
+  if (w.runs >= w.target) post(w, 'op', 'Daily target reached (' + w.target + '). I’ll start again tomorrow morning.');
+  render();
+}
+if (!reduce) setInterval(tick, 3500);
+// ---------- new workflow ----------
+Object.keys(OPS).forEach(function (o) { var op = document.createElement('option'); op.textContent = o; $('#nOp').appendChild(op); });
+$('#nApps').innerHTML = APPS.map(function (a, i) { return '<label><input type="checkbox" value="' + esc(a) + '"' + (i < 3 ? ' checked' : '') + '>' + esc(a) + '</label>'; }).join('');
+$('#newBtn').onclick = function () { $('#dlg').showModal(); $('#nTask').focus(); };
+$('#nCancel').onclick = function () { $('#dlg').close(); };
+$('#newForm').onsubmit = function (e) {
+  e.preventDefault();
+  var apps = [].slice.call(document.querySelectorAll('#nApps input:checked')).map(function (x) { return x.value; });
+  if (!apps.length) { toast('Connect at least one app'); return; }
+  var task = $('#nTask').value.trim(), ins = $('#nIns').value.trim(), op = $('#nOp').value, target = Math.max(1, Math.min(200, +$('#nRuns').value || 10));
+  var kind = /job|appl/i.test(task + ins) ? 'jobs' : /inbox|email/i.test(task) ? 'inbox' : 'other';
+  var w = { id: 'w' + Date.now(), name: task.split(' ').slice(0, 3).join(' '), task: task, op: op, apps: apps, target: target, runs: 0, total: 0, status: 'run', last: 'Just now', kind: kind, filters: [], ins: ins, thread: [{ r: 'me', t: ins }, { r: 'op', t: 'Starting now. I’ll use ' + apps.join(', ') + ', aim for ' + target + ' runs a day and post each run here. Message me any time to change the plan.' }] };
+  W.unshift(w); save(); $('#dlg').close(); $('#newForm').reset(); render(); openWf(w.id); toast('Workflow started');
+};
+function toast(t) { var el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(function () { el.classList.remove('on'); }, 2000); }
+render();
+// open a workflow from the URL, e.g. agent-dashboard.html#w1
+if (location.hash && find(location.hash.slice(1))) openWf(location.hash.slice(1));
+window.__agentops = { openWf: openWf, tick: tick };
+})();
+</script>
+</body>
+</html>
