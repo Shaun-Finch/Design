@@ -333,7 +333,7 @@ function renderGuide() {
 }
 function printGuide() {
   const w = open('', '_blank'); if (!w) return;
-  w.document.write(`<!doctype html><meta charset="utf-8"><title>${esc(G.subject)} — learning guide</title><style>body{font-family:system-ui,sans-serif;max-width:720px;margin:2rem auto;padding:0 16px;line-height:1.55;color:#16161a}h1{margin-bottom:.2rem}h2{margin-top:2rem;border-top:1px solid #ddd;padding-top:1rem}li{margin:.3rem 0}.m{color:#666;font-size:.9rem}</style><h1>${esc(G.subject)}</h1><p class="m">Learning guide made by Gizmo from ${G.papers.length} paper(s). Pass mark ${G.pass}%.</p>` +
+  w.document.write(`<!doctype html><meta charset="utf-8"><title>${esc(G.subject)} — learning guide</title><style>body{font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;font-weight:300;max-width:720px;margin:2rem auto;padding:0 16px;line-height:1.55;color:#16161a}h1{margin-bottom:.2rem}h2{margin-top:2rem;border-top:1px solid #ddd;padding-top:1rem}li{margin:.3rem 0}.m{color:#666;font-size:.9rem}</style><h1>${esc(G.subject)}</h1><p class="m">Learning guide made by Gizmo from ${G.papers.length} paper(s). Pass mark ${G.pass}%.</p>` +
     G.modules.map((m, i) => `<h2>Module ${i + 1}: ${esc(m.title)}</h2><p class="m">${esc(m.paper)} · ${m.analysis.minutes} min read</p><h3>Key points</h3><ul>${m.analysis.summary.map(s => '<li>' + esc(s) + '</li>').join('')}</ul>${m.analysis.defs.length ? '<h3>Key terms</h3><ul>' + m.analysis.defs.map(d => '<li><b>' + esc(d.term) + '</b>: ' + esc(d.def) + '</li>').join('') + '</ul>' : ''}`).join(''));
   w.document.close(); w.focus(); w.print();
 }
@@ -403,7 +403,7 @@ async function finish() {
     <div class="card result ${ok ? 'pass' : 'fail'}">
       <p class="eyebrow">${Q.kind === 'final' ? 'Final test' : 'Module ' + (Q.modIndex + 1) + ' quiz'}</p>
       <div class="big">${score}%</div>
-      <p style="font-size:1.1rem;font-weight:700;margin:.6rem 0 .2rem">${done ? 'You passed the final test. Guide complete!' : ok ? 'Passed!' : 'Not passed yet'}</p>
+      <p style="font-size:1.1rem;font-weight:400;margin:.6rem 0 .2rem">${done ? 'You passed the final test. Guide complete!' : ok ? 'Passed!' : 'Not passed yet'}</p>
       <p style="color:var(--body);margin:0">${Q.right} of ${Q.qs.length} correct &middot; pass mark ${G.pass}%${target.attempts > 1 ? ' &middot; best ' + target.best + '%' : ''}</p>
       <div class="row" style="justify-content:center;margin-top:1.2rem">
         ${ok ? '' : `<button class="btn blue" type="button" id="retry">Try again with new questions</button>`}
