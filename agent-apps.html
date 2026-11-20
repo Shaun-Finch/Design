@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agent Ops — Agent apps</title>
+<title>Swarm — Agent apps</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='11' fill='%23A6E35A'/><g stroke='%23151414' stroke-width='2' stroke-linecap='round' opacity='.55'><line x1='20' y1='20' x2='20.00' y2='9.00'/><line x1='20' y1='20' x2='29.53' y2='14.50'/><line x1='20' y1='20' x2='29.53' y2='25.50'/><line x1='20' y1='20' x2='20.00' y2='31.00'/><line x1='20' y1='20' x2='10.47' y2='25.50'/><line x1='20' y1='20' x2='10.47' y2='14.50'/></g><g fill='%23151414'><circle cx='20.00' cy='9.00' r='3.4'/><circle cx='29.53' cy='14.50' r='3.4'/><circle cx='29.53' cy='25.50' r='3.4'/><circle cx='20.00' cy='31.00' r='3.4'/><circle cx='10.47' cy='25.50' r='3.4'/><circle cx='10.47' cy='14.50' r='3.4'/><circle cx='20' cy='20' r='5'/></g><circle cx='20' cy='20' r='1.8' fill='%23A6E35A'/></svg>">
 <meta name="description" content="A canvas of productivity tools run by AI agents. Connect your platforms on the left, then open a tool to brief and set up its agent. Designed and built by Shaun Finch.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Shaun Finch">
-<meta property="og:title" content="Agent Ops — Agent apps">
+<meta property="og:title" content="Swarm — Agent apps">
 <meta property="og:description" content="Connect your platforms, then open a tool to brief and set up an agent for it.">
 <meta property="og:url" content="https://shaun-finch.github.io/Design/agent-apps.html">
 <meta property="og:image" content="https://shaun-finch.github.io/Design/work/agent-dashboard.jpg">
@@ -34,8 +35,9 @@ a{color:var(--link);text-underline-offset:3px}
 .top{position:sticky;top:0;z-index:20;background:rgba(21,20,20,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .top .in{max-width:1440px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:14px}
 .logo{display:flex;align-items:center;gap:.6rem;font-weight:500;font-size:1.02rem;color:var(--violet);letter-spacing:.02em;text-decoration:none}
-.logo .pc{width:40px;height:37px;flex:none;display:block;color:var(--ink)}
-.logo .chev{color:var(--pink)}
+.logo .mk{width:36px;height:36px;flex:none;display:block}
+.logo .ver{color:var(--dim);font-size:.72rem;margin-left:.5rem}
+.logo{color:#A6E35A;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
 .badge{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--green);display:inline-flex;align-items:center;gap:.45rem;white-space:nowrap}
 .badge::before{content:"";width:.42rem;height:.42rem;border-radius:50%;background:var(--green)}
 .top .sp{flex:1}
@@ -97,7 +99,7 @@ a{color:var(--link);text-underline-offset:3px}
   .plist{margin-top:12px;display:grid;grid-template-columns:1fr 1fr}
   .plat{padding:7px 8px;gap:8px}
   .plat .nm small{display:none}
-  .top .badge,.top .lg{display:none}
+  .top .badge,.top .lg,.logo .ver{display:none}
   .top .in{gap:8px}
 }
 @media (max-width:560px){
@@ -109,7 +111,7 @@ a{color:var(--link);text-underline-offset:3px}
   .tile .tt span{font-size:.76rem}
   .tile .needs{display:none}
 }
-@media (max-width:420px){.logo .pc{width:30px;height:28px}.top .lg2{display:none}.top a.back{font-size:1.1rem}.plist{grid-template-columns:1fr}}
+@media (max-width:420px){.logo .mk{width:30px;height:30px}.top .lg2{display:none}.top a.back{font-size:1.1rem}.plist{grid-template-columns:1fr}}
 /* chat panel */
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:30;opacity:0;pointer-events:none;transition:opacity .2s}
 .scrim.on{opacity:1;pointer-events:auto}
@@ -165,7 +167,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 </head>
 <body>
 <header class="top"><div class="in">
-  <a class="logo" href="agent-apps.html" aria-label="Agent Ops apps"><svg class="pc" viewBox="0 0 40 37" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M6 0h26v1h-26zM4 2h6v1h-6zM30 2h2v1h-2zM2 4h8v1h-8zM30 4h2v1h-2zM0 6h10v1h-10zM30 6h2v1h-2zM0 8h10v1h-10zM30 8h2v1h-2zM0 10h10v1h-10zM30 10h2v1h-2zM0 12h10v1h-10zM30 12h2v1h-2zM2 14h8v1h-8zM30 14h2v1h-2zM2 16h8v1h-8zM30 16h2v1h-2zM2 18h30v1h-30zM0 20h36v1h-36zM0 22h2v1h-2zM4 22h2v1h-2zM10 22h2v1h-2zM24 22h8v1h-8zM34 22h2v1h-2zM10 23h2v1h-2zM0 24h2v1h-2zM4 24h2v1h-2zM8 24h2v1h-2zM16 24h2v1h-2zM34 24h2v1h-2zM2 25h4v1h-4zM4 26h32v1h-32zM32 28h2v1h-2zM4 30h30v1h-30zM4 31h4v1h-4zM24 31h4v1h-4zM6 32h32v1h-32zM8 33h2v1h-2zM12 33h6v1h-6zM20 33h2v1h-2zM26 33h4v1h-4zM32 33h8v1h-8zM8 34h32v1h-32zM10 35h4v1h-4zM18 35h2v1h-2zM22 35h2v1h-2zM11 36h29v1h-29z"/><path fill="#FF2BE0" d="M19 4h1v1h-1zM24 9h2v1h-2zM16 11h2v1h-2z"/><path fill="#4038FF" d="M20 4h1v1h-1zM16 10h2v1h-2zM24 10h2v1h-2zM18 22h2v1h-2z"/><path fill="#2BF05A" d="M18 5h2v1h-2zM24 8h2v1h-2zM18 11h2v1h-2zM22 22h2v1h-2z"/><path fill="#FF3A3A" d="M20 22h2v1h-2z"/></svg><span><span class="chev">&#10095;</span> agent ops</span></a>
+  <a class="logo" href="agent-apps.html" aria-label="Swarm agent apps home"><svg class="mk" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#A6E35A"/><g stroke="#151414" stroke-width="2" stroke-linecap="round" opacity=".55"><line x1="20" y1="20" x2="20.00" y2="9.00"/><line x1="20" y1="20" x2="29.53" y2="14.50"/><line x1="20" y1="20" x2="29.53" y2="25.50"/><line x1="20" y1="20" x2="20.00" y2="31.00"/><line x1="20" y1="20" x2="10.47" y2="25.50"/><line x1="20" y1="20" x2="10.47" y2="14.50"/></g><g fill="#151414"><circle cx="20.00" cy="9.00" r="3.4"/><circle cx="29.53" cy="14.50" r="3.4"/><circle cx="29.53" cy="25.50" r="3.4"/><circle cx="20.00" cy="31.00" r="3.4"/><circle cx="10.47" cy="25.50" r="3.4"/><circle cx="10.47" cy="14.50" r="3.4"/><circle cx="20" cy="20" r="5"/></g><circle cx="20" cy="20" r="1.8" fill="#A6E35A"/></svg><span>swarm<span class="ver">/ agent apps</span></span></a>
   <span class="badge" id="modeBadge">Private to this browser</span>
   <span class="sp"></span>
   <a class="btn sm" href="agent-dashboard.html">Workflows<span class="lg"> log</span></a>
@@ -373,7 +375,7 @@ function aeScript(b) {
   var f = /9:16/.test(b.format) ? [1080, 1920] : /1:1/.test(b.format) ? [1080, 1080] : [1920, 1080];
   var sc = aeScenes(b), J = JSON.stringify;
   return [
-    '// 30-second advert for ' + b.brand.replace(/[\r\n]/g, ' ') + '. Built by Agent Ops.',
+    '// 30-second advert for ' + b.brand.replace(/[\r\n]/g, ' ') + '. Built by Swarm.',
     '// In After Effects: File > Scripts > Run Script File..., then pick this file.',
     '(function () {',
     '  app.beginUndoGroup("30-second advert");',
@@ -418,7 +420,7 @@ function download(text, name) {
 // ---------- live agent ----------
 function systemFor(t, st) {
   var apps = PLATS.filter(function (p) { return ON[p.id]; }).map(function (p) { return p.n; });
-  return 'You are an agent inside Agent Ops, a dashboard of productivity tools. This tool: ' + t.name + ' — ' + t.job + '. ' + t.goal +
+  return 'You are an agent inside Swarm, a dashboard of productivity tools. This tool: ' + t.name + ' — ' + t.job + '. ' + t.goal +
     '\nApps the user has switched on: ' + (apps.join(', ') || 'none yet') + '. If ' + plat(t.plat).n + ' is not switched on, remind them once.' +
     '\nBe honest: this page cannot sign in to platforms or post anything yet. Ask one or two questions at a time. Plain English, short sentences, British spelling.';
 }
