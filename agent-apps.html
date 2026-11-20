@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Ops — Agent apps</title>
+<meta name="description" content="A canvas of productivity tools run by AI agents. Connect your platforms on the left, then open a tool to brief and set up its agent. Designed and built by Shaun Finch.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shaun Finch">
+<meta property="og:title" content="Agent Ops — Agent apps">
+<meta property="og:description" content="Connect your platforms, then open a tool to brief and set up an agent for it.">
+<meta property="og:url" content="https://shaun-finch.github.io/Design/agent-apps.html">
+<meta property="og:image" content="https://shaun-finch.github.io/Design/work/agent-dashboard.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#151414">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#151414;--panel:#1b1a1a;--panel2:#201f1f;--line:#2b2929;--line2:#3a3737;--ink:#ECE8E1;--body:#CFC9C1;--mute:#9a948e;--dim:#615c58;
+  --violet:#B9B1E6;--link:#C4BCEB;--pink:#D4848A;--peach:#E9C3B4;--amber:#D6A76A;--green:#7FB89A;--accent:#D4848A;--accent-deep:#C46F76;
+  --okbg:rgba(127,184,154,.12);--warnbg:rgba(214,167,106,.12);
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;--r:8px;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);background-image:radial-gradient(60rem 30rem at 70% -5%,rgba(212,132,138,.07),transparent 70%);background-repeat:no-repeat;color:var(--ink);font-family:var(--mono);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--link);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:rgba(21,20,20,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .in{max-width:1440px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:14px}
+.logo{display:flex;align-items:center;gap:.6rem;font-weight:500;font-size:1.02rem;color:var(--violet);letter-spacing:.02em;text-decoration:none}
+.logo .pc{width:40px;height:37px;flex:none;display:block;color:var(--ink)}
+.logo .chev{color:var(--pink)}
+.badge{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--green);display:inline-flex;align-items:center;gap:.45rem;white-space:nowrap}
+.badge::before{content:"";width:.42rem;height:.42rem;border-radius:50%;background:var(--green)}
+.top .sp{flex:1}
+.top a.back{font-size:.8rem;color:var(--mute);text-decoration:none;white-space:nowrap}
+.top a.back:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);background:transparent;padding:8px 14px;font-weight:500;font-size:.8rem;letter-spacing:.04em;border-radius:6px;white-space:nowrap;color:var(--ink);text-decoration:none}
+.btn:hover{border-color:#4a4646;background:rgba(255,255,255,.03)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#1d1415}
+.btn.pri:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
+.btn.sm{padding:5px 10px;font-size:.74rem}
+/* layout: connections left, tools canvas right */
+.shell{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:300px minmax(0,1fr);min-height:calc(100vh - 62px)}
+.side{border-right:1px solid var(--line);padding:24px 16px 32px;background:rgba(27,26,26,.55)}
+.side h2,.canvas h1{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--green);font-weight:500;margin:0 0 4px}
+.side .count{font-size:.74rem;color:var(--mute);margin:0 0 14px}
+.side summary{list-style:none;pointer-events:none}
+.side summary::-webkit-details-marker{display:none}
+.logo>span{white-space:nowrap}
+.plist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.plat{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel)}
+.plat.on{border-color:rgba(127,184,154,.4);background:linear-gradient(90deg,rgba(127,184,154,.08),var(--panel) 60%)}
+.mono{width:30px;height:30px;border-radius:7px;display:grid;place-items:center;font-size:.7rem;font-weight:600;color:#fff;flex:none;letter-spacing:0}
+.plat .nm{flex:1;min-width:0}
+.plat .nm b{display:block;font-weight:500;font-size:.84rem}
+.plat .nm small{display:block;color:var(--mute);font-size:.68rem}
+.sw{position:relative;width:38px;height:22px;flex:none;border-radius:11px;border:1px solid var(--line2);background:var(--panel2);padding:0}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--mute);transition:transform .2s,background .2s}
+.sw[aria-checked="true"]{background:rgba(127,184,154,.25);border-color:var(--green)}
+.sw[aria-checked="true"]::after{transform:translateX(16px);background:var(--green)}
+.side .note{font-size:.7rem;color:var(--mute);margin:14px 0 0;line-height:1.7}
+.canvas{padding:clamp(24px,4vw,44px) clamp(16px,3vw,40px) 56px;min-width:0}
+.canvas .lead{color:var(--mute);margin:.2rem 0 22px;font-size:.84rem;max-width:64ch;line-height:1.75}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+.tile{position:relative;text-align:left;display:flex;flex-direction:column;gap:14px;min-height:190px;padding:20px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(160deg,var(--panel2),var(--panel));color:var(--ink);transition:transform .18s,border-color .18s,box-shadow .18s}
+.tile:hover{transform:translateY(-3px);border-color:var(--line2);box-shadow:0 16px 40px rgba(0,0,0,.35)}
+.tile .ic{width:60px;height:60px;border-radius:16px;display:grid;place-items:center;flex:none}
+.tile .ic svg{width:32px;height:32px}
+.tile .tt{flex:1}
+.tile .tt b{display:block;font-size:1.02rem;font-weight:500;letter-spacing:-.01em}
+.tile .tt span{display:block;color:var(--body);font-size:.84rem;margin-top:2px}
+.tile .meta{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border-radius:4px;white-space:nowrap;color:var(--mute);background:rgba(255,255,255,.05)}
+.chip i{width:6px;height:6px;border-radius:50%;background:currentColor}
+.chip.ready{color:var(--green);background:var(--okbg)}
+.chip.draft{color:var(--amber);background:var(--warnbg)}
+.needs{font-size:.7rem;color:var(--mute)}
+.needs.ok{color:var(--green)}
+.foot{font-size:.7rem;color:var(--mute);margin:28px 0 0;line-height:1.7;max-width:100ch}
+/* mobile: connections fold up above the canvas, tiles go two across */
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;align-content:start}
+  .side summary{pointer-events:auto}
+  .side{border-right:0;border-bottom:1px solid var(--line);padding:16px}
+  .side details summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  .side details summary::-webkit-details-marker{display:none}
+  .side details summary::after{content:"+";color:var(--mute);font-size:1.1rem}
+  .side details[open] summary::after{content:"\2212"}
+  .side .count{margin:0}
+  .plist{margin-top:12px;display:grid;grid-template-columns:1fr 1fr}
+  .plat{padding:7px 8px;gap:8px}
+  .plat .nm small{display:none}
+  .top .badge,.top .lg{display:none}
+  .top .in{gap:8px}
+}
+@media (max-width:560px){
+  .grid{grid-template-columns:1fr 1fr;gap:12px}
+  .tile{min-height:170px;padding:14px;border-radius:16px;gap:10px}
+  .tile .ic{width:48px;height:48px;border-radius:13px}
+  .tile .ic svg{width:26px;height:26px}
+  .tile .tt b{font-size:.92rem}
+  .tile .tt span{font-size:.76rem}
+  .tile .needs{display:none}
+}
+@media (max-width:420px){.logo .pc{width:30px;height:28px}.top .lg2{display:none}.top a.back{font-size:1.1rem}.plist{grid-template-columns:1fr}}
+/* chat panel */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:30;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(600px,100vw);background:var(--bg);border-left:1px solid var(--line);z-index:31;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);box-shadow:-20px 0 60px rgba(0,0,0,.45)}
+.drawer.on{transform:none}
+.dh{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.dh .ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;flex:none}
+.dh .ic svg{width:22px;height:22px}
+.dh .t{flex:1;min-width:0}
+.dh .t b{display:block;font-size:1rem;font-weight:500}
+.dh .t small{color:var(--mute);font-size:.74rem}
+.x{border:1px solid var(--line2);background:transparent;width:34px;height:34px;font-size:1.1rem;flex:none;border-radius:6px;color:var(--mute)}
+.x:hover{color:var(--ink)}
+.ctl{display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel);align-items:center}
+.ctl .mode{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-right:auto}
+.ctl .mode.on{color:var(--green)}
+.thread{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+.msg{max-width:90%;font-size:.84rem;line-height:1.6}
+.msg .who{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--violet);margin-bottom:5px}
+.msg .bub{padding:10px 12px;border:1px solid var(--line);background:var(--panel);border-radius:var(--r);overflow-wrap:anywhere}
+.msg .bub p{margin:0 0 .6em}.msg .bub p:last-child{margin:0}
+.msg .bub pre{background:#0f0e0e;border:1px solid var(--line);border-radius:6px;padding:10px;overflow:auto;font-size:.74rem;max-height:260px;margin:.4em 0;white-space:pre}
+.msg.me{align-self:flex-end}
+.msg.me .bub{background:rgba(212,132,138,.1);border-color:rgba(212,132,138,.32)}
+.msg.me .who{text-align:right;color:var(--pink)}
+.msg.log .bub{background:transparent;font-size:.74rem;color:var(--mute);border-style:dashed}
+.msg.log .who{color:var(--green)}
+.msg.err .bub{background:var(--warnbg);border-color:rgba(214,167,106,.35)}
+.msg .acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.quick{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 10px}
+.quick button{border:1px solid var(--line2);background:var(--panel);border-radius:999px;padding:5px 12px;font-size:.74rem;color:var(--body)}
+.quick button:hover{border-color:var(--violet);color:var(--ink)}
+.compose{border-top:1px solid var(--line);padding:12px 16px;display:flex;gap:8px;background:var(--panel)}
+.compose textarea{flex:1;resize:none;border:1px solid var(--line2);background:var(--bg);padding:10px 12px;min-height:44px;max-height:140px;border-radius:6px}
+.compose textarea:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(185,177,230,.14)}
+.compose textarea::placeholder,.f input::placeholder{color:var(--dim)}
+.hint{padding:0 16px 12px;font-size:.7rem;color:var(--mute);background:var(--panel);margin:0}
+/* connect dialog */
+dialog{border:1px solid var(--line2);padding:0;width:min(560px,calc(100vw - 32px));border-radius:10px;background:var(--panel);color:var(--ink);box-shadow:0 30px 80px rgba(0,0,0,.6)}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+.dlg{padding:20px}
+.dlg h2{margin:0 0 6px;font-size:1.1rem;font-weight:500}
+.dlg p{margin:0 0 14px;color:var(--mute);font-size:.8rem;line-height:1.7}
+.f{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;font-size:.72rem;letter-spacing:.06em;color:var(--mute)}
+.f input,.f select{border:1px solid var(--line2);background:var(--bg);padding:9px 11px;border-radius:6px;font-size:.84rem;letter-spacing:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:520px){.two{grid-template-columns:1fr}}
+.dlg .row{display:flex;justify-content:flex-end;gap:8px;margin-top:6px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(16px);opacity:0;background:var(--ink);color:#151414;padding:9px 14px;border-radius:6px;font-size:.8rem;font-weight:500;transition:all .25s;pointer-events:none;z-index:50}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion:reduce){.tile,.drawer,.toast,.sw::after{transition:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="logo" href="agent-apps.html" aria-label="Agent Ops apps"><svg class="pc" viewBox="0 0 40 37" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M6 0h26v1h-26zM4 2h6v1h-6zM30 2h2v1h-2zM2 4h8v1h-8zM30 4h2v1h-2zM0 6h10v1h-10zM30 6h2v1h-2zM0 8h10v1h-10zM30 8h2v1h-2zM0 10h10v1h-10zM30 10h2v1h-2zM0 12h10v1h-10zM30 12h2v1h-2zM2 14h8v1h-8zM30 14h2v1h-2zM2 16h8v1h-8zM30 16h2v1h-2zM2 18h30v1h-30zM0 20h36v1h-36zM0 22h2v1h-2zM4 22h2v1h-2zM10 22h2v1h-2zM24 22h8v1h-8zM34 22h2v1h-2zM10 23h2v1h-2zM0 24h2v1h-2zM4 24h2v1h-2zM8 24h2v1h-2zM16 24h2v1h-2zM34 24h2v1h-2zM2 25h4v1h-4zM4 26h32v1h-32zM32 28h2v1h-2zM4 30h30v1h-30zM4 31h4v1h-4zM24 31h4v1h-4zM6 32h32v1h-32zM8 33h2v1h-2zM12 33h6v1h-6zM20 33h2v1h-2zM26 33h4v1h-4zM32 33h8v1h-8zM8 34h32v1h-32zM10 35h4v1h-4zM18 35h2v1h-2zM22 35h2v1h-2zM11 36h29v1h-29z"/><path fill="#FF2BE0" d="M19 4h1v1h-1zM24 9h2v1h-2zM16 11h2v1h-2z"/><path fill="#4038FF" d="M20 4h1v1h-1zM16 10h2v1h-2zM24 10h2v1h-2zM18 22h2v1h-2z"/><path fill="#2BF05A" d="M18 5h2v1h-2zM24 8h2v1h-2zM18 11h2v1h-2zM22 22h2v1h-2z"/><path fill="#FF3A3A" d="M20 22h2v1h-2z"/></svg><span><span class="chev">&#10095;</span> agent ops</span></a>
+  <span class="badge" id="modeBadge">Private to this browser</span>
+  <span class="sp"></span>
+  <a class="btn sm" href="agent-dashboard.html">Workflows<span class="lg"> log</span></a>
+  <button class="btn sm" type="button" id="connBtn">Connect<span class="lg"> Claude / ChatGPT</span></button>
+  <a class="back" href="index.html" aria-label="Back to portfolio">&larr;<span class="lg2"> Portfolio</span></a>
+</div></header>
+
+<div class="shell">
+  <aside class="side" aria-labelledby="pTitle">
+    <details id="pWrap" open>
+      <summary><span><h2 id="pTitle">Connected apps</h2><p class="count" id="pCount"></p></span></summary>
+      <ul class="plist" id="plist"></ul>
+      <p class="note">Switch on the platforms you use. Agents only plan work for apps that are switched on. Your choices stay in this browser. Live sign-in to each platform is the next step for this concept.</p>
+    </details>
+  </aside>
+  <main class="canvas" id="main">
+    <h1>Agent apps</h1>
+    <p class="lead">Each tile is a job an agent can do inside one of your apps. Open one, brief the agent in the chat and set it up to run.</p>
+    <div class="grid" id="grid"></div>
+    <p class="foot">Unofficial concept. Not affiliated with or endorsed by any of the platforms named. Platform names belong to their owners. Briefs, chats and API keys stay in this browser on this device. Nothing is posted anywhere from this page.</p>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-labelledby="dTitle" aria-hidden="true" inert>
+  <div class="dh"><span class="ic" id="dIc" aria-hidden="true"></span><div class="t"><b id="dTitle"></b><small id="dSub"></small></div><button class="x" type="button" id="dClose" aria-label="Close chat">&times;</button></div>
+  <div class="ctl"><span class="mode" id="dMode"></span><button class="btn sm" type="button" id="dRestart">Start again</button></div>
+  <div class="thread" id="thread" aria-live="polite" tabindex="0" aria-label="Chat with the agent"></div>
+  <div class="quick" id="quick"></div>
+  <form class="compose" id="compose"><label class="sr" for="msgIn">Message the agent</label><textarea id="msgIn" rows="1" placeholder="Message the agent…"></textarea><button class="btn pri" type="submit">Send</button></form>
+  <p class="hint" id="hint"></p>
+</aside>
+
+<dialog id="conn"><form class="dlg" id="connForm" method="dialog">
+  <h2>Connect Claude / ChatGPT</h2>
+  <p>Add your own API key and the agents become live: they read your brief, ask their own questions and can rewrite the plan. Without a key, each tool runs a guided setup.</p>
+  <div class="two"><label class="f">Anthropic API key (Claude)<input id="cKeyA" type="password" autocomplete="off" placeholder="sk-ant-…"></label><label class="f">Claude model<select id="cModelA"><option value="claude-sonnet-5-5">Claude Sonnet 5.5</option><option value="claude-opus-5-5">Claude Opus 5.5</option><option value="claude-haiku-5-5">Claude Haiku 5.5</option></select></label></div>
+  <div class="two"><label class="f">OpenAI API key (ChatGPT)<input id="cKeyO" type="password" autocomplete="off" placeholder="sk-…"></label><label class="f">OpenAI model<input id="cModelO" type="text" value="gpt-4o" autocomplete="off"></label></div>
+  <p>Keys are saved only in this browser and sent only to Anthropic or OpenAI. Use a key with a low spending limit and clear it on shared computers. The same keys work on the Workflows log.</p>
+  <div class="row"><button class="btn" type="button" id="cClear">Clear keys</button><button class="btn" type="button" id="cCancel">Cancel</button><button class="btn pri" type="submit">Save</button></div>
+</form></dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+'use strict';
+var $ = function (s) { return document.querySelector(s); };
+var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+var load = function (k, d) { try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } };
+var store = function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } };
+var now = function () { return new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); };
+
+// ---------- platforms (left rail) ----------
+var PLATS = [
+  { id: 'gmail', n: 'Gmail', k: 'Gm', c: '#B84A3E', d: 'Email' },
+  { id: 'veo3', n: 'Veo 3', k: 'V3', c: '#4A5FC1', d: 'AI video' },
+  { id: 'slack', n: 'Slack', k: 'Sl', c: '#5B3A63', d: 'Team chat' },
+  { id: 'x', n: 'X', k: 'X', c: '#3a3737', d: 'Social' },
+  { id: 'instagram', n: 'Instagram', k: 'Ig', c: '#A8456F', d: 'Social' },
+  { id: 'ebay', n: 'eBay', k: 'eB', c: '#3E6FA8', d: 'Marketplace' },
+  { id: 'youtube', n: 'YouTube', k: 'YT', c: '#B33A3A', d: 'Video' },
+  { id: 'tiktok', n: 'TikTok', k: 'Tk', c: '#2E7C7A', d: 'Social video' },
+  { id: 'linkedin', n: 'LinkedIn', k: 'in', c: '#2F6B9E', d: 'Professional' },
+  { id: 'whatsapp', n: 'WhatsApp', k: 'Wa', c: '#2F7D4F', d: 'Messaging' },
+  { id: 'ae', n: 'After Effects', k: 'Ae', c: '#5A4BB0', d: 'Motion design' },
+  { id: 'unreal', n: 'Unreal Engine', k: 'UE', c: '#4a4646', d: 'Real-time 3D' },
+  { id: 'blender', n: 'Blender', k: 'Bl', c: '#9C5523', d: '3D' }
+];
+var PK = 'agentops.platforms', ON = load(PK, {});
+var plat = function (id) { return PLATS.filter(function (p) { return p.id === id; })[0]; };
+
+// ---------- tools (the tiles) ----------
+var ICON = {
+  film: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M3 7l3-4h4l-3 4M10 7l3-4h4l-3 4M17 7l2.5-3.5"/><path d="M10.5 11.5v5l4-2.5z" fill="#fff"/></svg>',
+  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12.5h5"/></svg>'
+};
+var TOOLS = [
+  { id: 'ae-advert', plat: 'ae', icon: 'film', bg: 'linear-gradient(145deg,#6A5AD0,#4A3C99)', name: 'After Effects', job: '30-second creative advert',
+    intro: 'I build a 30-second advert in After Effects. Give me a short brief and I’ll write the storyboard, then give you a script that builds the whole comp: scenes, timings, text and transitions. You run it once in After Effects and it builds everything on its own.',
+    steps: [
+      { k: 'brand', q: 'What’s the product or brand?' },
+      { k: 'audience', q: 'Who is the advert for?' },
+      { k: 'hook', q: 'What’s the one line you want people to remember?' },
+      { k: 'format', q: 'Which format?', chips: ['16:9 landscape', '9:16 vertical', '1:1 square'] },
+      { k: 'colour', q: 'Brand colour as a hex code? (Say skip for a dark default.)', chips: ['#F0562A', '#2F6B9E', 'skip'] },
+      { k: 'cta', q: 'Last thing: the call to action for the end card?', chips: ['Shop now', 'Learn more', 'Book a demo'] }
+    ],
+    goal: 'Brief the user for a 30-second advert, write a five-scene storyboard with timings (0–3s hook, 3–9s problem, 9–18s product, 18–25s benefit, 25–30s call to action) and then write an Adobe After Effects ExtendScript in one ```jsx code block that builds the comp: a 30-second comp at 30fps in the chosen format, a background solid in the brand colour, one text layer per scene with in and out points and opacity and scale keyframes, and comp.openInViewer() at the end, wrapped in app.beginUndoGroup / endUndoGroup. Keep copy short and punchy.' },
+  { id: 'yt-comment', plat: 'youtube', icon: 'chat', bg: 'linear-gradient(145deg,#C84848,#8E2C2C)', name: 'YouTube', job: 'Commenting',
+    intro: 'I leave thoughtful comments on videos in your space while you’re away, to help build your community. Tell me who you are and where to show up, and I’ll set the rules: tone, daily limit and what I never do.',
+    steps: [
+      { k: 'channel', q: 'What’s your channel, and what is it about?' },
+      { k: 'targets', q: 'Where should I comment? Name channels, topics or keywords.', chips: ['Replies on my own videos', 'Videos in my niche', 'Both'] },
+      { k: 'tone', q: 'What tone should comments have?', chips: ['Friendly and curious', 'Expert and helpful', 'Funny and short'] },
+      { k: 'cap', q: 'Most comments per day? Keep it low so it stays human.', chips: ['5', '10', '20'] },
+      { k: 'approve', q: 'Should I post on my own, or queue each comment for your OK first?', chips: ['Queue for my OK', 'Post on its own'] }
+    ],
+    goal: 'Set up an agent that comments on YouTube videos to build the user’s community while they are away. Brief them (channel, where to comment, tone, daily cap, auto-post or approve first), then write the agent’s rules and three example comments in their tone. Rules must keep it within YouTube’s spam policies: no links, no copy-paste repeats, no self-promotion in every comment, respond to what the video actually says, skip videos made for kids, stop if someone replies negatively, stay under the daily cap.' }
+];
+var TK = 'agentops.tools', T = load(TK, {});
+TOOLS.forEach(function (t) { if (!T[t.id] || !Array.isArray(T[t.id].thread)) T[t.id] = null; });
+var tstate = function (t) { if (!T[t.id]) { T[t.id] = { step: 0, brief: {}, thread: [{ r: 'ai', t: t.intro, time: now() }, { r: 'ai', t: t.steps[0].q, time: now() }], status: 'new' }; } return T[t.id]; };
+var saveT = function () { store(TK, T); };
+
+// ---------- your own API keys (shared with the Workflows log) ----------
+var CK = 'agentops.conn', CONN = load(CK, {});
+var liveProv = function () { if (CONN.anthropic && CONN.anthropic.key) return 'anthropic'; if (CONN.openai && CONN.openai.key) return 'openai'; return null; };
+
+// ---------- render ----------
+function renderPlats() {
+  $('#plist').innerHTML = PLATS.map(function (p) {
+    var on = !!ON[p.id];
+    return '<li class="plat' + (on ? ' on' : '') + '"><span class="mono" style="background:' + p.c + '" aria-hidden="true">' + esc(p.k) + '</span><span class="nm"><b>' + esc(p.n) + '</b><small>' + (on ? 'Switched on' : esc(p.d)) + '</small></span>' +
+      '<button class="sw" type="button" role="switch" aria-checked="' + on + '" aria-label="' + esc(p.n) + '" data-p="' + p.id + '"></button></li>';
+  }).join('');
+  var n = PLATS.filter(function (p) { return ON[p.id]; }).length;
+  $('#pCount').textContent = n + ' of ' + PLATS.length + ' switched on';
+  document.querySelectorAll('.sw').forEach(function (b) { b.onclick = function () { ON[b.dataset.p] = !ON[b.dataset.p]; store(PK, ON); renderPlats(); renderTiles(); toast(plat(b.dataset.p).n + (ON[b.dataset.p] ? ' switched on' : ' switched off')); }; });
+}
+function chipFor(t) {
+  var s = T[t.id] ? T[t.id].status : 'new';
+  return s === 'ready' ? '<span class="chip ready"><i></i>Set up</span>' : s === 'draft' ? '<span class="chip draft"><i></i>Briefing</span>' : '<span class="chip"><i></i>Not set up</span>';
+}
+function renderTiles() {
+  $('#grid').innerHTML = TOOLS.map(function (t) {
+    var p = plat(t.plat), on = !!ON[t.plat];
+    return '<button class="tile" type="button" data-t="' + t.id + '"><span class="ic" style="background:' + t.bg + '" aria-hidden="true">' + ICON[t.icon] + '</span>' +
+      '<span class="tt"><b>' + esc(t.name) + '</b><span>' + esc(t.job) + '</span></span>' +
+      '<span class="meta">' + chipFor(t) + '<span class="needs' + (on ? ' ok' : '') + '">' + (on ? esc(p.n) + ' on' : 'Uses ' + esc(p.n)) + '</span></span></button>';
+  }).join('');
+  document.querySelectorAll('.tile').forEach(function (b) { b.onclick = function () { openTool(b.dataset.t); }; });
+  var lp = liveProv();
+  $('#modeBadge').textContent = lp ? 'Live: ' + (lp === 'anthropic' ? 'Claude' : 'ChatGPT') + ' · private' : 'Private to this browser';
+}
+
+// ---------- chat ----------
+var openId = null, lastFocus = null;
+var tool = function (id) { return TOOLS.filter(function (t) { return t.id === id; })[0]; };
+function openTool(id) {
+  var t = tool(id); if (!t) return; openId = id; lastFocus = document.activeElement; tstate(t); saveT();
+  $('#dIc').style.background = t.bg; $('#dIc').innerHTML = ICON[t.icon];
+  $('#dTitle').textContent = t.name + ' — ' + t.job; $('#dSub').textContent = 'Agent setup';
+  var d = $('#drawer'); d.classList.add('on'); d.setAttribute('aria-hidden', 'false'); d.inert = false; $('#scrim').classList.add('on');
+  renderChat(); setTimeout(function () { $('#msgIn').focus({ preventScroll: true }); }, 280);
+}
+function closeTool() { openId = null; var d = $('#drawer'); d.classList.remove('on'); d.setAttribute('aria-hidden', 'true'); d.inert = true; $('#scrim').classList.remove('on'); renderTiles(); if (lastFocus && lastFocus.focus) lastFocus.focus(); }
+function md(s) {
+  var parts = String(s).split(/```[a-zA-Z]*\n?/), out = '';
+  parts.forEach(function (p, i) {
+    if (i % 2) { out += '<pre tabindex="0"><code>' + esc(p.replace(/\n$/, '')) + '</code></pre>'; return; }
+    out += p.split(/\n{2,}/).filter(function (x) { return x.trim(); }).map(function (para) {
+      return '<p>' + esc(para).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>') + '</p>';
+    }).join('');
+  });
+  return out;
+}
+var codeOf = function (s) { var m = /```(?:jsx|javascript|js|extendscript)?\n([\s\S]*?)```/i.exec(s || ''); return m ? m[1] : null; };
+function renderChat() {
+  var t = tool(openId); if (!t) return; var st = tstate(t), lp = liveProv();
+  $('#dMode').className = 'mode' + (lp ? ' on' : ''); $('#dMode').textContent = lp ? 'Live agent · ' + (CONN[lp].model || '') : 'Guided setup';
+  $('#thread').innerHTML = st.thread.map(function (m, i) {
+    var who = m.r === 'me' ? 'You' : m.r === 'log' ? 'Agent status' : m.r === 'err' ? 'Problem' : 'Agent';
+    var acts = '';
+    if (m.r === 'ai' && t.plat === 'ae' && codeOf(m.t)) acts = '<div class="acts"><button class="btn sm pri" type="button" data-dl="' + i + '">Download After Effects script (.jsx)</button></div>';
+    return '<div class="msg ' + (m.r === 'me' ? 'me' : m.r === 'log' ? 'log' : m.r === 'err' ? 'err' : 'ai') + '"><div class="who">' + who + ' · ' + esc(m.time || '') + '</div><div class="bub">' + md(m.t) + acts + '</div></div>';
+  }).join('');
+  document.querySelectorAll('[data-dl]').forEach(function (b) { b.onclick = function () { download(codeOf(st.thread[+b.dataset.dl].t), slug(st.brief.brand || 'advert') + '-30s-advert.jsx'); }; });
+  var step = !lp && st.step < t.steps.length ? t.steps[st.step] : null;
+  $('#quick').innerHTML = step && step.chips ? step.chips.map(function (c) { return '<button type="button">' + esc(c) + '</button>'; }).join('') : '';
+  document.querySelectorAll('#quick button').forEach(function (b) { b.onclick = function () { send(b.textContent); }; });
+  $('#hint').textContent = lp ? 'Your messages go from this browser straight to ' + (lp === 'anthropic' ? 'Anthropic' : 'OpenAI') + '.' : 'Guided setup works without a key. Connect Claude or ChatGPT for a live agent that can rewrite the plan.';
+  var th = $('#thread'); th.scrollTop = th.scrollHeight;
+}
+function post(st, r, text) { st.thread.push({ r: r, t: text, time: now() }); if (st.thread.length > 120) st.thread.splice(1, st.thread.length - 120); saveT(); }
+function send(text) {
+  var t = tool(openId); if (!t || !text.trim()) return; var st = tstate(t);
+  post(st, 'me', text.trim()); if (st.status === 'new') st.status = 'draft';
+  if (liveProv()) { askModel(t, st); return; }
+  if (st.step < t.steps.length) {
+    st.brief[t.steps[st.step].k] = text.trim(); st.step++;
+    if (st.step < t.steps.length) post(st, 'ai', t.steps[st.step].q);
+    else finish(t, st);
+  } else post(st, 'ai', 'Your brief is saved. Press Start again to change it, or connect Claude or ChatGPT (top right) for a live agent you can talk to freely.');
+  saveT(); renderChat(); renderTiles();
+}
+$('#compose').onsubmit = function (e) { e.preventDefault(); var v = $('#msgIn').value; $('#msgIn').value = ''; send(v); };
+$('#msgIn').addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#compose').requestSubmit(); } });
+$('#dClose').onclick = closeTool; $('#scrim').onclick = closeTool;
+addEventListener('keydown', function (e) { if (e.key === 'Escape' && openId && !document.querySelector('dialog[open]')) closeTool(); });
+$('#dRestart').onclick = function () { var t = tool(openId); if (!t) return; T[t.id] = null; tstate(t); saveT(); renderChat(); renderTiles(); toast('Started again'); };
+
+// ---------- guided results (no key needed) ----------
+var slug = function (s) { return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'advert'; };
+function hexRgb(h) { var m = /^#?([0-9a-f]{6})$/i.exec(String(h).trim()); if (!m) return [0.09, 0.09, 0.1]; var n = parseInt(m[1], 16); return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255].map(function (v) { return Math.round(v * 1000) / 1000; }); }
+function aeScenes(b) {
+  return [
+    { s: 0, e: 3, n: 'Hook', t: b.hook },
+    { s: 3, e: 9, n: 'Problem', t: 'Made for ' + b.audience },
+    { s: 9, e: 18, n: 'Product', t: b.brand },
+    { s: 18, e: 25, n: 'Benefit', t: 'Try ' + b.brand + ' today' },
+    { s: 25, e: 30, n: 'Call to action', t: b.cta + '\n' + b.brand }
+  ];
+}
+function aeScript(b) {
+  var f = /9:16/.test(b.format) ? [1080, 1920] : /1:1/.test(b.format) ? [1080, 1080] : [1920, 1080];
+  var sc = aeScenes(b), J = JSON.stringify;
+  return [
+    '// 30-second advert for ' + b.brand.replace(/[\r\n]/g, ' ') + '. Built by Agent Ops.',
+    '// In After Effects: File > Scripts > Run Script File..., then pick this file.',
+    '(function () {',
+    '  app.beginUndoGroup("30-second advert");',
+    '  var W = ' + f[0] + ', H = ' + f[1] + ';',
+    '  var comp = app.project.items.addComp(' + J(b.brand + ' — 30s advert') + ', W, H, 1, 30, 30);',
+    '  comp.layers.addSolid(' + J(hexRgb(b.colour)) + ', "Background", W, H, 1, 30);',
+    '  function card(txt, a, z, size) {',
+    '    var l = comp.layers.addText(txt), p = l.property("Source Text"), d = p.value;',
+    '    d.fontSize = size; d.fillColor = [1, 1, 1]; d.justification = ParagraphJustification.CENTER_JUSTIFY; p.setValue(d);',
+    '    l.inPoint = a; l.outPoint = z;',
+    '    var r = l.sourceRectAtTime(a, false);',
+    '    l.property("Anchor Point").setValue([r.left + r.width / 2, r.top + r.height / 2]);',
+    '    l.property("Position").setValue([W / 2, H / 2]);',
+    '    var o = l.property("Opacity"); o.setValueAtTime(a, 0); o.setValueAtTime(a + 0.4, 100); o.setValueAtTime(z - 0.4, 100); o.setValueAtTime(z, 0);',
+    '    var s = l.property("Scale"); s.setValueAtTime(a, [94, 94]); s.setValueAtTime(z, [104, 104]);',
+    '    return l;',
+    '  }'
+  ].concat(sc.map(function (x) { return '  card(' + J(x.t) + ', ' + x.s + ', ' + x.e + ', ' + (x.n === 'Product' ? 'Math.round(W / 9)' : 'Math.round(W / 18)') + ').name = ' + J(x.n) + ';'; }))
+   .concat(['  comp.openInViewer();', '  app.endUndoGroup();', '})();']).join('\n');
+}
+function finish(t, st) {
+  var b = st.brief;
+  if (t.id === 'ae-advert') {
+    var sc = aeScenes(b);
+    post(st, 'ai', '**Storyboard: ' + b.brand + ', 30 seconds, ' + b.format + '**\n\n' + sc.map(function (x) { return x.s + '–' + x.e + 's  ' + x.n + ': ' + x.t.replace(/\n/g, ' · '); }).join('\n') +
+      '\n\nHere’s the script. In After Effects choose File > Scripts > Run Script File… and pick it. It builds the comp, background and all five scenes with fades and slow push-ins. Drop your footage and music under the text layers.\n\n```jsx\n' + aeScript(b) + '\n```');
+    post(st, 'log', 'Set up. Script ready to download.' + (ON.ae ? '' : ' Switch on After Effects in Connected apps so this agent can hand work to it.'));
+  } else {
+    var auto = /own/i.test(b.approve);
+    post(st, 'ai', '**Your commenting agent**\n\nChannel: ' + b.channel + '\nWhere: ' + b.targets + '\nTone: ' + b.tone + '\nDaily limit: ' + b.cap + ' comments\nMode: ' + (auto ? 'posts on its own' : 'queues each comment for your OK') +
+      '\n\n**Rules it always follows**\nReacts to what the video actually says. No links. Never repeats a comment. Doesn’t plug your channel every time. Skips videos made for kids. Stops a thread if someone replies negatively. Stays under ' + b.cap + ' a day.' +
+      '\n\nThese rules keep it inside YouTube’s spam policies.');
+    post(st, 'log', 'Set up. It starts once YouTube is signed in, which is the next step for this concept.' + (ON.youtube ? '' : ' Switch on YouTube in Connected apps.'));
+  }
+  st.status = 'ready';
+}
+function download(text, name) {
+  if (!text) return; var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' })); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); toast('Script downloaded');
+}
+
+// ---------- live agent ----------
+function systemFor(t, st) {
+  var apps = PLATS.filter(function (p) { return ON[p.id]; }).map(function (p) { return p.n; });
+  return 'You are an agent inside Agent Ops, a dashboard of productivity tools. This tool: ' + t.name + ' — ' + t.job + '. ' + t.goal +
+    '\nApps the user has switched on: ' + (apps.join(', ') || 'none yet') + '. If ' + plat(t.plat).n + ' is not switched on, remind them once.' +
+    '\nBe honest: this page cannot sign in to platforms or post anything yet. Ask one or two questions at a time. Plain English, short sentences, British spelling.';
+}
+function askModel(t, st) {
+  var p = liveProv(), c = CONN[p]; var typing = { r: 'ai', t: 'Thinking…', time: now() }; st.thread.push(typing); renderChat();
+  var msgs = []; st.thread.forEach(function (m) { if (m === typing || m.r === 'log' || m.r === 'err') return; var role = m.r === 'me' ? 'user' : 'assistant'; if (msgs.length && msgs[msgs.length - 1].role === role) msgs[msgs.length - 1].content += '\n\n' + m.t; else msgs.push({ role: role, content: m.t }); });
+  while (msgs.length && msgs[0].role !== 'user') msgs.shift();
+  var sys = systemFor(t, st), req;
+  if (p === 'anthropic') req = fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'content-type': 'application/json', 'x-api-key': c.key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' }, body: JSON.stringify({ model: c.model || 'claude-sonnet-5-5', max_tokens: 4000, system: sys, messages: msgs }) })
+    .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error((d.error && d.error.message) || ('HTTP ' + r.status)); return (d.content || []).filter(function (b) { return b.type === 'text'; }).map(function (b) { return b.text; }).join('\n'); }); });
+  else req = fetch('https://api.openai.com/v1/chat/completions', { method: 'POST', headers: { 'content-type': 'application/json', 'authorization': 'Bearer ' + c.key }, body: JSON.stringify({ model: c.model || 'gpt-4o', messages: [{ role: 'system', content: sys }].concat(msgs) }) })
+    .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error((d.error && d.error.message) || ('HTTP ' + r.status)); return d.choices && d.choices[0] && d.choices[0].message ? d.choices[0].message.content || '' : ''; }); });
+  req.then(function (text) { st.thread.splice(st.thread.indexOf(typing), 1); post(st, 'ai', text || '(No reply.)'); if (codeOf(text) || /rules/i.test(text)) st.status = 'ready'; })
+    .catch(function (err) { st.thread.splice(st.thread.indexOf(typing), 1); post(st, 'err', 'Couldn’t reach the model: ' + (err && err.message ? err.message : 'network error') + '. Check your key and model in Connect.'); })
+    .then(function () { saveT(); if (openId === t.id) renderChat(); renderTiles(); });
+}
+
+// ---------- connect dialog ----------
+$('#connBtn').onclick = function () {
+  $('#cKeyA').value = (CONN.anthropic && CONN.anthropic.key) || ''; $('#cModelA').value = (CONN.anthropic && CONN.anthropic.model) || 'claude-sonnet-5-5';
+  $('#cKeyO').value = (CONN.openai && CONN.openai.key) || ''; $('#cModelO').value = (CONN.openai && CONN.openai.model) || 'gpt-4o';
+  $('#conn').showModal();
+};
+$('#cCancel').onclick = function () { $('#conn').close(); };
+$('#cClear').onclick = function () { CONN = {}; store(CK, CONN); $('#conn').close(); renderTiles(); if (openId) renderChat(); toast('Keys cleared'); };
+$('#connForm').onsubmit = function (e) {
+  e.preventDefault(); var a = $('#cKeyA').value.trim(), o = $('#cKeyO').value.trim();
+  CONN = {}; if (a) CONN.anthropic = { key: a, model: $('#cModelA').value }; if (o) CONN.openai = { key: o, model: $('#cModelO').value.trim() || 'gpt-4o' };
+  store(CK, CONN); $('#conn').close(); renderTiles(); if (openId) renderChat(); toast(a || o ? 'Connected' : 'No key saved');
+};
+var tt; function toast(s) { var el = $('#toast'); el.textContent = s; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, 1800); }
+
+if (matchMedia('(max-width:900px)').matches) $('#pWrap').open = false;
+renderPlats(); renderTiles();
+})();
+</script>
+</body>
+</html>
