@@ -242,7 +242,11 @@ var plat = function (id) { return PLATS.filter(function (p) { return p.id === id
 // ---------- tools (the tiles) ----------
 var ICON = {
   film: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M3 7l3-4h4l-3 4M10 7l3-4h4l-3 4M17 7l2.5-3.5"/><path d="M10.5 11.5v5l4-2.5z" fill="#fff"/></svg>',
-  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12.5h5"/></svg>'
+  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12.5h5"/></svg>',
+  pen: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>',
+  mail: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+  person: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.2"/><path d="M3.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M17 4.5a5 5 0 0 1 0 7M19.5 2.5a8 8 0 0 1 0 11"/></svg>',
+  spark: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="13" height="10" rx="2"/><path d="M15.5 12l5-3v8l-5-3z"/><path d="M8 2.5v4M6 4.5h4" /></svg>'
 };
 var TOOLS = [
   { id: 'ae-advert', plat: 'ae', icon: 'film', bg: 'linear-gradient(145deg,#6A5AD0,#4A3C99)', name: 'After Effects', job: '30-second creative advert',
@@ -265,7 +269,47 @@ var TOOLS = [
       { k: 'cap', q: 'Most comments per day? Keep it low so it stays human.', chips: ['5', '10', '20'] },
       { k: 'approve', q: 'Should I post on my own, or queue each comment for your OK first?', chips: ['Queue for my OK', 'Post on its own'] }
     ],
-    goal: 'Set up an agent that comments on YouTube videos to build the user’s community while they are away. Brief them (channel, where to comment, tone, daily cap, auto-post or approve first), then write the agent’s rules and three example comments in their tone. Rules must keep it within YouTube’s spam policies: no links, no copy-paste repeats, no self-promotion in every comment, respond to what the video actually says, skip videos made for kids, stop if someone replies negatively, stay under the daily cap.' }
+    goal: 'Set up an agent that comments on YouTube videos to build the user’s community while they are away. Brief them (channel, where to comment, tone, daily cap, auto-post or approve first), then write the agent’s rules and three example comments in their tone. Rules must keep it within YouTube’s spam policies: no links, no copy-paste repeats, no self-promotion in every comment, respond to what the video actually says, skip videos made for kids, stop if someone replies negatively, stay under the daily cap.' },
+  { id: 'x-post', plat: 'x', icon: 'pen', bg: 'linear-gradient(145deg,#4a4646,#1f1e1e)', name: 'X', job: 'Creating and posting autonomously',
+    intro: 'I write and post on X for you, on a schedule, while you get on with other work. Tell me who you are and what you want to be known for, and I’ll set up the plan, the voice and the rules.',
+    steps: [
+      { k: 'who', q: 'Who is posting? Your name or brand, and what you do.' },
+      { k: 'topics', q: 'What should the posts be about? Two or three topics.' },
+      { k: 'tone', q: 'What voice should the posts have?', chips: ['Sharp and witty', 'Expert and useful', 'Behind the scenes'] },
+      { k: 'freq', q: 'How many posts a day?', chips: ['1', '3', '5'] },
+      { k: 'approve', q: 'Should I post on my own, or queue each post for your OK first?', chips: ['Queue for my OK', 'Post on its own'] }
+    ],
+    goal: 'Set up an agent that writes and posts on X for the user on a schedule. Brief them (who, topics, voice, how often, auto-post or approve first), then write a content plan with posting times and three ready-to-post drafts in their voice. Keep posts under 280 characters, no hashtag stuffing, no automated replies or mentions to strangers, and follow X’s automation rules. Never invent facts, numbers or client names; leave a [TODO] instead.' },
+  { id: 'li-post', plat: 'linkedin', icon: 'person', bg: 'linear-gradient(145deg,#3C7FBF,#245A8C)', name: 'LinkedIn', job: 'Creating and posting autonomously',
+    intro: 'I write and post on LinkedIn for you, on a schedule, while you get on with other work. Tell me who you are and what you want to be known for, and I’ll set up the plan, the voice and the rules.',
+    steps: [
+      { k: 'who', q: 'Who is posting? Your name or brand, and what you do.' },
+      { k: 'topics', q: 'What should the posts be about? Two or three topics.' },
+      { k: 'tone', q: 'What voice should the posts have?', chips: ['Thoughtful', 'Practical tips', 'Story-led'] },
+      { k: 'freq', q: 'How many posts a week?', chips: ['2', '3', '5'] },
+      { k: 'approve', q: 'Should I post on my own, or queue each post for your OK first?', chips: ['Queue for my OK', 'Post on its own'] }
+    ],
+    goal: 'Set up an agent that writes and posts on LinkedIn for the user on a schedule. Brief them (who, topics, voice, how often, auto-post or approve first), then write a content plan with posting times and three ready-to-post drafts in their voice. Posts are 80 to 200 words with a strong first line, no engagement bait, no more than three hashtags, and follow LinkedIn’s rules on automation. Never invent facts, numbers or client names; leave a [TODO] instead.' },
+  { id: 'gm-email', plat: 'gmail', icon: 'mail', bg: 'linear-gradient(145deg,#D98A3D,#A85E1E)', name: 'Gmail', job: 'Email marketing agents',
+    intro: 'I plan and write email campaigns and send them from your Gmail to people who’ve signed up. Tell me what you sell and who’s on your list, and I’ll set up the sequence and the rules.',
+    steps: [
+      { k: 'biz', q: 'What’s the business or product?' },
+      { k: 'list', q: 'Who’s on your list, and how did they sign up?' },
+      { k: 'goal', q: 'What’s the campaign for?', chips: ['Monthly newsletter', 'Product launch', 'Win back old customers'] },
+      { k: 'count', q: 'How many emails in the sequence?', chips: ['3', '4', '5'] },
+      { k: 'sender', q: 'Last thing: who should the emails come from, and in what tone?', chips: ['Me, friendly', 'The team, professional'] }
+    ],
+    goal: 'Set up an email marketing agent that sends from the user’s Gmail. Brief them (business, list, campaign goal, number of emails, sender and tone), then write the sequence: send day, subject line, preview text and the full body of each email. Only email people who opted in, include an unsubscribe line, respect UK GDPR / PECR and CAN-SPAM, and stay inside Gmail’s sending limits. Never invent offers, prices or testimonials; leave a [TODO] instead.' },
+  { id: 'veo-ad', plat: 'veo3', icon: 'spark', bg: 'linear-gradient(145deg,#5A72D6,#3446A0)', name: 'Google Veo 3', job: '30-second ad clip generation',
+    intro: 'I turn your idea into a 30-second ad made with Veo 3. Veo makes clips of up to 8 seconds, so I plan four shots that cut together into 30 seconds, and write a detailed prompt for each one with camera, light, sound and dialogue.',
+    steps: [
+      { k: 'product', q: 'What are we advertising?' },
+      { k: 'look', q: 'Where is it set, and what should it look like?', chips: ['Bright studio', 'City at night', 'Outdoors, golden hour'] },
+      { k: 'mood', q: 'What’s the mood?', chips: ['Cinematic and calm', 'Fast and energetic', 'Warm and human'] },
+      { k: 'format', q: 'Which format?', chips: ['16:9 landscape', '9:16 vertical'] },
+      { k: 'line', q: 'Last thing: the closing line or voiceover?' }
+    ],
+    goal: 'Plan a 30-second ad made from four Veo 3 clips (8s, 8s, 8s, 6s). Brief the user (product, setting and look, mood, format, closing line), then write one detailed Veo 3 prompt per shot covering subject, action, camera move, lens, lighting, ambient sound, music and any dialogue, all in one ```text code block, plus an edit note on how to cut them together. Remind them to label the finished ad as AI-generated.' }
 ];
 var TK = 'agentops.tools', T = load(TK, {});
 TOOLS.forEach(function (t) { if (!T[t.id] || !Array.isArray(T[t.id].thread)) T[t.id] = null; });
@@ -324,17 +368,18 @@ function md(s) {
   });
   return out;
 }
-var codeOf = function (s) { var m = /```(?:jsx|javascript|js|extendscript)?\n([\s\S]*?)```/i.exec(s || ''); return m ? m[1] : null; };
+var codeOf = function (s) { var m = /```[a-z]*\n([\s\S]*?)```/i.exec(s || ''); return m ? m[1] : null; };
+var DL = { 'ae-advert': { label: 'Download After Effects script (.jsx)', file: function (b) { return slug(b.brand || 'advert') + '-30s-advert.jsx'; } }, 'veo-ad': { label: 'Download Veo 3 prompts (.txt)', file: function (b) { return slug(b.product || 'ad') + '-veo3-prompts.txt'; } }, 'gm-email': { label: 'Download emails (.txt)', file: function (b) { return slug(b.biz || 'campaign') + '-emails.txt'; } } };
 function renderChat() {
   var t = tool(openId); if (!t) return; var st = tstate(t), lp = liveProv();
   $('#dMode').className = 'mode' + (lp ? ' on' : ''); $('#dMode').textContent = lp ? 'Live agent · ' + (CONN[lp].model || '') : 'Guided setup';
   $('#thread').innerHTML = st.thread.map(function (m, i) {
     var who = m.r === 'me' ? 'You' : m.r === 'log' ? 'Agent status' : m.r === 'err' ? 'Problem' : 'Agent';
     var acts = '';
-    if (m.r === 'ai' && t.plat === 'ae' && codeOf(m.t)) acts = '<div class="acts"><button class="btn sm pri" type="button" data-dl="' + i + '">Download After Effects script (.jsx)</button></div>';
+    if (m.r === 'ai' && DL[t.id] && codeOf(m.t)) acts = '<div class="acts"><button class="btn sm pri" type="button" data-dl="' + i + '">' + DL[t.id].label + '</button></div>';
     return '<div class="msg ' + (m.r === 'me' ? 'me' : m.r === 'log' ? 'log' : m.r === 'err' ? 'err' : 'ai') + '"><div class="who">' + who + ' · ' + esc(m.time || '') + '</div><div class="bub">' + md(m.t) + acts + '</div></div>';
   }).join('');
-  document.querySelectorAll('[data-dl]').forEach(function (b) { b.onclick = function () { download(codeOf(st.thread[+b.dataset.dl].t), slug(st.brief.brand || 'advert') + '-30s-advert.jsx'); }; });
+  document.querySelectorAll('[data-dl]').forEach(function (b) { b.onclick = function () { download(codeOf(st.thread[+b.dataset.dl].t), DL[t.id].file(st.brief)); }; });
   var step = !lp && st.step < t.steps.length ? t.steps[st.step] : null;
   $('#quick').innerHTML = step && step.chips ? step.chips.map(function (c) { return '<button type="button">' + esc(c) + '</button>'; }).join('') : '';
   document.querySelectorAll('#quick button').forEach(function (b) { b.onclick = function () { send(b.textContent); }; });
@@ -403,18 +448,44 @@ function finish(t, st) {
     post(st, 'ai', '**Storyboard: ' + b.brand + ', 30 seconds, ' + b.format + '**\n\n' + sc.map(function (x) { return x.s + '–' + x.e + 's  ' + x.n + ': ' + x.t.replace(/\n/g, ' · '); }).join('\n') +
       '\n\nHere’s the script. In After Effects choose File > Scripts > Run Script File… and pick it. It builds the comp, background and all five scenes with fades and slow push-ins. Drop your footage and music under the text layers.\n\n```jsx\n' + aeScript(b) + '\n```');
     post(st, 'log', 'Set up. Script ready to download.' + (ON.ae ? '' : ' Switch on After Effects in Connected apps so this agent can hand work to it.'));
-  } else {
+  } else if (t.id === 'yt-comment') {
     var auto = /own/i.test(b.approve);
     post(st, 'ai', '**Your commenting agent**\n\nChannel: ' + b.channel + '\nWhere: ' + b.targets + '\nTone: ' + b.tone + '\nDaily limit: ' + b.cap + ' comments\nMode: ' + (auto ? 'posts on its own' : 'queues each comment for your OK') +
       '\n\n**Rules it always follows**\nReacts to what the video actually says. No links. Never repeats a comment. Doesn’t plug your channel every time. Skips videos made for kids. Stops a thread if someone replies negatively. Stays under ' + b.cap + ' a day.' +
       '\n\nThese rules keep it inside YouTube’s spam policies.');
     post(st, 'log', 'Set up. It starts once YouTube is signed in, which is the next step for this concept.' + (ON.youtube ? '' : ' Switch on YouTube in Connected apps.'));
+  } else if (t.id === 'x-post' || t.id === 'li-post') {
+    var isX = t.id === 'x-post', autoP = /own/i.test(b.approve), n = parseInt(b.freq, 10) || (isX ? 3 : 3);
+    var times = isX ? ['08:30', '12:30', '17:30', '20:00', '22:00'].slice(0, Math.min(n, 5)).join(', ') + ' every day' : ['Tue', 'Wed', 'Thu', 'Mon', 'Fri'].slice(0, Math.min(n, 5)).join(', ') + ' at 08:00';
+    var topics = b.topics.split(/,|\band\b/).map(function (x) { return x.trim(); }).filter(Boolean);
+    post(st, 'ai', '**Your ' + t.name + ' posting agent**\n\nPosting as: ' + b.who + '\nTopics: ' + topics.join(' · ') + '\nVoice: ' + b.tone + '\nSchedule: ' + times + '\nMode: ' + (autoP ? 'posts on its own' : 'queues each post for your OK') +
+      '\n\n**Weekly mix**\n' + topics.slice(0, 3).map(function (x, k) { return (k + 1) + '. ' + x + ': ' + ['a useful tip or lesson', 'a behind-the-scenes look at your work', 'a question to start a conversation'][k % 3]; }).join('\n') +
+      '\n\n**Rules it always follows**\n' + (isX ? 'Under 280 characters. One or two hashtags at most. No auto-replies or mentions to strangers. Never repeats a post. ' : '80 to 200 words with a strong first line. No engagement bait. Three hashtags at most. Never repeats a post. ') + 'Never invents facts, numbers or client names. Stays inside ' + t.name + '’s automation rules.' +
+      '\n\nConnect Claude or ChatGPT (top right) and I’ll write the posts themselves in your voice.');
+    post(st, 'log', 'Set up. It starts posting once ' + t.name + ' is signed in, which is the next step for this concept.' + (ON[t.plat] ? '' : ' Switch on ' + t.name + ' in Connected apps.'));
+  } else if (t.id === 'gm-email') {
+    var cnt = parseInt(b.count, 10) || 3, days = [0, 3, 7, 14, 21].slice(0, Math.min(cnt, 5));
+    var arc = ['Welcome and the big idea', 'The problem you solve', 'How it works, with an example', 'Answers to common questions', 'Last call and a clear next step'];
+    var plan = days.map(function (d, k) { var a = k === days.length - 1 ? arc[4] : arc[k]; return 'Email ' + (k + 1) + ' (day ' + d + '): ' + a + '\n  Subject: [TODO: subject about ' + a.toLowerCase() + ']\n  Body: open with ' + b.goal.toLowerCase() + ' for ' + b.biz + ', one idea, one link, unsubscribe line.'; }).join('\n\n');
+    post(st, 'ai', '**Your email campaign: ' + b.goal + '**\n\nBusiness: ' + b.biz + '\nList: ' + b.list + '\nFrom: ' + b.sender + '\n\n**Sequence**\n\n```text\n' + plan + '\n```\n\n**Rules it always follows**\nOnly emails people who signed up. Every email has an unsubscribe line. Stays inside Gmail’s daily sending limits. Never invents offers, prices or reviews.\n\nConnect Claude or ChatGPT (top right) and I’ll write every subject line and email in full.');
+    post(st, 'log', 'Set up. It sends once Gmail is signed in, which is the next step for this concept.' + (ON.gmail ? '' : ' Switch on Gmail in Connected apps.'));
+  } else if (t.id === 'veo-ad') {
+    var ar = /9:16/.test(b.format) ? '9:16 vertical' : '16:9 landscape';
+    var shots = [
+      [8, 'Opening', 'Slow push-in establishing the scene. ' + b.look + '. No product yet, just atmosphere.'],
+      [8, 'Reveal', b.product + ' enters frame, hero close-up, shallow depth of field, gentle orbit around it.'],
+      [8, 'In use', 'A person uses ' + b.product + ' naturally, medium shot, handheld feel, a real moment.'],
+      [6, 'Close', 'Clean end frame with ' + b.product + ' centred and space for the line. Voiceover: "' + b.line + '"']
+    ];
+    var txt = shots.map(function (x, k) { return 'SHOT ' + (k + 1) + ' (' + x[0] + 's) ' + x[1] + '\n' + x[2] + ' Mood: ' + b.mood.toLowerCase() + '. Setting: ' + b.look.toLowerCase() + '. Aspect ratio ' + ar + '. Cinematic lighting, realistic textures, 24fps. Sound: ambient room tone and a soft music bed that matches the mood.'; }).join('\n\n');
+    post(st, 'ai', '**Shot plan: ' + b.product + ', 30 seconds, ' + ar + '**\n\nFour Veo 3 clips: 8s + 8s + 8s + 6s. Paste each prompt into Veo 3 (in Gemini or Flow), then cut them together in order with short crossfades.\n\n```text\n' + txt + '\n```\n\nLabel the finished ad as AI-generated when you post it.');
+    post(st, 'log', 'Set up. Prompts ready to download.' + (ON.veo3 ? '' : ' Switch on Veo 3 in Connected apps.'));
   }
   st.status = 'ready';
 }
 function download(text, name) {
-  if (!text) return; var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' })); a.download = name;
-  document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); toast('Script downloaded');
+  if (!text) return; var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' })); a.download = name; a.style.display = 'none';
+  document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); toast('Downloaded');
 }
 
 // ---------- live agent ----------
