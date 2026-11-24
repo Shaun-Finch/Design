@@ -222,6 +222,11 @@ figure.piece.blankslot .frame{background:#000;border:1px solid rgba(255,255,255,
 .pagehead{padding-block:clamp(2.5rem,6vw,4.5rem) clamp(1rem,3vw,2rem)}
 .pagehead h1{font-weight:800;font-size:clamp(2.3rem,6.4vw,4.6rem);line-height:.98;letter-spacing:-.045em;margin:0;max-width:18ch}
 .pagehead p{margin:1rem 0 0;color:var(--mute);max-width:52ch;font-size:clamp(1.0625rem,1.6vw,1.2rem)}
+.ytfacade{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;background:#000;cursor:pointer;display:block}
+.ytfacade img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
+.ytfacade:hover img{transform:scale(1.03)}
+.ytplay{position:absolute;left:50%;top:50%;width:72px;height:72px;margin:-36px 0 0 -36px;border-radius:50%;background:rgba(14,14,16,.78);color:#fff;display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:transform .2s ease,background .2s ease}
+.ytfacade:hover .ytplay,.ytfacade:focus-visible .ytplay{transform:scale(1.08);background:#F0562A}
 </style>
 </head>
 <body>
@@ -376,11 +381,11 @@ figure.piece.blankslot .frame{background:#000;border:1px solid rgba(255,255,255,
 
         <figure class="piece">
           <div class="frame">
-            <iframe src="https://www.youtube-nocookie.com/embed/z_PPDVKqbL4?rel=0" title="Multi-screen production explainer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <button class="ytfacade" type="button" data-yt="z_PPDVKqbL4" data-title="Multi-screen production explainer" aria-label="Play video: Multi-screen production explainer"><img src="work/multiscreen-explainer.jpg" alt="" loading="lazy"><span class="ytplay" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span></button>
           </div>
           <div class="piece-body">
             <h3>Multi-screen production explainer</h3>
-            <p>A three-minute explainer film on multi-screen production.</p>
+            <p>A three-minute explainer film on multi-screen production. Cover image: an unofficial Spider-Man concept across three screens, AI-generated with Google Veo. Not affiliated with Marvel or Sony.</p>
             <dl class="spec">
               <div><dt>Format</dt><dd>Explainer film &middot; about 3 min</dd></div>
             </dl>
@@ -436,6 +441,9 @@ figure.piece.blankslot .frame{background:#000;border:1px solid rgba(255,255,255,
   },{threshold:0.25});
   vids.forEach(function(v){io.observe(v);});
 })();
+</script>
+<script>
+document.querySelectorAll('.ytfacade').forEach(function(b){b.addEventListener('click',function(){var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+b.dataset.yt+'?rel=0&autoplay=1';f.title=b.dataset.title;f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';f.referrerPolicy='strict-origin-when-cross-origin';f.allowFullscreen=true;b.replaceWith(f);});});
 </script>
 </body>
 </html>
